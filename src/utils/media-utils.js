@@ -26,6 +26,10 @@ linkify.tlds(tlds);
 const mediaAPIEndpoint = getReticulumFetchUrl("/api/v1/media");
 const getDirectMediaAPIEndpoint = () => getDirectReticulumFetchUrl("/api/v1/media");
 
+// AVN: alternative Media endpoint for AVN aliased media resources 
+const AVN_AUTHENTICATED_MEDIA_DOMAIN = "https://scene.link";
+const mediaAPIEndpointAvnAuthenticated = AVN_AUTHENTICATED_MEDIA_DOMAIN + "/com/Sessions.cfc?method=media";
+
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobile();
 
@@ -40,9 +44,15 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
-  const resultPromise = fetch(mediaAPIEndpoint, {
+  // AVN: queries must contain the sessionid cookie so they are accessed through an alternative API with credentials
+  const isAuthenticatedUrl = url.startsWith(AVN_AUTHENTICATED_MEDIA_DOMAIN);
+  const apiEndpoint = isAuthenticatedUrl ? mediaAPIEndpointAvnAuthenticated : mediaAPIEndpoint;
+  const fetchCredentials = isAuthenticatedUrl ? "include" : "same-origin";
+
+  const resultPromise = fetch(apiEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: fetchCredentials,
     body: JSON.stringify({ media: { url, quality: quality || getDefaultResolveQuality() }, version })
   }).then(async response => {
     if (!response.ok) {
