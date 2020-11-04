@@ -141,6 +141,10 @@ export const guessContentType = url => {
 };
 
 const originIsHubsServer = new Map();
+
+// AVN: shortcircuit for scene.link domain
+originIsHubsServer.set("https://scene.link", true);
+
 async function isHubsServer(url) {
   if (!url) return false;
   if (!url.startsWith("http")) {
@@ -175,8 +179,8 @@ export const isLocalHubsSceneUrl = async url => (await isHubsSceneUrl(url)) && (
 export const isHubsAvatarUrl = async url => (await isHubsServer(url)) && hubsAvatarRegex.test(url);
 export const isLocalHubsAvatarUrl = async url => (await isHubsAvatarUrl(url)) && (await isLocalHubsUrl(url));
 
-export const isHubsRoomUrl = async url =>
-  (await isHubsServer(url)) && !(await isHubsAvatarUrl(url)) && !(await isHubsSceneUrl(url)) && hubsRoomRegex.test(url);
+// AVN: the 7-digit Hubs code pattern doesn't apply to scene.link URLs so this requirement has been relaxed
+export const isHubsRoomUrl = async url => (await isHubsServer(url)) && !(await isHubsAvatarUrl(url)) && !(await isHubsSceneUrl(url)) /*&& hubsRoomRegex.test(url)*/;
 
 export const isHubsDestinationUrl = async url =>
   (await isHubsServer(url)) && ((await isHubsSceneUrl(url)) || (await isHubsRoomUrl(url)));
