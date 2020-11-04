@@ -7,6 +7,9 @@ if (configs.CORS_PROXY_SERVER) {
 }
 nonCorsProxyDomains.push(document.location.hostname);
 
+// AVN: data domain doesn't require CORS
+nonCorsProxyDomains.push("data.avncloud.com");
+
 const commonKnownContentTypes = {
   gltf: "model/gltf",
   glb: "model/gltf-binary",
