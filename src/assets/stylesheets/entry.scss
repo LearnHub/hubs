@@ -28,6 +28,8 @@
 
 :local(.favorite-button) {
   @extend %fa-icon-button;
+  /* AVN: Favourite system is not relevant */
+  visibility: hidden;
   color: var(--unfavorited-color);
 
   i {

@@ -463,6 +463,8 @@
     }
 
     :local(.tile):local(.create-avatar-tile) {
+      /* AVN: Avatar customization not yet supported */
+      display: none;
       margin-bottom: 3em;
     }
 

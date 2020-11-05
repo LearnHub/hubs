@@ -1563,7 +1563,8 @@ class UIRoot extends Component {
       (hasDiscordBridges || (hasEmbedPresence && !this.props.embed)) && !this.state.broadcastTipDismissed;
 
     const inviteEntryMode = this.props.hub && this.props.hub.entry_mode === "invite";
-    const showInviteButton = !showObjectInfo && !this.state.frozen && !watching && !preload && !inviteEntryMode;
+    // AVN: Share button is hidden because Hubs URLs are not persistent in AVN world
+    const showInviteButton = false;// && !showObjectInfo && !this.state.frozen && !watching && !preload && !inviteEntryMode;
 
     const showInviteTip =
       !showObjectInfo &&
@@ -1591,8 +1592,10 @@ class UIRoot extends Component {
     const streaming = this.state.isStreaming;
 
     const showTopHud = enteredOrWatching && !showObjectInfo;
-    const showSettingsMenu = !streaming && !preload && !showObjectInfo;
-    const showObjectList = !showObjectInfo;
+    // AVN: Settings menu not required
+    const showSettingsMenu = false;// && !streaming && !preload && !showObjectInfo;
+    // AVN: Object list not relevant
+    const showObjectList = false;//!showObjectInfo;
     const showPresenceList = !showObjectInfo;
 
     const displayNameOverride = this.props.hubIsBound
@@ -1887,7 +1890,8 @@ class UIRoot extends Component {
                   onClose={() => this.confirmBroadcastedRoom()}
                 />
               )}
-            {enteredOrWatchingOrPreload &&
+            {/* AVN: Disabled all chatboxes */}
+            {false && enteredOrWatchingOrPreload &&
               !this.state.objectInfo &&
               !this.state.frozen && (
                 <InWorldChatBox
@@ -2150,7 +2154,8 @@ class UIRoot extends Component {
                     </IfFeature>
                   )}
 
-                {!streaming && (
+                {/* AVN: favourites not required because Hubs rooms are not persistent */}
+                {false && !streaming && (
                   <button
                     aria-label="Toggle Favorited"
                     onClick={() => this.toggleFavorited()}

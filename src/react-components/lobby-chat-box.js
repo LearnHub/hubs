@@ -40,7 +40,11 @@ class LobbyChatBox extends Component {
           : `Send message to ${occupantSnippet}...`;
 
     return (
-      <form onSubmit={this.sendMessage}>
+      <form 
+        onSubmit={this.sendMessage} 
+        // AVN: Chat is currently disabled so don't show text box
+        style={{display:"none"}}
+      >
         <div
           className={classNames({
             [styles.messageEntry]: true,

@@ -606,7 +606,8 @@ const DEFINITIONS = new Map([
         key: "materialQualitySetting",
         prefType: PREFERENCE_LIST_ITEM_TYPE.SELECT,
         options: [{ value: "low", text: "Low" }, { value: "medium", text: "Medium" }, { value: "high", text: "High" }],
-        defaultString: isMobile ? "low" : "high",
+        // AVN: default to "low" in all cases because of even the desktop devices tend to be low-end
+        defaultString: isMobile ? "low" : "low",
         promptForRefresh: true
       },
       {

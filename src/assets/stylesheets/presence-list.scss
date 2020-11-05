@@ -26,7 +26,8 @@
 }
 
 :local(.sign-in) {
-  display: flex;
+  /* AVN: Disable all sign in */
+  display: none;
   justify-content: center;
   border-top: 1px solid var(--panel-rule-color);
   margin-top: 12px;

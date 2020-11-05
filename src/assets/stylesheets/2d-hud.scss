@@ -218,6 +218,8 @@
 }
 
 :local(.iconButton.disabled) {
+  /* AVN: All disabled buttons are not to be shown currently */
+  display: none;
   filter: contrast(0.1);
 }
 
