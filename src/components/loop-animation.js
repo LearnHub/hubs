@@ -48,7 +48,8 @@ AFRAME.registerComponent("loop-animation", {
     if (clipName !== "") {
       clips = clipName.split(",").map(n => animations.find(({ name }) => name === n));
     } else {
-      clips = [animations[activeClipIndex]];
+      // AVN: Play all animations by default if not otherwise specified (default Hubs behaviour is just to play the first)
+      clips = animations;
     }
 
     if (!(clips && clips.length)) return;
