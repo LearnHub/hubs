@@ -568,6 +568,18 @@ AFRAME.registerComponent("media-loader", {
           })
         );
       } else if (contentType.startsWith("text/html")) {
+
+// AVN: Hack until visibility sorted
+if(this.el.getAttribute("visible")) {
+// HIDE THE THUMBNAIL
+thumbnail = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+} else {
+// FLAG THE THUMBNAIL
+thumbnail = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+}
+// FORCE VISIBLE OR THE BUTTONS CAN'T BEEN SEEN
+this.el.setAttribute("visible", true);
+
         this.el.removeAttribute("gltf-model-plus");
         this.el.removeAttribute("media-video");
         this.el.removeAttribute("media-pdf");
