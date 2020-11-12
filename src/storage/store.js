@@ -342,6 +342,7 @@ export default class Store extends EventTarget {
       return "low";
     }
 
-    return "high";
+    // AVN: Default to low material quality for now
+    return "low";
   }
 }
