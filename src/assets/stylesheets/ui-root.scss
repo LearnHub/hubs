@@ -131,7 +131,8 @@ body.vr-mode {
   z-index: 1;
   bottom: 4px;
   width: 100%;
-  display: flex;
+  /* AVN: Hide help buttons and dialogs because they are not very relevant */
+  display: none;
   align-items: center;
   justify-content: flex-end;
   height: 80px;
