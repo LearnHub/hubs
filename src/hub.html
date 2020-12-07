@@ -1309,7 +1309,8 @@
         <a-entity id="viewing-rig" set-yxz-order matrix-auto-update>
             <a-entity
                 id="viewing-camera"
-                camera="near: 0.05"
+                <!-- AVN: A-Frame FoV default is 80, which is uncomfortably high and causes noticable distortion -->
+                camera="near: 0.05; fov: 50;"
                 set-active-camera
                 rotation
                 fader
