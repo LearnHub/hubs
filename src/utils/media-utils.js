@@ -28,7 +28,7 @@ const getDirectMediaAPIEndpoint = () => getDirectReticulumFetchUrl("/api/v1/medi
 
 // AVN: alternative Media endpoint for AVN aliased media resources 
 const AVN_AUTHENTICATED_MEDIA_DOMAIN = "https://scene.link";
-const mediaAPIEndpointAvnAuthenticated = AVN_AUTHENTICATED_MEDIA_DOMAIN + "/com/Sessions.cfc?method=media";
+const mediaAPIEndpointAvnAuthenticated = AVN_AUTHENTICATED_MEDIA_DOMAIN + "/com/Dimensions.cfc?method=media";
 
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobile();
