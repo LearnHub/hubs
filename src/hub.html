@@ -1307,9 +1307,9 @@
             </a-entity>
         </a-entity>
         <a-entity id="viewing-rig" set-yxz-order matrix-auto-update>
+            <!-- AVN: A-Frame FoV default is 80, which is uncomfortably high and causes noticable distortion. History https://github.com/aframevr/aframe/commit/2c4c09a55c65b39384acc79d9ec8ca534f57025f#diff-8286efb24e72b26a2bf9f662ecf49beaec0290dbc7b3fa8483d36df9098c9efaR8 -->
             <a-entity
                 id="viewing-camera"
-                <!-- AVN: A-Frame FoV default is 80, which is uncomfortably high and causes noticable distortion -->
                 camera="near: 0.05; fov: 50;"
                 set-active-camera
                 rotation
