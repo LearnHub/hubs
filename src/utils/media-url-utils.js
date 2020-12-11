@@ -15,7 +15,7 @@ export var avnDimensionId = new URLSearchParams(document.location.search).get("d
 if(!avnDimensionId) {
   const pathParts = document.location.pathname.split('/');
   if(pathParts.length > 2) {
-    document.location.pathname.split('/')[2];
+    avnDimensionId = document.location.pathname.split('/')[2];
   } else {
     //TODO: FIX POSSIBLY REDIRECT
     console.error("AVN:NO DIMENSION");
