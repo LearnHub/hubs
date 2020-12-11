@@ -5,7 +5,7 @@ import mediaHighlightFrag from "./media-highlight-frag.glsl";
 import { mapMaterials } from "./material-utils";
 import HubsTextureLoader from "../loaders/HubsTextureLoader";
 import { validMaterials } from "../components/hoverable-visuals";
-import { proxiedUrlFor, guessContentType } from "../utils/media-url-utils";
+import { proxiedUrlFor, guessContentType, avnDimensionId } from "../utils/media-url-utils";
 import Linkify from "linkify-it";
 import tlds from "tlds";
 
@@ -26,9 +26,9 @@ linkify.tlds(tlds);
 const mediaAPIEndpoint = getReticulumFetchUrl("/api/v1/media");
 const getDirectMediaAPIEndpoint = () => getDirectReticulumFetchUrl("/api/v1/media");
 
-// AVN: alternative Media endpoint for AVN aliased media resources 
+// AVN: Alternative Media endpoint for AVN aliased media resources 
 const AVN_AUTHENTICATED_MEDIA_DOMAIN = "https://scene.link";
-const mediaAPIEndpointAvnAuthenticated = AVN_AUTHENTICATED_MEDIA_DOMAIN + "/com/Dimensions.cfc?method=media";
+const mediaAPIEndpointAvnAuthenticated = AVN_AUTHENTICATED_MEDIA_DOMAIN + `/com/Dimensions.cfc?method=media&dimensionid=${avnDimensionId}`;
 
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobile();
@@ -44,15 +44,12 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
-  // AVN: queries must contain the sessionid cookie so they are accessed through an alternative API with credentials
-  const isAuthenticatedUrl = url.startsWith(AVN_AUTHENTICATED_MEDIA_DOMAIN);
-  const apiEndpoint = isAuthenticatedUrl ? mediaAPIEndpointAvnAuthenticated : mediaAPIEndpoint;
-  const fetchCredentials = isAuthenticatedUrl ? "include" : "same-origin";
+  // AVN: Authenticated queriesare accessed through an alternative API with the dimension ID tacked on the end
+  const apiEndpoint = url.startsWith(AVN_AUTHENTICATED_MEDIA_DOMAIN) ? mediaAPIEndpointAvnAuthenticated : mediaAPIEndpoint;
 
   const resultPromise = fetch(apiEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: fetchCredentials,
     body: JSON.stringify({ media: { url, quality: quality || getDefaultResolveQuality() }, version })
   }).then(async response => {
     if (!response.ok) {

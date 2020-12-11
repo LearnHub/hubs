@@ -10,6 +10,19 @@ nonCorsProxyDomains.push(document.location.hostname);
 // AVN: data domain doesn't require CORS
 nonCorsProxyDomains.push("data.avncloud.com");
 
+// AVN: Find dimension ID from URL in the form https://xx.avncloud.com/<hub_id>/<dimension_id> or as a URL parameter (local development mode)
+export var avnDimensionId = new URLSearchParams(document.location.search).get("dimension_id");
+if(!avnDimensionId) {
+  const pathParts = document.location.pathname.split('/');
+  if(pathParts.length > 2) {
+    document.location.pathname.split('/')[2];
+  } else {
+    //TODO: FIX POSSIBLY REDIRECT
+    console.error("AVN:NO DIMENSION");
+  }
+}
+console.log(`AVN Dimension ID: ${avnDimensionId}`);
+
 const commonKnownContentTypes = {
   gltf: "model/gltf",
   glb: "model/gltf-binary",
