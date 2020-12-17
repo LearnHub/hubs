@@ -54,6 +54,8 @@ AFRAME.registerComponent("media-loader", {
     resolve: { default: false },
     contentType: { default: null },
     contentSubtype: { default: null },
+    // AVN: Hack for linking to Avatars outside of the Hubs Cloud (i.e. from ClassConnect)
+    absoluteAvatarUrl: { default: null },
     animate: { default: true },
     linkedEl: { default: null }, // This is the element of which this is a linked derivative. See linked-media.js
     mediaOptions: {
@@ -393,6 +395,12 @@ AFRAME.registerComponent("media-loader", {
 
         contentType = (result.meta && result.meta.expected_content_type) || contentType;
         thumbnail = result.meta && result.meta.thumbnail && proxiedUrlFor(result.meta.thumbnail);
+        // AVN: Record tags from ClassConnect
+        const tags = result.meta && result.meta.tags && new Set(result.meta.tags);
+        // AVN: Set the Avatar URL
+        if(tags && tags.has("Avatar")) {
+            this.data.absoluteAvatarUrl = canonicalUrl;
+        }
       }
 
       // todo: we don't need to proxy for many things if the canonical URL has permissive CORS headers
@@ -536,9 +544,11 @@ AFRAME.registerComponent("media-loader", {
           this.el.setAttribute("position-at-border__freeze-unprivileged", { isFlat: true });
         }
       } else if (
-        contentType.includes("application/octet-stream") ||
-        contentType.includes("x-zip-compressed") ||
-        contentType.startsWith("model/gltf")
+        this.data.absoluteAvatarUrl == undefined && (
+          contentType.includes("application/octet-stream") ||
+          contentType.includes("x-zip-compressed") ||
+          contentType.startsWith("model/gltf")
+        )
       ) {
         this.el.removeAttribute("media-image");
         this.el.removeAttribute("media-video");
@@ -567,7 +577,7 @@ AFRAME.registerComponent("media-loader", {
             modelToWorldScale: this.data.fitToBox ? 0.0001 : 1.0
           })
         );
-      } else if (contentType.startsWith("text/html")) {
+      } else if (this.data.absoluteAvatarUrl !== undefined || contentType.startsWith("text/html")) {
 
 // AVN: Hack until visibility sorted
 if(this.el.getAttribute("visible")) {
@@ -588,8 +598,7 @@ this.el.setAttribute("visible", true);
           "image-loaded",
           async () => {
             const mayChangeScene = this.el.sceneEl.systems.permissions.can("update_hub");
-
-            if (await isLocalHubsAvatarUrl(src)) {
+            if (this.data.absoluteAvatarUrl !== undefined || await isLocalHubsAvatarUrl(src)) {
               this.el.setAttribute("hover-menu__hubs-item", {
                 template: "#avatar-link-hover-menu",
                 isFlat: true

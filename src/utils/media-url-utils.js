@@ -203,5 +203,6 @@ export const idForAvatarUrl = url => {
   if (match) {
     return match.groups.id;
   }
-  return null;
+  // AVN: Absolute URLs may not match the regex, but may be valid
+  return url;
 };
