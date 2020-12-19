@@ -25,5 +25,6 @@ import "./water";
 import "./simple-water";
 import "./environment-map";
 import "./trigger-volume";
+import "./action-trigger-volume";
 import "./video-pause-state";
 import "./particle-emitter";

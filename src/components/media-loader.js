@@ -9,6 +9,7 @@ import {
 import {
   isNonCorsProxyDomain,
   guessContentType,
+  avnDimensionId,
   proxiedUrlFor,
   isHubsRoomUrl,
   isLocalHubsSceneUrl,
@@ -41,6 +42,7 @@ const fetchContentType = url => {
 const forceMeshBatching = qsTruthy("batchMeshes");
 const forceImageBatching = qsTruthy("batchImages");
 const disableBatching = qsTruthy("disableBatching");
+const isDebug = qsTruthy("debug");
 
 AFRAME.registerComponent("media-loader", {
   schema: {
@@ -190,7 +192,7 @@ AFRAME.registerComponent("media-loader", {
       : new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
     this.el.setObject3D("mesh", mesh);
 
-    this.updateScale(true, false);
+    this.updateScale(false, false);
 
     if (useFancyLoader) {
       const environmentMapComponent = this.el.sceneEl.components["environment-map"];
@@ -579,62 +581,28 @@ AFRAME.registerComponent("media-loader", {
         );
       } else if (this.data.absoluteAvatarUrl !== undefined || contentType.startsWith("text/html")) {
 
-// AVN: Hack until visibility sorted
-if(this.el.getAttribute("visible")) {
-// HIDE THE THUMBNAIL
-thumbnail = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-} else {
-// FLAG THE THUMBNAIL
-thumbnail = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
-}
-// FORCE VISIBLE OR THE BUTTONS CAN'T BEEN SEEN
-this.el.setAttribute("visible", true);
-
         this.el.removeAttribute("gltf-model-plus");
         this.el.removeAttribute("media-video");
         this.el.removeAttribute("media-pdf");
         this.el.removeAttribute("media-pager");
-        this.el.addEventListener(
-          "image-loaded",
-          async () => {
-            const mayChangeScene = this.el.sceneEl.systems.permissions.can("update_hub");
-            if (this.data.absoluteAvatarUrl !== undefined || await isLocalHubsAvatarUrl(src)) {
-              this.el.setAttribute("hover-menu__hubs-item", {
-                template: "#avatar-link-hover-menu",
-                isFlat: true
-              });
-            } else if ((await isHubsRoomUrl(src)) || ((await isLocalHubsSceneUrl(src)) && mayChangeScene)) {
-              this.el.setAttribute("hover-menu__hubs-item", {
-                template: "#hubs-destination-hover-menu",
-                isFlat: true
-              });
-            } else {
-              this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
-            }
-            this.onMediaLoaded(SHAPE.BOX);
-          },
-          { once: true }
-        );
-        this.el.setAttribute("floaty-object", { reduceAngularFloat: true, releaseGravity: -1 });
-        let batch = !disableBatching && forceImageBatching;
-        if (this.data.mediaOptions.hasOwnProperty("batch") && !this.data.mediaOptions.batch) {
-          batch = false;
+
+        if(isDebug) {
+        // Bounding box is defined so that one face is aligned with the XY plane for compatability with the default Hubs link system         
+          this.el.setObject3D("mesh", new THREE.Mesh(new THREE.BoxGeometry().translate(0, 0, -0.5), new THREE.MeshBasicMaterial({wireframe: true})));
+        } else {
+          this.el.removeObject3D("mesh");
         }
-        this.el.setAttribute(
-          "media-image",
-          Object.assign({}, this.data.mediaOptions, {
-            src: thumbnail,
-            version,
-            contentType: guessContentType(thumbnail) || "image/png",
-            batch
-          })
-        );
-        if (this.el.components["position-at-border__freeze"]) {
-          this.el.setAttribute("position-at-border__freeze", { isFlat: true });
-        }
-        if (this.el.components["position-at-border__freeze-unprivileged"]) {
-          this.el.setAttribute("position-at-border__freeze-unprivileged", { isFlat: true });
-        }
+
+        this.el.setAttribute("action-trigger-volume", {
+          colliders: "#avatar-pov-node",
+          // Either it's an avatar file or it's a scene link that needs the dimension replacing
+          src: this.data.absoluteAvatarUrl ?? src.replace(`https://scene.link`, `https://scene.link/${avnDimensionId}`),
+          isAvatar: !!this.data.absoluteAvatarUrl,
+        });
+
+        this.onMediaLoaded(null);
+
+
       } else {
         throw new Error(`Unsupported content type: ${contentType}`);
       }
