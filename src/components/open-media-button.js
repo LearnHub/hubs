@@ -14,13 +14,13 @@ AFRAME.registerComponent("open-media-button", {
       const src = (this.src = this.targetEl.components["media-loader"].data.src);
       const visible = src && guessContentType(src) !== "video/vnd.hubs-webrtc";
       const mayChangeScene = this.el.sceneEl.systems.permissions.canOrWillIfCreator("update_hub");
-      const absoluteAvatarUrl = this.targetEl.components["media-loader"].data.absoluteAvatarUrl;
 
       this.el.object3D.visible = !!visible;
+
       if (visible) {
         let label = "open link";
         if (!this.data.onlyOpenLink) {
-          if (absoluteAvatarUrl !== undefined || await isLocalHubsAvatarUrl(src)) {
+          if (await isLocalHubsAvatarUrl(src)) {
             label = "use avatar";
           } else if ((await isLocalHubsSceneUrl(src)) && mayChangeScene) {
             label = "use scene";
@@ -39,15 +39,14 @@ AFRAME.registerComponent("open-media-button", {
 
     this.onClick = async () => {
       const mayChangeScene = this.el.sceneEl.systems.permissions.canOrWillIfCreator("update_hub");
-      const absoluteAvatarUrl = this.targetEl.components["media-loader"].data.absoluteAvatarUrl;
 
       const exitImmersive = async () => await handleExitTo2DInterstitial(false, () => {}, true);
 
       if (this.data.onlyOpenLink) {
         await exitImmersive();
         window.open(this.src);
-      } else if (absoluteAvatarUrl !== undefined || await isLocalHubsAvatarUrl(this.src)) {
-        const avatarId = absoluteAvatarUrl ?? new URL(this.src).pathname.split("/").pop();
+      } else if (await isLocalHubsAvatarUrl(this.src)) {
+        const avatarId = new URL(this.src).pathname.split("/").pop();
         window.APP.store.update({ profile: { avatarId } });
         this.el.sceneEl.emit("avatar_updated");
       } else if ((await isLocalHubsSceneUrl(this.src)) && mayChangeScene) {
