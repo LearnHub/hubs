@@ -43,7 +43,7 @@ AFRAME.registerComponent("action-trigger-volume", {
           window.location.assign(this.data.src);
         }
       } else if (!isColliding && collidingLastFrame) {
-        this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_CHAT_MESSAGE);
+        //this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_CHAT_MESSAGE);
       }
 
       this.collidingLastFrame[object3D.id] = isColliding;
