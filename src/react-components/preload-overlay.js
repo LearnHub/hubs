@@ -21,9 +21,6 @@ export default class PreloadOverlay extends Component {
         <div className={styles.screenshot}>
           {this.props.hubScene && <img className={styles.screenshot} src={this.props.hubScene.screenshot_url} />}
         </div>
-        <a href="/" target="_blank" rel="noopener noreferrer" className={styles.logo}>
-          <img src={configs.image("logo")} />
-        </a>
         <div className={styles.mainPanel}>
           <div className={styles.hubName}>{this.props.hubName}</div>
           {this.props.onLoadClicked &&
