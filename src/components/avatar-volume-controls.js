@@ -5,7 +5,7 @@ const BIG_STEP = (MAX_VOLUME - 1) / (VOLUME_LABELS.length / 2);
 
 AFRAME.registerComponent("avatar-volume-controls", {
   schema: {
-    volume: { type: "number", default: 1.0 }
+    volume: { type: "number", default: MAX_VOLUME }
   },
 
   init() {
