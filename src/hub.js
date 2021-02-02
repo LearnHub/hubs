@@ -405,7 +405,8 @@ async function updateEnvironmentForHub(hub, entryManager) {
         sceneEl.addState("visible");
 
         //TODO: check if the environment was made with spoke to determine if a shape should be added
-        traverseMeshesAndAddShapes(environmentEl);
+        //AVN: SKIP ALL COLLISION INFO
+        //traverseMeshesAndAddShapes(environmentEl);
       },
       { once: true }
     );
@@ -430,7 +431,8 @@ async function updateEnvironmentForHub(hub, entryManager) {
           "model-loaded",
           () => {
             environmentEl.removeEventListener("model-error", sceneErrorHandler);
-            traverseMeshesAndAddShapes(environmentEl);
+            //AVN: SKIP ALL COLLISION INFO
+            //traverseMeshesAndAddShapes(environmentEl);
 
             // We've already entered, so move to new spawn point once new environment is loaded
             if (sceneEl.is("entered")) {
