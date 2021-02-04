@@ -1551,7 +1551,8 @@ class UIRoot extends Component {
 
     const discordBridges = this.discordBridges();
     const discordSnippet = discordBridges.map(ch => "#" + ch).join(", ");
-    const hasEmbedPresence = this.hasEmbedPresence();
+    // AVN: Disable embed tip
+    const hasEmbedPresence = false;//this.hasEmbedPresence();
     const hasDiscordBridges = discordBridges.length > 0;
     const showBroadcastTip =
       (hasDiscordBridges || (hasEmbedPresence && !this.props.embed)) && !this.state.broadcastTipDismissed;
