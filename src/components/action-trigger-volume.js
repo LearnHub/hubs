@@ -1,5 +1,5 @@
 const colliderWorldPositionVec = new THREE.Vector3();
-import { SOUND_CHAT_MESSAGE, SOUND_MEDIA_LOADED } from "../systems/sound-effects-system";
+import { SOUND_CHAT_MESSAGE, SOUND_MEDIA_LOADED, SOUND_FREEZE } from "../systems/sound-effects-system";
 
 AFRAME.registerComponent("action-trigger-volume", {
   schema: {
@@ -32,15 +32,22 @@ AFRAME.registerComponent("action-trigger-volume", {
       const collidingLastFrame = this.collidingLastFrame[object3D.id];
 
       if (isColliding && !collidingLastFrame) {
-        this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
         if(this.data.isAvatar) {
+          this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
           const avatarId = this.data.src ?? new URL(this.data.src).pathname.split("/").pop();
           console.log("Setting avatar to ", avatarId);
           window.APP.store.update({ profile: { avatarId } });
           this.el.sceneEl.emit("avatar_updated");
         } else {
-          console.log("Navigating to ", this.data.src);
-          window.location.assign(this.data.src);
+          // Only navigate if this is an 'explorable' room
+          if(this.data.src) {
+            console.log("Navigating to ", this.data.src);
+            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
+            window.location.assign(this.data.src);
+          } else {
+            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
+            console.log(`Navigation denied because room is not explorable`);
+          }
         }
       } else if (!isColliding && collidingLastFrame) {
         //this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_CHAT_MESSAGE);
