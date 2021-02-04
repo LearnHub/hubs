@@ -12,16 +12,24 @@ nonCorsProxyDomains.push("data.avncloud.com");
 
 // AVN: Find dimension ID from URL in the form https://<region>.avncloud.com/<hub_id>/<dimension_id>/<asset_id> or as a URL parameter (local development mode)
 export var avnDimensionId = new URLSearchParams(document.location.search).get("dimension_id");
-if(!avnDimensionId) {
-  const pathParts = document.location.pathname.split('/');
-  if(pathParts.length > 2) {
-    avnDimensionId = document.location.pathname.split('/')[2];
-  } else {
-    //TODO: FIX POSSIBLY REDIRECT
-    console.error("AVN:NO DIMENSION");
-  }
+export var avnAssetId = new URLSearchParams(document.location.search).get("asset_id");
+const pathParts = document.location.pathname.split('/');
+if(pathParts.length > 2) {
+  avnDimensionId = document.location.pathname.split('/')[2];
 }
-console.log(`AVN Dimension ID: ${avnDimensionId}`);
+if(pathParts.length > 3) {
+  avnAssetId = document.location.pathname.split('/')[3];
+}
+if(avnDimensionId) {
+  console.log(`AVN Dimension ID: ${avnDimensionId}`);
+} else {
+  console.error("AVN: No dimension found");
+}
+if(avnAssetId) {
+  console.log(`AVN Asset ID: ${avnAssetId}`);
+} else {
+  console.warn("AVN: No asset ID found so scene links will be disabled");
+}
 
 const commonKnownContentTypes = {
   gltf: "model/gltf",
