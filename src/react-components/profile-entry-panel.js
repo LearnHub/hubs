@@ -174,22 +174,21 @@ class ProfileEntryPanel extends Component {
                   >
                     <FontAwesomeIcon icon={faPencilAlt} />
                   </StateLink>
-                )}
-
-                <div className={styles.chooseAvatar}>
+                )}              
+                {/* <div className={styles.chooseAvatar}>
                   <a onClick={() => this.props.mediaSearchStore.sourceNavigateWithNoNav("avatars", "use")}>
                     <FormattedMessage id="profile.choose_avatar" />
                   </a>
-                </div>
+                </div> */}
               </div>
             ) : (
               <div className={styles.preview}>
                 <AvatarPreview />
-                <div className={styles.chooseAvatar}>
+                {/* <div className={styles.chooseAvatar}>
                   <a onClick={() => this.props.mediaSearchStore.sourceNavigateWithNoNav("avatars", "use")}>
                     <FormattedMessage id="profile.choose_avatar" />
                   </a>
-                </div>
+                </div> */}
               </div>
             )}
 
