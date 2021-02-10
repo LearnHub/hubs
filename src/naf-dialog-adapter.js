@@ -1,6 +1,7 @@
 import * as mediasoupClient from "mediasoup-client";
 import protooClient from "protoo-client";
 import { debug as newDebug } from "debug";
+import qsTruthy from "./utils/qs_truthy";
 
 // NOTE this adapter does not properly fire the onOccupantsReceived events since those are only needed for
 // data channels, which are not yet supported. To fire that event, this class would need to keep a list of
@@ -951,7 +952,7 @@ export default class DialogAdapter {
   }
 
   emitRTCEvent(level, tag, msgFunc) {
-    if (!window.APP.store.state.preferences.showRtcDebugPanel) return;
+    if (!(qsTruthy("showRtcDebugPanel") || window.APP.store.state.preferences.showRtcDebugPanel)) return;
     this.scene.emit("rtc_event", { level, tag, msg: msgFunc() });
   }
 }

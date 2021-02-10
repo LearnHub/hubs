@@ -1491,7 +1491,7 @@ class UIRoot extends Component {
     const watching = this.state.watching;
     const enteredOrWatching = entered || watching;
     const enteredOrWatchingOrPreload = entered || watching || preload;
-    const showRtcDebugPanel = this.props.store.state.preferences["showRtcDebugPanel"];
+    const showRtcDebugPanel = qsTruthy("showRtcDebugPanel") || this.props.store.state.preferences["showRtcDebugPanel"];
     const baseUrl = `${location.protocol}//${location.host}${location.pathname}`;
     const inEntryFlow = !!(
       this.props.history &&
