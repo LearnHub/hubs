@@ -95,7 +95,7 @@ class AudioNormalizer {
 
 AFRAME.registerComponent("avatar-volume-controls", {
   schema: {
-    volume: { type: "number", default: MAX_VOLUME }
+    volume: { type: "number", default: 1.0 }
   },
 
   init() {

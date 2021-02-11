@@ -25,8 +25,9 @@ export class AudioSettingsSystem {
     this.sceneEl = sceneEl;
     this.defaultSettings = {
       avatarDistanceModel: "inverse",
-      avatarRolloffFactor: 2,
-      avatarRefDistance: 1,
+      // AVN: More suitable defaults for talking in groups and attenuating distant speakers
+      avatarRolloffFactor: 3,
+      avatarRefDistance: 5,
       avatarMaxDistance: 10000,
       mediaVolume: 0.5,
       mediaDistanceModel: "inverse",
