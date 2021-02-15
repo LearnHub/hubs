@@ -206,12 +206,47 @@ export const SCHEMA = {
   additionalProperties: false
 };
 
+// AVN: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API#testing_for_availability
+function storageAvailable(type) {
+  let storage;
+  try {
+      storage = window[type];
+      const x = '__storage_test__';
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+  }
+  catch(e) {
+      return e instanceof DOMException && (
+          // everything except Firefox
+          e.code === 22 ||
+          // Firefox
+          e.code === 1014 ||
+          // test name field too, because code might not be present
+          // everything except Firefox
+          e.name === 'QuotaExceededError' ||
+          // Firefox
+          e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+          // acknowledge QuotaExceededError only if there's something already stored
+          (storage && storage.length !== 0);
+  }
+}
+
 export default class Store extends EventTarget {
   constructor() {
     super();
 
-    if (localStorage.getItem(LOCAL_STORE_KEY) === null) {
-      localStorage.setItem(LOCAL_STORE_KEY, JSON.stringify({}));
+    // AVN: Fallback behaviour for iframe secure context issue https://github.com/mozilla/hubs/issues/3911
+    const ls = storageAvailable('localStorage') ? localStorage : { _data: {}
+      , setItem: (id, val) => ls._data[id] = String(val)
+      , getItem: id => ls._data.hasOwnProperty(id) ? ls._data[id] : null
+      , removeItem: id => delete ls._data[id]
+      , clear: () => ls._data = {}
+      }
+    window.safeLocalStorage = ls;
+
+    if (window.safeLocalStorage.getItem(LOCAL_STORE_KEY) === null) {
+      window.safeLocalStorage.setItem(LOCAL_STORE_KEY, JSON.stringify({}));
     }
 
     // When storage is updated in another window
@@ -279,7 +314,7 @@ export default class Store extends EventTarget {
 
   get state() {
     if (!this.hasOwnProperty(STORE_STATE_CACHE_KEY)) {
-      this[STORE_STATE_CACHE_KEY] = JSON.parse(localStorage.getItem(LOCAL_STORE_KEY));
+      this[STORE_STATE_CACHE_KEY] = JSON.parse(window.safeLocalStorage.getItem(LOCAL_STORE_KEY));
     }
 
     return this[STORE_STATE_CACHE_KEY];
@@ -347,7 +382,7 @@ export default class Store extends EventTarget {
       throw new Error(`Write to store failed schema validation.`);
     }
 
-    localStorage.setItem(LOCAL_STORE_KEY, JSON.stringify(finalState));
+    window.safeLocalStorage.setItem(LOCAL_STORE_KEY, JSON.stringify(finalState));
     delete this[STORE_STATE_CACHE_KEY];
 
     if (newState.profile !== undefined) {

@@ -200,7 +200,7 @@ function getAudio(o) {
 const FALLOFF = 0.9;
 export class CameraSystem {
   constructor(scene) {
-    this.enableLights = localStorage.getItem("show-background-while-inspecting") === "true";
+    this.enableLights = window.safeLocalStorage.getItem("show-background-while-inspecting") === "true";
     this.verticalDelta = 0;
     this.horizontalDelta = 0;
     this.inspectZoom = 0;

@@ -84,16 +84,16 @@ const platformTips = TIPS[tipPlatform()];
 
 const isTipFinished = tip => {
   if (localStorageCache === null) {
-    localStorageCache = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    localStorageCache = JSON.parse(window.safeLocalStorage.getItem(LOCAL_STORAGE_KEY));
   }
 
   return !!(localStorageCache[tip] && localStorageCache[tip].finished);
 };
 
 export const markTipFinished = tip => {
-  const storeData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+  const storeData = JSON.parse(window.safeLocalStorage.getItem(LOCAL_STORAGE_KEY));
   storeData[tip] = { finished: true };
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(storeData));
+  window.safeLocalStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(storeData));
   localStorageCache = null;
 };
 
@@ -113,7 +113,7 @@ export const handleTipClose = (fullTip, scope) => {
 };
 
 export const resetTips = () => {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
+  window.safeLocalStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
   localStorageCache = null;
   window.APP.store.resetTipActivityFlags();
   window.APP.store.resetConfirmedBroadcastedRooms();
@@ -334,8 +334,8 @@ AFRAME.registerSystem("tips", {
     this._finishedScopes = {};
     this._performStep = this._performStep.bind(this);
 
-    if (localStorage.getItem(LOCAL_STORAGE_KEY) === null) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
+    if (window.safeLocalStorage.getItem(LOCAL_STORAGE_KEY) === null) {
+      window.safeLocalStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
     }
   },
 
