@@ -67,7 +67,7 @@
     "@fortawesome/react-fontawesome": "^0.1.0",
     "@mozillareality/easing-functions": "^0.1.1",
     "@mozillareality/three-batch-manager": "github:mozillareality/three-batch-manager#master",
-    "aframe": "github:mozillareality/aframe#hubs/master",
+    "aframe": "github:LearnHub/aframe#hubs/master",
     "aframe-rounded": "^1.0.3",
     "aframe-slice9-component": "^1.0.0",
     "ammo-debug-drawer": "github:infinitelee/ammo-debug-drawer",
