@@ -134,6 +134,18 @@ export async function connectToReticulum(debug = false, params = null, socketCla
     console.log(`Socket error, changed endpoint to ${newEndPoint}`);
     socket.endPoint = newEndPoint;
   });
+  var peakLatencyMs = 0;
+  var totalLatencyMs = 0;
+  var totalMeasurments = 0;
+  socket.onLatencyMeasurement(async (latencyMs) => {
+    totalLatencyMs += latencyMs;
+    ++totalMeasurments;
+    if(latencyMs > peakLatencyMs) {
+      peakLatencyMs = latencyMs;
+      console.log(`AVN: peak latency ${latencyMs.toFixed(2)}ms`);
+      console.log(`AVN: mean latency ${(totalLatencyMs/totalMeasurments).toFixed(2)}ms (${totalMeasurments} measurements)`);
+    }
+  });
 
   return socket;
 }

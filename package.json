@@ -104,7 +104,7 @@
     "nipplejs": "github:mozillareality/nipplejs#mr-social-client/master",
     "node-ensure": "0.0.0",
     "pdfjs-dist": "^2.1.266",
-    "phoenix": "github:gfodor/phoenix-js#master",
+    "phoenix": "github:LearnHub/phoenix-js#production",
     "prop-types": "^15.7.2",
     "raven-js": "^3.20.1",
     "react": "^16.13.1",
