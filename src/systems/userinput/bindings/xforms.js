@@ -209,7 +209,7 @@ export const xforms = {
           window.APP.store.state &&
           window.APP.store.state.preferences &&
           (window.APP.store.state.preferences[preference] ||
-            window.APP.store.state.preferences[preference] === undefined);
+            window.APP.store.state.preferences[preference] === true); //AVN: Default to false for invertTouchscreenCameraMove
         const oneOrMinusOne = invert ? -1 : 1;
         frame.setVector2(dest.value, vec2[0] * oneOrMinusOne, vec2[1] * oneOrMinusOne);
       }
