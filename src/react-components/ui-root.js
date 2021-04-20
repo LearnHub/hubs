@@ -1062,7 +1062,8 @@ class UIRoot extends Component {
 
     const streaming = this.state.isStreaming;
 
-    const showObjectList = enteredOrWatching;
+    // AVN: Don't show the object list for now
+    const showObjectList = enteredOrWatching && false;
 
     const streamer = getCurrentStreamer();
     const streamerName = streamer && streamer.displayName;
