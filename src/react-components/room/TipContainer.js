@@ -75,7 +75,8 @@ export function TipContainer({ hide, inLobby, inRoom, isStreaming, isEmbedded, s
     store.state.confirmedBroadcastedRooms.includes(hubId)
   );
   const [streamingTipDismissed, setStreamingTipDismissed] = useState(false);
-  const [embeddedTipDismissed, setEmbeddedTipDismissed] = useState(false);
+  // AVN: Force the embedded tip not to be shown
+  const [embeddedTipDismissed, setEmbeddedTipDismissed] = useState(true);
   const [onboardingTipId, setOnboardingTipId] = useState(null);
 
   const onSkipOnboarding = useCallback(
