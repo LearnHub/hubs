@@ -1544,8 +1544,12 @@ class UIRoot extends Component {
                         />
                         {this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />}
                       </>
-                    )}
-                    <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
+                    )} 
+                    {
+                      // AVN: Chat is not currently enabled
+                      false &&
+                      <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
+                    }
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
