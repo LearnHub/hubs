@@ -1494,13 +1494,15 @@ class UIRoot extends Component {
                     undefined
                   )
                 }
-                modal={this.state.dialog}
+                modal={this.state.dialog}                
                 toolbarLeft={
-                  <InvitePopoverContainer
-                    hub={this.props.hub}
-                    hubChannel={this.props.hubChannel}
-                    scene={this.props.scene}
-                  />
+                  // AVN: Invitations not supported
+                  false && 
+                    <InvitePopoverContainer
+                      hub={this.props.hub}
+                      hubChannel={this.props.hubChannel}
+                      scene={this.props.scene}
+                    />                 
                 }
                 toolbarCenter={
                   <>
@@ -1577,7 +1579,11 @@ class UIRoot extends Component {
                         }}
                       />
                     )}
-                    <MoreMenuPopoverButton menu={moreMenu} />
+                    { 
+                      // AVN: "More" menu not currently required
+                      false && 
+                      <MoreMenuPopoverButton menu={moreMenu} />
+                    }
                   </>
                 }
               />
