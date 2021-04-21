@@ -343,7 +343,9 @@ class UIRoot extends Component {
       this.props.scene.addEventListener(
         "loading_finished",
         () => {
-          setTimeout(() => this.handleForceEntry(), 1000);
+          // AVN: Enter room immediately for a less janky user experience
+          // setTimeout(() => this.handleForceEntry(), 1000);
+          this.handleForceEntry();
         },
         { once: true }
       );
@@ -426,6 +428,7 @@ class UIRoot extends Component {
 
   onLoadingFinished = () => {
     this.setState({ noMoreLoadingUpdates: true });
+    this.props.scene.emit("loading_finished");
 
     if (this.props.onLoaded) {
       this.props.onLoaded();
