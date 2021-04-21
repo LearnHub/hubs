@@ -1018,7 +1018,6 @@ AFRAME.registerComponent("media-video", {
     if (this.video) {
       this.video.removeEventListener("pause", this.onPauseStateChange);
       this.video.removeEventListener("play", this.onPauseStateChange);
-      NAF.connection.adapter.off("stream_updated", this._onStreamUpdated);
     }
 
     if (this.hoverMenu) {
