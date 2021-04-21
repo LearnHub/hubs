@@ -16,12 +16,13 @@ export function LoadingScreen({ logoSrc, message, infoMessages }) {
           <p>{message}</p>
         </>
       }
-      bottom={
-        <>
-          <h3>{infoMessage.heading}</h3>
-          <p>{infoMessage.message}</p>
-        </>
-      }
+      // AVN: Hide info messages as not currently relevant
+      // bottom={
+      //   <>
+      //     <h3>{infoMessage.heading}</h3>
+      //     <p>{infoMessage.message}</p>
+      //   </>
+      // }
     />
   );
 }
