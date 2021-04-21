@@ -231,12 +231,13 @@ NAF.options.syncSource = PHOENIX_RELIABLE_NAF;
 
 let isOAuthModal = false;
 
+// AVN: Temporarily removed until Portal: Indigo released with rel="noopener" in all links. Bug: https://github.com/mozilla/hubs/issues/4173
 // OAuth popup handler
 // TODO: Replace with a new oauth callback route that has this postMessage script.
-if (window.opener && window.opener.doingTwitterOAuth) {
-  window.opener.postMessage("oauth-successful");
-  isOAuthModal = true;
-}
+// if (window.opener && window.opener.doingTwitterOAuth) {
+//   window.opener.postMessage("oauth-successful");
+//   isOAuthModal = true;
+// }
 
 const isBotMode = qsTruthy("bot");
 const isTelemetryDisabled = qsTruthy("disable_telemetry");
