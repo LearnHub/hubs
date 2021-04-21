@@ -95,6 +95,7 @@ import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
+const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 
 const IN_ROOM_MODAL_ROUTER_PATHS = ["/media"];
 const IN_ROOM_MODAL_QUERY_VARS = ["media_source"];
@@ -1065,7 +1066,7 @@ class UIRoot extends Component {
     const streaming = this.state.isStreaming;
 
     // AVN: Don't show the object list for now
-    const showObjectList = enteredOrWatching && false;
+    const showObjectList = enteredOrWatching && showHiddenFeatures;
 
     const streamer = getCurrentStreamer();
     const streamerName = streamer && streamer.displayName;
@@ -1340,7 +1341,8 @@ class UIRoot extends Component {
                 viewport={
                   <>
                     {!this.state.dialog && renderEntryFlow ? entryDialog : undefined}
-                    {!this.props.selectedObject && <CompactMoreMenuButton />}
+                    {/* AVN: Hide "More" button on mobile */}
+                    {showHiddenFeatures && !this.props.selectedObject && <CompactMoreMenuButton />}
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
@@ -1499,7 +1501,7 @@ class UIRoot extends Component {
                 modal={this.state.dialog}                
                 toolbarLeft={
                   // AVN: Invitations not supported
-                  false && 
+                  showHiddenFeatures && 
                     <InvitePopoverContainer
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}
@@ -1546,7 +1548,7 @@ class UIRoot extends Component {
                     )} 
                     {
                       // AVN: Chat is not currently enabled
-                      false &&
+                      showHiddenFeatures &&
                       <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
                     }
                     {entered &&
@@ -1587,7 +1589,7 @@ class UIRoot extends Component {
                     )}
                     { 
                       // AVN: "More" menu not currently required
-                      false && 
+                      showHiddenFeatures && 
                       <MoreMenuPopoverButton menu={moreMenu} />
                     }
                   </>
