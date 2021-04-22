@@ -28,7 +28,8 @@ const onboardingMessages = defineMessages({
   },
   "tips.mobile.locomotion": {
     id: "tips.mobile.locomotion",
-    defaultMessage: "Great! To move, pinch with two fingers."
+    // AVN: Screen joystick is the default
+    defaultMessage: "Great! To move, use the on-screen joystick by touching the bottom left corner."
   },
   "tips.mobile.invite": {
     id: "tips.mobile.invite",
