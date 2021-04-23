@@ -11,7 +11,7 @@
   label {
     cursor: pointer;
     color: theme.$text1-color;
-    margin-top: 8px;
+    margin-top: 4px;
     margin-bottom: 3px;
   }
 }
@@ -639,7 +639,7 @@
 
 :local(.status-indicator) {
   position: absolute;
-  top: 5px;
+  top: 1px;
   width: 5px;
   height: 5px;
   border-radius: 5px;
