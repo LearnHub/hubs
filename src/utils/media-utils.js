@@ -560,7 +560,7 @@ export async function saveScreenshot(scene, format) {
   const screenshotFunction = () => {
     scene.removeEventListener("renderer.render.end", screenshotFunction);
     scene.canvas.toBlob(function (blob) {
-      const fileName = document.title.toLowerCase() + '_' + new Date().toISOString().substr(0, 19) + '.' + format;
+      const fileName = document.title + ' ' + new Date().toISOString().substr(0, 19) + '.' + format;
       const linkEl = document.createElement('a');
       const url = URL.createObjectURL(blob);
       linkEl.href = url;
