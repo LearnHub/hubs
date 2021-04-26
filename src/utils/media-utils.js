@@ -8,6 +8,7 @@ import { validMaterials } from "../components/hoverable-visuals";
 import { proxiedUrlFor, guessContentType, avnDimensionId } from "../utils/media-url-utils";
 import Linkify from "linkify-it";
 import tlds from "tlds";
+import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
 
 import anime from "animejs";
 
@@ -552,4 +553,25 @@ export function closeExistingMediaMirror() {
       });
     });
   }
+}
+
+// AVN: Used for simple screenshot functionality
+export async function saveScreenshot(scene, format) {
+  const screenshotFunction = () => {
+    scene.removeEventListener("renderer.render.end", screenshotFunction);
+    scene.canvas.toBlob(function (blob) {
+      const fileName = document.title.toLowerCase() + '_' + new Date().toISOString().substr(0, 19) + '.' + format;
+      const linkEl = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      linkEl.href = url;
+      linkEl.setAttribute('download', fileName);
+      linkEl.innerHTML = 'downloading...';
+      linkEl.style.display = 'none';
+      document.body.appendChild(linkEl);
+      linkEl.click();
+      document.body.removeChild(linkEl);
+      scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_SCREENSHOT);
+    }, 'image/' + format);
+  };
+  scene.addEventListener("renderer.render.end", screenshotFunction);
 }
