@@ -557,8 +557,10 @@ export function closeExistingMediaMirror() {
 
 // AVN: Used for simple screenshot functionality
 export async function saveScreenshot(scene, format) {
+  console.info("User requested screenshot");
   const screenshotFunction = () => {
     scene.removeEventListener("renderer.render.end", screenshotFunction);
+    console.info("Saving screenshot...");
     scene.canvas.toBlob(function (blob) {
       const fileName = document.title + ' ' + new Date().toISOString().substr(0, 19) + '.' + format;
       const linkEl = document.createElement('a');
