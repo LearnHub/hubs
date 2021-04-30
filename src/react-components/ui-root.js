@@ -1543,14 +1543,21 @@ class UIRoot extends Component {
                           scene={this.props.scene}
                           microphoneEnabled={this.mediaDevicesManager.isMicShared}
                         />
+                        { // AVN: Share menu not required
+                        showHiddenFeatures && 
                         <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
+                        } 
+                        { // AVN: Place menu not required
+                        showHiddenFeatures && 
                         <PlacePopoverContainer
                           scene={this.props.scene}
                           hubChannel={this.props.hubChannel}
                           mediaSearchStore={this.props.mediaSearchStore}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
                         />
-                        {this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />}
+                        }
+                        { // AVN: React menu not required
+                        showHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />}
                         <ToolbarButton
                           icon={<ScreenshotIcon />}
                           label={<FormattedMessage id="toolbar.screenshot-button" defaultMessage="Screenshot" />}
