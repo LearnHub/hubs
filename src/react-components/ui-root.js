@@ -198,7 +198,8 @@ class UIRoot extends Component {
 
     objectInfo: null,
     objectSrc: "",
-    sidebarId: null
+    sidebarId: null,
+    presenceCount: 0
   };
 
   constructor(props) {
@@ -255,6 +256,10 @@ class UIRoot extends Component {
       } else {
         sceneEl.classList.remove(roomLayoutStyles.sceneSmFullScreen);
       }
+    }
+
+    if (this.state.presenceCount != this.occupantCount()) {
+      this.setState({ presenceCount: this.occupantCount() });
     }
   }
 
@@ -1356,8 +1361,8 @@ class UIRoot extends Component {
                         )}
                         <PeopleMenuButton
                           active={this.state.sidebarId === "people"}
-                          presences={this.props.presences}
                           onClick={() => this.toggleSidebar("people")}
+                          presenceCount={this.state.presenceCount}
                         />
                       </ContentMenu>
                     )}

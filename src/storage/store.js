@@ -125,6 +125,7 @@ export const SCHEMA = {
         disableEchoCancellation: { type: "bool" },
         disableNoiseSuppression: { type: "bool" },
         disableAutoGainControl: { type: "bool" },
+        enableAECHack: { type: "bool" },
         locale: { type: "string" },
         showRtcDebugPanel: { type: "bool" },
         theme: { type: "string" }

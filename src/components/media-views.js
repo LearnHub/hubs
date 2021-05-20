@@ -731,6 +731,16 @@ AFRAME.registerComponent("media-video", {
         texture.minFilter = THREE.LinearFilter;
         texture.encoding = THREE.sRGBEncoding;
 
+        // Firefox seems to have video play (or decode) performance issue.
+        // Somehow setting RGBA format improves the performance very well.
+        // Some tickets have been opened for the performance issue but
+        // I don't think it will be fixed soon. So we set RGBA format for Firefox
+        // as workaround so far.
+        // See https://github.com/mozilla/hubs/issues/3470
+        if (/firefox/i.test(navigator.userAgent)) {
+          texture.format = THREE.RGBAFormat;
+        }
+
         isReady = () => {
           if (texture.hls && texture.hls.streamController.audioOnly) {
             audioEl = videoEl;
@@ -1018,6 +1028,7 @@ AFRAME.registerComponent("media-video", {
     if (this.video) {
       this.video.removeEventListener("pause", this.onPauseStateChange);
       this.video.removeEventListener("play", this.onPauseStateChange);
+      NAF.connection.adapter.off("stream_updated", this._onStreamUpdated);
     }
 
     if (this.hoverMenu) {
