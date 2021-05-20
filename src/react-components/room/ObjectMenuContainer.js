@@ -162,7 +162,9 @@ export function ObjectMenuContainer({ hubChannel, scene, onOpenProfile, onGoToOb
       onToggleLights={toggleLights}
       lightsEnabled={lightsEnabled}
     >
-      {menuItems}
+      { // AVN: None of the menu items are supported on AVN Hubs
+        false && menuItems
+      }
     </ObjectMenu>
   );
 }

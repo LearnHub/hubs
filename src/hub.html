@@ -267,9 +267,12 @@
                                 position="0 0 0.02">
                             </a-entity>
                         </a-entity>
+                        <!-- AVN: Open Link button is not required in AVN Hubs
                         <a-entity is-remote-hover-target tags="singleActionButton:true;" mixin="rounded-text-button" open-media-button="onlyOpenLink: true" position="0 -0.25 0.001">
                             <a-entity text="value:open link; width:1.75; align:center;" text-raycast-hack position="0 0 0.02"></a-entity>
                         </a-entity>
+                        -->
+                        <!-- AVN: Mirror media not currently supported in AVN Hubs
                         <a-entity
                             mixin="rounded-action-button"
                             is-remote-hover-target
@@ -284,6 +287,8 @@
                                 position="0 0 0.001"
                             ></a-entity>
                         </a-entity>
+                        -->
+                        <!-- AVN: Inspect button not required in AVN Hubs
                         <a-entity
                             mixin="rounded-button"
                             tags="isHoldable: true; holdableButton: true;"
@@ -297,6 +302,7 @@
                                 position="0 0 0.001"
                             ></a-entity>
                         </a-entity>
+                        -->
                     </a-entity>
                 </a-entity>
             </template>
@@ -322,6 +328,7 @@
                 >
                     <a-entity class="ui interactable-ui">
                         <a-entity class="freeze-menu" visibility-while-frozen="withinDistance: 100; withPermission: spawn_and_move_media">
+                            <!-- AVN: Pinning is incompatible with a number of AVN Hubs concepts
                             <a-entity
                                 mixin="rounded-text-action-button"
                                 is-remote-hover-target
@@ -353,6 +360,7 @@
                                     src: #button"
                                 position="0 0.6 0.001">
                             </a-entity>
+                            -->
                             <a-entity is-remote-hover-target tags="singleActionButton:true;" mixin="rounded-text-button" camera-focus-button="track: false" position="-0.25 0.375 0.001">
                                 <a-entity text=" value:focus; width:1.75; align:center;" text-raycast-hack position="0.075 0 0.02"></a-entity>
                                 <a-entity
@@ -371,6 +379,7 @@
                                     position="-0.125 0.005 0.001"
                                 ></a-entity>
                             </a-entity>
+                            <!-- AVN: There are transient objects in AVN Hubs so remove button is not required
                             <a-entity
                                 mixin="rounded-button"
                                 is-remote-hover-target
@@ -385,6 +394,8 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Physics is disabled in AVN Hubs
                             <a-entity visibility-on-content-types="contentTypes: video/ audio/ image/ application/vnd.apple.mpegurl application/x-mpegurl application/pdf; visible: false;">
                                 <a-entity
                                     mixin="rounded-button"
@@ -401,6 +412,8 @@
                                     ></a-entity>
                                 </a-entity>
                             </a-entity>
+                             -->
+                            <!-- AVN: Inspect button not required in AVN Hubs
                             <a-entity
                                 mixin="rounded-button"
                                 is-remote-hover-target
@@ -415,6 +428,8 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Drawing layer is not currently supported in AVN Hubs 
                             <a-entity
                                 class="deserialize-drawing"
                                 visible="false"
@@ -430,9 +445,13 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Open Link button is not required in AVN Hubs
                             <a-entity is-remote-hover-target tags="singleActionButton:true;" mixin="rounded-text-button" open-media-button="onlyOpenLink: true" position="0.43 -0.375 0.001">
                                 <a-entity text="value:open link; width:1.75; align:center;" text-raycast-hack position="0 0 0.02"></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Refresh button is not required in AVN Hubs 
                             <a-entity mixin="rounded-text-button ui"
                                 is-remote-hover-target
                                 tags="singleActionButton: true; isHoverMenuChild: true;"
@@ -444,9 +463,13 @@
                                     position="0 0 0.02">
                                 </a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Clone button is not wanted in AVN Hubs 
                             <a-entity is-remote-hover-target tags="singleActionButton:true;" mixin="rounded-text-button" clone-media-button position="-0.43 -0.375 0.001">
                                 <a-entity text="value:clone; width:1.75; align:center;" text-raycast-hack position="0 0 0.02"></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Rotate button is not currently supported in AVN Hubs 
                             <a-entity
                                 mixin="rounded-action-button"
                                 tags="isHoldable: true; holdableButton: true;"
@@ -462,6 +485,8 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Mirror media not currently supported in AVN Hubs
                             <a-entity
                                 mixin="rounded-action-button"
                                 is-remote-hover-target
@@ -476,6 +501,8 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Scaling media not required in AVN Hubs
                             <a-entity
                                 mixin="rounded-action-button"
                                 tags="isHoldable: true; holdableButton: true;"
@@ -490,8 +517,10 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                             -->
                         </a-entity>
                         <a-entity class="freeze-unprivileged-menu" visibility-while-frozen="withinDistance: 100; withoutPermission: spawn_and_move_media;">
+                            <!-- AVN: Refresh button is not required in AVN Hubs 
                             <a-entity mixin="rounded-text-button ui"
                                 is-remote-hover-target
                                 tags="singleActionButton: true; isHoverMenuChild: true;"
@@ -503,9 +532,13 @@
                                     position="0 0 0.02">
                                 </a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Open Link button is not required in AVN Hubs
                             <a-entity is-remote-hover-target tags="singleActionButton:true;" mixin="rounded-text-button" open-media-button="onlyOpenLink: true" position="0 -0.25 0.001">
                                 <a-entity text="value:open link; width:1.75; align:center;" text-raycast-hack position="0 0 0.02"></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Mirror media not currently supported in AVN Hubs
                             <a-entity
                                 mixin="rounded-action-button"
                                 is-remote-hover-target
@@ -520,6 +553,8 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
+                            <!-- AVN: Inspect button not required in AVN Hubs
                             <a-entity
                                 mixin="rounded-button"
                                 tags="isHoldable: true; holdableButton: true;"
@@ -533,6 +568,7 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
+                            -->
                         </a-entity>
                     </a-entity>
                 </a-entity>
@@ -908,9 +944,11 @@
                             visible="false"
                         ></a-entity>
                     </a-entity>
+                    <!-- AVN: Open Link button is not required in AVN Hubs
                     <a-entity class="ui video-link-button" visible="false" mixin="rounded-text-action-button ui" is-remote-hover-target tags="singleActionButton: true; isHoverMenuChild: true;" open-media-button scale="0.8 0.8 0.8" position="0 -0.300 0.001">
                         <a-entity text="value:open link; width:1.5; align:center;" text-raycast-hack position="0 0 0.02"></a-entity>
                     </a-entity>
+                    -->
                 </a-entity>
             </template>
 
@@ -936,9 +974,11 @@
 
             <template id="link-hover-menu">
                 <a-entity class="ui interactable-ui hover-container" visible="false">
+                    <!-- AVN: Open Link button is not required in AVN Hubs
                     <a-entity mixin="rounded-text-action-button ui" is-remote-hover-target tags="singleActionButton: true; isHoverMenuChild: true;" open-media-button position="0 0 0.001">
                         <a-entity text="value:open link; width:1.5; align:center;" text-raycast-hack position="0 0 0.02"></a-entity>
                     </a-entity>
+                    -->
                 </a-entity>
             </template>
 
