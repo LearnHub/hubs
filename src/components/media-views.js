@@ -916,7 +916,10 @@ AFRAME.registerComponent("media-video", {
 
     this.playPauseButton.object3D.visible = this.seekForwardButton.object3D.visible = this.seekBackButton.object3D.visible = mayModifyPlayHead;
 
-    this.linkButton.object3D.visible = !!mediaLoader.mediaOptions.href;
+    // AVN: Link button not currently supported
+    if(this.linkButton) {
+      this.linkButton.object3D.visible = !!mediaLoader.mediaOptions.href;
+    }
 
     if (this.videoIsLive) {
       this.timeLabel.setAttribute("text", "value", "LIVE");
