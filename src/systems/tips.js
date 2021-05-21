@@ -94,22 +94,6 @@ AFRAME.registerSystem("tips", {
     }
   },
 
-  resetTips: function() {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
-    localStorageCache = null;
-    window.APP.store.resetTipActivityFlags();
-    window.APP.store.resetConfirmedBroadcastedRooms();
-    this.activeTip = null;
-    finished = false;
-  },
-
-  skipTips: function() {
-    for (let i = 0; i < platformTips.length; i++) {
-      const tipId = platformTips[i];
-      markTipFinished(tipId);
-    }
-  },
-
   tick: function() {
     if (isMobileVR) return; // Optimization for now, don't bother with this on mobile VR until we have real tips
 
