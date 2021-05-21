@@ -315,6 +315,11 @@ class UIRoot extends Component {
 
     const scene = this.props.scene;
 
+    // AVN: Record mute state for the lifetime of the browser session
+    this.props.scene.addEventListener("action_mute", () => {
+      window.sessionStorage.setItem("muteMicOnEntryForThisSession", scene.is("muted"));      
+    });    
+      
     const unsubscribe = this.props.history.listen((location, action) => {
       const state = location.state;
 
@@ -603,8 +608,8 @@ class UIRoot extends Component {
 
     // Push the new history state before going into VR, otherwise menu button will take us back
     clearHistoryState(this.props.history);
-
-    const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || false;
+    // AVN: Microphone is muted by default for each browser session
+    const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || window.sessionStorage.getItem("muteMicOnEntryForThisSession") != "false";
     this.props.store.update({
       settings: { micMuted: false }
     });

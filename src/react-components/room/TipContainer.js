@@ -36,6 +36,10 @@ const onboardingMessages = defineMessages({
     id: "tips.mobile.invite",
     defaultMessage: "Use the Invite button in the bottom left to share this room."
   },
+  "tips.mobile.microphone": {
+    id: "tips.mobile.microphone",
+    defaultMessage: "Use the Voice button when you are ready to start speaking."
+  },
   "tips.desktop.look": {
     id: "tips.desktop.look",
     defaultMessage: "Welcome to {appName}! Let's take a quick tour. 👋 Click and drag to look around."
@@ -51,6 +55,10 @@ const onboardingMessages = defineMessages({
   "tips.desktop.invite": {
     id: "tips.desktop.invite",
     defaultMessage: "Nobody else is here. Use the invite button in the bottom left to share this room."
+  },
+  "tips.desktop.microphone": {
+    id: "tips.desktop.microphone",
+    defaultMessage: "Use the Voice button when you are ready to start speaking."
   }
 });
 

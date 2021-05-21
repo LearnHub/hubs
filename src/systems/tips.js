@@ -20,8 +20,8 @@ const LOCAL_STORAGE_KEY = "__hubs_finished_tips";
 
 const TIPS = {
   // AVN: Invitation system is disabled so tip is not required
-  desktop: ["look", "locomotion", "turning"],
-  mobile: ["look", "locomotion"],
+  desktop: ["look", "locomotion", "turning", "microphone"],
+  mobile: ["look", "locomotion", "microphone"],
   standalone: []
 };
 
@@ -65,6 +65,10 @@ const VALIDATORS = {
   invite: function(_userinput, scene, hub) {
     if (hub && hub.entry_mode === "invite") return INVALID;
     return scene.is("copresent") ? FINISH : VALID;
+  },
+  // AVN: Guide the user to unmute their microphone first time through
+  microphone: function(_userinput, scene) {
+    return scene.is("muted") ? VALID : FINISH;
   }
 };
 
