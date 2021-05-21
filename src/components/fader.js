@@ -37,7 +37,8 @@ AFRAME.registerComponent("fader", {
     this.el.setAttribute("fader", { direction });
 
     return new Promise(res => {
-      if (this.mesh.material.opacity === (direction == "in" ? 0 : 1)) {
+      // AVN: Always execute the callback immediately because multiple calls can throw unwanted exceptions
+      if (true || this.mesh.material.opacity === (direction == "in" ? 0 : 1)) {
         res();
       } else {
         this._resolveFinish = res;
@@ -53,7 +54,8 @@ AFRAME.registerComponent("fader", {
     if (this.data.direction === "in") {
       mat.opacity = Math.max(0, mat.opacity - (1.0 / FADE_DURATION_MS) * Math.min(dt, 50));
     } else if (this.data.direction === "out") {
-      mat.opacity = Math.min(1, mat.opacity + (1.0 / FADE_DURATION_MS) * Math.min(dt, 50));
+      // AVN: Fade out immediately to prevent visual artefacts and clashes with fade in commands
+      mat.opacity = 1.0;
     }
 
     if (mat.opacity === 0 || mat.opacity === 1) {
