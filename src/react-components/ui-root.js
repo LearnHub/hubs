@@ -32,7 +32,7 @@ import PreferencesScreen from "./preferences-screen.js";
 import PresenceLog from "./presence-log.js";
 import PreloadOverlay from "./preload-overlay.js";
 import RTCDebugPanel from "./debug-panel/RtcDebugPanel.js";
-import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen } from "../utils/fullscreen";
+import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen, exitFullScreen, isFullScreen } from "../utils/fullscreen";
 import { handleExitTo2DInterstitial, exit2DInterstitialAndEnterVR, isIn2DInterstitial } from "../utils/vr-interstitial";
 import maskEmail from "../utils/mask-email";
 import { saveScreenshot } from "../utils/media-utils";
@@ -52,6 +52,7 @@ import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton } from "./room/ContentMenu";
+import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
 import { ReactComponent as ScreenshotIcon } from "./icons/Screenshot.svg";
 import { ReactComponent as CameraIcon } from "./icons/Camera.svg";
 import { ReactComponent as AvatarIcon } from "./icons/Avatar.svg";
@@ -311,6 +312,15 @@ class UIRoot extends Component {
     );
     this.props.scene.addEventListener("devicechange", () => {
       this.forceUpdate();
+    });
+
+    // AVN: Show and hide the UI to match the full screen state
+    document.addEventListener('fullscreenchange', (event) => {
+      if (isFullScreen()) {
+        this.setState({ hide: true });
+      } else {
+        this.setState({ hide: false });
+      }
     });
 
     const scene = this.props.scene;
@@ -602,8 +612,9 @@ class UIRoot extends Component {
   };
 
   onAudioReadyButton = async () => {
-    if (!this.state.enterInVR) {
-      await showFullScreenIfAvailable();
+    if (!this.state.enterInVR && !isMobile) {
+      // AVN: Entering fullscreen at the start doesn't work if we skip the authorisation steps that involve and authorising button click
+      //await showFullScreenIfAvailable();
     }
 
     // Push the new history state before going into VR, otherwise menu button will take us back
@@ -1563,6 +1574,17 @@ class UIRoot extends Component {
                         }
                         { // AVN: React menu not required
                         showHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />}
+                        <ToolbarButton
+                          icon={<FullScreenIcon />}
+                          label={<FormattedMessage id="toolbar.fullscreen-button" defaultMessage="Fullscreen" />}
+                          onClick={async () => {
+                            if(isFullScreen()) {
+                              await exitFullScreen();
+                            } else {
+                              await showFullScreenIfAvailable();
+                            }
+                          }}
+                        />
                         <ToolbarButton
                           icon={<ScreenshotIcon />}
                           label={<FormattedMessage id="toolbar.screenshot-button" defaultMessage="Screenshot" />}

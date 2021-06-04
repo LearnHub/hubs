@@ -289,8 +289,8 @@ if (document.location.pathname.includes("hub.html")) {
 const history = routerBaseName === "/" ? createMemoryHistory() : createBrowserHistory({ basename: routerBaseName });
 window.APP.history = history;
 
-// AVN: Default to entering the room immediately in the absence of other instructions. Don't do this on mobile because it also calls for fullscreen, which will fail without user input
-const qsVREntryType = qs.get("vr_entry_type") || isMobile ? null : "2d_now";
+// AVN: Default to entering the room immediately in the absence of other instructions
+const qsVREntryType = qs.get("vr_entry_type") || "2d_now";
 
 function mountUI(props = {}) {
   const scene = document.querySelector("a-scene");
