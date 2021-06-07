@@ -317,9 +317,9 @@ class UIRoot extends Component {
     // AVN: Show and hide the UI to match the full screen state
     document.addEventListener('fullscreenchange', (event) => {
       if (isFullScreen()) {
-        this.setState({ hide: true });
+        this.setState({ hide: true, hideUITip: true });
       } else {
-        this.setState({ hide: false });
+        this.setState({ hide: false, hideUITip: true });
       }
     });
 
