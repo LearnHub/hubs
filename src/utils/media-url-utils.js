@@ -208,9 +208,9 @@ async function isHubsServer(url) {
   return isHubsServer;
 }
 
-const hubsSceneRegex = /https?:\/\/[^/]+\/scenes\/(\w+)\/?\S*/;
-const hubsAvatarRegex = /https?:\/\/[^/]+\/avatars\/(?<id>\w+)\/?\S*/;
-const hubsRoomRegex = /(https?:\/\/)?[^/]+\/([a-zA-Z0-9]{7})\/?\S*/;
+const hubsSceneRegex = /https?:\/\/[^/]+\/scenes\/[a-zA-Z0-9]{7}(?:\/|$)/;
+const hubsAvatarRegex = /https?:\/\/[^/]+\/avatars\/(?<id>[a-zA-Z0-9]{7})(?:\/|$)/;
+const hubsRoomRegex = /(https?:\/\/)?[^/]+\/(?<id>[a-zA-Z0-9]{7})(?:\/|$)/;
 
 export const isLocalHubsUrl = async url =>
   (await isHubsServer(url)) && new URL(url).origin === document.location.origin;
@@ -222,7 +222,11 @@ export const isHubsAvatarUrl = async url => (await isHubsServer(url)) && hubsAva
 export const isLocalHubsAvatarUrl = async url => (await isHubsAvatarUrl(url)) && (await isLocalHubsUrl(url));
 
 // AVN: the 7-digit Hubs code pattern doesn't apply to scene.link URLs so this requirement has been relaxed
-export const isHubsRoomUrl = async url => (await isHubsServer(url)) && !(await isHubsAvatarUrl(url)) && !(await isHubsSceneUrl(url)) /*&& hubsRoomRegex.test(url)*/;
+export const isHubsRoomUrl = async url =>
+  (await isHubsServer(url)) &&
+  !(await isHubsAvatarUrl(url)) &&
+  !(await isHubsSceneUrl(url)) /* &&
+  url.match(hubsRoomRegex)?.groups.id*/;
 
 export const isHubsDestinationUrl = async url =>
   (await isHubsServer(url)) && ((await isHubsSceneUrl(url)) || (await isHubsRoomUrl(url)));
