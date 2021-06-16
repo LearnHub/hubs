@@ -327,7 +327,9 @@ class UIRoot extends Component {
 
     // AVN: Record mute state for the lifetime of the browser session
     this.props.scene.addEventListener("action_mute", () => {
-      window.sessionStorage.setItem("muteMicOnEntryForThisSession", scene.is("muted"));      
+      const sessionMuteState = scene.is("muted");
+      window.sessionStorage.setItem("muteMicOnEntryForThisSession", sessionMuteState);      
+      console.log(`Session mic mute state is now '${sessionMuteState}'`);
     });    
       
     const unsubscribe = this.props.history.listen((location, action) => {
@@ -622,7 +624,10 @@ class UIRoot extends Component {
     //clearHistoryState(this.props.history);
 
     // AVN: Microphone is muted by default for each browser session
-    const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || window.sessionStorage.getItem("muteMicOnEntryForThisSession") != "false";
+    const micMutedForSession = window.sessionStorage.getItem("muteMicOnEntryForThisSession") !== "false";
+    console.log(`Session mic mute state is '${micMutedForSession}'`);
+
+    const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || micMutedForSession;
     this.props.store.update({
       settings: { micMuted: false }
     });
