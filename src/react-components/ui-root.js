@@ -618,7 +618,9 @@ class UIRoot extends Component {
     }
 
     // Push the new history state before going into VR, otherwise menu button will take us back
-    clearHistoryState(this.props.history);
+    // AVN: Interacts badly with vr_entry_type=2d_now to prevent BACK button working first time once the player has moved. True cause unknown.
+    //clearHistoryState(this.props.history);
+
     // AVN: Microphone is muted by default for each browser session
     const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || window.sessionStorage.getItem("muteMicOnEntryForThisSession") != "false";
     this.props.store.update({
