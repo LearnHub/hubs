@@ -60,8 +60,12 @@ AFRAME.registerComponent("mute-mic", {
     this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_TOGGLE_MIC);
     if (this.el.is("muted")) {
       NAF.connection.adapter.enableMicrophone(true);
+      // AVN: See function
+      this.recordStateForSession(false);
     } else {
       NAF.connection.adapter.enableMicrophone(false);
+      // AVN: See function
+      this.recordStateForSession(true);
     }
   },
 
@@ -69,12 +73,16 @@ AFRAME.registerComponent("mute-mic", {
     if (!NAF.connection.adapter) return;
     if (!this.el.is("muted")) {
       NAF.connection.adapter.enableMicrophone(false);
+      // AVN: See function
+      this.recordStateForSession(true);
     }
   },
 
   onUnmute: function() {
     if (this.el.is("muted")) {
       NAF.connection.adapter.enableMicrophone(true);
+      // AVN: See function
+      this.recordStateForSession(false);
     }
   },
 
@@ -92,5 +100,13 @@ AFRAME.registerComponent("mute-mic", {
         this.el.addState("muted");
       }
     }
-  }
+  },
+
+  // AVN: Track user mute preference for the session
+  recordStateForSession: function(newState) {
+      // AVN: Record mute state for the lifetime of the browser session
+      window.sessionStorage.setItem("muteMicOnEntryForThisSession", newState);      
+      console.log(`Session mic mute state is now '${newState}'`);    
+  },
+
 });

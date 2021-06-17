@@ -324,13 +324,6 @@ class UIRoot extends Component {
     });
 
     const scene = this.props.scene;
-
-    // AVN: Record mute state for the lifetime of the browser session
-    this.props.scene.addEventListener("action_mute", () => {
-      const sessionMuteState = scene.is("muted");
-      window.sessionStorage.setItem("muteMicOnEntryForThisSession", sessionMuteState);      
-      console.log(`Session mic mute state is now '${sessionMuteState}'`);
-    });    
       
     const unsubscribe = this.props.history.listen((location, action) => {
       const state = location.state;
