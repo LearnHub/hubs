@@ -97,10 +97,6 @@ export default class SceneEntryManager {
       return;
     }
 
-    if (this.mediaDevicesManager.mediaStream) {
-      await NAF.connection.adapter.setLocalMediaStream(this.mediaDevicesManager.mediaStream);
-    }
-
     this.scene.classList.remove("hand-cursor");
     this.scene.classList.add("no-cursor");
 
@@ -110,7 +106,7 @@ export default class SceneEntryManager {
 
     // Delay sending entry event telemetry until VR display is presenting.
     (async () => {
-      while (enterInVR && !this.scene.renderer.vr.isPresenting()) {
+      while (enterInVR && !this.scene.renderer.xr.isPresenting) {
         await nextTick();
       }
 
@@ -124,9 +120,7 @@ export default class SceneEntryManager {
 
     this.scene.addState("entered");
 
-    if (muteOnEntry) {
-      this.scene.emit("action_mute");
-    }
+    APP.dialog.enableMicrophone(!muteOnEntry);
   };
 
   whenSceneLoaded = callback => {
@@ -143,8 +137,8 @@ export default class SceneEntryManager {
 
   exitScene = () => {
     this.scene.exitVR();
-    if (NAF.connection.adapter && NAF.connection.adapter.localMediaStream) {
-      NAF.connection.adapter.localMediaStream.getTracks().forEach(t => t.stop());
+    if (APP.dialog && APP.dialog.localMediaStream) {
+      APP.dialog.localMediaStream.getTracks().forEach(t => t.stop());
     }
     if (this.hubChannel) {
       this.hubChannel.disconnect();
@@ -498,7 +492,6 @@ export default class SceneEntryManager {
 
     this.scene.addEventListener("action_end_mic_sharing", async () => {
       await this.mediaDevicesManager.stopMicShare();
-      this.scene.emit("action_mute");
     });
 
     this.scene.addEventListener("action_selected_media_result_entry", async e => {
@@ -631,7 +624,7 @@ export default class SceneEntryManager {
       this.mediaDevicesManager.mediaStream.addTrack(audioDestination.stream.getAudioTracks()[0]);
     }
 
-    await NAF.connection.adapter.setLocalMediaStream(this.mediaDevicesManager.mediaStream);
+    await APP.dialog.setLocalMediaStream(this.mediaDevicesManager.mediaStream);
     audioEl.play();
   };
 }

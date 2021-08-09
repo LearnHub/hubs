@@ -46,7 +46,7 @@ export function PeopleMenuButton(props) {
   );
 }
 PeopleMenuButton.propTypes = {
-  presenceCount: PropTypes.number
+  presencecount: PropTypes.number
 };
 
 export function ContentMenu({ children }) {

@@ -54,9 +54,8 @@ AFRAME.registerComponent("mute-mic", {
   },
 
   onToggle: function() {
-    if (!NAF.connection.adapter) return;
+    APP.dialog.toggleMicrophone();
     if (!this.el.sceneEl.is("entered")) return;
-
     this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_TOGGLE_MIC);
     if (this.el.is("muted")) {
       NAF.connection.adapter.enableMicrophone(true);
@@ -72,7 +71,7 @@ AFRAME.registerComponent("mute-mic", {
   onMute: function() {
     if (!NAF.connection.adapter) return;
     if (!this.el.is("muted")) {
-      NAF.connection.adapter.enableMicrophone(false);
+      APP.dialog.enableMicrophone(false);
       // AVN: See function
       this.recordStateForSession(true);
     }
@@ -80,7 +79,7 @@ AFRAME.registerComponent("mute-mic", {
 
   onUnmute: function() {
     if (this.el.is("muted")) {
-      NAF.connection.adapter.enableMicrophone(true);
+      APP.dialog.enableMicrophone(true);
       // AVN: See function
       this.recordStateForSession(false);
     }
