@@ -16,7 +16,7 @@ AFRAME.registerComponent("action-trigger-volume", {
   },
   update() {
     this.el.object3D.updateMatrixWorld(true, false);
-    this.boundingBoxInverseWorldMatrix.getInverse(this.el.object3D.matrixWorld);
+    this.boundingBoxInverseWorldMatrix.copy(this.el.object3D.matrixWorld).invert();
   },
   tick() {
 
