@@ -26,7 +26,11 @@ export function LoadingScreen({ logoSrc, message, infoMessages }) {
           // <h3>{infoMessage.heading}</h3>
           // <p>{infoMessage.message}</p>
 }
-          { qsTruthy("record_log") && <Button preset="basic" onClick={() => SaveConsoleLog()}>Save Logs</Button> }
+          { 
+          // AVN: Button should be on by default
+          //qsTruthy("record_log") && 
+          <Button preset="basic" onClick={() => SaveConsoleLog()}>Save Logs</Button> 
+          }
         </>
       }
     />

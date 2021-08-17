@@ -11,7 +11,8 @@ export default function SaveConsoleLog() {
   }
 }
 
-if ('URLSearchParams' in window && new URLSearchParams(window.location.search).has("record_log")) {
+// AVN: Force record_log on by default
+if (true || 'URLSearchParams' in window && new URLSearchParams(window.location.search).has("record_log")) {
   
   class ConsoleHistory {
     constructor(maximumEntries) {
