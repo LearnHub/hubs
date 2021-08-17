@@ -6,6 +6,7 @@ import { useRandomMessageTransition } from "./useRandomMessageTransition";
 import SaveConsoleLog from "../../utils/record-log.js";
 import qsTruthy from "../../utils/qs_truthy";
 import { Button } from "../input/Button";
+import styles from "../layout/LoadingScreenLayout.scss";
 
 export function LoadingScreen({ logoSrc, message, infoMessages }) {
   const infoMessage = useRandomMessageTransition(infoMessages);
@@ -29,7 +30,7 @@ export function LoadingScreen({ logoSrc, message, infoMessages }) {
           { 
           // AVN: Button should be on by default
           //qsTruthy("record_log") && 
-          <Button preset="basic" onClick={() => SaveConsoleLog()}>Save Logs</Button> 
+          <Button className={styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>Download Logs</Button> 
           }
         </>
       }
