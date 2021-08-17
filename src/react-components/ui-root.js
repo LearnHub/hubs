@@ -1637,6 +1637,13 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
+                    { /* AVN: Permanent Save Logs button on the toolbar */ }
+                    <ToolbarButton
+                      icon={<SupportIcon />}
+                      label={<FormattedMessage id="toolbar.send-logs" defaultMessage="Logs" />}
+                      preset="basic"
+                      onClick={() => SaveConsoleLog()}                      
+                    />
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
