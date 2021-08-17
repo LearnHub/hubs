@@ -32,6 +32,7 @@ import PreferencesScreen from "./preferences-screen.js";
 import PresenceLog from "./presence-log.js";
 import PreloadOverlay from "./preload-overlay.js";
 import RTCDebugPanel from "./debug-panel/RtcDebugPanel.js";
+import SaveConsoleLog from "../utils/record-log.js";
 import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen, exitFullScreen, isFullScreen } from "../utils/fullscreen";
 import { handleExitTo2DInterstitial, exit2DInterstitialAndEnterVR, isIn2DInterstitial } from "../utils/vr-interstitial";
 import maskEmail from "../utils/mask-email";
@@ -1264,6 +1265,12 @@ class UIRoot extends Component {
             icon: WarningCircleIcon,
             href: configs.link("issue_report", "https://hubs.mozilla.com/docs/help.html")
           },
+          qsTruthy("record_log") && {
+            id: "save-console-logs",
+            label: <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />,
+            icon: SupportIcon,
+            onClick: () => SaveConsoleLog()
+          },
           entered && {
             id: "start-tour",
             label: <FormattedMessage id="more-menu.start-tour" defaultMessage="Start Tour" />,
@@ -1441,7 +1448,7 @@ class UIRoot extends Component {
                         showRtcDebug={showRtcDebugPanel}
                         showAudioDebug={showAudioDebugPanel}
                       />
-                    )}
+                    )}                    
                   </>
                 }
                 sidebar={
