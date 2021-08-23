@@ -1642,7 +1642,9 @@ class UIRoot extends Component {
                       icon={<SupportIcon />}
                       label={<FormattedMessage id="toolbar.send-logs" defaultMessage="Logs" />}
                       preset="basic"
-                      onClick={() => SaveConsoleLog()}                      
+                      onClick={() => { 
+                        this.props.scene.writeStatisticsToConsole(); SaveConsoleLog() 
+                      }}                      
                     />
                     {entered &&
                       isMobileVR && (
