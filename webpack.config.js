@@ -290,7 +290,8 @@ module.exports = async (env, argv) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Cross-Origin-Opener-Policy": "same-origin",
-        "Cross-Origin-Embedder-Policy": "require-corp"
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cross-Origin-Resource-Policy": "cross-origin"
       },
       hot: liveReload,
       inline: liveReload,
