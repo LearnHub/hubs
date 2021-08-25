@@ -377,7 +377,7 @@ class UIRoot extends Component {
         () => {
           // AVN: Enter room immediately for a less janky user experience
           // setTimeout(() => this.handleForceEntry(), 1000);
-          console.log("Loading has finished. Forcing room entry")
+          console.log("Loading has finished. Checking for forced room entry")
           this.handleForceEntry();
         },
         { once: true }
