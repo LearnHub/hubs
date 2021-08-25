@@ -278,6 +278,7 @@ if (!isOAuthModal) {
 }
 
 function setupLobbyCamera() {
+  console.log("Setting up lobby camera");
   const camera = document.getElementById("scene-preview-node");
   const previewCamera = document.getElementById("environment-scene").object3D.getObjectByName("scene-preview-camera");
 
@@ -390,6 +391,7 @@ export async function getSceneUrlForHub(hub) {
 }
 
 export async function updateEnvironmentForHub(hub, entryManager) {
+  console.log("Updating environment for hub");
   const sceneUrl = await getSceneUrlForHub(hub);
 
   const sceneErrorHandler = () => {
@@ -401,6 +403,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
   const sceneEl = document.querySelector("a-scene");
 
   console.log(`Scene URL: ${sceneUrl}`);
+  const loadStart = performance.now();
 
   let environmentEl = null;
 
@@ -411,6 +414,8 @@ export async function updateEnvironmentForHub(hub, entryManager) {
       "model-loaded",
       () => {
         environmentEl.removeEventListener("model-error", sceneErrorHandler);
+
+        console.log(`Scene file inital load took ${Math.round(performance.now() - loadStart)}ms`);
 
         // Show the canvas once the model has loaded
         document.querySelector(".a-canvas").classList.remove("a-hidden");
@@ -444,6 +449,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
           "model-loaded",
           () => {
             environmentEl.removeEventListener("model-error", sceneErrorHandler);
+            console.log(`Scene file update load took ${Math.round(performance.now() - loadStart)}ms`);
             //AVN: SKIP ALL COLLISION INFO
             //traverseMeshesAndAddShapes(environmentEl);
 
@@ -593,6 +599,8 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data,
     while (!scene.components["networked-scene"] || !scene.components["networked-scene"].data) await nextTick();
 
     const loadEnvironmentAndConnect = () => {
+      console.log("Loading environment and connecting to dialog servers")
+      
       updateEnvironmentForHub(hub, entryManager);
 
       // Disconnect in case this is a re-entry
@@ -632,10 +640,13 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data,
     scene.emit("hub_updated", { hub });
 
     if (!isEmbed) {
+      console.log("Page is not embedded so environment initialization will start immediately");
       loadEnvironmentAndConnect();
     } else {
+      console.log("Page is embedded so environment initialization will be deferred");
       remountUI({
         onPreloadLoadClicked: () => {
+          console.log("Preload has been activated");
           hubChannel.allowNAFTraffic(true);
           remountUI({ showPreload: false });
           loadEnvironmentAndConnect();
@@ -646,6 +657,7 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data,
 }
 
 async function runBotMode(scene, entryManager) {
+  console.log("Running in bot mode...");
   const noop = () => {};
   const alwaysFalse = () => false;
   scene.renderer = {
@@ -981,6 +993,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   environmentScene.addEventListener("model-loaded", ({ detail: { model } }) => {
+    console.log("Environment scene has loaded");
+
     if (!scene.is("entered")) {
       setupLobbyCamera();
     }
