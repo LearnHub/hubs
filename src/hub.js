@@ -628,7 +628,9 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data,
       scene.components["networked-scene"]
         .connect()
         .then(() => {
-          scene.emit("didConnectToNetworkedScene");
+          // AVN: Decoupled load because the didConnectToNetworkedScene event can fire before the event 
+          // listener has been registered in the react component (in useRoomLoadingState)
+          setTimeout(() => scene.emit("didConnectToNetworkedScene"));
         })
         .catch(connectError => {
           onConnectionError(entryManager, connectError);
