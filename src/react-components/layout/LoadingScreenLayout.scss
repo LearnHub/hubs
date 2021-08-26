@@ -41,7 +41,7 @@
 
 
 :local(.late-fade-in) {
-  animation: 10s fadein;
+  animation: 30s fadein;
 }
 @keyframes fadein{
   0% { opacity:0; }
