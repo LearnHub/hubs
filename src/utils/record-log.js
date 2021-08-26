@@ -12,7 +12,7 @@ export default function SaveConsoleLog() {
 }
 
 // AVN: Force record_log on by default
-if (true || 'URLSearchParams' in window && new URLSearchParams(window.location.search).has("record_log")) {
+if ('URLSearchParams' in window && new URLSearchParams(window.location.search).has("record_log")) {
   
   class ConsoleHistory {
     constructor(maximumEntries) {
@@ -112,5 +112,7 @@ if (true || 'URLSearchParams' in window && new URLSearchParams(window.location.s
   // Not captured in shadow log:
   // - Mixed Content https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content
   // - Chrome performance violations of the form [Violation] 'X' handler took Yms
+
+  console.log("Console log record initialized");
 
 }

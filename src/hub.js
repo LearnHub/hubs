@@ -1,4 +1,3 @@
-import "./utils/record-log"; // included to capture earliest log entries
 import {
   getCurrentHubId,
   updateVRHudPresenceCount,
@@ -8,6 +7,9 @@ import {
 import configs from "./utils/configs";
 import "./utils/theme";
 import "@babel/polyfill";
+
+import { writeEnvironmentToConsole } from "./utils/logging";
+writeEnvironmentToConsole();
 
 console.log(`App version: ${process.env.BUILD_VERSION || "?"}`);
 
@@ -25,7 +27,6 @@ import "aframe";
 // So we disable it here.
 THREE.Cache.enabled = false;
 
-import "./utils/logging";
 import { patchWebGLRenderingContext } from "./utils/webgl";
 patchWebGLRenderingContext();
 
