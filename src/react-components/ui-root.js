@@ -1653,7 +1653,12 @@ class UIRoot extends Component {
                       label={<FormattedMessage id="toolbar.send-logs" defaultMessage="Logs" />}
                       preset="basic"
                       onClick={() => { 
-                        this.props.scene.writeStatisticsToConsole(); SaveConsoleLog() 
+                        this.props.scene.writeStatisticsToConsole(); 
+                        const stats = document.getElementById("stats");
+                        if(stats) {
+                          stats.components["stats-plus"].writeStatisticsToConsole();
+                        }
+                        SaveConsoleLog();
                       }}                      
                     />
                     {entered &&
