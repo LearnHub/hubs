@@ -5,8 +5,9 @@ import qsTruthy from "../utils/qs_truthy";
 
 function createStats(scene) {
   const threeStats = new window.threeStats(scene.renderer);
-  const aframeStats = new window.aframeStats(scene);
-  const plugins = scene.isMobile ? [] : [threeStats, aframeStats];
+  // AVN: AFRAME stats are expensive to calculate and don't tell us very much
+  //const aframeStats = new window.aframeStats(scene);
+  const plugins = scene.isMobile ? [] : [threeStats/*, aframeStats*/];
   return new window.rStats({
     css: [], // Our stylesheet is injected from AFrame.
     values: {
@@ -134,25 +135,30 @@ AFRAME.registerComponent("stats-plus", {
       this.showFPSCounter = window.APP.store.state.preferences.showFPSCounter;
       this.fpsEl.style.display = this.showFPSCounter ? "block" : "none";
     }
+    
+    // AVN: Force stats to update all the time for console debugging
+
+    // Update rStats
+    stats("raf").tick();
+    stats("fps").frame();
+    stats("physics").set(this.el.sceneEl.systems["hubs-systems"].physicsSystem.stepDuration);
+
+    const batchManagerSystem = this.el.sceneEl.systems["hubs-systems"].batchManagerSystem;
+    if (batchManagerSystem.batchingEnabled) {
+      const batchManager = batchManagerSystem.batchManager;
+      stats("batchdraws").set(batchManager.batches.length);
+      stats("batchinstances").set(batchManager.instanceCount);
+      stats("batchatlassize").set(batchManager.atlas.arrayDepth);
+    }
+
+    // AVN: Update the stats, but only update the graphics if the HTML panel is visible
+    stats().update(this.data);
+
     if (!this.showFPSCounter) {
       return;
     }
-    if (this.data || this.vrStatsEnabled) {
-      // Update rStats
-      stats("rAF").tick();
-      stats("FPS").frame();
-      stats("physics").set(this.el.sceneEl.systems["hubs-systems"].physicsSystem.stepDuration);
 
-      const batchManagerSystem = this.el.sceneEl.systems["hubs-systems"].batchManagerSystem;
-      if (batchManagerSystem.batchingEnabled) {
-        const batchManager = batchManagerSystem.batchManager;
-        stats("batchdraws").set(batchManager.batches.length);
-        stats("batchinstances").set(batchManager.instanceCount);
-        stats("batchatlassize").set(batchManager.atlas.arrayDepth);
-      }
-
-      stats().update();
-    } else if (!this.inVR) {
+    if (!this.inVR) {
       // Update the fps counter
       const now = performance.now();
       this.frameCount++;
@@ -213,6 +219,18 @@ AFRAME.registerComponent("stats-plus", {
   },
   onCollapse() {
     this.el.setAttribute(this.name, false);
+  },
+  // AVN: Write statistics to console for debugging
+  writeStatisticsToConsole() {
+    const counters = this.stats().perfCounters;
+    console.log('+------------------------------------------------------------------+-----------+');
+    console.log('| Statistic                                                        | Value     |');
+    console.log('+------------------------------------------------------------------+-----------+');
+    const formatIntegerOrDecimal = (x) => Number(x).toFixed(2).replace(/[.,]0+$/, "");
+    Object.entries(counters).forEach(([key, val]) => {
+      console.log("| " + key.padEnd(65) + "| " + formatIntegerOrDecimal(val.value()).padStart(9) + " |");
+    });
+    console.log('+------------------------------------------------------------------+-----------+');
   },
   remove() {
     this.el.sceneEl.removeEventListener("enter-vr", this.hide);
