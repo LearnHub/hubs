@@ -119,6 +119,7 @@ export async function changeHub(nextState, addToHistory = true) {
   ) {
     const fader = document.getElementById("viewing-camera").components["fader"];
     fader.fadeOut().then(() => {
+      scene.emit("reset_scene");
       updateEnvironmentForHub(hub, APP.entryManager);
     });
   }
