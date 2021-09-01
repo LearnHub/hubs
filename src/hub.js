@@ -462,7 +462,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
             const fader = document.getElementById("viewing-camera").components["fader"];
 
             // Add a slight delay before de-in to reduce hitching.
-            setTimeout(() => fader.fadeIn(), 2000);
+            setTimeout(() => fader.fadeIn(), 0);
           },
           { once: true }
         );
