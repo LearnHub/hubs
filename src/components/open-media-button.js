@@ -1,7 +1,7 @@
 import { isLocalHubsUrl, isLocalHubsSceneUrl, isHubsRoomUrl, isLocalHubsAvatarUrl } from "../utils/media-url-utils";
-import { guessContentType, avnDimensionId } from "../utils/media-url-utils";
+import { guessContentType } from "../utils/media-url-utils";
 import { handleExitTo2DInterstitial } from "../utils/vr-interstitial";
-import { changeHub } from "../change-hub";
+import { changeHub, avnDimensionId } from "../change-hub";
 
 AFRAME.registerComponent("open-media-button", {
   schema: {
@@ -60,7 +60,8 @@ AFRAME.registerComponent("open-media-button", {
         if (url.hash && window.APP.hub.hub_id === hubId) {
           // move to waypoint w/o writing to history
           window.history.replaceState(null, null, window.location.href.split("#")[0] + url.hash);
-        } else if (APP.store.state.preferences.fastRoomSwitching && isLocalHubsUrl(this.src)) {
+        // AVN: fastRoomSwitching enabled by default
+        } else if (/*APP.store.state.preferences.fastRoomSwitching && */isLocalHubsUrl(this.src)) {
           // move to new room without page load or entry flow
           changeHub(hubId);
         } else {

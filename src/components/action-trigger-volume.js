@@ -1,6 +1,6 @@
 const colliderWorldPositionVec = new THREE.Vector3();
-import { avnDimensionId } from "../utils/media-url-utils";
 import { SOUND_CHAT_MESSAGE, SOUND_MEDIA_LOADED, SOUND_FREEZE } from "../systems/sound-effects-system";
+import { changeHubAvn, avnDimensionId } from "../change-hub";
 
 AFRAME.registerComponent("action-trigger-volume", {
   schema: {
@@ -44,11 +44,12 @@ AFRAME.registerComponent("action-trigger-volume", {
           if(this.data.src) {
             console.log("Navigating to ", this.data.src);
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
-            //AVN: Hack for links in the demo room
+            // AVN: Hack for links in the demo room
             if(this.data.src.startsWith("https://api.avncloud.com/manage/activity.cfm?id=")) {
                 window.open(this.data.src.replace("https://api.avncloud.com/manage/activity.cfm?id=", `https://scene.link/${avnDimensionId}/ID`));
             } else {
-              window.location.assign(this.data.src);
+                // AVN: Use fast room switching
+                changeHubAvn(this.data.src);
             }
           } else {
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);

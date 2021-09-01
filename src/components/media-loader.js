@@ -9,8 +9,6 @@ import {
 import {
   isNonCorsProxyDomain,
   guessContentType,
-  avnDimensionId,
-  avnAssetId,
   proxiedUrlFor,
   isHubsRoomUrl,
   isLocalHubsSceneUrl,
@@ -26,6 +24,8 @@ import { cloneObject3D, setMatrixWorld } from "../utils/three-utils";
 import { waitForDOMContentLoaded } from "../utils/async-utils";
 
 import { SHAPE } from "three-ammo/constants";
+
+import { avnDimensionId, avnAssetId } from "../change-hub";
 
 let loadingObjectEnvMap;
 let loadingObject;

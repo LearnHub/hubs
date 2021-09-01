@@ -1,7 +1,7 @@
 import { injectCustomShaderChunks } from "../utils/media-utils";
 import { AVATAR_TYPES } from "../utils/avatar-utils";
 import { registerComponentInstance, deregisterComponentInstance } from "../utils/component-utils";
-import { avnDimensionId } from "../utils/media-url-utils";
+import { avnDimensionId } from "../change-hub";
 import defaultAvatar from "../assets/models/DefaultAvatar.glb";
 
 function ensureAvatarNodes(json) {

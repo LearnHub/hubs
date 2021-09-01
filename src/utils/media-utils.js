@@ -5,10 +5,12 @@ import mediaHighlightFrag from "./media-highlight-frag.glsl";
 import { mapMaterials } from "./material-utils";
 import HubsTextureLoader from "../loaders/HubsTextureLoader";
 import { validMaterials } from "../components/hoverable-visuals";
-import { proxiedUrlFor, guessContentType, avnDimensionId } from "../utils/media-url-utils";
+import { proxiedUrlFor, guessContentType } from "../utils/media-url-utils";
 import Linkify from "linkify-it";
 import tlds from "tlds";
 import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
+
+import { avnDimensionId } from "../change-hub";
 
 import anime from "animejs";
 
