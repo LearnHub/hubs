@@ -1,5 +1,5 @@
 /* global APP*/
-import { getReticulumFetchUrl, hubUrl } from "./utils/phoenix-utils";
+import { getReticulumFetchUrl, hubUrl, isLocalClient } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
 
 // AVN: Find dimension ID from URL in the form https://<region>.avncloud.com/<hub_id>/<dimension_id>/<asset_id> or as a URL parameter (local development mode)
@@ -51,15 +51,16 @@ function loadRoomObjects(hubId) {
 export async function changeHubAvn(hubUrl) {
   console.log("Fast changing to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
-  const findRoomUrl = `https://alpha.learnpad.com/com/Dimensions.cfc?method=room&dimensionid=${avnDimensionId}&assetid=${newAssetId}`;
-  const findRoomResponse = await fetch(findRoomUrl);
-  const roomData = await findRoomResponse.json();
-  console.log("Resolved Hub details from AVN server", roomData);
-  await changeHub(roomData.hubid, true, newAssetId, avnAssetId);
+  const resolveRoomUrl = `https://alpha.learnpad.com/com/Dimensions.cfc?method=room&dimensionid=${avnDimensionId}&assetid=${newAssetId}`;
+  const resolveRoomResponse = await fetch(resolveRoomUrl);
+  const roomData = await resolveRoomResponse.json();
+  console.log("Resolved Hub room from AVN server", roomData);
+  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnAssetId };
+  await changeHub(nextState, true);
 }
 
-export async function changeHub(hubId, addToHistory = true, newAssetId, oldAssetId) {
-  if (hubId === APP.hub.hub_id) {
+export async function changeHub(nextState, addToHistory = true) {
+  if (nextState.hubId === APP.hub.hub_id) {
     console.log("Change hub called with the current hub id. This is a noop.");
     return;
   }
@@ -69,9 +70,9 @@ export async function changeHub(hubId, addToHistory = true, newAssetId, oldAsset
 
   let data;
   try {
-    data = await APP.hubChannel.migrateToHub(hubId);
+    data = await APP.hubChannel.migrateToHub(nextState.hubId);
   } catch (e) {
-    console.warn(`Failed to join hub ${hubId}: ${e.reason}|${e.message}`);
+    console.warn(`Failed to join hub ${nextState.hubId}: ${e.reason}|${e.message}`);
     APP.messageDispatch.log("joinFailed", { message: e.message });
     return;
   }
@@ -79,12 +80,18 @@ export async function changeHub(hubId, addToHistory = true, newAssetId, oldAsset
   const hub = data.hubs[0];
 
   if (addToHistory) {
-    const extraParams = { "dimension_id": avnDimensionId, "asset_id": newAssetId };
-    window.history.pushState(null, null, hubUrl(hubId, extraParams, hub.slug, oldAssetId));
+    const prevState = { hubId: APP.hub.hub_id, newAssetId: nextState.oldAssetId, oldAssetId: nextState.newAssetId };
+    if(isLocalClient()) {
+      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { "dimension_id": avnDimensionId, "asset_id": nextState.oldAssetId }, hub.slug, nextState.newAssetId));
+      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { "dimension_id": avnDimensionId, "asset_id": nextState.newAssetId }, hub.slug, nextState.oldAssetId));
+    } else {
+      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { }, avnDimensionId + "/" + nextState.oldAssetId, nextState.newAssetId));
+      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, avnDimensionId + "/" + nextState.newAssetId, nextState.oldAssetId));
+    }
   }
 
   // Update current asset ID now the room has changed
-  avnAssetId = newAssetId;
+  avnAssetId = nextState.newAssetId;
 
   APP.hub = hub;
   updateUIForHub(hub, APP.hubChannel);
@@ -134,7 +141,7 @@ export async function changeHub(hubId, addToHistory = true, newAssetId, oldAsset
     NAF.connection.adapter.connect()
   ]);
 
-  loadRoomObjects(hubId);
+  loadRoomObjects(nextState.hubId);
 
   APP.hubChannel.sendEnteredEvent();
 
@@ -147,12 +154,9 @@ export async function changeHub(hubId, addToHistory = true, newAssetId, oldAsset
 window.changeHub = changeHub;
 
 // TODO see if there is a better way to do this with react router
-window.addEventListener("popstate", function() {
-  // AVN: fastRoomSwitching enabled by default
-  //if (!APP.store.state.preferences.fastRoomSwitching) return;
-  const qs = new URLSearchParams(location.search);
-  const newHubId = qs.get("hub_id") || document.location.pathname.substring(1).split("/")[0];
-  if (newHubId !== APP.hub.hub_id) {
-    changeHub(newHubId, false);
+window.addEventListener("popstate", function(event) {
+  console.log("Processing popstate event", event.state);
+  if(event.state) {
+    changeHub(event.state, false);
   }
 });
