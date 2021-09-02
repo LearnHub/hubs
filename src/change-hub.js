@@ -51,7 +51,7 @@ function loadRoomObjects(hubId) {
 export async function changeHubAvn(hubUrl) {
   console.log("Fast changing to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
-  const resolveRoomUrl = `https://alpha.learnpad.com/com/Dimensions.cfc?method=room&dimensionid=${avnDimensionId}&assetid=${newAssetId}`;
+  const resolveRoomUrl = `https://scene.link/com/Dimensions.cfc?method=room&dimensionid=${avnDimensionId}&assetid=${newAssetId}`;
   const resolveRoomResponse = await fetch(resolveRoomUrl);
   const roomData = await resolveRoomResponse.json();
   console.log("Resolved Hub room from AVN server", roomData);
