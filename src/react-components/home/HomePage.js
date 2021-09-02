@@ -172,15 +172,12 @@ export function HomePage() {
           </Button>
         </Column>
       </Container>
-<<<<<<< HEAD
       <Container><ConnectionTest></ConnectionTest></Container>
-=======
       {isHmc ? (
         <Column center>
           <SocialBar />
         </Column>
       ) : null}
->>>>>>> avn-master
     </PageContainer>
   );
 }

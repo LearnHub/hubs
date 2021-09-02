@@ -38,11 +38,7 @@ export function RoomEntryModal({
         {breakpoint !== "sm" &&
           breakpoint !== "md" && (
             <div className={styles.logoContainer}>
-<<<<<<< HEAD
-              <img crossOrigin="anonymous" src={logoSrc} alt={appName} />
-=======
-              <img src={isHmc ? hmcLogo : logoSrc} alt={appName} />
->>>>>>> avn-master
+              <img crossOrigin="anonymous" src={isHmc ? hmcLogo : logoSrc} alt={appName} />
             </div>
           )}
         <div className={styles.roomName}>
