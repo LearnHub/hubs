@@ -35,7 +35,7 @@ AFRAME.registerComponent("action-trigger-volume", {
       if (isColliding && !collidingLastFrame) {
         if(this.data.isAvatar) {
           this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
-          const avatarId = this.data.src ?? new URL(this.data.src).pathname.split("/").pop();
+          const avatarId = this.data.src || new URL(this.data.src).pathname.split("/").pop();
           console.log("Setting avatar to ", avatarId);
           window.APP.store.update({ profile: { avatarId } });
           this.el.sceneEl.emit("avatar_updated");
