@@ -2,7 +2,7 @@
  * Creates a box around the element (assumed to be the camera's PoV) which can be used for fade-to-black.
  */
 
-const FADE_DURATION_MS = 750;
+const FADE_DURATION_MS = 250;
 
 AFRAME.registerComponent("fader", {
   schema: {
@@ -12,7 +12,7 @@ AFRAME.registerComponent("fader", {
   init() {
     const mesh = new THREE.Mesh(
       new THREE.BoxGeometry(),
-      new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide, opacity: 0, transparent: true, fog: false })
+      new THREE.MeshBasicMaterial({ color: 0x222222, side: THREE.BackSide, opacity: 0, transparent: true, fog: false })
     );
     mesh.scale.x = mesh.scale.y = 1;
     mesh.scale.z = 0.15;
@@ -37,8 +37,7 @@ AFRAME.registerComponent("fader", {
     this.el.setAttribute("fader", { direction });
 
     return new Promise(res => {
-      // AVN: Always execute the callback immediately because multiple calls can throw unwanted exceptions
-      if (true || this.mesh.material.opacity === (direction == "in" ? 0 : 1)) {
+      if (this.mesh.material.opacity === (direction == "in" ? 0 : 1)) {
         res();
       } else {
         this._resolveFinish = res;
@@ -54,8 +53,7 @@ AFRAME.registerComponent("fader", {
     if (this.data.direction === "in") {
       mat.opacity = Math.max(0, mat.opacity - (1.0 / FADE_DURATION_MS) * Math.min(dt, 50));
     } else if (this.data.direction === "out") {
-      // AVN: Fade out immediately to prevent visual artefacts and clashes with fade in commands
-      mat.opacity = 1.0;
+      mat.opacity = Math.min(1, mat.opacity + (1.0 / FADE_DURATION_MS) * Math.min(dt, 50));
     }
 
     if (mat.opacity === 0 || mat.opacity === 1) {
