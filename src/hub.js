@@ -96,7 +96,9 @@ import "./components/hide-when-pinned-and-forbidden";
 import "./components/visibility-while-frozen";
 import "./components/stats-plus";
 import "./components/networked-avatar";
-import "./components/media-views";
+import "./components/media-video";
+import "./components/media-pdf";
+import "./components/media-image";
 import "./components/avatar-volume-controls";
 import "./components/pinch-to-move";
 import "./components/pitch-yaw-rotator";
@@ -142,7 +144,6 @@ import "./components/optional-alternative-to-not-hide";
 import "./components/avatar-audio-source";
 import "./components/avatar-inspect-collider";
 import "./components/video-texture-target";
-import "./components/audio-params";
 
 import ReactDOM from "react-dom";
 import React from "react";
@@ -201,6 +202,21 @@ window.APP.RENDER_ORDER = {
   HUD_ICONS: 2,
   CURSOR: 3
 };
+
+// TODO: Remove comments
+// TODO: Rename or reconfigure these as needed
+APP.audios = new Map(); //                           el -> (THREE.Audio || THREE.PositionalAudio)
+APP.sourceType = new Map(); //                       el -> SourceType
+APP.audioOverrides = new Map(); //                   el -> AudioSettings
+APP.zoneOverrides = new Map(); //                    el -> AudioSettings
+APP.audioDebugPanelOverrides = new Map(); // SourceType -> AudioSettings
+APP.sceneAudioDefaults = new Map(); //       SourceType -> AudioSettings
+APP.gainMultipliers = new Map(); //                  el -> Number
+APP.supplementaryAttenuation = new Map(); //         el -> Number
+APP.clippingState = new Set();
+APP.linkedMutedState = new Set();
+APP.isAudioPaused = new Set();
+
 const store = window.APP.store;
 store.update({ preferences: { shouldPromptForRefresh: undefined } }); // Clear flag that prompts for refresh from preference screen
 const mediaSearchStore = window.APP.mediaSearchStore;
@@ -403,6 +419,8 @@ export async function updateEnvironmentForHub(hub, entryManager) {
   const environmentScene = document.querySelector("#environment-scene");
   const sceneEl = document.querySelector("a-scene");
 
+  const envSystem = sceneEl.systems["hubs-systems"].environmentSystem;
+
   console.log(`Scene URL: ${sceneUrl}`);
   const loadStart = performance.now();
 
@@ -422,6 +440,8 @@ export async function updateEnvironmentForHub(hub, entryManager) {
         document.querySelector(".a-canvas").classList.remove("a-hidden");
 
         sceneEl.addState("visible");
+
+        envSystem.updateEnvironment(environmentEl);
 
         //TODO: check if the environment was made with spoke to determine if a shape should be added
         //AVN: SKIP ALL COLLISION INFO
@@ -450,7 +470,11 @@ export async function updateEnvironmentForHub(hub, entryManager) {
           "model-loaded",
           () => {
             environmentEl.removeEventListener("model-error", sceneErrorHandler);
+
+            envSystem.updateEnvironment(environmentEl);
+
             console.log(`Scene file update load took ${Math.round(performance.now() - loadStart)}ms`);
+
             //AVN: SKIP ALL COLLISION INFO
             //traverseMeshesAndAddShapes(environmentEl);
 
@@ -600,8 +624,8 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data,
     while (!scene.components["networked-scene"] || !scene.components["networked-scene"].data) await nextTick();
 
     const loadEnvironmentAndConnect = () => {
-      console.log("Loading environment and connecting to dialog servers")
-      
+      console.log("Loading environment and connecting to dialog servers");
+
       updateEnvironmentForHub(hub, entryManager);
 
       // Disconnect in case this is a re-entry

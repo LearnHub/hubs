@@ -375,10 +375,8 @@ class UIRoot extends Component {
       this.props.scene.addEventListener(
         "loading_finished",
         () => {
-          // AVN: Enter room immediately for a less janky user experience
-          // setTimeout(() => this.handleForceEntry(), 1000);
-          console.log("Loading has finished. Checking for forced room entry")
-          this.handleForceEntry();
+          console.log("Loading has finished. Checking for forced room entry");
+          setTimeout(() => this.handleForceEntry(), 1000);
         },
         { once: true }
       );

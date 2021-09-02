@@ -27,7 +27,6 @@ import { SHAPE } from "three-ammo/constants";
 
 import { avnDimensionId, avnAssetId } from "../change-hub";
 
-let loadingObjectEnvMap;
 let loadingObject;
 
 waitForDOMContentLoaded().then(() => {
@@ -198,15 +197,6 @@ AFRAME.registerComponent("media-loader", {
     this.updateScale(false, false);
 
     if (useFancyLoader) {
-      const environmentMapComponent = this.el.sceneEl.components["environment-map"];
-      if (environmentMapComponent) {
-        const currentEnivronmentMap = environmentMapComponent.environmentMap;
-        if (loadingObjectEnvMap !== currentEnivronmentMap) {
-          environmentMapComponent.applyEnvironmentMap(mesh);
-          loadingObjectEnvMap = currentEnivronmentMap;
-        }
-      }
-
       this.loaderMixer = new THREE.AnimationMixer(mesh);
 
       this.loadingClip = this.loaderMixer.clipAction(mesh.animations[0]);
@@ -371,7 +361,7 @@ AFRAME.registerComponent("media-loader", {
       }
 
       let canonicalUrl = src;
-      let canonicalAudioUrl = src;
+      let canonicalAudioUrl = null; // set non-null only if audio track is separated from video track (eg. 360 video)
       let accessibleUrl = src;
       let contentType = this.data.contentType;
       let thumbnail;

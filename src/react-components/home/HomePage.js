@@ -17,6 +17,8 @@ import { Column } from "../layout/Column";
 import { Button } from "../input/Button";
 import { Container } from "../layout/Container";
 import { ConnectionTest } from "../../react-components/debug-panel/ConnectionTest";
+import { SocialBar } from "../home/SocialBar";
+import { SignInButton } from "./SignInButton";
 
 export function HomePage() {
   const auth = useContext(AuthContext);
@@ -27,7 +29,8 @@ export function HomePage() {
 
   const sortedFavoriteRooms = Array.from(favoriteRooms).sort((a, b) => b.member_count - a.member_count);
   const sortedPublicRooms = Array.from(publicRooms).sort((a, b) => b.member_count - a.member_count);
-
+  const wrapInBold = chunk => <b>{chunk}</b>;
+  const isHmc = configs.feature("show_cloud");
   useEffect(() => {
     const qs = new URLSearchParams(location.search);
 
@@ -53,6 +56,7 @@ export function HomePage() {
     <PageContainer className={styles.homePage}>
       <Container>
         <div className={styles.hero}>
+          <SignInButton mobile />
           <div className={styles.logoContainer}>
             <img crossOrigin="anonymous" alt={configs.translation("app-name")} src={configs.image("logo")} />
           </div>
@@ -86,14 +90,15 @@ export function HomePage() {
             <p>
               <FormattedMessage
                 id="home-page.rooms-blurb"
-                defaultMessage="Share virtual spaces with your friends, co-workers, and communities. When you create a room with Hubs, you’ll have a private virtual meeting space that you can instantly share - no downloads or VR headset necessary."
+                defaultMessage="Share virtual spaces with your friends, co-workers, and communities. When you create a room with Hubs, you’ll have a private virtual meeting space that you can instantly share <b>- no downloads or VR headset necessary.</b>"
+                values={{ b: wrapInBold }}
               />
             </p>
           </Column>
           <Column padding gap="xl" className={styles.card}>
             <img crossOrigin="anonymous" src={configs.image("landing_communicate_thumb")} />
             <h3>
-              <FormattedMessage id="home-page.communicate-title" defaultMessage="Communicate naturally" />
+              <FormattedMessage id="home-page.communicate-title" defaultMessage="Communicate and Collaborate" />
             </h3>
             <p>
               <FormattedMessage
@@ -161,13 +166,21 @@ export function HomePage() {
         </Container>
       )}
       <Container>
-        <Column padding center grow>
-          <Button lg preset="primary" as="a" href="/link">
+        <Column center grow>
+          <Button thin preset="landing" as="a" href="/link">
             <FormattedMessage id="home-page.have-code" defaultMessage="Have a room code?" />
           </Button>
         </Column>
       </Container>
+<<<<<<< HEAD
       <Container><ConnectionTest></ConnectionTest></Container>
+=======
+      {isHmc ? (
+        <Column center>
+          <SocialBar />
+        </Column>
+      ) : null}
+>>>>>>> avn-master
     </PageContainer>
   );
 }
