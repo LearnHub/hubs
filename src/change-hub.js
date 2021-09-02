@@ -55,7 +55,7 @@ export async function changeHubAvn(hubUrl) {
   const resolveRoomResponse = await fetch(resolveRoomUrl);
   const roomData = await resolveRoomResponse.json();
   console.log("Resolved Hub room from AVN server", roomData);
-  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnAssetId };
+  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnAssetId, name: roomData.name, icon: roomData.icon };
   await changeHub(nextState, true);
 }
 
@@ -79,8 +79,10 @@ export async function changeHub(nextState, addToHistory = true) {
 
   const hub = data.hubs[0];
 
+  const favicon = document.getElementById("favicon");
+
   if (addToHistory) {
-    const prevState = { hubId: APP.hub.hub_id, newAssetId: nextState.oldAssetId, oldAssetId: nextState.newAssetId };
+    const prevState = { hubId: APP.hub.hub_id, newAssetId: nextState.oldAssetId, oldAssetId: nextState.newAssetId, name: document.title, icon: favicon.getAttribute("href") };
     if(isLocalClient()) {
       window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { "dimension_id": avnDimensionId, "asset_id": nextState.oldAssetId }, hub.slug, nextState.newAssetId));
       window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { "dimension_id": avnDimensionId, "asset_id": nextState.newAssetId }, hub.slug, nextState.oldAssetId));
@@ -92,6 +94,12 @@ export async function changeHub(nextState, addToHistory = true) {
 
   // Update current asset ID now the room has changed
   avnAssetId = nextState.newAssetId;
+
+  // Page title and icon
+  document.title = nextState.name;
+  if(nextState.icon) {
+    favicon.setAttribute("href", nextState.icon);
+  }
 
   APP.hub = hub;
   updateUIForHub(hub, APP.hubChannel);
