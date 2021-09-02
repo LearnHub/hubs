@@ -91,11 +91,8 @@ export function useResizeViewport(viewportRef, store, scene) {
         scene.camera.aspect = resolution.width / resolution.height;
         scene.camera.updateProjectionMatrix();
 
-        //AVN: This call to scene.renderer.render sometimes crashes out on load with the following error: 
-        //  Uncaught TypeError: Failed to execute 'linearRampToValueAtTime' on 'AudioParam': The provided float value is non-finite.
-        
         // Resizing the canvas clears it, so render immediately after resize to prevent flicker.
-        //scene.renderer.render(scene.object3D, scene.camera);
+        scene.renderer.render(scene.object3D, scene.camera);
 
         scene.emit("rendererresize", null, false);
       });
