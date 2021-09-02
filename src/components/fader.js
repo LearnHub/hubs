@@ -12,7 +12,7 @@ AFRAME.registerComponent("fader", {
   init() {
     const mesh = new THREE.Mesh(
       new THREE.BoxGeometry(),
-      new THREE.MeshBasicMaterial({ color: 0x0, side: THREE.BackSide, opacity: 0, transparent: true, fog: false })
+      new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.BackSide, opacity: 0, transparent: true, fog: false })
     );
     mesh.scale.x = mesh.scale.y = 1;
     mesh.scale.z = 0.15;
