@@ -170,7 +170,7 @@ AFRAME.registerSystem("audio-debug", {
       meshes.forEach(obj => {
         if (obj.isMesh) {
           this.navMeshObject = obj;
-          obj.parent.visible = !!enabled;
+          obj.parent.visible = enabled;
           if (obj.material) {
             if (enabled) {
               !obj._hubs_audio_debug_prev_material && (obj._hubs_audio_debug_prev_material = obj.material);
