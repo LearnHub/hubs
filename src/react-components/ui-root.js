@@ -1456,7 +1456,7 @@ class UIRoot extends Component {
                         showRtcDebug={showRtcDebugPanel}
                         showAudioDebug={showAudioDebugPanel}
                       />
-                    )}                    
+                    )}
                   </>
                 }
                 sidebar={
