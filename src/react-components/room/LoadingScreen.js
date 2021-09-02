@@ -8,6 +8,7 @@ import hmcLogo from "../../assets/images/hmc-logo.png";
 import SaveConsoleLog from "../../utils/record-log.js";
 import qsTruthy from "../../utils/qs_truthy";
 import { Button } from "../input/Button";
+import styles from "../layout/LoadingScreenLayout.scss";
 export function LoadingScreen({ logoSrc, message, infoMessages }) {
   const infoMessage = useRandomMessageTransition(infoMessages);
   const isHmc = configs.feature("show_cloud");
