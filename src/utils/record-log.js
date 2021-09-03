@@ -111,7 +111,7 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
   if ('ReportingObserver' in window) {
     const observer = new ReportingObserver((reports, observer) => {
       for (const report of reports) {
-        console.warn("[ReportingObserver]", report.type, report.url, report.body);
+        console.warn("[ReportingObserver]", report);
       }
     }, {buffered: true});
     observer.observe();
@@ -122,6 +122,22 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
   document.addEventListener("securitypolicyviolation", (e) => {
     console.warn("[CSP]", e.blockedURI, e.violatedDirective, e.originalPolicy);
   });
+
+  // Listen for performance issues
+
+  if ('PerformanceObserver' in window) {
+    // Only report when the last longest duration is exceeded to cut down on console spam
+    let longestDuration = 0;
+    const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+        if(entry.duration > longestDuration) {
+          console.warn('[PerformanceObserver]', entry);
+          longestDuration = entry.duration;
+        }
+      }
+    });
+    observer.observe({entryTypes: ['longtask', /*'element', 'navigation', 'resource', 'mark', 'measure', 'paint'*/]});
+  }
 
   // Not captured in shadow log:
   // - Mixed Content https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content
