@@ -4,7 +4,7 @@
   padding: 24px 8px;
 
   button {
-    width: 156px;
+    width: 100%;
   }
 
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
@@ -14,8 +14,12 @@
 
 :local(.logo-container) {
   padding: 0 16px;
-  margin-top: 16px;
-  margin-bottom: 32px;
+  /*margin-top: 16px;*/
+  /*margin-bottom: 32px;*/
+}
+
+:local(.logo-container) img {
+  width: 100%;
 }
 
 :local(.room-name) {

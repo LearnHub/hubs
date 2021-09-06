@@ -23,7 +23,7 @@ export function EnterOnDeviceModal({
 
   return (
     <Modal
-      title={<FormattedMessage id="enter-on-device-modal.title" defaultMessage="Enter on Device" />}
+      title={<FormattedMessage id="enter-on-device-modal.title" defaultMessage="Enter on Another Device" />}
       beforeTitle={<BackButton onClick={onBack} />}
       className={className}
       {...rest}
