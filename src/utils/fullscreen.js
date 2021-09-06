@@ -5,8 +5,7 @@ let hasEnteredFullScreenThisSession = false;
 function shouldShowFullScreen() {
   // Disable full screen on iOS, since Safari's fullscreen mode does not let you prevent native pinch-to-zoom gestures.
   return (
-    // AVN: Desktop platform can enter fullscreen mode through a UI button
-//    (AFRAME.utils.device.isMobile() || AFRAME.utils.device.isMobileVR()) &&
+    (AFRAME.utils.device.isMobile() || AFRAME.utils.device.isMobileVR()) &&
     !AFRAME.utils.device.isIOS() &&
     screenfull.enabled
   );

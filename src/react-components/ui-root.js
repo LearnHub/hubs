@@ -608,7 +608,7 @@ class UIRoot extends Component {
   };
 
   beginOrSkipAudioSetup = () => {
-    const skipAudioSetup = this.props.forcedVREntryType && this.props.forcedVREntryType.endsWith("_now");
+    const skipAudioSetup = true || this.props.forcedVREntryType && this.props.forcedVREntryType.endsWith("_now");
     if (skipAudioSetup) {
       console.log(`Skipping audio setup (forcedVREntryType = ${this.props.forcedVREntryType})`);
       this.onAudioReadyButton();
@@ -629,14 +629,12 @@ class UIRoot extends Component {
   };
 
   onAudioReadyButton = async () => {
-    if (!this.state.enterInVR && !isMobile) {
-      // AVN: Entering fullscreen at the start doesn't work if we skip the authorisation steps that involve and authorising button click
-      //await showFullScreenIfAvailable();
+    if (!this.state.enterInVR) {
+      await showFullScreenIfAvailable();
     }
 
     // Push the new history state before going into VR, otherwise menu button will take us back
-    // AVN: Interacts badly with vr_entry_type=2d_now to prevent BACK button working first time once the player has moved. True cause unknown.
-    //clearHistoryState(this.props.history);
+    clearHistoryState(this.props.history);
 
     // AVN: Microphone is muted by default for each browser session
     const micMutedForSession = window.sessionStorage.getItem("muteMicOnEntryForThisSession") !== "false";
@@ -824,7 +822,8 @@ class UIRoot extends Component {
 
   renderEntryStartPanel = () => {
     const { hasAcceptedProfile, hasChangedName } = this.props.store.state.activity;
-    const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
+    // AVN: Skip name and avatar setting
+    const promptForNameAndAvatarBeforeEntry = false;//this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
 
     // TODO: What does onEnteringCanceled do?
     return (

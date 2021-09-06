@@ -64,7 +64,7 @@ export function RoomEntryModal({
               </span>
             </Button>
           )}
-          {showSpectate && (
+          {/* AVN: Hide the spectate button for now */false && showSpectate && (
             <Button preset="accent2" onClick={onSpectate}>
               <ShowIcon />
               <span>
