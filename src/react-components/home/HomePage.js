@@ -19,6 +19,7 @@ import { Container } from "../layout/Container";
 import { ConnectionTest } from "../../react-components/debug-panel/ConnectionTest";
 import { SocialBar } from "../home/SocialBar";
 import { SignInButton } from "./SignInButton";
+import maskEmail from "../../utils/mask-email";
 
 export function HomePage() {
   const auth = useContext(AuthContext);
@@ -51,12 +52,27 @@ export function HomePage() {
   }, []);
 
   const canCreateRooms = !configs.feature("disable_room_creation") || auth.isAdmin;
-
+  const email = auth.email;
   return (
     <PageContainer className={styles.homePage}>
       <Container>
         <div className={styles.hero}>
-          <SignInButton mobile />
+          {auth.isSignedIn ? (
+            <div className={styles.signInContainer}>
+              <span>
+                <FormattedMessage
+                  id="header.signed-in-as"
+                  defaultMessage="Signed in as {email}"
+                  values={{ email: maskEmail(email) }}
+                />
+              </span>
+              <a href="#" onClick={auth.signOut} className={styles.mobileSignOut}>
+                <FormattedMessage id="header.sign-out" defaultMessage="Sign Out" />
+              </a>
+            </div>
+          ) : (
+            <SignInButton mobile />
+          )}
           <div className={styles.logoContainer}>
             <img crossOrigin="anonymous" alt={configs.translation("app-name")} src={configs.image("logo")} />
           </div>

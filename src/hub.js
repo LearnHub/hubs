@@ -8,10 +8,17 @@ import configs from "./utils/configs";
 import "./utils/theme";
 import "@babel/polyfill";
 
+console.log(
+  `App version: ${
+    configs.IS_LOCAL_OR_CUSTOM_CLIENT
+      ? `Custom client or local client (undeploy custom client to run build ${process.env.BUILD_VERSION})`
+      : process.env.BUILD_VERSION || "?"
+  }`
+);
+
+// AVN: Write out useful debug info
 import { writeEnvironmentToConsole } from "./utils/logging";
 writeEnvironmentToConsole();
-
-console.log(`App version: ${process.env.BUILD_VERSION || "?"}`);
 
 import "./react-components/styles/global.scss";
 import "./assets/stylesheets/globals.scss";
