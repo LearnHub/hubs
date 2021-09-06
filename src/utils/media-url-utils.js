@@ -1,6 +1,8 @@
 import { hasReticulumServer } from "./phoenix-utils";
 import configs from "./configs";
 
+import { avnBridge } from "../avn-bridge"
+
 const nonCorsProxyDomains = (configs.NON_CORS_PROXY_DOMAINS || "").split(",");
 if (configs.CORS_PROXY_SERVER) {
   nonCorsProxyDomains.push(configs.CORS_PROXY_SERVER);
@@ -164,7 +166,7 @@ export const guessContentType = url => {
 const originIsHubsServer = new Map();
 
 // AVN: shortcircuit for scene.link domain
-originIsHubsServer.set("https://scene.link", true);
+originIsHubsServer.set(avnBridge.avnDomain, true);
 
 async function isHubsServer(url) {
   if (!url) return false;

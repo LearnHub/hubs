@@ -25,7 +25,7 @@ import { waitForDOMContentLoaded } from "../utils/async-utils";
 
 import { SHAPE } from "three-ammo/constants";
 
-import { avnDimensionId, avnAssetId } from "../change-hub";
+import { avnBridge } from "../avn-bridge";
 
 let loadingObject;
 
@@ -598,10 +598,7 @@ AFRAME.registerComponent("media-loader", {
         } else {
           this.el.removeObject3D("mesh");
         }
-        // Use the absolute avatar URL is supplied otherwise it is a scene link
-        // if no asset ID is supplied then the scene link is void because this room is not navigable
-        // Note: the fragment should set the waypoint for the users entry position (doesn't work currently because of Hubs bug https://github.com/mozilla/hubs/issues/3616)
-        const linksrc = this.data.absoluteAvatarUrl || (avnAssetId ? src.replace(`https://scene.link`, `https://scene.link/${avnDimensionId}`) + "#" + avnAssetId : "");
+        const linksrc = this.data.absoluteAvatarUrl || avnBridge.transformRoomUrl(src);
         this.el.setAttribute("action-trigger-volume", {
           colliders: "#avatar-pov-node",
           // Either it's an avatar file or it's a scene link that needs the dimension replacing

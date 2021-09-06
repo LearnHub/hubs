@@ -2,27 +2,7 @@
 import { getReticulumFetchUrl, hubUrl, isLocalClient } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
 
-// AVN: Find dimension ID from URL in the form https://<region>.avncloud.com/<hub_id>/<dimension_id>/<asset_id> or as a URL parameter (local development mode)
-export var avnDimensionId = new URLSearchParams(document.location.search).get("dimension_id");
-export var avnAssetId = new URLSearchParams(document.location.search).get("asset_id");
-const pathParts = document.location.pathname.split('/');
-if(pathParts.length > 2) {
-  avnDimensionId = document.location.pathname.split('/')[2];
-}
-if(pathParts.length > 3) {
-  avnAssetId = document.location.pathname.split('/')[3];
-}
-if(avnDimensionId) {
-  console.log(`AVN: Dimension ID: ${avnDimensionId}`);
-} else {
-  console.error("AVN: No dimension found");
-}
-if(avnAssetId) {
-  console.log(`AVN: Asset ID: ${avnAssetId}`);
-} else {
-  console.warn("AVN: No asset ID found so scene links will be disabled");
-}
-
+import { avnBridge } from "./avn-bridge"
 
 function unloadRoomObjects() {
   document.querySelectorAll("[pinnable]").forEach(el => {
@@ -49,13 +29,11 @@ function loadRoomObjects(hubId) {
 
 // AVN: Scene links need a level of redirection before resolving to a hub ID
 export async function changeHubAvn(hubUrl) {
-  console.log("Fast changing to room " + hubUrl);
+  console.log("Fast switching to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
-  const resolveRoomUrl = `https://scene.link/com/Dimensions.cfc?method=room&dimensionid=${avnDimensionId}&assetid=${newAssetId}`;
-  const resolveRoomResponse = await fetch(resolveRoomUrl);
-  const roomData = await resolveRoomResponse.json();
+  const roomData = await avnBridge.fetchRoomData(newAssetId);
   console.log("Resolved Hub room from AVN server", roomData);
-  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnAssetId, name: roomData.name, icon: roomData.icon };
+  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnBridge.assetId, name: roomData.name, icon: roomData.icon };
   await changeHub(nextState, true);
 }
 
@@ -84,16 +62,18 @@ export async function changeHub(nextState, addToHistory = true) {
   if (addToHistory) {
     const prevState = { hubId: APP.hub.hub_id, newAssetId: nextState.oldAssetId, oldAssetId: nextState.newAssetId, name: document.title, icon: favicon.getAttribute("href") };
     if(isLocalClient()) {
-      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { "dimension_id": avnDimensionId, "asset_id": nextState.oldAssetId }, hub.slug, nextState.newAssetId));
-      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { "dimension_id": avnDimensionId, "asset_id": nextState.newAssetId }, hub.slug, nextState.oldAssetId));
+      // Replace current state so the fragment/waypoint will be set when using the BACK button
+      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { "dimension_id": avnBridge.dimensionId, "asset_id": nextState.oldAssetId }, hub.slug, nextState.newAssetId));
+      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { "dimension_id": avnBridge.dimensionId, "asset_id": nextState.newAssetId }, hub.slug, nextState.oldAssetId));
     } else {
-      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { }, avnDimensionId + "/" + nextState.oldAssetId, nextState.newAssetId));
-      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, avnDimensionId + "/" + nextState.newAssetId, nextState.oldAssetId));
+      // Replace current state so the fragment/waypoint will be set when using the BACK button
+      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { }, avnBridge.dimensionId + "/" + nextState.oldAssetId, nextState.newAssetId));
+      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, avnBridge.dimensionId + "/" + nextState.newAssetId, nextState.oldAssetId));
     }
   }
 
   // Update current asset ID now the room has changed
-  avnAssetId = nextState.newAssetId;
+  avnBridge.assetId = nextState.newAssetId;
 
   // Page title and icon
   document.title = nextState.name;

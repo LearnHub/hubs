@@ -10,7 +10,7 @@ import Linkify from "linkify-it";
 import tlds from "tlds";
 import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
 
-import { avnDimensionId } from "../change-hub";
+import { avnBridge } from "../avn-bridge"
 
 import anime from "animejs";
 
@@ -29,10 +29,6 @@ linkify.tlds(tlds);
 const mediaAPIEndpoint = getReticulumFetchUrl("/api/v1/media");
 const getDirectMediaAPIEndpoint = () => getDirectReticulumFetchUrl("/api/v1/media");
 
-// AVN: Alternative Media endpoint for AVN aliased media resources 
-const AVN_AUTHENTICATED_MEDIA_DOMAIN = "https://scene.link";
-const mediaAPIEndpointAvnAuthenticated = AVN_AUTHENTICATED_MEDIA_DOMAIN + `/com/Dimensions.cfc?method=media&dimensionid=${avnDimensionId}`;
-
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobile();
 
@@ -47,8 +43,8 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
-  // AVN: Authenticated queriesare accessed through an alternative API with the dimension ID tacked on the end
-  const apiEndpoint = url.startsWith(AVN_AUTHENTICATED_MEDIA_DOMAIN) ? mediaAPIEndpointAvnAuthenticated : mediaAPIEndpoint;
+  // AVN: Authenticated queries are accessed through an alternative API with the dimension ID tacked on the end
+  const apiEndpoint = avnBridge.isAvnUrl(url) ? avnBridge.mediaEndpoint : mediaAPIEndpoint;
 
   const resultPromise = fetch(apiEndpoint, {
     method: "POST",
