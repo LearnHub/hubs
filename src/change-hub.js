@@ -105,7 +105,7 @@ export async function changeHub(nextState, addToHistory = true) {
     document.querySelector("#environment-scene").childNodes[0].components["gltf-model-plus"].data.src !==
     (await getSceneUrlForHub(hub))
   ) {
-    const fader = document.getElementById("viewing-camera").components["fader"];
+    const fader = document.getElementById("viewing-rig").components["fader"];
     fader.fadeOut().then(() => {
       scene.emit("reset_scene");
       updateEnvironmentForHub(hub, APP.entryManager);

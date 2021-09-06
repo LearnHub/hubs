@@ -206,9 +206,10 @@ import { platformUnsupported } from "./support";
 window.APP = new App();
 window.APP.dialog = new DialogAdapter();
 window.APP.RENDER_ORDER = {
-  HUD_BACKGROUND: 1,
-  HUD_ICONS: 2,
-  CURSOR: 3
+  CAMERA_FADER: 1,
+  HUD_BACKGROUND: 2,
+  HUD_ICONS: 3,
+  CURSOR: 4
 };
 
 // TODO: Remove comments
@@ -490,7 +491,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
               waypointSystem.moveToSpawnPoint();
             }
 
-            const fader = document.getElementById("viewing-camera").components["fader"];
+            const fader = document.getElementById("viewing-rig").components["fader"];
 
             // Add a slight delay before de-in to reduce hitching.
             setTimeout(() => fader.fadeIn(), 2000);
@@ -1338,7 +1339,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       stale_fields.includes("scene_listing") ||
       stale_fields.includes("default_environment_gltf_bundle_url")
     ) {
-      const fader = document.getElementById("viewing-camera").components["fader"];
+      const fader = document.getElementById("viewing-rig").components["fader"];
 
       fader.fadeOut().then(() => {
         scene.emit("reset_scene");

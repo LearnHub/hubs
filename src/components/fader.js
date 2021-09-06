@@ -1,3 +1,6 @@
+import waterNormalsUrl from "../assets/waternormals.jpg";
+import HubsTextureLoader from "../loaders/HubsTextureLoader";
+
 /**
  * Creates a box around the element (assumed to be the camera's PoV) which can be used for fade-to-black.
  */
@@ -10,15 +13,22 @@ AFRAME.registerComponent("fader", {
   },
 
   init() {
-    const mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(),
-      new THREE.MeshBasicMaterial({ color: 0x222222, side: THREE.BackSide, opacity: 0, transparent: true, fog: false })
-    );
-    mesh.scale.x = mesh.scale.y = 1;
-    mesh.scale.z = 0.15;
+    const material = new THREE.MeshBasicMaterial({ color: 0x111111, side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false });
+    const geometry = new THREE.IcosahedronGeometry(100, 4);
+    const mesh = new THREE.Mesh(geometry, material);
+    //mesh.scale.x = mesh.scale.y = mesh.scale.z = 10;
+    mesh.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER;
+
+    const wireframeGeometry = new THREE.WireframeGeometry( geometry );
+		const wireframeMaterial = new THREE.LineBasicMaterial( { color: 0x080808, depthTest: false, depthWrite: false, transparent: true } );
+		const wireframe = new THREE.LineSegments( wireframeGeometry, wireframeMaterial );
+    wireframe.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER + 0.1;
+		mesh.add( wireframe );
+
     mesh.matrixNeedsUpdate = true;
-    this.el.object3DMap.camera.add(mesh);
+    this.el.object3D.add(mesh);
     this.mesh = mesh;
+    this.wire = wireframe;
   },
 
   fadeOut() {
@@ -47,6 +57,7 @@ AFRAME.registerComponent("fader", {
 
   tick(t, dt) {
     const mat = this.mesh.material;
+    const wir = this.wire.material;
     this.mesh.visible = this.data.direction === "out" || mat.opacity !== 0;
     if (!this.mesh.visible) return;
 
@@ -55,6 +66,7 @@ AFRAME.registerComponent("fader", {
     } else if (this.data.direction === "out") {
       mat.opacity = Math.min(1, mat.opacity + (1.0 / FADE_DURATION_MS) * Math.min(dt, 50));
     }
+    wir.opacity = mat.opacity;
 
     if (mat.opacity === 0 || mat.opacity === 1) {
       if (this.data.direction !== "none") {
