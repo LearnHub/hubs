@@ -13,7 +13,7 @@ AFRAME.registerComponent("fader", {
   },
 
   init() {
-    const material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, opacity: 1, transparent: true, fog: false, depthTest: false, depthWrite: false, vertexColors: true });
+    const material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false, vertexColors: true });
     const geometry = new THREE.IcosahedronGeometry(100, 10);
 
     // Color each vertex with a random shade
