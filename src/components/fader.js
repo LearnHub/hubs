@@ -16,14 +16,13 @@ AFRAME.registerComponent("fader", {
     const material = new THREE.MeshBasicMaterial({ color: 0x111111, side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false });
     const geometry = new THREE.IcosahedronGeometry(100, 4);
     const mesh = new THREE.Mesh(geometry, material);
-    //mesh.scale.x = mesh.scale.y = mesh.scale.z = 10;
     mesh.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER;
 
     const wireframeGeometry = new THREE.WireframeGeometry( geometry );
-		const wireframeMaterial = new THREE.LineBasicMaterial( { color: 0x080808, depthTest: false, depthWrite: false, transparent: true } );
+		const wireframeMaterial = new THREE.LineBasicMaterial( { color: 0x0, depthTest: false, depthWrite: false, transparent: true } );
 		const wireframe = new THREE.LineSegments( wireframeGeometry, wireframeMaterial );
-    wireframe.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER + 0.1;
-		mesh.add( wireframe );
+    wireframe.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER + 0.5;
+		mesh.add(wireframe);
 
     mesh.matrixNeedsUpdate = true;
     this.el.object3D.add(mesh);
