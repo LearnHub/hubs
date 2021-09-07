@@ -13,13 +13,25 @@ AFRAME.registerComponent("fader", {
   },
 
   init() {
-    const material = new THREE.MeshBasicMaterial({ color: 0x111111, side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false });
-    const geometry = new THREE.IcosahedronGeometry(100, 4);
+    const material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false, vertexColors: true });
+    const geometry = new THREE.IcosahedronGeometry(100, 15);
+
+    // Color each vertex with a random shade
+    const colors = new Uint8Array(geometry.attributes.position.length);
+    for(let i = 0; i < colors.length; i += 3) {
+      const shade = Math.floor(4 + Math.random() * 4);
+      colors[i + 0] = shade;
+      colors[i + 1] = shade;
+      colors[i + 2] = shade;
+    }
+    geometry.setAttribute( 'color', new THREE.BufferAttribute(colors, 3, true));
+
     const mesh = new THREE.Mesh(geometry, material);
     mesh.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER;
 
+    // Wireframe outline to give the background depth
     const wireframeGeometry = new THREE.WireframeGeometry( geometry );
-		const wireframeMaterial = new THREE.LineBasicMaterial( { color: 0x0, depthTest: false, depthWrite: false, transparent: true } );
+		const wireframeMaterial = new THREE.LineBasicMaterial( { color: 0x0, depthTest: false, depthWrite: false, transparent: true, fog: false } );
 		const wireframe = new THREE.LineSegments( wireframeGeometry, wireframeMaterial );
     wireframe.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER + 0.5;
 		mesh.add(wireframe);
