@@ -58,7 +58,7 @@ export function writeEnvironmentToConsole() {
     addRow("Device Memory", navigator.deviceMemory + " GiB");
   }
 
-  addRow("Cross-Origin Isolated", crossOriginIsolated, crossOriginIsolated ? "success" : "warn");
+  addRow("Cross-Origin Isolated", window.crossOriginIsolated, window.crossOriginIsolated ? "success" : "warn");
 
 		/* Browser Capabiltities */
 
