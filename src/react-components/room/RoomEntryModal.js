@@ -42,9 +42,12 @@ export function RoomEntryModal({
             </div>
           )}
         <div className={styles.roomName}>
-          <h5>
-            <FormattedMessage id="room-entry-modal.room-name-label" defaultMessage="Room Name" />
-          </h5>
+          {
+          // AVN: Title is just cruft
+          // <h5>
+          //   <FormattedMessage id="room-entry-modal.room-name-label" defaultMessage="Room Name" />
+          // </h5>
+          } 
           <p>{roomName}</p>
         </div>
         <Column center className={styles.buttons}>
