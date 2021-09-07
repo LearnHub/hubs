@@ -13,13 +13,13 @@ AFRAME.registerComponent("fader", {
   },
 
   init() {
-    const material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false, vertexColors: true });
-    const geometry = new THREE.IcosahedronGeometry(100, 15);
+    const material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, opacity: 1, transparent: true, fog: false, depthTest: false, depthWrite: false, vertexColors: true });
+    const geometry = new THREE.IcosahedronGeometry(100, 10);
 
     // Color each vertex with a random shade
     const colors = new Uint8Array(geometry.attributes.position.length);
     for(let i = 0; i < colors.length; i += 3) {
-      const shade = Math.floor(4 + Math.random() * 4);
+      const shade = Math.random() * 16;
       colors[i + 0] = shade;
       colors[i + 1] = shade;
       colors[i + 2] = shade;
