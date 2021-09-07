@@ -33,7 +33,7 @@ import PresenceLog from "./presence-log.js";
 import PreloadOverlay from "./preload-overlay.js";
 import RTCDebugPanel from "./debug-panel/RtcDebugPanel.js";
 import SaveConsoleLog from "../utils/record-log.js";
-import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen, exitFullScreen, isFullScreen } from "../utils/fullscreen";
+import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen } from "../utils/fullscreen";
 import { handleExitTo2DInterstitial, exit2DInterstitialAndEnterVR, isIn2DInterstitial } from "../utils/vr-interstitial";
 import maskEmail from "../utils/mask-email";
 import { saveScreenshot } from "../utils/media-utils";
@@ -53,7 +53,6 @@ import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton } from "./room/ContentMenu";
-import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
 import { ReactComponent as ScreenshotIcon } from "./icons/Screenshot.svg";
 import { ReactComponent as CameraIcon } from "./icons/Camera.svg";
 import { ReactComponent as AvatarIcon } from "./icons/Avatar.svg";
@@ -328,17 +327,8 @@ class UIRoot extends Component {
       this.forceUpdate();
     });
 
-    // AVN: Show and hide the UI to match the full screen state
-    document.addEventListener('fullscreenchange', (event) => {
-      if (isFullScreen()) {
-        this.setState({ hide: true, hideUITip: true });
-      } else {
-        this.setState({ hide: false, hideUITip: true });
-      }
-    });
-
     const scene = this.props.scene;
-      
+
     const unsubscribe = this.props.history.listen((location, action) => {
       const state = location.state;
 
@@ -1603,18 +1593,10 @@ class UIRoot extends Component {
                         />
                         }
                         { // AVN: React menu not required
-                        showHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />}
-                        <ToolbarButton
-                          icon={<FullScreenIcon />}
-                          label={<FormattedMessage id="toolbar.fullscreen-button" defaultMessage="Fullscreen" />}
-                          onClick={async () => {
-                            if(isFullScreen()) {
-                              await exitFullScreen();
-                            } else {
-                              await showFullScreenIfAvailable();
-                            }
-                          }}
-                        />
+                        showHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />
+                        }
+                        
+                        { // AVN: Screenshot button 
                         <ToolbarButton
                           icon={<ScreenshotIcon />}
                           label={<FormattedMessage id="toolbar.screenshot-button" defaultMessage="Screenshot" />}
@@ -1622,6 +1604,7 @@ class UIRoot extends Component {
                             saveScreenshot(this.props.scene, "jpeg");
                           }}
                         />
+                        }
 
                       </>
                     )} 
