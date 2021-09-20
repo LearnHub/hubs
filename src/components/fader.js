@@ -18,11 +18,12 @@ AFRAME.registerComponent("fader", {
 
     // Color each vertex with a random shade
     const colors = new Uint8Array(geometry.attributes.position.length);
-    for(let i = 0; i < colors.length; i += 3) {
-      const shade = Math.random() * 16;
-      colors[i + 0] = shade;
-      colors[i + 1] = shade;
-      colors[i + 2] = shade;
+    const step = 9;
+    for(let i = 0; i < colors.length; i += step) {
+      const shade = Math.pow(Math.random(), 4) * 4;
+      for(let j = 0; j < step; ++j) {
+        colors[i + j] = shade;
+      }
     }
     geometry.setAttribute( 'color', new THREE.BufferAttribute(colors, 3, true));
 
