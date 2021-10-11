@@ -7,7 +7,7 @@ import { ReactComponent as EnterIcon } from "../icons/Enter.svg";
 import { ReactComponent as VRIcon } from "../icons/VR.svg";
 import { ReactComponent as ShowIcon } from "../icons/Show.svg";
 import { ReactComponent as SettingsIcon } from "../icons/Settings.svg";
-import hmcLogo from "../../assets/images/hmc-logo.png";
+import { ReactComponent as HmcLogo } from "../icons/HmcLogo.svg";
 import styles from "./RoomEntryModal.scss";
 import styleUtils from "../styles/style-utils.scss";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
@@ -37,9 +37,7 @@ export function RoomEntryModal({
       <Column center className={styles.content}>
         {breakpoint !== "sm" &&
           breakpoint !== "md" && (
-            <div className={styles.logoContainer}>
-              <img crossOrigin="anonymous" src={isHmc ? hmcLogo : logoSrc} alt={appName} />
-            </div>
+            <div className={styles.logoContainer}>{isHmc ? <HmcLogo /> : <img crossOrigin="anonymous" src={logoSrc} alt={appName} />}</div>
           )}
         <div className={styles.roomName}>
           {

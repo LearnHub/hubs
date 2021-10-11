@@ -9,7 +9,7 @@ import { createAndRedirectToNewHub, getReticulumFetchUrl } from "../utils/phoeni
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCodeBranch } from "@fortawesome/free-solid-svg-icons/faCodeBranch";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons/faPencilAlt";
-import hmcLogo from "../../src/assets/images/hmc-logo.png";
+import { ReactComponent as HmcLogo } from "./icons/HmcLogo.svg";
 
 class SceneUI extends Component {
   static propTypes = {
@@ -216,11 +216,15 @@ class SceneUI extends Component {
         <div className={styles.grid}>
           <div className={styles.mainPanel}>
             <a href="/" className={styles.logo}>
-              <img
-                crossOrigin="anonymous"
-                src={isHmc ? hmcLogo : configs.image("logo")}
-                alt={<FormattedMessage id="scene-page.logo-alt" defaultMessage="Logo" />}
-              />
+              {isHmc ? (
+                <HmcLogo />
+              ) : (
+                <img
+                  crossOrigin="anonymous"
+                  src={configs.image("logo")}
+                  alt={<FormattedMessage id="scene-page.logo-alt" defaultMessage="Logo" />}
+                />
+              )}
             </a>
             <div className={styles.logoTagline}>{configs.translation("app-tagline")}</div>
             {this.props.showCreateRoom && (

@@ -6,6 +6,7 @@ import { mapMaterials } from "./material-utils";
 import HubsTextureLoader from "../loaders/HubsTextureLoader";
 import { validMaterials } from "../components/hoverable-visuals";
 import { proxiedUrlFor, guessContentType } from "../utils/media-url-utils";
+import { isIOS as detectIOS } from "./is-mobile";
 import Linkify from "linkify-it";
 import tlds from "tlds";
 import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
@@ -459,7 +460,7 @@ export async function createImageTexture(url, filter) {
   return texture;
 }
 
-const isIOS = AFRAME.utils.device.isIOS();
+const isIOS = detectIOS();
 
 /**
  * Create video element to be used as a texture.
@@ -572,4 +573,24 @@ export async function saveScreenshot(scene, format) {
     }, 'image/' + format);
   };
   scene.addEventListener("renderer.render.end", screenshotFunction);
+}
+
+export function hasAudioTracks(el) {
+  if (!el) return false;
+
+  // `audioTracks` is the "correct" way to check this but is not implemented by most browsers
+  // The rest of the checks are a bit of a race condition, but when loading videos we wait for
+  // the first frame to load, so audio should exist by then. We special case audio-only by checkin
+  // for a 0 size video. Not great...
+  if (el.audioTracks !== undefined) {
+    return el.audioTracks.length > 0;
+  } else if (el.videoWidth === 0 && el.videoHeight === 0) {
+    return true;
+  } else if (el.mozHasAudio !== undefined) {
+    return el.mozHasAudio;
+  } else if (el.webkitAudioDecodedByteCount !== undefined) {
+    return el.webkitAudioDecodedByteCount > 0;
+  } else {
+    return false;
+  }
 }

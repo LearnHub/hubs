@@ -31,8 +31,7 @@ export const defaultMaterialQualitySetting = (function() {
     return qsDefault;
   }
 
-  // AVN: Default to low material quality for now
-  return "low";
+  return "high";
 })();
 
 // Durable (via local-storage) schema-enforced state that is meant to be consumed via forward data flow.

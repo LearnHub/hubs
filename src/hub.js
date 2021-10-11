@@ -49,7 +49,7 @@ import "webrtc-adapter";
 import "aframe-slice9-component";
 import "./utils/threejs-positional-audio-updatematrixworld";
 import "./utils/threejs-world-update";
-import "./utils/threejs-raycast-patches";
+import "./utils/threejs-patches";
 import patchThreeAllocations from "./utils/threejs-allocation-patches";
 import { detectOS, detect } from "detect-browser";
 import {
@@ -211,20 +211,6 @@ window.APP.RENDER_ORDER = {
   HUD_ICONS: 3,
   CURSOR: 4
 };
-
-// TODO: Remove comments
-// TODO: Rename or reconfigure these as needed
-APP.audios = new Map(); //                           el -> (THREE.Audio || THREE.PositionalAudio)
-APP.sourceType = new Map(); //                       el -> SourceType
-APP.audioOverrides = new Map(); //                   el -> AudioSettings
-APP.zoneOverrides = new Map(); //                    el -> AudioSettings
-APP.audioDebugPanelOverrides = new Map(); // SourceType -> AudioSettings
-APP.sceneAudioDefaults = new Map(); //       SourceType -> AudioSettings
-APP.gainMultipliers = new Map(); //                  el -> Number
-APP.supplementaryAttenuation = new Map(); //         el -> Number
-APP.clippingState = new Set();
-APP.linkedMutedState = new Set();
-APP.isAudioPaused = new Set();
 
 const store = window.APP.store;
 store.update({ preferences: { shouldPromptForRefresh: undefined } }); // Clear flag that prompts for refresh from preference screen
@@ -1229,6 +1215,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         newName: current.profile.displayName
       });
     }
+  });
+  events.on(`hub:change`, ({ key, current }) => {
+    scene.emit("presence_updated", {
+      sessionId: key,
+      profile: current.profile,
+      roles: current.roles,
+      permissions: current.permissions,
+      streaming: current.streaming,
+      recording: current.recording
+    });
   });
 
   // We need to be able to wait for initial presence syncs across reconnects and socket migrations,
