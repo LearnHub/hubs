@@ -112,6 +112,12 @@ export class EnvironmentSystem {
     if (settings.backgroundTexture) {
       // Assume texture is always an equirect for now
       settings.backgroundTexture.mapping = THREE.EquirectangularReflectionMapping;
+
+      // AVN: Hack because KTX textures don't load properly if the renderer hasn't started
+      settings.backgroundTexture.minFilter = THREE.LinearFilter;
+      settings.backgroundTexture.magFilter = THREE.LinearMipmapLinearFilter;
+      settings.backgroundTexture.encoding = THREE.LinearEncoding;
+
       this.scene.background = settings.backgroundTexture;
     } else {
       this.scene.background = settings.backgroundColor;
