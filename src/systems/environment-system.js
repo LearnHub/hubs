@@ -31,7 +31,8 @@ export class EnvironmentSystem {
   constructor(sceneEl) {
     this.scene = sceneEl.object3D;
     this.renderer = sceneEl.renderer;
-
+    // AVN: SKYBOXHACK
+    this.avnBackground = null;
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
     this.applyEnvSettings(defaultEnvSettings);
@@ -109,18 +110,26 @@ export class EnvironmentSystem {
 
     this.scene.remove(window.lp);
 
+    // AVN: SKYBOXHACK
+    if(this.avnBackground) {
+      this.scene.remove(this.avnBackground);
+      this.avnBackground = null;
+    }
+
+    this.scene.background = settings.backgroundColor;
     if (settings.backgroundTexture) {
       // Assume texture is always an equirect for now
       settings.backgroundTexture.mapping = THREE.EquirectangularReflectionMapping;
 
-      // AVN: Hack because KTX textures don't load properly if the renderer hasn't started
-      settings.backgroundTexture.minFilter = THREE.LinearFilter;
-      settings.backgroundTexture.magFilter = THREE.LinearMipmapLinearFilter;
-      settings.backgroundTexture.encoding = THREE.LinearEncoding;
-
-      this.scene.background = settings.backgroundTexture;
-    } else {
-      this.scene.background = settings.backgroundColor;
+      // AVN: SKYBOXHACK because KTX textures don't load properly at the moment
+      const material = new THREE.MeshBasicMaterial();
+      material.side = THREE.BackSide;
+      const geometry = new THREE.SphereBufferGeometry(1, 64, 32);
+      geometry.scale(2000, -2000, -2000);
+      this.avnBackground = new THREE.Mesh(geometry, material);
+      this.avnBackground.material.map = settings.backgroundTexture;
+      this.scene.add(this.avnBackground);
+      // this.scene.background = settings.backgroundTexture;
     }
 
     if (settings.envMapTexture) {
