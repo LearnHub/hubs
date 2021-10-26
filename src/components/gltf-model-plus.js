@@ -426,10 +426,7 @@ class GLTFHubsPlugin {
     const allowHighQuality = gltf.asset?.generator == "Avantis dwindle";
     let materialQuality = "low";
     if(allowHighQuality) {
-      console.info("Using high quality materials");
       materialQuality = window.APP.store.materialQualitySetting;
-    } else {
-      console.info("Using low quality materials");
     }
     gltf.scene.traverse(object => {
       // GLTFLoader sets matrixAutoUpdate on animated objects, we want to keep the defaults
