@@ -403,7 +403,7 @@ class GLTFHubsPlugin {
 
     function hookDef(defType, hookName) {
       return Promise.all(
-        parser.json[defType].map((_def, idx) => {
+        (parser.json[defType] || []).map((_def, idx) => {
           return Promise.all(
             parser._invokeAll(function(ext) {
               return ext[hookName] && ext[hookName](idx);
@@ -414,7 +414,11 @@ class GLTFHubsPlugin {
     }
 
     // TODO decide if thse should get put into the GLTF loader itself
-    return Promise.all([hookDef("scenes", "extendScene"), hookDef("nodes", "extendNode")]);
+    return Promise.all([
+      hookDef("scenes", "extendScene"),
+      hookDef("nodes", "extendNode"),
+      hookDef("materials", "extendMaterial")
+    ]);
   }
 
   afterRoot(gltf) {
@@ -477,6 +481,11 @@ class GLTFHubsComponentsExtension {
     if (ext) return this.resolveComponentLinks(ext);
   }
 
+  extendMaterial(materialIdx) {
+    const ext = this.parser.json.materials[materialIdx]?.extensions?.MOZ_hubs_components;
+    if (ext) return this.resolveComponentLinks(ext);
+  }
+
   resolveComponentLinks(ext) {
     const deps = [];
 
@@ -489,6 +498,11 @@ class GLTFHubsComponentsExtension {
           deps.push(
             this.parser.getDependency(type, value.index).then(loadedDep => {
               props[propName] = loadedDep;
+              if (type === "texture" && !this.parser.json.textures[value.index].extensions?.MOZ_texture_rgbe) {
+                // For now assume all non HDR textures linked in hubs components are sRGB.
+                // We can allow this to be overriden later if needed
+                loadedDep.encoding = THREE.sRGBEncoding;
+              }
             })
           );
         }

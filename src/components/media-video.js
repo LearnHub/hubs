@@ -392,6 +392,7 @@ AFRAME.registerComponent("media-video", {
         texture = linkedVideoTexture;
         audioSourceEl = linkedAudioSource;
       } else {
+        this.el.emit("video-loading");
         ({ texture, audioSourceEl } = await this.createVideoTextureAudioSourceEl());
         if (getCurrentMirroredMedia() === this.el) {
           await refreshMediaMirror();
