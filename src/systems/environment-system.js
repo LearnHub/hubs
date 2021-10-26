@@ -116,12 +116,11 @@ export class EnvironmentSystem {
       this.avnBackground = null;
     }
 
-    this.scene.background = settings.backgroundColor;
     if (settings.backgroundTexture) {
       // Assume texture is always an equirect for now
       settings.backgroundTexture.mapping = THREE.EquirectangularReflectionMapping;
-
       // AVN: SKYBOXHACK because KTX textures don't load properly at the moment
+      this.scene.background = null;
       const material = new THREE.MeshBasicMaterial();
       material.side = THREE.BackSide;
       const geometry = new THREE.SphereBufferGeometry(1, 64, 32);
@@ -130,6 +129,8 @@ export class EnvironmentSystem {
       this.avnBackground.material.map = settings.backgroundTexture;
       this.scene.add(this.avnBackground);
       // this.scene.background = settings.backgroundTexture;
+    } else {
+      this.scene.background = settings.backgroundColor;
     }
 
     if (settings.envMapTexture) {
