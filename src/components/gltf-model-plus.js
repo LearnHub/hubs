@@ -570,8 +570,7 @@ class GLTFHubsTextureBasisExtension {
       return null;
     }
 
-    // AVN: Warning was flooding the console log
-    //console.warn(`The ${this.name} extension is deprecated, you should use KHR_texture_basisu instead.`);
+    console.warn(`The ${this.name} extension is deprecated, you should use KHR_texture_basisu instead.`);
 
     const extensionDef = textureDef.extensions[this.name];
     const source = json.images[extensionDef.source];
