@@ -89,7 +89,8 @@ export default class SceneEntryManager {
 
     this._spawnAvatar();
 
-    this.scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_ENTER_SCENE);
+    // AVN: Entry sound becomes a little repetivive when navigating between rooms
+    //this.scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_ENTER_SCENE);
 
     if (isBotMode) {
       this._runBot();
