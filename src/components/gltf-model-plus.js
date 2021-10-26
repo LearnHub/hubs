@@ -418,11 +418,19 @@ class GLTFHubsPlugin {
   }
 
   afterRoot(gltf) {
+    // AVN: High quality materials are only allowed on scenes that have been post-processed by dwindle
+    const allowHighQuality = gltf.asset?.generator == "Avantis dwindle";
+    let materialQuality = "low";
+    if(allowHighQuality) {
+      console.info("Using high quality materials");
+      materialQuality = window.APP.store.materialQualitySetting;
+    } else {
+      console.info("Using low quality materials");
+    }
     gltf.scene.traverse(object => {
       // GLTFLoader sets matrixAutoUpdate on animated objects, we want to keep the defaults
       // @TODO: Should this be fixed in the gltf loader?
       object.matrixAutoUpdate = THREE.Object3D.DefaultMatrixAutoUpdate;
-      const materialQuality = window.APP.store.materialQualitySetting;
       object.material = mapMaterials(object, material => convertStandardMaterial(material, materialQuality));
     });
 
