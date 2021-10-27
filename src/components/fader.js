@@ -17,7 +17,7 @@ AFRAME.registerComponent("fader", {
     const geometry = new THREE.IcosahedronGeometry(100, 10);
 
     // Color each vertex with a random shade
-    const colors = new Uint8Array(geometry.attributes.position.count);
+    const colors = new Uint8Array(geometry.attributes.position.count * 3);
     const step = 9;
     for(let i = 0; i < colors.length; i += step) {
       const shade = Math.pow(Math.random(), 4) * 4;
