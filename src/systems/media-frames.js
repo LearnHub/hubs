@@ -11,7 +11,8 @@ const DEBUG = qsTruthy("debug");
 
 const isCapturableByType = {
   [MediaType.ALL]: function(el) {
-    return !!(el && el.components["media-loader"]);
+    // AVN: Test for moveable
+    return !!(el && (el.components["media-loader"] || el.components["moveable"]));
   },
   [MediaType.ALL_2D]: function(el) {
     return !!(el && (el.components["media-image"] || el.components["media-video"] || el.components["media-pdf"]));
@@ -347,7 +348,7 @@ AFRAME.registerComponent("media-frame", {
       };
 
       // Make sure we snap the media element when it's loaded (otherwise we may only snap the loading object)
-      if (capturableEntity.components["media-loader"].isPlaying) {
+      if (capturableEntity.components["media-loader"]?.isPlaying) {
         capturableEntity.addEventListener(
           "media-loaded",
           () => {
