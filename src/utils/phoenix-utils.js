@@ -194,7 +194,7 @@ export function fetchReticulumAuthenticated(url, method = "GET", payload) {
   });
 }
 
-export async function createAndRedirectToNewHub(name, sceneId, replace, redirect) {
+export async function createAndRedirectToNewHub(name, sceneId, replace) {
   const createUrl = getReticulumFetchUrl("/api/v1/hubs");
   const payload = { hub: { name: name || generateHubName() } };
 
@@ -243,18 +243,15 @@ export async function createAndRedirectToNewHub(name, sceneId, replace, redirect
     }
   }
 
-  if(redirect != false) {
-    if (isLocalClient()) {
-      url = `/hub.html?hub_id=${hub.hub_id}`;
-    }
-
-    if (replace) {
-      document.location.replace(url);
-    } else {
-      document.location = url;
-    }
+  if (isLocalClient()) {
+    url = `/hub.html?hub_id=${hub.hub_id}`;
   }
-  return hub;
+
+  if (replace) {
+    document.location.replace(url);
+  } else {
+    document.location = url;
+  }
 }
 
 export function getPresenceEntryForSession(presences, sessionId) {
