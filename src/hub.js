@@ -982,6 +982,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   availableVREntryTypesPromise.then(async availableVREntryTypes => {
+    // AVN: Report VR entry types
+    console.info("Available VR Entry Types", availableVREntryTypes);
     if (isMobileVR) {
       remountUI({
         availableVREntryTypes,
