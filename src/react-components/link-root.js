@@ -285,11 +285,14 @@ class LinkRoot extends Component {
                 </div>
               )}
             </div>
+            {/* AVN: Don't give the option to create rooms */}
+            { false && (
             <div className={styles.createLink}>
               <a href="/">
                 <FormattedMessage id="link-page.create-room-button" defaultMessage="Create a new room" />
               </a>
             </div>
+            )}
           </div>
         </div>
       </WrappedIntlProvider>
