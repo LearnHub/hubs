@@ -821,6 +821,7 @@ class UIRoot extends Component {
     // TODO: What does onEnteringCanceled do?
     return (
       <>
+        {/* AVN: Room linking and VR mode have been separated */}
         <RoomEntryModal
           appName={configs.translation("app-name")}
           logoSrc={configs.image("logo")}
@@ -853,6 +854,13 @@ class UIRoot extends Component {
               SignInMessages.roomSettings
             );
           }}
+          headsetConnected={
+            isMobile || isMobileVR && (
+              this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no || 
+              this.props.availableVREntryTypes.cardboard !== VR_DEVICE_AVAILABILITY.no
+            )
+          }
+          onEnterOnConnectedHeadset={() => this.enterVR()}
         />
         {!this.state.waitingOnAudio && (
           <EntryStartPanel

@@ -5,6 +5,7 @@ import { Modal } from "../modal/Modal";
 import { Button } from "../input/Button";
 import { ReactComponent as EnterIcon } from "../icons/Enter.svg";
 import { ReactComponent as VRIcon } from "../icons/VR.svg";
+import { ReactComponent as PhoneIcon } from "../icons/Phone.svg";
 import { ReactComponent as ShowIcon } from "../icons/Show.svg";
 import { ReactComponent as SettingsIcon } from "../icons/Settings.svg";
 import { ReactComponent as HmcLogo } from "../icons/HmcLogo.svg";
@@ -28,6 +29,8 @@ export function RoomEntryModal({
   onSpectate,
   showOptions,
   onOptions,
+  headsetConnected,
+  onEnterOnConnectedHeadset,
   ...rest
 }) {
   const breakpoint = useCssBreakpoints();
@@ -61,12 +64,31 @@ export function RoomEntryModal({
           )}
           {showEnterOnDevice && (
             <Button preset="accent5" onClick={onEnterOnDevice}>
-              <VRIcon />
+              <PhoneIcon />
               <span>
-                <FormattedMessage id="room-entry-modal.enter-on-device-button" defaultMessage="Enter On Another Device" />
+                <FormattedMessage id="room-entry-modal.enter-on-device-button" defaultMessage="Move To Another Device" />
               </span>
             </Button>
           )}
+
+          {/* AVN: Duplicated code from EnterOnDeviceModal */}
+          {headsetConnected &&            
+            <>
+              <small>
+                <FormattedMessage
+                  id="enter-on-device-modal.headset-connected-message"
+                  defaultMessage="You have a VR headset connected to this device."
+                />
+              </small>
+              <Button preset="accent2" onClick={onEnterOnConnectedHeadset}>
+                <VRIcon />
+                <span>
+                  <FormattedMessage id="enter-on-device-modal.enter-in-vr-button" defaultMessage="Enter in VR" />
+                </span>
+              </Button>
+            </>
+          }
+
           {/* AVN: Hide the spectate button for now */false && showSpectate && (
             <Button preset="accent2" onClick={onSpectate}>
               <ShowIcon />

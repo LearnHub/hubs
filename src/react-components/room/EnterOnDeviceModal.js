@@ -36,19 +36,19 @@ export function EnterOnDeviceModal({
         ) : (
           <>
             <b>
-              <FormattedMessage id="enter-on-device-modal.heading" defaultMessage="Enter on Wireless Headset / Phone" />
+              <FormattedMessage id="enter-on-device-modal.heading" defaultMessage="Enter on Wireless Headset or Phone" />
             </b>
             <small>
               <FormattedMessage
                 id="enter-on-device-modal.short-url-directions"
-                defaultMessage="In your device's web browser, go to:"
+                defaultMessage="In your device's web browser go to:"
               />
             </small>
             <div className={styles.shortUrlContainer}>{shortUrl}</div>
             <small>
               <FormattedMessage
                 id="enter-on-device-modal.code-directions"
-                defaultMessage="Then, enter this one-time code:"
+                defaultMessage="Then enter this one-time code:"
               />
             </small>
             <div className={styles.codeContainer}>
@@ -70,7 +70,8 @@ export function EnterOnDeviceModal({
                 defaultMessage="Keep this page open to use this code."
               />
             </strong>
-            {headsetConnected && (
+            {/* AVN: Room links and VR mode have been separated */}
+            {false && headsetConnected && (
               <>
                 <hr
                   data-or-text={intl.formatMessage({ id: "enter-on-device-modal.divider-label", defaultMessage: "or" })}
