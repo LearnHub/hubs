@@ -53,9 +53,7 @@ const DEFAULT_FACETS = {
   ],
   avatars: [
     { text: "Featured", params: { filter: "featured" } },
-    /* AVN: Custom avatars not yet supported
     { text: "My Avatars", params: { filter: "my-avatars" } },
-    */
     { text: "Newest", params: { filter: "" } }
   ],
   favorites: [],
