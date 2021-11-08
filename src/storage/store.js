@@ -23,7 +23,8 @@ export const defaultMaterialQualitySetting = (function() {
     if (qsMobileDefault && MATERIAL_QUALITY_OPTIONS.indexOf(qsMobileDefault) !== -1) {
       return qsMobileDefault;
     }
-    return "low";
+    // AVN: All AVW scenes are optimized to run at high quality
+    return "high";
   }
 
   const qsDefault = qsGet("default_material_quality");
