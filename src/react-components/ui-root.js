@@ -1623,7 +1623,7 @@ class UIRoot extends Component {
                         }
 
                         { // AVN: Full screen button for mobile 
-                        isMobileVR && (
+                        isMobile && (
                           <ToolbarButton
                             icon={<FullScreenIcon />}
                             label={<FormattedMessage id="toolbar.fullscreen-button" defaultMessage="Fullscreen" />}
