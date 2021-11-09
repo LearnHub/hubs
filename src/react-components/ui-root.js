@@ -55,6 +55,7 @@ import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider }
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton } from "./room/ContentMenu";
 import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
+import { ReactComponent as ArrowBackIcon } from "./icons/ArrowBack.svg";
 import { ReactComponent as ScreenshotIcon } from "./icons/Screenshot.svg";
 import { ReactComponent as CameraIcon } from "./icons/Camera.svg";
 import { ReactComponent as AvatarIcon } from "./icons/Avatar.svg";
@@ -1555,13 +1556,26 @@ class UIRoot extends Component {
                 }
                 modal={this.state.dialog}                
                 toolbarLeft={
-                  // AVN: Invitations not supported
-                  showHiddenFeatures && 
-                    <InvitePopoverContainer
-                      hub={this.props.hub}
-                      hubChannel={this.props.hubChannel}
-                      scene={this.props.scene}
-                    />                 
+                  <>
+                    { // AVN: Back button (useful for mobile fullscreen)
+                    <ToolbarButton
+                      icon={<ArrowBackIcon />}
+                      label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
+                      onClick={() => {
+                        window.history.back();
+                      }}
+                    />
+                    }
+                    {
+                    // AVN: Invitations not supported
+                    showHiddenFeatures && 
+                      <InvitePopoverContainer
+                        hub={this.props.hub}
+                        hubChannel={this.props.hubChannel}
+                        scene={this.props.scene}
+                      />                 
+                    }
+                  </>
                 }
                 toolbarCenter={
                   <>
