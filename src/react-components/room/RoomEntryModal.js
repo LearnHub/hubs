@@ -71,8 +71,8 @@ export function RoomEntryModal({
             </Button>
           )}
 
-          {/* AVN: Duplicated code from EnterOnDeviceModal */}
-          {headsetConnected &&            
+          {/* AVN: Duplicated code from EnterOnDeviceModal. Hidden for now while there are issues with Google VR */}
+          {false && headsetConnected &&            
             <>
               <small>
                 <FormattedMessage

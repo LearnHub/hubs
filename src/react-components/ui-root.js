@@ -857,7 +857,7 @@ class UIRoot extends Component {
             );
           }}
           headsetConnected={
-            isMobile || isMobileVR && (
+            isMobile && (
               this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no || 
               this.props.availableVREntryTypes.cardboard !== VR_DEVICE_AVAILABILITY.no
             )
