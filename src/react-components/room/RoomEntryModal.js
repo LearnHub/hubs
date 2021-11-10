@@ -16,6 +16,9 @@ import { Column } from "../layout/Column";
 import { FormattedMessage } from "react-intl";
 import configs from "../../utils/configs";
 
+import qsTruthy from "../../utils/qs_truthy";
+const showHiddenFeatures = qsTruthy("showHiddenFeatures");
+
 export function RoomEntryModal({
   appName,
   logoSrc,
@@ -72,7 +75,7 @@ export function RoomEntryModal({
           )}
 
           {/* AVN: Duplicated code from EnterOnDeviceModal. Hidden for now while there are issues with Google VR */}
-          {false && headsetConnected &&            
+          {showHiddenFeatures && headsetConnected &&            
             <>
               <small>
                 <FormattedMessage
