@@ -75,6 +75,10 @@ import { ReactComponent as VRIcon } from "./icons/VR.svg";
 import { ReactComponent as LeaveIcon } from "./icons/Leave.svg";
 import { ReactComponent as EnterIcon } from "./icons/Enter.svg";
 import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
+import { ReactComponent as GatherIcon } from "./icons/People.svg";
+import { ReactComponent as HushIcon } from "./icons/Hush.svg";
+import { ReactComponent as LookIcon } from "./icons/Show.svg";
+import { ReactComponent as EduverseIcon } from "./icons/Eduverse.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
@@ -1558,13 +1562,15 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
+                    entered &&
                     <ToolbarButton
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
                       onClick={() => {
                         window.history.back();
                       }}
-                    />}
+                    />
+                    }
                     { // AVN: Permanent Save Logs button on the toolbar
                     <ToolbarButton
                       icon={<SupportIcon />}
@@ -1578,7 +1584,8 @@ class UIRoot extends Component {
                         }
                         SaveConsoleLog();
                       }}                      
-                    />}
+                    />
+                    }
                     {
                     // AVN: Invitations not supported
                     showHiddenFeatures && 
@@ -1682,6 +1689,39 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
+                    { // AVN: Placeholder eduverse button
+                    entered &&
+                    <ToolbarButton
+                      icon={<GatherIcon />}
+                      label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
+                      preset="basic"
+                    />
+                    }
+                    { // AVN: Placeholder eduverse button
+                    entered &&
+                    <ToolbarButton
+                      icon={<HushIcon />}
+                      label={<FormattedMessage id="toolbar.hush-button" defaultMessage="Hush" />}
+                      preset="basic"
+                    />
+                    }
+                    { // AVN: Placeholder eduverse button
+                    entered &&
+                    <ToolbarButton
+                      icon={<LookIcon />}
+                      label={<FormattedMessage id="toolbar.look-button" defaultMessage="Look" />}
+                      preset="basic"
+                    />
+                    }
+                    { // AVN: Placeholder eduverse button
+                    entered &&
+                    <ToolbarButton
+                      icon={<EduverseIcon />}
+                      label={<FormattedMessage id="toolbar.eduverse-button" defaultMessage="Eduverse" />}
+                      preset="basic"
+                      onClick={() => this.setSidebar("room-info")}
+                      />
+                    }
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
