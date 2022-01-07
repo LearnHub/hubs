@@ -51,6 +51,7 @@ import { EnterOnDeviceModal } from "./room/EnterOnDeviceModal";
 import { MicPermissionsModal } from "./room/MicPermissionsModal";
 import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
+import { InviteAvnPopoverContainer } from "./room/InviteAvnPopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton } from "./room/ContentMenu";
@@ -1574,7 +1575,7 @@ class UIRoot extends Component {
                     { // AVN: Permanent Save Logs button on the toolbar
                     <ToolbarButton
                       icon={<SupportIcon />}
-                      label={<FormattedMessage id="toolbar.send-logs" defaultMessage="Logs" />}
+                      label={<FormattedMessage id="more-menu.help" defaultMessage="Help" />}
                       preset="basic"
                       onClick={() => { 
                         this.props.scene.writeStatisticsToConsole(); 
@@ -1587,7 +1588,7 @@ class UIRoot extends Component {
                     />
                     }
                     {
-                    // AVN: Invitations not supported
+                    // AVN: Standard invitations not supported
                     showHiddenFeatures && 
                       <InvitePopoverContainer
                         hub={this.props.hub}
@@ -1689,6 +1690,14 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
+                    {
+                    // AVN: Custom invitations
+                      <InviteAvnPopoverContainer
+                        hub={this.props.hub}
+                        hubChannel={this.props.hubChannel}
+                        scene={this.props.scene}
+                      />                 
+                    }
                     { // AVN: Placeholder eduverse button
                     entered &&
                     <ToolbarButton
@@ -1714,7 +1723,6 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Placeholder eduverse button
-                    entered &&
                     <ToolbarButton
                       icon={<EduverseIcon />}
                       label={<FormattedMessage id="toolbar.eduverse-button" defaultMessage="Eduverse" />}

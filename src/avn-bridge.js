@@ -3,7 +3,8 @@
 class AvnBridge {
 
   constructor() {
-    this._avnDomain = "https://scene.link";
+    this._shareDomain = "https://eduverse.link";
+    this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
     this._dimensionId = new URLSearchParams(document.location.search).get("dimension_id");
     this._assetId = new URLSearchParams(document.location.search).get("asset_id");
@@ -25,12 +26,18 @@ class AvnBridge {
       console.warn("AVN: No asset ID found so scene links will be disabled");
     }
 
-    this._mediaEndpoint = this._avnDomain + `/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
+    this._mediaEndpoint = this._assetDomain + `/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
 
   }
 
-  get avnDomain() {
-    return this._avnDomain;
+  get invitationUrl() {
+    // TODO: RESOLVE HOW SHARING LINKS WILL WORK. PROBABLY USER CENTRIC
+    //return `${this._shareDomain}/${this._dimensionId}`;
+    return `${this._shareDomain}/${this._dimensionId}/${this._assetId}`;
+  }
+
+  get assetDomain() {
+    return this._assetDomain;
   }
 
   get dimensionId() {
@@ -52,12 +59,12 @@ class AvnBridge {
         // if no asset ID is supplied then the scene link is void because this room is not navigable
         // Note: the fragment sets the waypoint for the users entry position
         return this._assetId 
-          ? url.replace(this._avnDomain, `${this._avnDomain}/${this._dimensionId}`) + "#" + this._assetId 
+          ? url.replace(this._assetDomain, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId 
           : "";
   }
 
   async fetchRoomData(assetid) {
-    const resolveRoomUrl = `${this._avnDomain}/com/Dimensions.cfc?method=room&dimensionid=${this._dimensionId}&assetid=${assetid}`;
+    const resolveRoomUrl = `${this._assetDomain}/com/Dimensions.cfc?method=room&dimensionid=${this._dimensionId}&assetid=${assetid}`;
     const resolveRoomResponse = await fetch(resolveRoomUrl);
     const roomData = await resolveRoomResponse.json();
     return roomData;
@@ -66,7 +73,7 @@ class AvnBridge {
   // Media
 
   isAvnUrl(url) {
-    return url.startsWith(this._avnDomain);
+    return url.startsWith(this._assetDomain);
   }
 
   get mediaEndpoint() {
@@ -80,7 +87,7 @@ class AvnBridge {
   }
 
   transformActivityUrl(url) {
-    return url.replace(`${this._apiDomain}/manage/activity.cfm?id=`, `${this._avnDomain}/${this._dimensionId}/ID`)
+    return url.replace(`${this._apiDomain}/manage/activity.cfm?id=`, `${this._assetDomain}/${this._dimensionId}/ID`)
   }
 
 }
