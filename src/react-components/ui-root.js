@@ -1506,9 +1506,10 @@ class UIRoot extends Component {
                       )}
                       {this.state.sidebarId === "eduverse" && (
                         <EduverseSidebarContainer
+                          room={this.props.hub}
                           onClose={() => this.setSidebar(null)}
                         />
-                      )}
+                    )}
                       {this.state.sidebarId === "profile" && (
                         <ProfileEntryPanel
                           history={this.props.history}

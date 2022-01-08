@@ -32,7 +32,7 @@ export async function changeHubAvn(hubUrl) {
   console.log("Fast switching to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
   const roomData = await avnBridge.fetchRoomData(newAssetId);
-  console.log("Resolved Hub room from AVN server", roomData);
+  console.log("Resolved Hub room from AVN server");
   const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnBridge.assetId, name: roomData.name, icon: roomData.icon };
   await changeHub(nextState, true);
 }
