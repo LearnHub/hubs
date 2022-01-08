@@ -54,7 +54,7 @@ import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { InviteAvnPopoverContainer } from "./room/InviteAvnPopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
-import { ContentMenu, PeopleMenuButton, ObjectsMenuButton } from "./room/ContentMenu";
+import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, EduverseMenuButton } from "./room/ContentMenu";
 import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
 import { ReactComponent as ArrowBackIcon } from "./icons/ArrowBack.svg";
 import { ReactComponent as ScreenshotIcon } from "./icons/Screenshot.svg";
@@ -79,11 +79,11 @@ import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
 import { ReactComponent as GatherIcon } from "./icons/People.svg";
 import { ReactComponent as HushIcon } from "./icons/Hush.svg";
 import { ReactComponent as LookIcon } from "./icons/Show.svg";
-import { ReactComponent as EduverseIcon } from "./icons/Eduverse.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
 import { ObjectMenuContainer } from "./room/ObjectMenuContainer";
+import { EduverseSidebarContainer } from "./room/EduverseSidebarContainer";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
@@ -107,6 +107,7 @@ import { SignInMessages } from "./auth/SignInModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
+const showPremiumFeatures = qsTruthy("showPremiumFeatures");
 
 const IN_ROOM_MODAL_ROUTER_PATHS = ["/media"];
 const IN_ROOM_MODAL_QUERY_VARS = ["media_source"];
@@ -1416,6 +1417,10 @@ class UIRoot extends Component {
                           onClick={() => this.toggleSidebar("people")}
                           presencecount={this.state.presenceCount}
                         />
+                        <EduverseMenuButton
+                          active={this.state.sidebarId === "eduverse"}
+                          onClick={() => this.toggleSidebar("eduverse")}
+                        />
                       </ContentMenu>
                     )}
                     {!entered && !streaming && !isMobile && streamerName && <SpectatingLabel name={streamerName} />}
@@ -1497,6 +1502,11 @@ class UIRoot extends Component {
                           onCloseDialog={() => this.closeDialog()}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
                           performConditionalSignIn={this.props.performConditionalSignIn}
+                        />
+                      )}
+                      {this.state.sidebarId === "eduverse" && (
+                        <EduverseSidebarContainer
+                          onClose={() => this.setSidebar(null)}
                         />
                       )}
                       {this.state.sidebarId === "profile" && (
@@ -1699,7 +1709,7 @@ class UIRoot extends Component {
                       />                 
                     }
                     { // AVN: Placeholder eduverse button
-                    entered &&
+                    showPremiumFeatures && entered &&
                     <ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
@@ -1707,7 +1717,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Placeholder eduverse button
-                    entered &&
+                    showPremiumFeatures && entered &&
                     <ToolbarButton
                       icon={<HushIcon />}
                       label={<FormattedMessage id="toolbar.hush-button" defaultMessage="Hush" />}
@@ -1715,20 +1725,12 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Placeholder eduverse button
-                    entered &&
+                    showPremiumFeatures && entered &&
                     <ToolbarButton
                       icon={<LookIcon />}
                       label={<FormattedMessage id="toolbar.look-button" defaultMessage="Look" />}
                       preset="basic"
                     />
-                    }
-                    { // AVN: Placeholder eduverse button
-                    <ToolbarButton
-                      icon={<EduverseIcon />}
-                      label={<FormattedMessage id="toolbar.eduverse-button" defaultMessage="Eduverse" />}
-                      preset="basic"
-                      onClick={() => this.setSidebar("room-info")}
-                      />
                     }
                     {entered &&
                       isMobileVR && (

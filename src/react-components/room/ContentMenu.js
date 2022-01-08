@@ -5,6 +5,7 @@ import { joinChildren } from "../misc/joinChildren";
 import styles from "./ContentMenu.scss";
 import { ReactComponent as ObjectsIcon } from "../icons/Objects.svg";
 import { ReactComponent as PeopleIcon } from "../icons/People.svg";
+import { ReactComponent as EduverseIcon } from "../icons/Eduverse.svg";
 import { FormattedMessage } from "react-intl";
 
 export function ContentMenuButton({ active, children, ...props }) {
@@ -48,6 +49,24 @@ export function PeopleMenuButton(props) {
 PeopleMenuButton.propTypes = {
   presencecount: PropTypes.number
 };
+
+export function EduverseMenuButton(props) {
+  return (
+    <ContentMenuButton {...props}>
+      <EduverseIcon />
+      <span>
+        <FormattedMessage
+          id="content-menu.eduverse-menu-button"
+          defaultMessage="Eduverse"
+        />
+      </span>
+    </ContentMenuButton>
+  );
+}
+EduverseMenuButton.propTypes = {
+};
+
+
 
 export function ContentMenu({ children }) {
   return <div className={styles.contentMenu}>{joinChildren(children, () => <div className={styles.separator} />)}</div>;
