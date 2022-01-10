@@ -1,5 +1,5 @@
 /* global APP*/
-import { getReticulumFetchUrl, hubUrl, isLocalClient } from "./utils/phoenix-utils";
+import { getReticulumFetchUrl, hubUrl } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
 
 import { avnBridge } from "./avn-bridge"
@@ -61,19 +61,10 @@ export async function changeHub(nextState, addToHistory = true) {
 
   if (addToHistory) {
     const prevState = { hubId: APP.hub.hub_id, newAssetId: nextState.oldAssetId, oldAssetId: nextState.newAssetId, name: document.title, icon: favicon.getAttribute("href") };
-    if(isLocalClient()) {
-      // Replace current state so the fragment/waypoint will be set when using the BACK button
-      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { "dimension_id": avnBridge.dimensionId, "asset_id": nextState.oldAssetId }, hub.slug, nextState.newAssetId));
-      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { "dimension_id": avnBridge.dimensionId, "asset_id": nextState.newAssetId }, hub.slug, nextState.oldAssetId));
-    } else {
-      // Replace current state so the fragment/waypoint will be set when using the BACK button
-      window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { }, avnBridge.dimensionId + "/" + nextState.oldAssetId, nextState.newAssetId));
-      window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, avnBridge.dimensionId + "/" + nextState.newAssetId, nextState.oldAssetId));
-    }
+    // Replace current state so the fragment/waypoint will be set when using the BACK button
+    window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { }, nextState.oldAssetId, nextState.newAssetId));
+    window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, nextState.newAssetId, nextState.oldAssetId));
   }
-
-  // Update current asset ID now the room has changed
-  avnBridge.assetId = nextState.newAssetId;
 
   // Page title and icon
   document.title = nextState.name;

@@ -3,7 +3,6 @@
 class AvnBridge {
 
   constructor() {
-    this._shareDomain = "https://eduverse.link";
     this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
     this._dimensionId = null;
@@ -16,7 +15,7 @@ class AvnBridge {
     if(userData) {
       if(userData.dimensionid && this._dimensionId != userData.dimensionid) {
         this._dimensionId = userData.dimensionid;
-        this._mediaEndpoint = this._assetDomain + `/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
+        this._mediaEndpoint =`${this._assetDomain}/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
         console.info(`AVN: Updated dimension id to '${this._dimensionId}'`)
       } else {
         console.error("AVN: No dimensionid is set")
@@ -32,12 +31,6 @@ class AvnBridge {
     }
   }
 
-  get invitationUrl() {
-    // TODO: RESOLVE HOW SHARING LINKS WILL WORK. PROBABLY USER CENTRIC
-    //return `${this._shareDomain}/${this._dimensionId}`;
-    return `${this._shareDomain}/${this._dimensionId}/${this._assetId}`;
-  }
-
   get assetDomain() {
     return this._assetDomain;
   }
@@ -48,10 +41,6 @@ class AvnBridge {
 
   get assetId() {
     return this._assetId;
-  }
-
-  set assetId(value) {
-    this._assetId = value;
   }
 
   // Rooms
