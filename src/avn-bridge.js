@@ -7,6 +7,7 @@ class AvnBridge {
     this._apiDomain = "https://api.avncloud.com";
     this._dimensionId = null;
     this._assetId = null;
+    this._iconUri = null;
     this._mediaEndpoint = null;
   }
 
@@ -26,6 +27,12 @@ class AvnBridge {
       } else {
         console.error("AVN: No assetid is set")
       }
+      if(userData.iconuri && this._iconUri != userData.iconuri) {
+        this._iconUri = userData.iconuri;
+        console.info(`AVN: Updated icon to '${this._iconUri}'`)
+      } else {
+        console.error("AVN: No iconuri is set")
+      }
     } else {
       console.error("AVN: No user_data is set")
     }
@@ -41,6 +48,10 @@ class AvnBridge {
 
   get assetId() {
     return this._assetId;
+  }
+
+  get iconUri() {
+    return this._iconUri;
   }
 
   // Rooms

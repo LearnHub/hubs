@@ -15,5 +15,19 @@
   ol { 
     list-style-type: decimal;
   }
+  .premium-feature {
+    color: red;
+  }
+  .premium-feature:after {
+    content: "🔒";
+  }
+}
+
+:local(.scene-icon) {
+  height: 1em;
+  max-width: 2em;
+  margin-right: 8px;
+  vertical-align: middle;
+  float: left;
 }
 

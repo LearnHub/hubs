@@ -36,7 +36,7 @@ export function EnterOnDeviceModal({
         ) : (
           <>
             <b>
-              <FormattedMessage id="enter-on-device-modal.heading" defaultMessage="Enter on Wireless Headset or Phone" />
+              <FormattedMessage id="enter-on-device-modal.heading" defaultMessage="Enter on Headset or Phone" />
             </b>
             <small>
               <FormattedMessage
