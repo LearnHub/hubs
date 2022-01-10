@@ -51,7 +51,6 @@ import { EnterOnDeviceModal } from "./room/EnterOnDeviceModal";
 import { MicPermissionsModal } from "./room/MicPermissionsModal";
 import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
-import { InviteAvnPopoverContainer } from "./room/InviteAvnPopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, EduverseMenuButton } from "./room/ContentMenu";
@@ -1130,7 +1129,6 @@ class UIRoot extends Component {
     const canCreateRoom = !configs.feature("disable_room_creation") || configs.isAdmin();
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
     const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
-
     const moreMenu = [
       {
         id: "user",
@@ -1598,15 +1596,6 @@ class UIRoot extends Component {
                       }}                      
                     />
                     }
-                    {
-                    // AVN: Standard invitations not supported
-                    showHiddenFeatures && 
-                      <InvitePopoverContainer
-                        hub={this.props.hub}
-                        hubChannel={this.props.hubChannel}
-                        scene={this.props.scene}
-                      />                 
-                    }
                   </>
                 }
                 toolbarCenter={
@@ -1701,9 +1690,8 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
-                    {
-                    // AVN: Custom invitations
-                      <InviteAvnPopoverContainer
+                    { // AVN: Moved invite link to the right as part of the "Teacher Tools"
+                      <InvitePopoverContainer
                         hub={this.props.hub}
                         hubChannel={this.props.hubChannel}
                         scene={this.props.scene}

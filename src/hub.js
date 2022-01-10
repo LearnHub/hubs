@@ -260,6 +260,7 @@ import { OAuthScreenContainer } from "./react-components/auth/OAuthScreenContain
 import { SignInMessages } from "./react-components/auth/SignInModal";
 import { ThemeProvider } from "./react-components/styles/theme";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
+import { avnBridge } from "./avn-bridge";
 
 const PHOENIX_RELIABLE_NAF = "phx-reliable";
 NAF.options.firstSyncSource = PHOENIX_RELIABLE_NAF;
@@ -403,6 +404,10 @@ export async function getSceneUrlForHub(hub) {
 
 export async function updateEnvironmentForHub(hub, entryManager) {
   console.log("Updating environment for hub");
+
+  // AVN: Set AVN context
+  avnBridge.updateFromHub(hub);
+
   const sceneUrl = await getSceneUrlForHub(hub);
 
   const sceneErrorHandler = () => {

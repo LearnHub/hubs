@@ -9,6 +9,8 @@ import { Column } from "../layout/Column";
 import { InviteLinkInputField } from "./InviteLinkInputField";
 import { FormattedMessage, defineMessage, useIntl } from "react-intl";
 
+const QRCode = require('qrcode.react');
+
 function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetchingInvite, inviteUrl, revokeInvite }) {
   return (
     <Column center padding grow gap="lg" className={styles.invitePopover}>
@@ -18,6 +20,11 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
         </>
       ) : (
         <>
+          <QRCode 
+            value={url} 
+            renderAs="svg"
+            size={256}
+          />
           <CopyableTextInputField
             label={<FormattedMessage id="invite-popover.room-link" defaultMessage="Room Link" />}
             value={url}
@@ -36,11 +43,11 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
               </>
             }
           />
-          <CopyableTextInputField
+          {/* <CopyableTextInputField
             label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
             value={embed}
             buttonPreset="accent5"
-          />
+          /> */}
         </>
       )}
     </Column>

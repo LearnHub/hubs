@@ -6,28 +6,30 @@ class AvnBridge {
     this._shareDomain = "https://eduverse.link";
     this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
-    this._dimensionId = new URLSearchParams(document.location.search).get("dimension_id");
-    this._assetId = new URLSearchParams(document.location.search).get("asset_id");
-    const pathParts = document.location.pathname.split('/');
-    if(pathParts.length > 2) {
-      this._dimensionId = document.location.pathname.split('/')[2];
-    }
-    if(pathParts.length > 3) {
-      this._assetId = document.location.pathname.split('/')[3];
-    }
-    if(this._dimensionId) {
-      console.log(`AVN: Dimension ID: ${this._dimensionId}`);
-    } else {
-      console.error("AVN: No dimension found");
-    }
-    if(this._assetId) {
-      console.log(`AVN: Asset ID: ${this._assetId}`);
-    } else {
-      console.warn("AVN: No asset ID found so scene links will be disabled");
-    }
+    this._dimensionId = null;
+    this._assetId = null;
+    this._mediaEndpoint = null;
+  }
 
-    this._mediaEndpoint = this._assetDomain + `/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
-
+  updateFromHub(hub) {
+    const userData = hub.user_data;
+    if(userData) {
+      if(userData.dimensionid && this._dimensionId != userData.dimensionid) {
+        this._dimensionId = userData.dimensionid;
+        this._mediaEndpoint = this._assetDomain + `/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
+        console.info(`AVN: Updated dimension id to '${this._dimensionId}'`)
+      } else {
+        console.error("AVN: No dimensionid is set")
+      }
+      if(userData.assetid && this._assetId != userData.assetid) {
+        this._assetId = userData.assetid;
+        console.info(`AVN: Updated asset id to '${this._assetId}'`)
+      } else {
+        console.error("AVN: No assetid is set")
+      }
+    } else {
+      console.error("AVN: No user_data is set")
+    }
   }
 
   get invitationUrl() {

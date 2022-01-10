@@ -5,20 +5,7 @@
 
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
     padding-top: 8px;
-    width: 272px;
+    /* AVN: Increase width so URL is always visible */
+    width: 325px;
   }
-}
-
-/* AVN: Custom invite */
-:local(.invite-avn-popover) {
-  width: 100%;
-
-  @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
-    padding-top: 8px;
-    width: 300px;
-  }
-}
-
-:local(.input-field-wide) {
-  max-width: 260px;
 }
