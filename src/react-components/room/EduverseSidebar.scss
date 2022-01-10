@@ -1,0 +1,19 @@
+@use "../styles/theme.scss";
+
+:local(.markdown) {
+  p, h2 {
+    padding-bottom: 1em;
+  }
+  li {
+    padding-bottom: 1ex;
+  }
+  ul, ol {
+    list-style: disc outside none;
+    margin: 0 0;
+    padding: 0 0 1em 2em;
+  }
+  ol { 
+    list-style-type: decimal;
+  }
+}
+
