@@ -48,7 +48,7 @@ export function EduverseSidebar({ room, onClose }) {
     >
       <Column padding>
         <h1>
-          {avnBridge.iconUri && (<img crossOrigin="anonymous" src={avnBridge.iconUri} className={styles.sceneIcon}/>)}
+          {avnBridge.iconUri && (<img src={avnBridge.iconUri} className={styles.sceneIcon}/>)}
           {room.name}
         </h1>
         {room.description && (
