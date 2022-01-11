@@ -8,6 +8,7 @@ import { Column } from "../layout/Column";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import markdownit from "markdown-it";
 import { avnBridge } from "../../avn-bridge"
+import { CopyableTextInputField } from "../input/CopyableTextInputField";
 
 const md = markdownit();
 
@@ -53,6 +54,13 @@ export function EduverseSidebar({ room, onClose }) {
         </h1>
         {room.description && (
             <p className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(room.description) }} />
+        )}
+        {avnBridge.assetId && (
+          <CopyableTextInputField
+            label={<FormattedMessage id="eduverse-sidebar.share-link" defaultMessage="Share this scene" />}
+            value={`https://go.eduverse.com/${avnBridge.assetId}`}
+            buttonPreset="accent2"
+          />
         )}
       </Column>
     </Sidebar>
