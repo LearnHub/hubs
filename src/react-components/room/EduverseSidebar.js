@@ -27,7 +27,7 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   const hIndex = tokens[idx].attrIndex('href');
   if (hIndex >= 0) {
     const href = tokens[idx].attrs[hIndex][1];
-    if(!(href.startsWith("https://avantisworld.com") || href.startsWith("https://www.avantisworld.com"))) {
+    if(!(href.startsWith("https://avantisworld.com") || href.startsWith("https://www.avantisworld.com") || href.startsWith("https://eduverse.com"))) {
       tokens[idx].attrs[hIndex][1] = 'https://eduverse.com';
       tokens[idx].attrPush(['title', 'This is a premium feature']);
       tokens[idx].attrPush(['class', 'premium-feature']);
