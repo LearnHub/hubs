@@ -103,6 +103,7 @@ import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
+import { avnBridge } from "../avn-bridge";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -1581,19 +1582,14 @@ class UIRoot extends Component {
                       }}
                     />
                     }
-                    { // AVN: Permanent Save Logs button on the toolbar
+                    { // AVN: Home button
+                    entered && avnBridge.assetId !== "homeroom" &&
                     <ToolbarButton
-                      icon={<SupportIcon />}
-                      label={<FormattedMessage id="more-menu.help" defaultMessage="Help" />}
-                      preset="basic"
-                      onClick={() => { 
-                        this.props.scene.writeStatisticsToConsole(); 
-                        const stats = document.getElementById("stats");
-                        if(stats) {
-                          stats.components["stats-plus"].writeStatisticsToConsole();
-                        }
-                        SaveConsoleLog();
-                      }}                      
+                      icon={<HomeIcon />}
+                      label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}
+                      onClick={() => {
+                        avnBridge.openSceneByAssetId("homeroom");
+                      }}
                     />
                     }
                   </>
@@ -1729,7 +1725,8 @@ class UIRoot extends Component {
                           label={<FormattedMessage id="toolbar.enter-vr-button" defaultMessage="Enter VR" />}
                           onClick={() => exit2DInterstitialAndEnterVR(true)}
                         />
-                      )}
+                      )
+                    }
                     { /* AVN: "Leave" menu not currently required */ }                       
                     {showHiddenFeatures && entered && (
                       <ToolbarButton
@@ -1744,6 +1741,21 @@ class UIRoot extends Component {
                         }}
                       />
                     )}
+                    { // AVN: Permanent Save Logs button on the toolbar
+                    <ToolbarButton
+                      icon={<SupportIcon />}
+                      label={<FormattedMessage id="more-menu.help" defaultMessage="Help" />}
+                      preset="basic"
+                      onClick={() => { 
+                        this.props.scene.writeStatisticsToConsole(); 
+                        const stats = document.getElementById("stats");
+                        if(stats) {
+                          stats.components["stats-plus"].writeStatisticsToConsole();
+                        }
+                        SaveConsoleLog();
+                      }}                      
+                    />
+                    }
                     { 
                       // AVN: "More" menu not currently required
                       showHiddenFeatures && 

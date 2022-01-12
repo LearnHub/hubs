@@ -1,10 +1,13 @@
 // Utilities for linking Hubs and AVN Cloud
 
+import { changeHubAvn } from "./change-hub";
+
 class AvnBridge {
 
   constructor() {
     this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
+    this._eduverseSessionDomain = "https://go.eduverse.com";
     this._dimensionId = null;
     this._assetId = null;
     this._iconUri = null;
@@ -38,6 +41,10 @@ class AvnBridge {
     }
   }
 
+  get eduverseSessionDomain() {
+    return this._eduverseSessionDomain;
+  }
+
   get assetDomain() {
     return this._assetDomain;
   }
@@ -57,12 +64,12 @@ class AvnBridge {
   // Rooms
 
   transformRoomUrl(url) {
-        // Use the absolute avatar URL is supplied otherwise it is a scene link
-        // if no asset ID is supplied then the scene link is void because this room is not navigable
-        // Note: the fragment sets the waypoint for the users entry position
-        return this._assetId 
-          ? url.replace(this._assetDomain, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId 
-          : "";
+    // Use the absolute avatar URL is supplied otherwise it is a scene link
+    // if no asset ID is supplied then the scene link is void because this room is not navigable
+    // Note: the fragment sets the waypoint for the users entry position
+    return this._assetId 
+      ? url.replace(this._assetDomain, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId 
+      : "";
   }
 
   async fetchRoomData(assetid) {
@@ -80,6 +87,12 @@ class AvnBridge {
 
   get mediaEndpoint() {
     return this._mediaEndpoint;
+  }
+
+  // Utility
+
+  openSceneByAssetId(assetid) {
+    changeHubAvn(`${this._assetDomain}/${assetid}`);
   }
 
   // ClassConnect Activities (hack for demo room)

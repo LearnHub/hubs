@@ -58,7 +58,7 @@ export function EduverseSidebar({ room, onClose }) {
         {avnBridge.assetId && (
           <CopyableTextInputField
             label={<FormattedMessage id="eduverse-sidebar.share-link" defaultMessage="Share this scene" />}
-            value={`https://go.eduverse.com/${avnBridge.assetId}`}
+            value={`${avnBridge.eduverseSessionDomain}/${avnBridge.assetId}`}
             buttonPreset="accent2"
           />
         )}
