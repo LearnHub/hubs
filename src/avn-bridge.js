@@ -1,7 +1,5 @@
 // Utilities for linking Hubs and AVN Cloud
 
-import { changeHubAvn } from "./change-hub";
-
 class AvnBridge {
 
   constructor() {
@@ -87,12 +85,6 @@ class AvnBridge {
 
   get mediaEndpoint() {
     return this._mediaEndpoint;
-  }
-
-  // Utility
-
-  openSceneByAssetId(assetid) {
-    changeHubAvn(`${this._assetDomain}/${assetid}`);
   }
 
   // ClassConnect Activities (hack for demo room)

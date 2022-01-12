@@ -104,6 +104,7 @@ import { TipContainer, FullscreenTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
 import { avnBridge } from "../avn-bridge";
+import { changeHubAvn } from "../change-hub";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -1588,7 +1589,7 @@ class UIRoot extends Component {
                       icon={<HomeIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}
                       onClick={() => {
-                        avnBridge.openSceneByAssetId("homeroom");
+                        changeHubAvn(`${avnBridge.assetDomain}/homeroom`);
                       }}
                     />
                     }
