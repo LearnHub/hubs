@@ -1406,6 +1406,10 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
+                        <EduverseMenuButton
+                          active={this.state.sidebarId === "eduverse"}
+                          onClick={() => this.toggleSidebar("eduverse")}
+                        />
                         {showObjectList && (
                           <ObjectsMenuButton
                             active={this.state.sidebarId === "objects"}
@@ -1416,10 +1420,6 @@ class UIRoot extends Component {
                           active={this.state.sidebarId === "people"}
                           onClick={() => this.toggleSidebar("people")}
                           presencecount={this.state.presenceCount}
-                        />
-                        <EduverseMenuButton
-                          active={this.state.sidebarId === "eduverse"}
-                          onClick={() => this.toggleSidebar("eduverse")}
                         />
                       </ContentMenu>
                     )}

@@ -15,22 +15,24 @@ class AvnBridge {
   updateFromHub(hub) {
     const userData = hub.user_data;
     if(userData) {
-      if(userData.dimensionid && this._dimensionId != userData.dimensionid) {
-        this._dimensionId = userData.dimensionid;
-        this._mediaEndpoint =`${this._assetDomain}/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
-        console.info(`AVN: Updated dimension id to '${this._dimensionId}'`)
+      if(userData.dimensionid) {
+        if(this._dimensionId != userData.dimensionid) {
+          this._dimensionId = userData.dimensionid;
+          this._mediaEndpoint =`${this._assetDomain}/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
+          console.info(`AVN: Updated dimension id to '${this._dimensionId}'`);
+        }
       } else {
         console.error("AVN: No dimensionid is set")
       }
       if(userData.assetid && this._assetId != userData.assetid) {
         this._assetId = userData.assetid;
-        console.info(`AVN: Updated asset id to '${this._assetId}'`)
+        console.info(`AVN: Updated asset id to '${this._assetId}'`);
       } else {
         console.error("AVN: No assetid is set")
       }
       if(userData.iconuri && this._iconUri != userData.iconuri) {
         this._iconUri = userData.iconuri;
-        console.info(`AVN: Updated icon to '${this._iconUri}'`)
+        console.info(`AVN: Updated icon to '${this._iconUri}'`);
       } else {
         console.error("AVN: No iconuri is set")
       }

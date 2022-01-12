@@ -43,7 +43,7 @@ AFRAME.registerComponent("action-trigger-volume", {
         } else {
           // Only navigate if this is an 'explorable' room
           if(this.data.src) {
-            console.log("Navigating to ", this.data.src);
+            console.log("Navigating to", this.data.src);
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
             // AVN: Hack for links in the demo room
             if(avnBridge.isActivityUrl(this.data.src)) {
