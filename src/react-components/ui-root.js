@@ -33,7 +33,6 @@ import PreferencesScreen from "./preferences-screen.js";
 import PresenceLog from "./presence-log.js";
 import PreloadOverlay from "./preload-overlay.js";
 import RTCDebugPanel from "./debug-panel/RtcDebugPanel.js";
-import SaveConsoleLog from "../utils/record-log.js";
 import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen, exitFullScreen, isFullScreen } from "../utils/fullscreen";
 import { handleExitTo2DInterstitial, exit2DInterstitialAndEnterVR, isIn2DInterstitial } from "../utils/vr-interstitial";
 import maskEmail from "../utils/mask-email";
@@ -88,6 +87,7 @@ import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
 import { VoiceButtonContainer } from "./room/VoiceButtonContainer";
 import { ReactionPopoverContainer } from "./room/ReactionPopoverContainer";
+import { AvnHelpPopoverContainer } from "./room/AvnHelpPopoverContainer";
 import { SafariMicModal } from "./room/SafariMicModal";
 import { RoomSignInModalContainer } from "./auth/RoomSignInModalContainer";
 import { SignInStep } from "./auth/SignInModal";
@@ -1741,20 +1741,8 @@ class UIRoot extends Component {
                         }}
                       />
                     )}
-                    { // AVN: Permanent Save Logs button on the toolbar
-                    <ToolbarButton
-                      icon={<SupportIcon />}
-                      label={<FormattedMessage id="more-menu.help" defaultMessage="Help" />}
-                      preset="basic"
-                      onClick={() => { 
-                        this.props.scene.writeStatisticsToConsole(); 
-                        const stats = document.getElementById("stats");
-                        if(stats) {
-                          stats.components["stats-plus"].writeStatisticsToConsole();
-                        }
-                        SaveConsoleLog();
-                      }}                      
-                    />
+                    { // AVN: Custom help menu 
+                    <AvnHelpPopoverContainer scene={this.props.scene}/>
                     }
                     { 
                       // AVN: "More" menu not currently required
