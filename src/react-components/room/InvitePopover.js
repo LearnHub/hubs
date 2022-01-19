@@ -50,7 +50,7 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
           /> */}
           {
             <p>
-              This room will hold {roomSize} people
+              This room can host {roomSize} people
             </p>
           }
         </>
