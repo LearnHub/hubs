@@ -23,14 +23,17 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   } else {
     tokens[idx].attrs[aIndex][1] = '_blank';
   }
-  // Links are a premium feature unless domain is protected
-  const hIndex = tokens[idx].attrIndex('href');
-  if (hIndex >= 0) {
-    const href = tokens[idx].attrs[hIndex][1];
-    if(!(href.startsWith("https://avantisworld.com") || href.startsWith("https://www.avantisworld.com") || href.startsWith("https://eduverse.com"))) {
-      tokens[idx].attrs[hIndex][1] = 'https://eduverse.com';
-      tokens[idx].attrPush(['title', 'This is a premium feature']);
-      tokens[idx].attrPush(['class', 'premium-feature']);
+  // Links are a premium feature
+  if(!avnBridge.dimensionOwnerIsSubscriber) {
+    const hIndex = tokens[idx].attrIndex('href');
+    if (hIndex >= 0) {
+      const href = tokens[idx].attrs[hIndex][1];
+      // Exclude marketing domains
+      if(!(href.startsWith("https://avantisworld.com") || href.startsWith("https://www.avantisworld.com") || href.startsWith("https://eduverse.com") || href.startsWith("https://classvr.com"))) {
+        tokens[idx].attrs[hIndex][1] = 'https://eduverse.com';
+        tokens[idx].attrPush(['title', 'This is a premium feature']);
+        tokens[idx].attrPush(['class', 'premium-feature']);
+      }
     }
   }
   return defaultRender(tokens, idx, options, env, self);

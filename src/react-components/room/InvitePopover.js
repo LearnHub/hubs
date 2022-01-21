@@ -9,6 +9,7 @@ import { Column } from "../layout/Column";
 import { InviteLinkInputField } from "./InviteLinkInputField";
 import { FormattedMessage, defineMessage, useIntl } from "react-intl";
 
+import { avnBridge } from "../../avn-bridge"
 const QRCode = require('qrcode.react');
 
 function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetchingInvite, inviteUrl, revokeInvite, roomSize }) {
@@ -49,10 +50,10 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
             buttonPreset="accent5"
           /> */}
           {
-            <p>
-              This room can host {roomSize} people
-            </p>
+            <p>This room can host {roomSize} people</p>
           }
+          { !avnBridge.dimensionOwnerIsAuthenticated && (<p><a href="https://go.eduverse.com/eduverse/login">Sign in</a> to host more</p>) }
+          { avnBridge.dimensionOwnerIsAuthenticated && !avnBridge.dimensionOwnerIsSubscriber && (<p><a href="https://www.avantisworld.com/pricing" target="_blank">Subscribe</a> to host more</p>) }
         </>
       )}
     </Column>

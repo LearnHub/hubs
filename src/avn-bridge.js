@@ -1,5 +1,7 @@
 // Utilities for linking Hubs and AVN Cloud
 
+import SaveConsoleLog from "./utils/record-log";
+
 class AvnBridge {
 
   constructor() {
@@ -10,9 +12,12 @@ class AvnBridge {
     this._assetId = null;
     this._iconUri = null;
     this._mediaEndpoint = null;
+    this._ownerIsAuthenticated = false;
+    this._ownerIsSubscriber = false;
   }
 
   updateFromHub(hub) {
+//console.log(hub);
     const userData = hub.user_data;
     if(userData) {
       if(userData.dimensionid) {
@@ -36,6 +41,8 @@ class AvnBridge {
       } else {
         console.error("AVN: No iconuri is set")
       }
+      this._ownerIsAuthenticated = userData.ownerisauthenticated;
+      this._ownerIsSubscriber = userData.ownerissubscriber;
     } else {
       console.error("AVN: No user_data is set")
     }
@@ -59,6 +66,14 @@ class AvnBridge {
 
   get iconUri() {
     return this._iconUri;
+  }
+
+  get dimensionOwnerIsAuthenticated() {
+    return this._ownerIsAuthenticated;
+  }
+
+  get dimensionOwnerIsSubscriber() {
+    return this._ownerIsSubscriber;
   }
 
   // Rooms
