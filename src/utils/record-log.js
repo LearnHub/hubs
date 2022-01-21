@@ -42,8 +42,18 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
           }
           return value;
         };
-      };      
-      const json = JSON.stringify(entry, getCircularReplacer());
+      };
+      let json = "{}";
+      // Large objects can throw RangeError: Invalid string length
+      try {    
+        json = JSON.stringify(entry, getCircularReplacer());
+      } catch(e) {
+        // Replace problematic args and try again
+        const newArgArray = ["record-log-serialization-error", e];
+        origConsoleError.apply(null, newArgArray);        
+        entry["args"] = newArgArray;
+        json = JSON.stringify(entry, getCircularReplacer());
+      }
       // Add the new entry and ensure the list doesn't grow too long
       if(this.entries.push(json) > this.maximumEntries) {
         this.entries.shift();
