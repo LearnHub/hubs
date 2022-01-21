@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styles from "./InvitePopover.scss";
 import { Popover } from "../popover/Popover";
@@ -9,9 +9,60 @@ import { Column } from "../layout/Column";
 import { FormattedMessage, defineMessage, useIntl } from "react-intl";
 import SaveConsoleLog from "../../utils/record-log.js";
 
-
 function AvnHelpPopoverContent({ scene }) {
+  const [lastBlobUrl, setLastBlobUrl] = useState();
+  const [dropping, setDropping] = useState(false);
+
+  const handleDragEnter = e => {
+    e.preventDefault();
+    setDropping(true);
+  };
+  const handleDragLeave = e => {
+    e.preventDefault();
+    setDropping(false);
+  };
+
+  const handleDragOver = e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  // This scene replacement logic is cribbed from the RoomSidebar version
+  // but hacked to skip the call to update_scene, which AVN doesn't currently support
+  const handleDrop = e => {
+    e.preventDefault();
+    URL.revokeObjectURL(lastBlobUrl);
+    // Replacement scene URL as a blob
+    const sceneUrl = URL.createObjectURL(e.dataTransfer.files[0]);
+    scene.emit("reset_scene");
+    THREE.Cache.clear();
+    const sceneEl = document.querySelector("a-scene");
+    const waypointSystem = sceneEl.systems["hubs-systems"].waypointSystem;
+    waypointSystem.releaseAnyOccupiedWaypoints();
+    const envSystem = sceneEl.systems["hubs-systems"].environmentSystem;
+    const environmentEl = document.querySelector("#environment-scene").childNodes[0];
+    environmentEl.addEventListener(
+      "model-loaded",
+      () => {
+        envSystem.updateEnvironment(environmentEl);
+        if (sceneEl.is("entered")) {
+          waypointSystem.moveToSpawnPoint();
+        }
+      },
+      { once: true }
+    );
+    environmentEl.setAttribute("gltf-model-plus", { src: sceneUrl });
+    setLastBlobUrl(sceneUrl);
+    setDropping(false);
+  };
+  
   return (
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+    >
     <Column center padding grow gap="lg" className={styles.invitePopover}>
         <>
         {
@@ -42,6 +93,7 @@ function AvnHelpPopoverContent({ scene }) {
         }
         </>
     </Column>
+    </div>
   );
 }
 
