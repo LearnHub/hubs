@@ -1,7 +1,5 @@
 // Utilities for linking Hubs and AVN Cloud
 
-import SaveConsoleLog from "./utils/record-log";
-
 class AvnBridge {
 
   constructor() {

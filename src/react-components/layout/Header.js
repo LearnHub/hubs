@@ -8,6 +8,9 @@ import styles from "./Header.scss";
 import { Container } from "./Container";
 import { SocialBar } from "../home/SocialBar";
 import { SignInButton } from "../home/SignInButton";
+import qsTruthy from "../../utils/qs_truthy";
+
+const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 
 export function Header({
   appName,
@@ -99,7 +102,9 @@ export function Header({
               </a>
             </div>
           ) : (
-            <SignInButton />
+            showHiddenFeatures && (
+              <SignInButton />
+            )
           )}
         </div>
         {isHmc ? <SocialBar mobile /> : null}

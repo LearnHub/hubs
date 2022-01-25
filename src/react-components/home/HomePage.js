@@ -21,6 +21,10 @@ import { SocialBar } from "../home/SocialBar";
 import { SignInButton } from "./SignInButton";
 import maskEmail from "../../utils/mask-email";
 import { ReactComponent as HmcLogo } from "../icons/HmcLogo.svg";
+import { GoEduverseButton } from "./GoEduverseButton";
+import qsTruthy from "../../utils/qs_truthy";
+
+const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 
 export function HomePage() {
   const auth = useContext(AuthContext);
@@ -72,7 +76,9 @@ export function HomePage() {
               </a>
             </div>
           ) : (
-            <SignInButton mobile />
+            showHiddenFeatures && (
+              <SignInButton mobile />
+            )
           )}
           <div className={styles.logoContainer}>
             {isHmc ? (
@@ -83,7 +89,8 @@ export function HomePage() {
           </div>
           <div className={styles.appInfo}>
             <div className={styles.appDescription}>{configs.translation("app-description")}</div>
-            {canCreateRooms && <CreateRoomButton />}
+            <GoEduverseButton />
+            {showHiddenFeatures && canCreateRooms && <CreateRoomButton />}
             <PWAButton />
           </div>
           <div className={styles.heroImageContainer}>
