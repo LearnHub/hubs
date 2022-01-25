@@ -1406,10 +1406,12 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
+                        { avnBridge.allowNavigation && (
                         <EduverseMenuButton
                           active={this.state.sidebarId === "eduverse"}
                           onClick={() => this.toggleSidebar("eduverse")}
                         />
+                        )}
                         {showObjectList && (
                           <ObjectsMenuButton
                             active={this.state.sidebarId === "objects"}
@@ -1574,7 +1576,7 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
-                    entered &&
+                    entered && avnBridge.allowNavigation &&
                     <ToolbarButton
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
@@ -1584,7 +1586,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Home button
-                    entered && avnBridge.assetId !== "homeroom" &&
+                    entered && avnBridge.assetId !== "homeroom" && avnBridge.allowNavigation &&
                     <ToolbarButton
                       icon={<HomeIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}

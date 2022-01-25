@@ -12,6 +12,7 @@ class AvnBridge {
     this._mediaEndpoint = null;
     this._ownerIsAuthenticated = false;
     this._ownerIsSubscriber = false;
+    this._allowNavigation = true;
   }
 
   updateFromHub(hub) {
@@ -41,6 +42,7 @@ class AvnBridge {
       }
       this._ownerIsAuthenticated = userData.ownerisauthenticated;
       this._ownerIsSubscriber = userData.ownerissubscriber;
+      this._allowNavigation = userData.allowNavigation;
     } else {
       console.error("AVN: No user_data is set")
     }
@@ -72,6 +74,10 @@ class AvnBridge {
 
   get dimensionOwnerIsSubscriber() {
     return this._ownerIsSubscriber;
+  }
+
+  get allowNavigation() {
+    return this._allowNavigation;
   }
 
   // Rooms
