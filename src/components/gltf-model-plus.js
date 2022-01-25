@@ -572,6 +572,18 @@ class GLTFHubsLightMapExtension {
   }
 }
 
+function instrumentTextureLoader(loader) {
+  const originalLoad = loader.load.bind(loader);
+  loader.load = function(url, onLoad, onProgress, onError) {
+    const loadStart = performance.now();
+    const newOnLoad = function(texture) {
+      console.log(`${loader.constructor.name} took ${Math.round(performance.now() - loadStart)}ms for ${url}`);
+      onLoad(texture);
+    }
+    originalLoad(url, newOnLoad, onProgress, onError);
+  }
+}
+
 class GLTFHubsTextureBasisExtension {
   constructor(parser) {
     this.parser = parser;
@@ -590,6 +602,7 @@ class GLTFHubsTextureBasisExtension {
 
     if (this.basisLoader === null) {
       this.basisLoader = new BasisTextureLoader(parser.options.manager).detectSupport(AFRAME.scenes[0].renderer);
+      instrumentTextureLoader(this.basisLoader);
     }
 
     if (!this.basisLoader) {
@@ -660,6 +673,7 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
   // "taking control of the render loop" which is something we want to tackle for many reasons.
   if (!ktxLoader && AFRAME && AFRAME.scenes && AFRAME.scenes[0]) {
     ktxLoader = new KTX2Loader(loadingManager).detectSupport(AFRAME.scenes[0].renderer);
+    instrumentTextureLoader(ktxLoader);
   }
   if (!dracoLoader && AFRAME && AFRAME.scenes && AFRAME.scenes[0]) {
     dracoLoader = new DRACOLoader(loadingManager);
@@ -672,9 +686,11 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     gltfLoader.setDRACOLoader(dracoLoader);
   }
 
+  const loadStart = performance.now();
   return new Promise((resolve, reject) => {
     gltfLoader.load(gltfUrl, resolve, onProgress, reject);
   }).finally(() => {
+    console.log(`GLTF loaded in ${Math.round(performance.now() - loadStart)}ms for ${gltfUrl}`);
     if (fileMap) {
       // The GLTF is now cached as a THREE object, we can get rid of the original blobs
       Object.keys(fileMap).forEach(URL.revokeObjectURL);
