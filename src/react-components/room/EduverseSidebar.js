@@ -50,6 +50,7 @@ export function EduverseSidebar({ room, onClose }) {
       }
       beforeTitle={<CloseButton onClick={onClose} />}
       disableOverflowScroll
+      className="eduverse-sidebar"
     >
       <div className={styles.informationContainer}>
         <h1>

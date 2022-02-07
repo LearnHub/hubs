@@ -19,9 +19,8 @@ const FINISH = 2;
 const LOCAL_STORAGE_KEY = "__hubs_finished_tips";
 
 const TIPS = {
-  // AVN: Invitation system is disabled so tip is not required
-  desktop: ["look", "locomotion", "turning", "microphone"],
-  mobile: ["look", "locomotion", "microphone"],
+  desktop: ["look", "locomotion", "turning", "eduverse"],
+  mobile: ["look", "locomotion", "eduverse"],
   standalone: []
 };
 
@@ -66,10 +65,10 @@ const VALIDATORS = {
     if (hub && hub.entry_mode === "invite") return INVALID;
     return scene.is("copresent") ? FINISH : VALID;
   },
-  // AVN: Guide the user to unmute their microphone first time through
-  microphone: function(_userinput, scene) {
-    return scene.is("muted") ? VALID : FINISH;
-  }
+  // AVN: Help the user find the Eduverse panel
+  eduverse: function(_userinput, scene) {
+    return document.getElementsByClassName("eduverse-sidebar").length > 0 ? FINISH : VALID;
+  },
 };
 
 AFRAME.registerSystem("tips", {

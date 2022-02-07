@@ -42,9 +42,9 @@ const onboardingMessages = defineMessages({
     id: "tips.mobile.invite",
     defaultMessage: "Use the Invite button in the bottom left to share this room."
   },
-  "tips.mobile.microphone": {
-    id: "tips.mobile.microphone",
-    defaultMessage: "Use the Voice button when you are ready to start speaking."
+  "tips.desktop.eduverse": {
+    id: "tips.mobile.eduverse",
+    defaultMessage: "Open the Eduverse side panel for information about the room you are in."
   },
   "tips.desktop.look": {
     id: "tips.desktop.look",
@@ -62,10 +62,10 @@ const onboardingMessages = defineMessages({
     id: "tips.desktop.invite",
     defaultMessage: "Nobody else is here. Use the invite button in the bottom left to share this room."
   },
-  "tips.desktop.microphone": {
-    id: "tips.desktop.microphone",
-    defaultMessage: "Use the Voice button when you are ready to start speaking."
-  }
+  "tips.desktop.eduverse": {
+    id: "tips.desktop.eduverse",
+    defaultMessage: "Open the Eduverse side panel for information about the room you are in."
+  },
 });
 
 function OkDismissLabel() {
