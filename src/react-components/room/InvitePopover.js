@@ -20,41 +20,47 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
           <InviteLinkInputField fetchingInvite={fetchingInvite} inviteUrl={inviteUrl} onRevokeInvite={revokeInvite} />
         </>
       ) : (
-        <>
-          <QRCode 
-            value={url} 
-            renderAs="svg"
-            size={256}
-          />
-          <CopyableTextInputField
-            label={<FormattedMessage id="invite-popover.room-link" defaultMessage="Room Link" />}
-            value={url}
-            buttonPreset="accent3"
-          />
-          <CopyableTextInputField
-            label={<FormattedMessage id="invite-popover.room-code" defaultMessage="Room Code" />}
-            value={code}
-            buttonPreset="accent4"
-            description={
-              <>
-                Enter code on{" "}
-                <a href={shortUrl} target="_blank" rel="noopener noreferrer">
-                  {shortUrl.replace("https://", "")}
-                </a>
-              </>
+        avnBridge.dimensionOwnerIsAuthenticated ? (
+          <>
+            <QRCode 
+              value={url} 
+              renderAs="svg"
+              size={256}
+            />
+            <CopyableTextInputField
+              label={<FormattedMessage id="invite-popover.room-link" defaultMessage="Room Link" />}
+              value={url}
+              buttonPreset="accent3"
+            />
+            <CopyableTextInputField
+              label={<FormattedMessage id="invite-popover.room-code" defaultMessage="Room Code" />}
+              value={code}
+              buttonPreset="accent4"
+              description={
+                <>
+                  Enter code on{" "}
+                  <a href={shortUrl} target="_blank" rel="noopener noreferrer">
+                    {shortUrl.replace("https://", "")}
+                  </a>
+                </>
+              }
+            />
+            {/* <CopyableTextInputField
+              label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
+              value={embed}
+              buttonPreset="accent5"
+            /> */}
+            {
+              <p>This session can host up to {roomSize} people</p>
             }
-          />
-          {/* <CopyableTextInputField
-            label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
-            value={embed}
-            buttonPreset="accent5"
-          /> */}
-          {
-            <p>This room can host {roomSize} people</p>
-          }
-          { !avnBridge.dimensionOwnerIsAuthenticated && (<p><a href="https://go.eduverse.com/eduverse/login">Sign in</a> to host more</p>) }
-          { avnBridge.dimensionOwnerIsAuthenticated && !avnBridge.dimensionOwnerIsSubscriber && (<p><a href="https://www.avantisworld.com/pricing" target="_blank">Subscribe</a> to host more</p>) }
-        </>
+            { !avnBridge.dimensionOwnerIsSubscriber && (<p><a href="https://www.avantisworld.com/pricing" target="_blank">Subscribe</a> to host more</p>) }
+          </>
+        ) : (
+          <>
+            <p>This session was created by an anonymous user and cannot be shared.</p>
+            <p><a href="https://go.eduverse.com/eduverse/login">Sign in</a> to start a new session and invite people to join you.</p>
+          </>
+        )
       )}
     </Column>
   );
