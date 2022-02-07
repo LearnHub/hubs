@@ -55,7 +55,6 @@ import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer }
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, EduverseMenuButton } from "./room/ContentMenu";
 import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
 import { ReactComponent as ArrowBackIcon } from "./icons/ArrowBack.svg";
-import { ReactComponent as ScreenshotIcon } from "./icons/Screenshot.svg";
 import { ReactComponent as CameraIcon } from "./icons/Camera.svg";
 import { ReactComponent as AvatarIcon } from "./icons/Avatar.svg";
 import { ReactComponent as AddIcon } from "./icons/Add.svg";
@@ -1658,10 +1657,10 @@ class UIRoot extends Component {
                         )
                         }
 
-                        { // AVN: Screenshot button 
+                        { // AVN: Photo / screenshot button 
                         <ToolbarButton
-                          icon={<ScreenshotIcon />}
-                          label={<FormattedMessage id="toolbar.screenshot-button" defaultMessage="Screenshot" />}
+                          icon={<CameraIcon />}
+                          label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}
                           onClick={() => {
                             saveScreenshot(this.props.scene, "jpeg");
                           }}
