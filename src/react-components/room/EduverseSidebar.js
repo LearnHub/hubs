@@ -57,7 +57,7 @@ export function EduverseSidebar({ room, onClose }) {
           {room.name}
         </h1>
         {room.description && (
-            <p className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(room.description) }} />
+            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(room.description) }} />
         )}
       </div>
       {avnBridge.assetId && (

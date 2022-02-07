@@ -5,7 +5,7 @@
   flex-grow: 1;
   flex-direction: column;
   list-style: none;
-  padding: theme.$spacing-lg;
+  padding: theme.$spacing-lg theme.$spacing-lg 0px theme.$spacing-lg;
   overflow-y: auto;
   min-height: 0;
 }
@@ -18,9 +18,19 @@
   flex-basis: max-content;
 }
 
-
-
 :local(.markdown) {
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1ex;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }  
+  h2 {
+    font-size: 1.1rem;
+  }
+  h3 {
+    font-size: 1.0rem;
+  }  
   p {
     margin-bottom: 1em;
   }
