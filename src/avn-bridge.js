@@ -16,7 +16,7 @@ class AvnBridge {
   }
 
   updateFromHub(hub) {
-//console.log(hub);
+    console.log(hub);
     const userData = hub.user_data;
     if(userData) {
       if(userData.dimensionid) {
@@ -28,11 +28,17 @@ class AvnBridge {
       } else {
         console.error("AVN: No dimensionid is set")
       }
+      this._allowNavigation = userData.allownavigation;
       if(userData.assetid && this._assetId != userData.assetid) {
         this._assetId = userData.assetid;
         console.info(`AVN: Updated asset id to '${this._assetId}'`);
       } else {
-        console.error("AVN: No assetid is set")
+        // Asset ID is expected if room allows navigation
+        if(this._allowNavigation) {
+          console.error("AVN: No assetid is set")
+        } else {
+          console.info("AVN: No assetid is set")
+        }
       }
       if(userData.iconuri && this._iconUri != userData.iconuri) {
         this._iconUri = userData.iconuri;
@@ -42,7 +48,6 @@ class AvnBridge {
       }
       this._ownerIsAuthenticated = userData.ownerisauthenticated;
       this._ownerIsSubscriber = userData.ownerissubscriber;
-      this._allowNavigation = userData.allowNavigation;
     } else {
       console.error("AVN: No user_data is set")
     }
