@@ -1,16 +1,35 @@
 @use "../styles/theme.scss";
 
+:local(.information-container) {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  list-style: none;
+  padding: theme.$spacing-lg;
+  overflow-y: auto;
+  min-height: 0;
+}
+:local(.information-container) h1 {
+  margin-bottom: 1ex;
+}
+
+:local(.share-link-container) {
+  padding: theme.$spacing-lg;
+  flex-basis: max-content;
+}
+
+
+
 :local(.markdown) {
-  p, h2 {
-    padding-bottom: 1em;
+  p {
+    margin-bottom: 1em;
   }
   li {
-    padding-bottom: 1ex;
+    margin-bottom: 1ex;
   }
   ul, ol {
     list-style: disc outside none;
-    margin: 0 0;
-    padding: 0 0 1em 2em;
+    margin: 0 0 1em 2em;
   }
   ol { 
     list-style-type: decimal;
@@ -30,4 +49,3 @@
   vertical-align: middle;
   float: left;
 }
-

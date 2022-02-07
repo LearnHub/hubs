@@ -49,8 +49,9 @@ export function EduverseSidebar({ room, onClose }) {
         />
       }
       beforeTitle={<CloseButton onClick={onClose} />}
+      disableOverflowScroll
     >
-      <Column padding>
+      <div className={styles.informationContainer}>
         <h1>
           {avnBridge.iconUri && (<img src={avnBridge.iconUri} className={styles.sceneIcon}/>)}
           {room.name}
@@ -58,14 +59,15 @@ export function EduverseSidebar({ room, onClose }) {
         {room.description && (
             <p className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(room.description) }} />
         )}
-        {avnBridge.assetId && (
-          <CopyableTextInputField
-            label={<FormattedMessage id="eduverse-sidebar.share-link" defaultMessage="Share this scene" />}
-            value={`${avnBridge.eduverseSessionDomain}/${avnBridge.assetId}`}
-            buttonPreset="accent2"
-          />
-        )}
-      </Column>
+      </div>
+      {avnBridge.assetId && (
+        <CopyableTextInputField
+          className={styles.shareLinkContainer}
+          label={<FormattedMessage id="eduverse-sidebar.share-link" defaultMessage="Share this scene" />}
+          value={`${avnBridge.eduverseSessionDomain}/${avnBridge.assetId}`}
+          buttonPreset="accent2"
+        />
+      )}
     </Sidebar>
   );
 }
