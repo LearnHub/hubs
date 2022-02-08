@@ -5,7 +5,7 @@ class AvnBridge {
   constructor() {
     this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
-    this._defaultSessionDomain = "https://go.eduverse.com";
+    this._defaultSessionDomain = "go.eduverse.com";
     this._sessionDomain =null;
     this._dimensionId = null;
     this._assetId = null;

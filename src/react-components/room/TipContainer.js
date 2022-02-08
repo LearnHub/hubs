@@ -42,7 +42,7 @@ const onboardingMessages = defineMessages({
     id: "tips.mobile.invite",
     defaultMessage: "Use the Invite button in the bottom left to share this room."
   },
-  "tips.desktop.eduverse": {
+  "tips.mobile.eduverse": {
     id: "tips.mobile.eduverse",
     defaultMessage: "Open the Eduverse side panel for information about the room you are in."
   },

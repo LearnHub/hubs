@@ -1,11 +1,8 @@
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { createAndRedirectToNewHub } from "../../utils/phoenix-utils";
 import { Button } from "../input/Button";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
-
 import { avnBridge } from "../../avn-bridge"
-
 
 export function GoEduverseButton() {
   const breakpoint = useCssBreakpoints();
@@ -17,7 +14,7 @@ export function GoEduverseButton() {
       preset="landing"
       onClick={e => {
         e.preventDefault();
-        document.location.replace(avnBridge.sessionDomain)
+        document.location.replace(`https://${avnBridge.sessionDomain}`)
       }}
     >
       <FormattedMessage id="go-eduverse-button" defaultMessage="Enter the Eduverse" />
