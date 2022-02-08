@@ -17,7 +17,7 @@ export function GoEduverseButton() {
       preset="landing"
       onClick={e => {
         e.preventDefault();
-        document.location.replace(avnBridge.eduverseSessionDomain)
+        document.location.replace(avnBridge.sessionDomain)
       }}
     >
       <FormattedMessage id="go-eduverse-button" defaultMessage="Enter the Eduverse" />

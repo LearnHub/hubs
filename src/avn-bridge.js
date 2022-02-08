@@ -5,7 +5,8 @@ class AvnBridge {
   constructor() {
     this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
-    this._eduverseSessionDomain = "https://go.eduverse.com";
+    this._defaultSessionDomain = "https://go.eduverse.com";
+    this._sessionDomain =null;
     this._dimensionId = null;
     this._assetId = null;
     this._iconUri = null;
@@ -48,13 +49,15 @@ class AvnBridge {
       }
       this._ownerIsAuthenticated = userData.ownerisauthenticated;
       this._ownerIsSubscriber = userData.ownerissubscriber;
+      this._sessionDomain = userData.sessiondomain;
     } else {
       console.error("AVN: No user_data is set")
     }
   }
 
-  get eduverseSessionDomain() {
-    return this._eduverseSessionDomain;
+  get sessionDomain() {
+    // Session domain can be overriden for custom domains
+    return this._sessionDomain ? this._sessionDomain : this._defaultSessionDomain;
   }
 
   get assetDomain() {

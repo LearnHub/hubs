@@ -13,6 +13,7 @@ import { avnBridge } from "../../avn-bridge"
 const QRCode = require('qrcode.react');
 
 function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetchingInvite, inviteUrl, revokeInvite, roomSize }) {
+  const loginDomain = `${avnBridge.sessionDomain}/eduverse/login`;
   return (
     <Column center padding grow gap="lg" className={styles.invitePopover}>
       {inviteRequired ? (
@@ -58,7 +59,7 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
         ) : (
           <>
             <p>This session was created by an anonymous user and cannot be shared.</p>
-            <p><a href="https://go.eduverse.com/eduverse/login">Sign in</a> to start a new session and invite people to join you.</p>
+            <p><a href={loginDomain}>Sign in</a> to start a new session and invite people to join you.</p>
           </>
         )
       )}
