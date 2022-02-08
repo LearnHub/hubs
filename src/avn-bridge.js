@@ -8,7 +8,7 @@ class AvnBridge {
     this._defaultSessionDomain = "go.eduverse.com";
     this._defaultAssetIdHome = "homeroom";
     this._assetIdHome = null;
-    this._sessionDomain =null;
+    this._sessionDomain = null;
     this._dimensionId = null;
     this._assetId = null;
     this._iconUri = null;
