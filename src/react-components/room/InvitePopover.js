@@ -13,7 +13,7 @@ import { avnBridge } from "../../avn-bridge"
 const QRCode = require('qrcode.react');
 
 function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetchingInvite, inviteUrl, revokeInvite, roomSize }) {
-  const loginDomain = `${avnBridge.sessionDomain}/eduverse/login`;
+  const loginDomain = `https://${avnBridge.sessionDomain}/eduverse/login`;
   return (
     <Column center padding grow gap="lg" className={styles.invitePopover}>
       {inviteRequired ? (
