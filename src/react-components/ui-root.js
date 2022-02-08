@@ -1585,12 +1585,12 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Home button
-                    entered && avnBridge.assetId !== "homeroom" && avnBridge.allowNavigation &&
+                    entered && avnBridge.assetId !== avnBridge.assetIdHome && avnBridge.allowNavigation &&
                     <ToolbarButton
                       icon={<HomeIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}
                       onClick={() => {
-                        changeHubAvn(`${avnBridge.assetDomain}/homeroom`);
+                        changeHubAvn(`${avnBridge.assetDomain}/${avnBridge.assetIdHome}`);
                       }}
                     />
                     }

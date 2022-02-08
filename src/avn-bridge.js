@@ -6,6 +6,8 @@ class AvnBridge {
     this._assetDomain = "https://scene.link";
     this._apiDomain = "https://api.avncloud.com";
     this._defaultSessionDomain = "go.eduverse.com";
+    this._defaultAssetIdHome = "homeroom";
+    this._assetIdHome = null;
     this._sessionDomain =null;
     this._dimensionId = null;
     this._assetId = null;
@@ -50,6 +52,7 @@ class AvnBridge {
       this._ownerIsAuthenticated = userData.ownerisauthenticated;
       this._ownerIsSubscriber = userData.ownerissubscriber;
       this._sessionDomain = userData.sessiondomain;
+      this._assetIdHome = userData.assetidhome;
     } else {
       console.error("AVN: No user_data is set")
     }
@@ -70,6 +73,11 @@ class AvnBridge {
 
   get assetId() {
     return this._assetId;
+  }
+
+  get assetIdHome() {
+    // Home asset ID can be overriden for custom domains
+    return this._assetIdHome ? this._assetIdHome : this._defaultAssetIdHome;
   }
 
   get iconUri() {
