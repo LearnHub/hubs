@@ -1449,7 +1449,7 @@ class UIRoot extends Component {
                         />
                       )}
                     <TipContainer
-                      hide={this.props.activeObject}
+                      hide={!!this.props.activeObject}
                       inLobby={watching}
                       inRoom={entered}
                       isEmbedded={this.props.embed}
