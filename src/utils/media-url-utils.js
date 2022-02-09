@@ -12,7 +12,8 @@ nonCorsProxyDomains.push(document.location.hostname);
 // AVN: data domain doesn't require CORS
 nonCorsProxyDomains.push("data.avncloud.com");
 // AVN: running as localhost fails to fetch objects.gltf because it tries to invoke the proxy
-nonCorsProxyDomains.push("me.avncloud.com");
+nonCorsProxyDomains.push("me.eduverse.com");
+nonCorsProxyDomains.push("me-eduverse-assets.me-hub.link");
 
 const commonKnownContentTypes = {
   gltf: "model/gltf",
