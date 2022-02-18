@@ -308,7 +308,9 @@ async function mediaInflator(el, componentName, componentData, components) {
     fileIsOwned: true,
     animate: false,
     mediaOptions,
-    moveTheParentNotTheMesh: false
+    moveTheParentNotTheMesh: false,
+    // AVN: Hint contentType to allow alternative handling of links in media inflator
+    contentType: componentName === "link" ? "text/html" : null,
   });
 }
 

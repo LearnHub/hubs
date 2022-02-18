@@ -56,8 +56,6 @@ AFRAME.registerComponent("media-loader", {
     resolve: { default: false },
     contentType: { default: null },
     contentSubtype: { default: null },
-    // AVN: Hack for linking to Avatars outside of the Hubs Cloud (i.e. from ClassConnect)
-    absoluteAvatarUrl: { default: null },
     animate: { default: true },
     linkedEl: { default: null }, // This is the element of which this is a linked derivative. See linked-media.js
     mediaOptions: {
@@ -324,6 +322,8 @@ AFRAME.registerComponent("media-loader", {
   },
 
   async update(oldData, forceLocalRefresh) {
+
+
     const { version, contentSubtype } = this.data;
     let src = this.data.src;
     if (!src) return;
@@ -349,7 +349,6 @@ AFRAME.registerComponent("media-loader", {
       this.el.removeAttribute("media-pdf");
       this.el.removeAttribute("media-image");
     }
-
     try {
 
       // Short circuit for external web links (don't bother with fetching content types and thumbnails)
@@ -376,6 +375,9 @@ AFRAME.registerComponent("media-loader", {
       let contentType = this.data.contentType;
       let thumbnail;
 
+      let isSceneLink = false;
+      let absoluteAvatarUrl;
+
       const parsedUrl = new URL(src);
 
       // We want to resolve and proxy some hubs urls, like rooms and scene links,
@@ -399,14 +401,17 @@ AFRAME.registerComponent("media-loader", {
           canonicalAudioUrl = location.protocol + canonicalAudioUrl;
         }
 
-        contentType = (result.meta && result.meta.expected_content_type) || contentType;
+        // AVN: All link elements should be inflated as links
+        if(contentType !== "text/html") {
+          contentType = (result.meta && result.meta.expected_content_type) || contentType;
+        }
         thumbnail = result.meta && result.meta.thumbnail && proxiedUrlFor(result.meta.thumbnail);
         // AVN: Record tags from ClassConnect
         const tags = result.meta && result.meta.tags && new Set(result.meta.tags);
-        // AVN: Set the Avatar URL
         if(tags && tags.has("Avatar")) {
-            this.data.absoluteAvatarUrl = canonicalUrl;
+          absoluteAvatarUrl = canonicalUrl;
         }
+        isSceneLink = tags && tags.has("Scene");
       }
 
       // todo: we don't need to proxy for many things if the canonical URL has permissive CORS headers
@@ -555,7 +560,7 @@ AFRAME.registerComponent("media-loader", {
           this.el.setAttribute("position-at-border__freeze-unprivileged", { isFlat: true });
         }
       } else if (
-        this.data.absoluteAvatarUrl == undefined && (
+        absoluteAvatarUrl == undefined && (
           contentType.includes("application/octet-stream") ||
           contentType.includes("x-zip-compressed") ||
           contentType.startsWith("model/gltf")
@@ -594,7 +599,7 @@ AFRAME.registerComponent("media-loader", {
             modelToWorldScale: this.data.fitToBox ? 0.0001 : 1.0
           })
         );
-      } else if (this.data.absoluteAvatarUrl !== undefined || contentType.startsWith("text/html")) {
+      } else if (absoluteAvatarUrl !== undefined || contentType.startsWith("text/html")) {
 
         this.el.removeAttribute("gltf-model-plus");
         this.el.removeAttribute("media-video");
@@ -608,12 +613,13 @@ AFRAME.registerComponent("media-loader", {
         } else {
           this.el.removeObject3D("mesh");
         }
-        const linksrc = this.data.absoluteAvatarUrl || avnBridge.transformRoomUrl(src);
+        const linksrc = absoluteAvatarUrl || avnBridge.transformRoomUrl(src);
         this.el.setAttribute("action-trigger-volume", {
           colliders: "#avatar-pov-node",
           // Either it's an avatar file or it's a scene link that needs the dimension replacing
           src: linksrc,
-          isAvatar: !!this.data.absoluteAvatarUrl,
+          isSceneLink: isSceneLink,
+          isAvatarLink: !!absoluteAvatarUrl,
         });
 
         this.onMediaLoaded(null);

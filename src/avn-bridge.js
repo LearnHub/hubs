@@ -4,7 +4,6 @@ class AvnBridge {
 
   constructor() {
     this._assetDomain = "https://scene.link";
-    this._apiDomain = "https://api.avncloud.com";
     this._defaultSessionDomain = "go.eduverse.com";
     this._defaultAssetIdHome = "homeroom";
     this._assetIdHome = null;
@@ -122,16 +121,6 @@ class AvnBridge {
 
   get mediaEndpoint() {
     return this._mediaEndpoint;
-  }
-
-  // ClassConnect Activities (hack for demo room)
-
-  isActivityUrl(url) {
-    return url.startsWith(`${this._apiDomain}/manage/activity.cfm?id=`);
-  }
-
-  transformActivityUrl(url) {
-    return url.replace(`${this._apiDomain}/manage/activity.cfm?id=`, `${this._assetDomain}/${this._dimensionId}/ID`)
   }
 
 }

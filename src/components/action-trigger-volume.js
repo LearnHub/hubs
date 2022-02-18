@@ -7,7 +7,8 @@ AFRAME.registerComponent("action-trigger-volume", {
   schema: {
     colliders: { type: "selectorAll" },
     src: { type: "string" },
-    isAvatar: { type: "boolean" },
+    isSceneLink:  { type: "boolean" },
+    isAvatarLink: { type: "boolean" },
   },
   init() {
     // Bounding box is defined so that one face is aligned with the XY plane for compatability with the default Hubs link system
@@ -45,12 +46,13 @@ AFRAME.registerComponent("action-trigger-volume", {
           if(avnBridge.allowNavigation) {
             console.log("Navigating to", this.data.src);
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
-            // AVN: Hack for links in the demo room
-            if(avnBridge.isActivityUrl(this.data.src)) {
-                window.open(avnBridge.transformActivityUrl(this.data.src));
+            if(this.data.isSceneLink) {
+              changeHubAvn(this.data.src);
             } else {
-                // AVN: Use fast room switching
-                changeHubAvn(this.data.src);
+              // Mark the exit point in case the user returns with the back button
+              const sceneId = new URL(this.data.src).pathname.split("/").pop();
+              document.location.hash = sceneId;
+              document.location = this.data.src;
             }
           } else {
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
