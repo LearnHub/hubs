@@ -330,7 +330,12 @@ if (document.location.pathname.includes("hub.html")) {
 const history = routerBaseName === "/" ? createMemoryHistory() : createBrowserHistory({ basename: routerBaseName });
 window.APP.history = history;
 
-const qsVREntryType = qs.get("vr_entry_type");
+let qsVREntryType = qs.get("vr_entry_type");
+
+// AVN: Jump straight in when there's a fragment to support coming back from the media browser
+if(!qsVREntryType && document.location.hash) {
+  qsVREntryType = "2d_now";
+}
 
 function mountUI(props = {}) {
   const scene = document.querySelector("a-scene");
