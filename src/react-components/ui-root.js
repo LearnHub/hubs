@@ -611,6 +611,7 @@ class UIRoot extends Component {
   };
 
   beginOrSkipAudioSetup = () => {
+    // AVN: Skip the audio setup dialog in favour of being muted by default
     const skipAudioSetup = true || this.props.forcedVREntryType && this.props.forcedVREntryType.endsWith("_now");
     if (skipAudioSetup) {
       console.log(`Skipping audio setup (forcedVREntryType = ${this.props.forcedVREntryType})`);
