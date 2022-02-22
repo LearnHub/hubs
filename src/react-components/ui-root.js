@@ -1690,11 +1690,12 @@ class UIRoot extends Component {
                 toolbarRight={
                   <>
                     { // AVN: Moved invite link to the right as part of the "Teacher Tools"
-                      <InvitePopoverContainer
-                        hub={this.props.hub}
-                        hubChannel={this.props.hubChannel}
-                        scene={this.props.scene}
-                      />                 
+                    avnBridge.allowNavigation &&
+                    <InvitePopoverContainer
+                      hub={this.props.hub}
+                      hubChannel={this.props.hubChannel}
+                      scene={this.props.scene}
+                    />                 
                     }
                     { // AVN: Placeholder eduverse button
                     showPremiumFeatures && entered &&
