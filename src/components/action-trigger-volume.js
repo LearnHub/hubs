@@ -35,7 +35,7 @@ AFRAME.registerComponent("action-trigger-volume", {
       const collidingLastFrame = this.collidingLastFrame[object3D.id];
 
       if (isColliding && !collidingLastFrame) {
-        if(this.data.isAvatar) {
+        if(this.data.isAvatarLink) {
           this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
           const avatarId = this.data.src || new URL(this.data.src).pathname.split("/").pop();
           console.log("Setting avatar to ", avatarId);
