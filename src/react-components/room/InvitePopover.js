@@ -33,19 +33,6 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
               value={url}
               buttonPreset="accent3"
             />
-            <CopyableTextInputField
-              label={<FormattedMessage id="invite-popover.room-code" defaultMessage="Room Code" />}
-              value={code}
-              buttonPreset="accent4"
-              description={
-                <>
-                  Enter code on{" "}
-                  <a href={shortUrl} target="_blank" rel="noopener noreferrer">
-                    {shortUrl.replace("https://", "")}
-                  </a>
-                </>
-              }
-            />
             {/* <CopyableTextInputField
               label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
               value={embed}
