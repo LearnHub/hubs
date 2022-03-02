@@ -4,6 +4,7 @@ class AvnBridge {
 
   constructor() {
     this._assetDomain = "https://scene.link";
+    this._dataDomain = "https://data.avncloud.com";
     this._defaultSessionDomain = "go.eduverse.com";
     this._defaultAssetIdHome = "homeroom";
     this._assetIdHome = null;
@@ -64,6 +65,10 @@ class AvnBridge {
 
   get assetDomain() {
     return this._assetDomain;
+  }
+
+  get dataDomain() {
+    return this._dataDomain;
   }
 
   get dimensionId() {

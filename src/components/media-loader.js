@@ -352,7 +352,7 @@ AFRAME.registerComponent("media-loader", {
     try {
 
       // Short circuit for external web links (don't bother with fetching content types and thumbnails)
-      if(!avnBridge.isAvnUrl(src)) {
+      if(this.data.contentType === "text/html" && !avnBridge.isAvnUrl(src)) {
         // Change image to be a 1x1 transparent PNG (image mesh provides the hover target)
         this.el.setAttribute("media-image", { src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", contentType: "image/png" });
         this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });

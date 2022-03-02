@@ -174,8 +174,9 @@ export const guessContentType = url => {
 
 const originIsHubsServer = new Map();
 
-// AVN: shortcircuit for scene.link domain
+// AVN: shortcircuit for well know domains
 originIsHubsServer.set(avnBridge.assetDomain, true);
+originIsHubsServer.set(avnBridge.dataDomain, false);
 
 async function isHubsServer(url) {
   if (!url) return false;
