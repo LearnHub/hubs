@@ -81,6 +81,7 @@
                     fr.readAsText(file, "UTF-8");
                     fr.onload = function () {
                         renderlog(JSON.parse(fr.result));
+                        document.title = file.name;
                     };
                 });
             }
