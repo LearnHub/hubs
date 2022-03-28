@@ -42,21 +42,15 @@ AFRAME.registerComponent("action-trigger-volume", {
           window.APP.store.update({ profile: { avatarId } });
           this.el.sceneEl.emit("avatar_updated");
         } else {
-          // Only navigate if this is an 'explorable' room
-          if(avnBridge.allowNavigation) {
-            console.log("Navigating to", this.data.src);
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
-            if(this.data.isSceneLink) {
-              changeHubAvn(this.data.src);
-            } else {
-              // Mark the exit point in case the user returns with the back button
-              const sceneId = new URL(this.data.src).pathname.split("/").pop();
-              document.location.hash = sceneId;
-              document.location = this.data.src;
-            }
+          console.log("Navigating to", this.data.src);
+          this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
+          if(this.data.isSceneLink) {
+            changeHubAvn(this.data.src);
           } else {
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
-            console.log(`Navigation denied because room is not explorable`);
+            // Mark the exit point in case the user returns with the back button
+            const sceneId = new URL(this.data.src).pathname.split("/").pop();
+            document.location.hash = sceneId;
+            document.location = this.data.src;
           }
         }
       } else if (!isColliding && collidingLastFrame) {
