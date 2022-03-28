@@ -67,7 +67,7 @@ const VALIDATORS = {
   },
   // AVN: Help the user find the Eduverse panel
   eduverse: function(_userinput, scene) {
-    return document.getElementsByClassName("eduverse-sidebar").length > 0 ? FINISH : VALID;
+    return FINISH; // Hide until full release: document.getElementsByClassName("eduverse-sidebar").length > 0 ? FINISH : VALID;
   },
 };
 

@@ -96,6 +96,8 @@ class AvnBridge {
     return this._ownerIsSubscriber;
   }
 
+  // Allow navigation currently means "Show Eduverse sidepanel, Invite button, Back button, and Home button"
+  // which is it's original intention
   get allowNavigation() {
     return this._allowNavigation;
   }
