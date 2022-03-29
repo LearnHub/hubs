@@ -4,16 +4,41 @@ var consoleHistory = null;
 
 // Save recorded log to file
 export default function SaveConsoleLog() {
-  if(consoleHistory) {
+  if (consoleHistory) {
     consoleHistory.saveToFile();
   } else {
     console.error("Unexpected call when log recording is disabled");
   }
 }
 
+// Circular references can crash JSON.stringify
+// Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+function getSerializationTransform() {
+  const seen = new WeakSet();
+  return (key, value) => {
+    const valueType = typeof value;
+    if (value != null) {
+      if (valueType === "object") {
+        // Check for circular references
+        if (seen.has(value)) {
+          return "∞";
+        }
+        seen.add(value);
+        // Allow recursion into arrays
+        if (Array.isArray(value)) {
+          return value;
+        }
+        // Prevent futher recursion for brevity
+        return "[snip]";
+      }
+    }
+    return value;
+  };
+};
+
 // AVN: Make record_log opt-out by default
 if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).get("record_log") || "true") == "true") {
-  
+
   class ConsoleHistory {
     constructor(maximumEntries) {
       this.entries = new Array();
@@ -21,41 +46,28 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
     }
 
     record(logLevel, argArray, error) {
-      const entry = {
-        "time": new Date(),
-        "level": logLevel,       
-        "args": argArray, 
-      };
-      if(error) {
-        entry["stack"] = error.stack;
-      }
-      // Circular references can crash JSON.stringify
-      // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-      const getCircularReplacer = () => {
-        const seen = new WeakSet();
-        return (key, value) => {
-          if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-              return "∞";
-            }
-            seen.add(value);
-          }
-          return value;
-        };
-      };
-      let json = "{}";
+      let argJson = "[]";
       // Large objects can throw RangeError: Invalid string length
-      try {    
-        json = JSON.stringify(entry, getCircularReplacer());
-      } catch(e) {
-        // Replace problematic args and try again
-        const newArgArray = ["record-log-serialization-error", e];
-        origConsoleError.apply(null, newArgArray);        
-        entry["args"] = newArgArray;
-        json = JSON.stringify(entry, getCircularReplacer());
+      try {
+        argJson = JSON.stringify(argArray, getSerializationTransform());
+      } catch (e) {
+        // Replace problematic args and report the error at least
+        const newArgArray = ["record-log-serialization-error-args", e];
+        origConsoleError.apply(null, newArgArray);
+        argJson = JSON.stringify(newArgArray);
       }
+      let stackJson = "";
+      if (error) {
+        try {
+          stackJson = `, "stack": ${JSON.stringify(error.stack)}`;
+        } catch (e) {
+          const newArgArray = ["record-log-serialization-error-stack", e];
+          origConsoleError.apply(null, newArgArray);
+        }
+      }
+      let json = `{ "time": "${new Date().toISOString()}", "level": "${logLevel}", "args": ${argJson} ${stackJson} }`;
       // Add the new entry and ensure the list doesn't grow too long
-      if(this.entries.push(json) > this.maximumEntries) {
+      if (this.entries.push(json) > this.maximumEntries) {
         this.entries.shift();
       }
     }
@@ -63,9 +75,9 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
     saveToFile() {
       // Compose JSON array from log record
       const json = "[\n" + this.entries.join(",\n") + "\n]";
-      const fileName = document.title + ' ' + new Date().toISOString().substr(0, 19) + '.json';
+      const fileName = new Date().toISOString().substring(0, 19) + '.json';
       const linkEl = document.createElement('a');
-      const url = URL.createObjectURL(new Blob([json], { type:"text/json" }) );
+      const url = URL.createObjectURL(new Blob([json], { type: "text/json" }));
       linkEl.href = url;
       linkEl.setAttribute('download', fileName);
       linkEl.innerHTML = 'Saving...';
@@ -82,31 +94,31 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
   // Intercept the built-in console methods
 
   const origConsoleLog = console.log;
-  console.log = function() {
+  console.log = function () {
     origConsoleLog.apply(null, arguments);
     consoleHistory.record("log", Array.from(arguments));
   };
 
   const origConsoleInfo = console.info;
-  console.info = function() {
+  console.info = function () {
     origConsoleInfo.apply(null, arguments);
     consoleHistory.record("info", Array.from(arguments));
   };
 
   const origConsoleWarn = console.warn;
-  console.warn = function() {
+  console.warn = function () {
     origConsoleWarn.apply(null, arguments);
     consoleHistory.record("warn", Array.from(arguments), new Error());
   };
 
   const origConsoleError = console.error;
-  console.error = function() {
+  console.error = function () {
     origConsoleError.apply(null, arguments);
     consoleHistory.record("error", Array.from(arguments), new Error());
   };
 
   const origConsoleDebug = console.debug;
-  console.debug = function() {
+  console.debug = function () {
     origConsoleDebug.apply(null, arguments);
     consoleHistory.record("debug", Array.from(arguments));
   };
@@ -123,7 +135,7 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
       for (const report of reports) {
         console.warn("[ReportingObserver]", report);
       }
-    }, {buffered: true});
+    }, { buffered: true });
     observer.observe();
   }
 
@@ -139,14 +151,14 @@ if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).
     // Only report when the last longest duration is exceeded to cut down on console spam
     let longestDuration = 0;
     const observer = new PerformanceObserver((list) => {
-    for (const entry of list.getEntries()) {
-        if(entry.duration > longestDuration) {
+      for (const entry of list.getEntries()) {
+        if (entry.duration > longestDuration) {
           console.warn('[PerformanceObserver]', entry);
           longestDuration = entry.duration;
         }
       }
     });
-    observer.observe({entryTypes: ['longtask', /*'element', 'navigation', 'resource', 'mark', 'measure', 'paint'*/]});
+    observer.observe({ entryTypes: ['longtask', /*'element', 'navigation', 'resource', 'mark', 'measure', 'paint'*/] });
   }
 
   // Not captured in shadow log:
