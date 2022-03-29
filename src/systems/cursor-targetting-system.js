@@ -71,7 +71,9 @@ export class CursorTargettingSystem {
     targets.length = 0;
     // TODO: Do not querySelectorAll on the entire scene every time anything changes!
     const els = AFRAME.scenes[0].querySelectorAll(
-      ".collidable, .interactable, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider"
+      // AVN: Disable targetting for everything except movable objects to avoid showing the object inspector view
+      ".moveable"
+      //".collidable, .interactable, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider"
     );
     for (let i = 0; i < els.length; i++) {
       if (els[i].object3D) {
