@@ -19,7 +19,7 @@ AFRAME.registerComponent("media-image", {
     contentType: { type: "string" },
     batch: { default: false },
     alphaMode: { type: "string", default: undefined },
-    alphaCutoff: { type: "number" }
+    alphaCutoff: { type: "number", default: 0.5 }
   },
 
   play() {
