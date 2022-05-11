@@ -47,7 +47,6 @@ import { useAccessibleOutlineStyle } from "./input/useAccessibleOutlineStyle";
 import { ToolbarButton } from "./input/ToolbarButton";
 import { RoomEntryModal } from "./room/RoomEntryModal";
 import { EnterOnDeviceModal } from "./room/EnterOnDeviceModal";
-import { MicPermissionsModal } from "./room/MicPermissionsModal";
 import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
@@ -84,7 +83,7 @@ import { EduverseSidebarContainer } from "./room/EduverseSidebarContainer";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
-import { VoiceButtonContainer } from "./room/VoiceButtonContainer";
+import { AudioPopoverContainer } from "./room/AudioPopoverContainer";
 import { ReactionPopoverContainer } from "./room/ReactionPopoverContainer";
 import { AvnHelpPopoverContainer } from "./room/AvnHelpPopoverContainer";
 import { SafariMicModal } from "./room/SafariMicModal";
@@ -104,6 +103,7 @@ import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
 import { avnBridge } from "../avn-bridge";
 import { changeHubAvn } from "../change-hub";
+import { MediaDevicesEvents } from "../utils/media-devices-utils";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -210,7 +210,8 @@ class UIRoot extends Component {
     objectInfo: null,
     objectSrc: "",
     sidebarId: null,
-    presenceCount: 0
+    presenceCount: 0,
+    chatInputEffect: () => {}
   };
 
   constructor(props) {
@@ -220,7 +221,7 @@ class UIRoot extends Component {
 
     // An exit handler that discards event arguments and can be cleaned up.
     this.exitEventHandler = () => this.props.exitScene();
-    this.mediaDevicesManager = window.APP.mediaDevicesManager;
+    this.mediaDevicesManager = APP.mediaDevicesManager;
   }
 
   componentDidUpdate(prevProps) {
@@ -289,7 +290,7 @@ class UIRoot extends Component {
   }
 
   onConcurrentLoad = () => {
-    if (qsTruthy("allow_multi") || this.props.store.state.preferences["allowMultipleHubsInstances"]) return;
+    if (qsTruthy("allow_multi") || this.props.store.state.preferences.allowMultipleHubsInstances) return;
     this.startAutoExitTimer(AutoExitReason.concurrentSession);
   };
 
@@ -297,7 +298,7 @@ class UIRoot extends Component {
     if (
       this.props.disableAutoExitOnIdle ||
       this.state.isStreaming ||
-      this.props.store.state.preferences["disableIdleDetection"]
+      this.props.store.state.preferences.disableIdleDetection
     )
       return;
     this.startAutoExitTimer(AutoExitReason.idle);
@@ -313,6 +314,7 @@ class UIRoot extends Component {
     window.addEventListener("concurrentload", this.onConcurrentLoad);
     window.addEventListener("idle_detected", this.onIdleDetected);
     window.addEventListener("activity_detected", this.onActivityDetected);
+    window.addEventListener("focus_chat", this.onFocusChat);
     document.querySelector(".a-canvas").addEventListener("mouseup", () => {
       if (this.state.showShareDialog) {
         this.setState({ showShareDialog: false });
@@ -403,6 +405,7 @@ class UIRoot extends Component {
     window.removeEventListener("concurrentload", this.onConcurrentLoad);
     window.removeEventListener("idle_detected", this.onIdleDetected);
     window.removeEventListener("activity_detected", this.onActivityDetected);
+    window.removeEventListener("focus_chat", this.onFocusChat);
   }
 
   storeUpdated = () => {
@@ -488,16 +491,12 @@ class UIRoot extends Component {
     this.setState({ showVideoShareFailed: true });
   };
 
-  toggleMute = () => {
-    APP.dialog.toggleMicrophone();
-  };
-
   shareVideo = mediaSource => {
     this.props.scene.emit(`action_share_${mediaSource}`);
   };
 
   endShareVideo = () => {
-    this.props.scene.emit("action_end_video_sharing");
+    this.props.scene.emit(MediaDevicesEvents.VIDEO_SHARE_ENDED);
   };
 
   spawnPen = () => {
@@ -570,12 +569,12 @@ class UIRoot extends Component {
 
     if (hasGrantedMic) {
       if (!this.mediaDevicesManager.isMicShared) {
-        await this.mediaDevicesManager.startLastUsedMicShare();
+        await this.mediaDevicesManager.startMicShare({});
       }
       this.beginOrSkipAudioSetup();
     } else {
       this.onRequestMicPermission();
-      this.pushHistoryState("entry_step", "mic_grant");
+      this.pushHistoryState("entry_step", "audio");
     }
 
     this.setState({ waitingOnAudio: false });
@@ -600,15 +599,8 @@ class UIRoot extends Component {
     await this.performDirectEntryFlow(true);
   };
 
-  micDeviceChanged = async deviceId => {
-    this.mediaDevicesManager.startMicShare(deviceId);
-  };
-
   onRequestMicPermission = async () => {
-    console.log("Microphone permission requested");
-    // TODO: Show an error state if getting the microphone permissions fails
-    await this.mediaDevicesManager.startLastUsedMicShare();
-    this.beginOrSkipAudioSetup();
+    await this.mediaDevicesManager.startMicShare({});
   };
 
   beginOrSkipAudioSetup = () => {
@@ -640,7 +632,7 @@ class UIRoot extends Component {
     const micMutedForSession = window.sessionStorage.getItem("muteMicOnEntryForThisSession") !== "false";
     console.log(`Session mic mute state is '${micMutedForSession}'`);
 
-    const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || micMutedForSession;
+    const muteOnEntry = this.props.store.state.preferences.muteMicOnEntry || micMutedForSession;
     this.props.store.update({
       settings: { micMuted: false }
     });
@@ -761,6 +753,7 @@ class UIRoot extends Component {
         () => {
           this.showNonHistoriedDialog(TweetModalContainer, {
             hubChannel: this.props.hubChannel,
+            isAdmin: configs.isAdmin(),
             ...detail
           });
         },
@@ -783,7 +776,7 @@ class UIRoot extends Component {
   pushHistoryState = (k, v) => pushHistoryState(this.props.history, k, v);
 
   setSidebar(sidebarId, otherState) {
-    this.setState({ sidebarId, selectedUserId: null, ...otherState });
+    this.setState({ sidebarId, chatInputEffect: () => {}, selectedUserId: null, ...otherState });
   }
 
   toggleSidebar(sidebarId, otherState) {
@@ -797,6 +790,15 @@ class UIRoot extends Component {
       };
     });
   }
+
+  onFocusChat = e => {
+    this.setSidebar("chat", {
+      chatInputEffect: input => {
+        input.focus();
+        input.value = e.detail.prefix;
+      }
+    });
+  };
 
   renderInterstitialPrompt = () => {
     return (
@@ -846,7 +848,7 @@ class UIRoot extends Component {
                 this.pushHistoryState("entry_step", "profile");
               } else {
                 this.onRequestMicPermission();
-                this.pushHistoryState("entry_step", "mic_grant");
+                this.pushHistoryState("entry_step", "audio");
               }
             } else {
               this.handleForceEntry();
@@ -918,17 +920,10 @@ class UIRoot extends Component {
   };
 
   renderAudioSetupPanel = () => {
-    const muteOnEntry = this.props.store.state.preferences["muteMicOnEntry"] || false;
     // TODO: Show HMD mic not chosen warning
     return (
       <MicSetupModalContainer
         scene={this.props.scene}
-        selectedMicrophone={this.mediaDevicesManager.selectedMicDeviceId}
-        microphoneOptions={this.mediaDevicesManager.micDevices}
-        onChangeMicrophone={this.micDeviceChanged}
-        microphoneEnabled={this.mediaDevicesManager.isMicShared}
-        microphoneMuted={muteOnEntry}
-        onChangeMicrophoneMuted={() => this.props.store.update({ preferences: { muteMicOnEntry: !muteOnEntry } })}
         onEnterRoom={this.onAudioReadyButton}
         onBack={() => this.props.history.goBack()}
       />
@@ -1047,8 +1042,8 @@ class UIRoot extends Component {
     const entered = this.state.entered;
     const watching = this.state.watching;
     const enteredOrWatching = entered || watching;
-    const showRtcDebugPanel = this.props.store.state.preferences["showRtcDebugPanel"];
-    const showAudioDebugPanel = this.props.store.state.preferences["showAudioDebugPanel"];
+    const showRtcDebugPanel = this.props.store.state.preferences.showRtcDebugPanel;
+    const showAudioDebugPanel = this.props.store.state.preferences.showAudioDebugPanel;
     const displayNameOverride = this.props.hubIsBound
       ? getPresenceProfileForSession(this.props.presences, this.props.sessionId).displayName
       : null;
@@ -1073,9 +1068,6 @@ class UIRoot extends Component {
           <StateRoute stateKey="entry_step" stateValue="device" history={this.props.history}>
             {this.renderDevicePanel()}
           </StateRoute>
-          <StateRoute stateKey="entry_step" stateValue="mic_grant" history={this.props.history}>
-            <MicPermissionsModal onBack={() => this.props.history.goBack()} />
-          </StateRoute>
           <StateRoute stateKey="entry_step" stateValue="audio" history={this.props.history}>
             {this.renderAudioSetupPanel()}
           </StateRoute>
@@ -1094,7 +1086,7 @@ class UIRoot extends Component {
                     this.handleForceEntry();
                   } else {
                     this.onRequestMicPermission();
-                    this.pushHistoryState("entry_step", "mic_grant");
+                    this.pushHistoryState("entry_step", "audio");
                   }
                 }}
                 showBackButton
@@ -1135,9 +1127,15 @@ class UIRoot extends Component {
     const moreMenu = [
       {
         id: "user",
-        label:
-          "You" +
-          (this.state.signedIn ? ` (Signed in as: ${maskEmail(this.props.store.state.credentials.email)})` : ""),
+        label: !this.state.signedIn ? (
+          <FormattedMessage id="more-menu.not-signed-in" defaultMessage="You are not signed in" />
+        ) : (
+          <FormattedMessage
+            id="more-menu.you-signed-in-as"
+            defaultMessage="Signed in as: {email}"
+            values={{ email: maskEmail(this.props.store.state.credentials.email) }}
+          />
+        ),
         items: [
           this.state.signedIn
             ? {
@@ -1187,7 +1185,7 @@ class UIRoot extends Component {
           },
           {
             id: "preferences",
-            label: "Preferences",
+            label: <FormattedMessage id="more-menu.preferences" defaultMessage="Preferences" />,
             icon: SettingsIcon,
             onClick: () => this.setState({ showPrefs: true })
           }
@@ -1484,6 +1482,7 @@ class UIRoot extends Component {
                           canSpawnMessages={entered && this.props.hubChannel.can("spawn_and_move_media")}
                           scene={this.props.scene}
                           onClose={() => this.setSidebar(null)}
+                          inputEffect={this.state.chatInputEffect}
                         />
                       )}
                       {this.state.sidebarId === "objects" && (
@@ -1622,7 +1621,7 @@ class UIRoot extends Component {
                     )}
                     {entered && (
                       <>
-                        <VoiceButtonContainer
+                        <AudioPopoverContainer
                           scene={this.props.scene}
                           microphoneEnabled={this.mediaDevicesManager.isMicShared}
                         />

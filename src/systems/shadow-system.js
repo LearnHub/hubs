@@ -1,7 +1,7 @@
 import { traverseAnimationTargets } from "../utils/three-utils";
 
 const frustumBox = new THREE.Box3();
-const inverseLightMatrixWorld = new THREE.Matrix4();
+const inverseShadowCameraMatrixWorld = new THREE.Matrix4();
 const tempBox = new THREE.Box3();
 const FRUSTUM_PADDING = 1;
 const NEAR_CLIPPING_PLANE = -500;
@@ -64,10 +64,12 @@ function resizeShadowCameraFrustum(light, boundingBox) {
   verts[7].set(max.x, max.y, max.z);
 
   light.updateMatrices();
-  inverseLightMatrixWorld.copy(light.matrixWorld).invert();
+  light.target.updateMatrices();
+  light.shadow.updateMatrices(light);
+  inverseShadowCameraMatrixWorld.copy(light.shadow.camera.matrixWorld).invert();
 
   for (let i = 0; i < verts.length; i++) {
-    verts[i].applyMatrix4(inverseLightMatrixWorld);
+    verts[i].applyMatrix4(inverseShadowCameraMatrixWorld);
     frustumBox.expandByPoint(verts[i]);
   }
 
@@ -105,7 +107,11 @@ export class ShadowSystem {
   tick() {
     const environmentObject3D = this.environmentObject3D;
 
-    if (!this.needsUpdate || window.APP.store.materialQualitySetting === "low" || !environmentObject3D) {
+    if (
+      !this.needsUpdate ||
+      window.APP.store.state.preferences.materialQualitySetting === "low" ||
+      !environmentObject3D
+    ) {
       return;
     }
 

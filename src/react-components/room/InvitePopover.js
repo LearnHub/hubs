@@ -55,9 +55,7 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
 }
 
 InvitePopoverContent.propTypes = {
-  shortUrl: PropTypes.string,
   url: PropTypes.string.isRequired,
-  code: PropTypes.string.isRequired,
   embed: PropTypes.string.isRequired,
   inviteRequired: PropTypes.bool,
   fetchingInvite: PropTypes.bool,
@@ -72,9 +70,7 @@ const invitePopoverTitle = defineMessage({
 });
 
 export function InvitePopoverButton({
-  shortUrl,
   url,
-  code,
   embed,
   initiallyVisible,
   popoverApiRef,
@@ -93,9 +89,7 @@ export function InvitePopoverButton({
       title={title}
       content={() => (
         <InvitePopoverContent
-          shortUrl={shortUrl}
           url={url}
-          code={code}
           embed={embed}
           inviteRequired={inviteRequired}
           fetchingInvite={fetchingInvite}

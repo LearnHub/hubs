@@ -52,7 +52,7 @@ function timeFmt(t) {
   return h === "00" ? `${m}:${s}` : `${h}:${m}:${s}`;
 }
 
-const MAX_MULTIPLIER = 2;
+const MAX_GAIN_MULTIPLIER = 2;
 
 AFRAME.registerComponent("media-video", {
   schema: {
@@ -216,7 +216,7 @@ AFRAME.registerComponent("media-video", {
 
   changeVolumeBy(v) {
     let gainMultiplier = APP.gainMultipliers.get(this.el);
-    gainMultiplier = THREE.Math.clamp(gainMultiplier + v, 0, MAX_MULTIPLIER);
+    gainMultiplier = THREE.Math.clamp(gainMultiplier + v, 0, MAX_GAIN_MULTIPLIER);
     APP.gainMultipliers.set(this.el, gainMultiplier);
     this.updateVolumeLabel();
     const audio = APP.audios.get(this.el);
@@ -361,7 +361,7 @@ AFRAME.registerComponent("media-video", {
     } else {
       this.audio = new THREE.Audio(audioListener);
     }
-    this.audioSystem.addAudio(SourceType.MEDIA_VIDEO, this.audio);
+    this.audioSystem.addAudio({ sourceType: SourceType.MEDIA_VIDEO, node: this.audio });
 
     this.audio.setNodeSource(this.mediaElementAudioSource);
     this.el.setObject3D("sound", this.audio);
@@ -461,6 +461,7 @@ AFRAME.registerComponent("media-video", {
 
     if (!this.mesh || projection !== oldData.projection) {
       const material = new THREE.MeshBasicMaterial();
+      material.toneMapped = false;
 
       let geometry;
 
@@ -526,7 +527,7 @@ AFRAME.registerComponent("media-video", {
         // We want to treat audio almost exactly like video, so we mock a video texture with an image property.
         texture = new THREE.Texture();
         texture.image = videoEl;
-        isReady = () => true;
+        isReady = () => videoEl.readyState > 0;
       } else {
         texture = new THREE.VideoTexture(videoEl);
         texture.minFilter = THREE.LinearFilter;
@@ -763,7 +764,7 @@ AFRAME.registerComponent("media-video", {
     this.volumeLabel.setAttribute(
       "text",
       "value",
-      gainMultiplier === 0 ? "MUTE" : VOLUME_LABELS[Math.floor(gainMultiplier / (MAX_MULTIPLIER / 20))]
+      gainMultiplier === 0 ? "MUTE" : VOLUME_LABELS[Math.floor(gainMultiplier / (MAX_GAIN_MULTIPLIER / 20))]
     );
   },
 
@@ -870,7 +871,7 @@ AFRAME.registerComponent("media-video", {
   removeAudio() {
     if (this.audio) {
       this.el.removeObject3D("sound");
-      this.audioSystem.removeAudio(this.audio);
+      this.audioSystem.removeAudio({ node: this.audio });
       delete this.audio;
     }
   }

@@ -30,4 +30,5 @@ import "./video-pause-state";
 import "./particle-emitter";
 import "./audio-zone";
 import "./audio-zone-source";
+import "./troika-text";
 import "./frustrum";
