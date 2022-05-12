@@ -25,9 +25,10 @@ export const DistanceModelType = {
 export const AvatarAudioDefaults = Object.freeze({
   audioType: AudioType.PannerNode,
   distanceModel: DistanceModelType.Inverse,
+  // AVN: Emperically good defaults
   rolloffFactor: 5,
-  refDistance: 5,
-  maxDistance: 10000,
+  refDistance: 8,
+  maxDistance: 1000,
   coneInnerAngle: 180,
   coneOuterAngle: 360,
   coneOuterGain: 0.9,
@@ -37,9 +38,10 @@ export const AvatarAudioDefaults = Object.freeze({
 export const MediaAudioDefaults = Object.freeze({
   audioType: AudioType.PannerNode,
   distanceModel: DistanceModelType.Inverse,
+  // AVN: Emperically good defaults
   rolloffFactor: 5,
-  refDistance: 5,
-  maxDistance: 10000,
+  refDistance: 8,
+  maxDistance: 1000,
   coneInnerAngle: 360,
   coneOuterAngle: 0,
   coneOuterGain: 0.9,
@@ -51,7 +53,7 @@ export const TargetAudioDefaults = Object.freeze({
   distanceModel: DistanceModelType.Inverse,
   rolloffFactor: 5,
   refDistance: 8,
-  maxDistance: 10000,
+  maxDistance: 1000,
   coneInnerAngle: 170,
   coneOuterAngle: 300,
   coneOuterGain: 0.3,

@@ -43,6 +43,8 @@
   flex-direction: column;
   background-color: rgba(0, 0, 0, 0.7);
   width: max-content;
+  // AVN: Hiding the buttons makes the menu collapse without a minimum width
+  min-width: 128px;
   color: theme.$overlay-text-color;
   border-radius: 12px;
 

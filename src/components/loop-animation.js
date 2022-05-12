@@ -64,7 +64,8 @@ AFRAME.registerComponent("loop-animation", {
           }
         }
       } else {
-        clips = [animations[activeClipIndex]];
+        // AVN: Play all animations by default if not otherwise specified (default Hubs behaviour is just to play the first)
+        clips = animations;
       }
     }
 

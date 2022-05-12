@@ -39,7 +39,7 @@ export default class MessageDispatch extends EventTarget {
         this.presenceLogEntries.splice(this.presenceLogEntries.indexOf(entry), 1);
         this.remountUI({ presenceLogEntries: this.presenceLogEntries });
       }, 5000);
-    }, 20000);
+    }, 5000);
   }
 
   receive(message) {

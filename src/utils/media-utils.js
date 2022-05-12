@@ -9,6 +9,9 @@ import { proxiedUrlFor, guessContentType } from "../utils/media-url-utils";
 import { isIOS as detectIOS } from "./is-mobile";
 import Linkify from "linkify-it";
 import tlds from "tlds";
+import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
+
+import { avnBridge } from "../avn-bridge"
 
 import anime from "animejs";
 
@@ -41,7 +44,10 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
-  const resultPromise = fetch(mediaAPIEndpoint, {
+  // AVN: Authenticated queries are accessed through an alternative API with the dimension ID tacked on the end
+  const apiEndpoint = avnBridge.isAvnUrl(url) ? avnBridge.mediaEndpoint : mediaAPIEndpoint;
+
+  const resultPromise = fetch(apiEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ media: { url, quality: quality || getDefaultResolveQuality() }, version })
@@ -547,6 +553,29 @@ export function closeExistingMediaMirror() {
       });
     });
   }
+}
+
+// AVN: Used for simple screenshot functionality
+export async function saveScreenshot(scene, format) {
+  console.info("User requested screenshot");
+  const screenshotFunction = () => {
+    scene.removeEventListener("renderer.render.end", screenshotFunction);
+    console.info("Saving screenshot...");
+    scene.canvas.toBlob(function (blob) {
+      const fileName = document.title + ' ' + new Date().toISOString().substr(0, 19) + '.' + format;
+      const linkEl = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      linkEl.href = url;
+      linkEl.setAttribute('download', fileName);
+      linkEl.innerHTML = 'downloading...';
+      linkEl.style.display = 'none';
+      document.body.appendChild(linkEl);
+      linkEl.click();
+      document.body.removeChild(linkEl);
+      scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_SCREENSHOT);
+    }, 'image/' + format);
+  };
+  scene.addEventListener("renderer.render.end", screenshotFunction);
 }
 
 export function hasAudioTracks(el) {

@@ -1,0 +1,62 @@
+@use "../styles/theme.scss";
+
+:local(.information-container) {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  list-style: none;
+  padding: theme.$spacing-lg theme.$spacing-lg 0px theme.$spacing-lg;
+  overflow-y: auto;
+  min-height: 0;
+}
+:local(.information-container) h1 {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 1ex;
+}
+
+:local(.scene-icon) {
+  height: 1em;
+  max-width: 2em;
+  margin-right: 8px;
+  object-fit: contain;
+}
+
+:local(.share-link-container) {
+  padding: theme.$spacing-lg;
+  flex-basis: max-content;
+}
+
+:local(.markdown) {
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1ex;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }  
+  h2 {
+    font-size: 1.1rem;
+  }
+  h3 {
+    font-size: 1.0rem;
+  }  
+  p {
+    margin-bottom: 1em;
+  }
+  li {
+    margin-bottom: 1ex;
+  }
+  ul, ol {
+    list-style: disc outside none;
+    margin: 0 0 1em 2em;
+  }
+  ol { 
+    list-style-type: decimal;
+  }
+  .premium-feature {
+    color: red;
+  }
+  .premium-feature:after {
+    content: "🔒";
+  }
+}

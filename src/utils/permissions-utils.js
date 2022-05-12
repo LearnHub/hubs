@@ -28,7 +28,9 @@ export function canMove(entity) {
     isHoldableButton ||
     ((isEmoji || isEmojiSpawner
       ? window.APP.hubChannel.can("spawn_emoji")
-      : window.APP.hubChannel.can("spawn_and_move_media")) &&
+      // AVN: HACK TO ALLOW MOVEABLE OBJECTS WITHOUT ALLOWING OBJECTS TO BE ADDED
+      //: window.APP.hubChannel.can("spawn_and_move_media")) &&
+      : true) &&
       (!isPinned || window.APP.hubChannel.can("pin_objects")) &&
       (!isCamera || window.APP.hubChannel.can("spawn_camera")) &&
       (!isPen || window.APP.hubChannel.can("spawn_drawing")))

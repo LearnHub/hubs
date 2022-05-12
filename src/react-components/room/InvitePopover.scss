@@ -5,6 +5,7 @@
 
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
     padding-top: 8px;
-    width: 272px;
+    /* AVN: Increase width so URL is always visible */
+    width: 330px;
   }
 }

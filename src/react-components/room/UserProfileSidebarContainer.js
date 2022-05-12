@@ -122,7 +122,7 @@ export function UserProfileSidebarContainer({
       userId={user.id}
       displayName={displayName}
       identityName={identityName}
-      avatarPreview={<img src={avatarThumbnailUrl} />}
+      avatarPreview={<img crossOrigin="anonymous" src={avatarThumbnailUrl} />}
       isSignedIn={isSignedIn}
       canPromote={mayAddOwner}
       onPromote={addOwner}

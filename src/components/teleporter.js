@@ -145,7 +145,7 @@ const HIT_COLOR = 0x00ff00;
 const FORWARD = new THREE.Vector3(0, 0, -1);
 const LANDING_NORMAL = new THREE.Vector3(0, 1, 0);
 const MAX_LANDING_ANGLE = 45;
-const DRAW_TIME_MS = 400;
+const DRAW_TIME_MS = 250;
 const q = new THREE.Quaternion();
 const vecHelper = new THREE.Vector3();
 const v = new THREE.Vector3();
@@ -155,7 +155,7 @@ AFRAME.registerComponent("teleporter", {
   schema: {
     start: { type: "string" },
     confirm: { type: "string" },
-    speed: { default: 12 },
+    speed: { default: 50 },
     collisionEntities: { default: "" },
     hitCylinderColor: { type: "color", default: "#99ff99" },
     hitCylinderRadius: { default: 0.25, min: 0 },

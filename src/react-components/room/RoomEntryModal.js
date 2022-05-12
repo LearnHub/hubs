@@ -5,6 +5,7 @@ import { Modal } from "../modal/Modal";
 import { Button } from "../input/Button";
 import { ReactComponent as EnterIcon } from "../icons/Enter.svg";
 import { ReactComponent as VRIcon } from "../icons/VR.svg";
+import { ReactComponent as PhoneIcon } from "../icons/Phone.svg";
 import { ReactComponent as ShowIcon } from "../icons/Show.svg";
 import { ReactComponent as SettingsIcon } from "../icons/Settings.svg";
 import { ReactComponent as HmcLogo } from "../icons/HmcLogo.svg";
@@ -14,6 +15,9 @@ import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { Column } from "../layout/Column";
 import { FormattedMessage } from "react-intl";
 import configs from "../../utils/configs";
+
+import qsTruthy from "../../utils/qs_truthy";
+const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 
 export function RoomEntryModal({
   appName,
@@ -28,6 +32,8 @@ export function RoomEntryModal({
   onSpectate,
   showOptions,
   onOptions,
+  headsetConnected,
+  onEnterOnConnectedHeadset,
   ...rest
 }) {
   const breakpoint = useCssBreakpoints();
@@ -38,13 +44,16 @@ export function RoomEntryModal({
         {breakpoint !== "sm" &&
           breakpoint !== "md" && (
             <div className={styles.logoContainer}>
-              {isHmc ? <HmcLogo className="hmc-logo" /> : <img src={logoSrc} alt={appName} />}
+              {isHmc ? <HmcLogo className="hmc-logo" /> : <img crossOrigin="anonymous" src={logoSrc} alt={appName} />}
             </div>
           )}
         <div className={styles.roomName}>
-          <h5>
-            <FormattedMessage id="room-entry-modal.room-name-label" defaultMessage="Room Name" />
-          </h5>
+          {
+          // AVN: Title is just cruft
+          // <h5>
+          //   <FormattedMessage id="room-entry-modal.room-name-label" defaultMessage="Room Name" />
+          // </h5>
+          } 
           <p>{roomName}</p>
         </div>
         <Column center className={styles.buttons}>
@@ -58,13 +67,32 @@ export function RoomEntryModal({
           )}
           {showEnterOnDevice && (
             <Button preset="accent5" onClick={onEnterOnDevice}>
-              <VRIcon />
+              <PhoneIcon />
               <span>
-                <FormattedMessage id="room-entry-modal.enter-on-device-button" defaultMessage="Enter On Device" />
+                <FormattedMessage id="room-entry-modal.enter-on-device-button" defaultMessage="Move To Another Device" />
               </span>
             </Button>
           )}
-          {showSpectate && (
+
+          {/* AVN: Duplicated code from EnterOnDeviceModal. Hidden for now while there are issues with Google VR */}
+          {showHiddenFeatures && headsetConnected &&            
+            <>
+              <small>
+                <FormattedMessage
+                  id="enter-on-device-modal.headset-connected-message"
+                  defaultMessage="You have a VR headset connected to this device."
+                />
+              </small>
+              <Button preset="accent2" onClick={onEnterOnConnectedHeadset}>
+                <VRIcon />
+                <span>
+                  <FormattedMessage id="enter-on-device-modal.enter-in-vr-button" defaultMessage="Enter in VR" />
+                </span>
+              </Button>
+            </>
+          }
+
+          {/* AVN: Hide the spectate button for now */false && showSpectate && (
             <Button preset="accent2" onClick={onSpectate}>
               <ShowIcon />
               <span>

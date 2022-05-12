@@ -133,7 +133,8 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, logoSrc, showSou
             />
           </p>
         )}
-        {![ExitReason.left, ExitReason.disconnected, ExitReason.sceneError].includes(reason) && (
+        {/* AVN: Don't give the option to create rooms */}
+        {false && ![ExitReason.left, ExitReason.disconnected, ExitReason.sceneError].includes(reason) && (
           <p>
             <FormattedMessage
               id="exited-room-screen.create-room"

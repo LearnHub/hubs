@@ -352,7 +352,8 @@ class MediaBrowserContainer extends Component {
     const urlSource = this.getUrlSource(searchParams);
     const isSceneApiType = urlSource === "scenes";
     const isFavorites = urlSource === "favorites";
-    const showCustomOption =
+    // AVN: No custom options for now
+    const showCustomOption = false;
       !isFavorites && (!isSceneApiType || this.props.hubChannel.canOrWillIfCreator("update_hub"));
     const entries = (this.state.result && this.state.result.entries) || [];
     const hideSearch = urlSource === "favorites";

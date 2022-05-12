@@ -5,7 +5,8 @@
   top: 8px;
   right: 8px;
   display: flex;
-  flex-direction: row;
+  // AVN: Vertical buttons clearer as button count increases
+  flex-direction: column;
   background-color: theme.$button-bg-color;
   border: 1px solid theme.$button-border-color;
   border-radius: 12px;
@@ -80,6 +81,8 @@
 }
 
 :local(.separator) {
+  // AVN: Vertical buttons need to seperator
+  display: none;
   width: 1px;
   margin: 0 8px;
   background-color: theme.$border1-color;

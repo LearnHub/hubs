@@ -35,11 +35,16 @@ const onboardingMessages = defineMessages({
   },
   "tips.mobile.locomotion": {
     id: "tips.mobile.locomotion",
-    defaultMessage: "Great! To move, pinch with two fingers."
+    // AVN: Screen joystick is the default
+    defaultMessage: "Great! To move, use the on-screen joystick by touching the bottom left corner."
   },
   "tips.mobile.invite": {
     id: "tips.mobile.invite",
     defaultMessage: "Use the Invite button in the bottom left to share this room."
+  },
+  "tips.mobile.eduverse": {
+    id: "tips.mobile.eduverse",
+    defaultMessage: "Open the Eduverse side panel for information about the room you are in."
   },
   "tips.desktop.look": {
     id: "tips.desktop.look",
@@ -56,7 +61,11 @@ const onboardingMessages = defineMessages({
   "tips.desktop.invite": {
     id: "tips.desktop.invite",
     defaultMessage: "Nobody else is here. Use the invite button in the bottom left to share this room."
-  }
+  },
+  "tips.desktop.eduverse": {
+    id: "tips.desktop.eduverse",
+    defaultMessage: "Open the Eduverse side panel for information about the room you are in."
+  },
 });
 
 function OkDismissLabel() {
@@ -82,7 +91,8 @@ export function TipContainer({ hide, inLobby, inRoom, isStreaming, isEmbedded, s
     store.state.confirmedBroadcastedRooms.includes(hubId)
   );
   const [streamingTipDismissed, setStreamingTipDismissed] = useState(false);
-  const [embeddedTipDismissed, setEmbeddedTipDismissed] = useState(false);
+  // AVN: Force the embedded tip not to be shown
+  const [embeddedTipDismissed, setEmbeddedTipDismissed] = useState(true);
   const [onboardingTipId, setOnboardingTipId] = useState(null);
 
   const onSkipOnboarding = useCallback(

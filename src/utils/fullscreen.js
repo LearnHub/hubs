@@ -24,3 +24,13 @@ export async function showFullScreenIfWasFullScreen() {
     await screenfull.request();
   }
 }
+
+export async function exitFullScreen() {
+  if (screenfull.enabled) {
+    await screenfull.exit();
+  }
+}
+
+export function isFullScreen() {
+  return screenfull.enabled && screenfull.isFullscreen
+}

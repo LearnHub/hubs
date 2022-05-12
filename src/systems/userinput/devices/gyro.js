@@ -56,9 +56,11 @@ export class GyroDevice {
       this.frameData = new window.webvrpolyfill.constructor.VRFrameData();
     }
 
-    this.enableGyro = window.APP.store.state.preferences.enableGyro;
+    //AVN: changed from original
+    // undefined means no preference. Default is false, so check for true explicitly
+    this.enableGyro = window.APP.store.state.preferences.enableGyro === true;
     window.APP.store.addEventListener("statechanged", () => {
-      this.enableGyro = window.APP.store.state.preferences.enableGyro;
+      this.enableGyro = window.APP.store.state.preferences.enableGyro === true;
     });
   }
 

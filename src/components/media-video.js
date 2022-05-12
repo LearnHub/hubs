@@ -117,6 +117,11 @@ AFRAME.registerComponent("media-video", {
       this.volumeLabel = this.el.querySelector(".video-volume-label");
       this.linkButton = this.el.querySelector(".video-link-button");
 
+      // AVN: Hide volume controls from user to avoid different user experiences
+      this.volumeUpButton.object3D.visible = false;
+      this.volumeDownButton.object3D.visible = false;
+      this.volumeLabel.object3D.visible = false;
+
       this.playPauseButton.object3D.addEventListener("interact", this.togglePlaying);
       this.seekForwardButton.object3D.addEventListener("interact", this.seekForward);
       this.seekBackButton.object3D.addEventListener("interact", this.seekBack);
@@ -733,7 +738,9 @@ AFRAME.registerComponent("media-video", {
     this.volumeLabel.object3D.visible = this.volumeUpButton.object3D.visible = this.volumeDownButton.object3D.visible =
       this.hasAudioTracks && !this.data.hidePlaybackControls && !!this.video;
 
-    this.snapButton.object3D.visible =
+    this.snapButton.object3D.visible = 
+      // AVN: Snap button is disabled for now to allow spawn_and_move_media to be true without letting users spawn images
+      false &&
       !!this.video && !this.data.contentType.startsWith("audio/") && window.APP.hubChannel.can("spawn_and_move_media");
     this.seekForwardButton.object3D.visible = !!this.video && !this.videoIsLive;
 
@@ -742,7 +749,10 @@ AFRAME.registerComponent("media-video", {
 
     this.playPauseButton.object3D.visible = this.seekForwardButton.object3D.visible = this.seekBackButton.object3D.visible = mayModifyPlayHead;
 
-    this.linkButton.object3D.visible = !!mediaLoader.mediaOptions.href;
+    // AVN: Link button not currently supported
+    if(this.linkButton) {
+      this.linkButton.object3D.visible = !!mediaLoader.mediaOptions.href;
+    }
 
     if (this.videoIsLive) {
       this.timeLabel.setAttribute("text", "value", "LIVE");

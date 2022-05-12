@@ -210,7 +210,7 @@ class SceneUI extends Component {
             [styles.screenshotHidden]: this.props.sceneLoaded
           })}
         >
-          {this.state.showScreenshot && <img src={this.props.sceneScreenshotURL} />}
+          {this.state.showScreenshot && <img crossOrigin="anonymous" src={this.props.sceneScreenshotURL} />}
         </div>
         <div className={styles.grid}>
           <div className={styles.mainPanel}>
@@ -219,6 +219,7 @@ class SceneUI extends Component {
                 <HmcLogo className="hmc-logo" />
               ) : (
                 <img
+                  crossOrigin="anonymous"
                   src={configs.image("logo")}
                   alt={<FormattedMessage id="scene-page.logo-alt" defaultMessage="Logo" />}
                 />

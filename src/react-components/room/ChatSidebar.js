@@ -353,7 +353,7 @@ function getMessageComponent(message) {
     case "photo":
       return (
         <MessageBubble key={message.id} media>
-          <img src={message.body.src} />
+          <img crossOrigin="anonymous" src={message.body.src} />
         </MessageBubble>
       );
     default:

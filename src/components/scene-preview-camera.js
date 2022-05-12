@@ -38,8 +38,8 @@ AFRAME.registerComponent("scene-preview-camera", {
     this.startRotation = this.el.object3D.quaternion.clone();
 
     this.targetPoint = this.el.object3D.position.clone();
-    this.targetPoint.y = Math.max(this.targetPoint.y - 1.5, 1);
-    this.targetPoint.add(new THREE.Vector3(2, 0, -2));
+    // AVN: SIMPLE PAN STRAIGHT UP
+    this.targetPoint.add(new THREE.Vector3(0, 0.5, 0));
 
     const targetRotDelta = new THREE.Euler(-0.15, 0.0, 0.15);
     this.targetRotation = new THREE.Quaternion();

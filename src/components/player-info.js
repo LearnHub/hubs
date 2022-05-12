@@ -1,6 +1,7 @@
 import { injectCustomShaderChunks } from "../utils/media-utils";
 import { AVATAR_TYPES } from "../utils/avatar-utils";
 import { registerComponentInstance, deregisterComponentInstance } from "../utils/component-utils";
+import { avnBridge } from "../avn-bridge"
 import defaultAvatar from "../assets/models/DefaultAvatar.glb";
 import { MediaDevicesEvents } from "../utils/media-devices-utils";
 import { createHeadlessModelForSkinnedMesh } from "../utils/three-utils";
@@ -158,7 +159,8 @@ AFRAME.registerComponent("player-info", {
     const modelEl = this.el.querySelector(".model");
     if (this.data.avatarSrc && modelEl) {
       modelEl.components["gltf-model-plus"].jsonPreprocessor = ensureAvatarNodes;
-      modelEl.setAttribute("gltf-model-plus", "src", this.data.avatarSrc);
+      // AVN: Add dimension for resolving avatars with asset IDs
+      modelEl.setAttribute("gltf-model-plus", "src", avnBridge.transformRoomUrl(this.data.avatarSrc));
     }
 
     if (!e || e.target === modelEl) {

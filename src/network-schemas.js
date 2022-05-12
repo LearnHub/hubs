@@ -111,7 +111,8 @@ function registerNetworkSchemas() {
         component: "media-pdf",
         property: "index"
       },
-      "pinnable"
+      // AVN: Pinning is incompatible with a number of AVN Hubs concepts
+      // "pinnable"
     ],
     nonAuthorizedComponents: [
       {
@@ -153,7 +154,8 @@ function registerNetworkSchemas() {
         requiresNetworkUpdate: vectorRequiresUpdate(0.001)
       },
       "media-loader",
-      "pinnable",
+      // AVN: Pinning is incompatible with a number of AVN Hubs concepts
+      // "pinnable",
       {
         selector: ".particle-emitter",
         component: "particle-emitter"

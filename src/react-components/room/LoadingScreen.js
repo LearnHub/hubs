@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import { LoadingScreenLayout } from "../layout/LoadingScreenLayout";
 import { Spinner } from "../misc/Spinner";
 import { useRandomMessageTransition } from "./useRandomMessageTransition";
+import SaveConsoleLog from "../../utils/record-log.js";
+import { Button } from "../input/Button";
+import styles from "../layout/LoadingScreenLayout.scss";
 export function LoadingScreen({ logoSrc, message, infoMessages }) {
   const infoMessage = useRandomMessageTransition(infoMessages);
   return (
@@ -16,8 +19,16 @@ export function LoadingScreen({ logoSrc, message, infoMessages }) {
       }
       bottom={
         <>
-          <h3>{infoMessage.heading}</h3>
-          <p>{infoMessage.message}</p>
+{
+          // AVN: Hide info messages as not currently relevant
+          // <h3>{infoMessage.heading}</h3>
+          // <p>{infoMessage.message}</p>
+}
+          { 
+          // AVN: Button should be on by default
+          //qsTruthy("record_log") && 
+          <Button className={styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>Download Logs</Button> 
+          }
         </>
       }
     />
