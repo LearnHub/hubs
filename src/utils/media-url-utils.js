@@ -1,11 +1,19 @@
 import { hasReticulumServer } from "./phoenix-utils";
 import configs from "./configs";
 
+import { avnBridge } from "../avn-bridge"
+
 const nonCorsProxyDomains = (configs.NON_CORS_PROXY_DOMAINS || "").split(",");
 if (configs.CORS_PROXY_SERVER) {
   nonCorsProxyDomains.push(configs.CORS_PROXY_SERVER.split(":")[0]);
 }
 nonCorsProxyDomains.push(document.location.hostname);
+
+// AVN: data domain doesn't require CORS
+nonCorsProxyDomains.push("data.avncloud.com");
+// AVN: running as localhost fails to fetch objects.gltf because it tries to invoke the proxy
+nonCorsProxyDomains.push("me.eduverse.com");
+nonCorsProxyDomains.push("me-eduverse-assets.me-hub.link");
 
 const commonKnownContentTypes = {
   gltf: "model/gltf",
@@ -165,6 +173,11 @@ export const guessContentType = url => {
 };
 
 const originIsHubsServer = new Map();
+
+// AVN: shortcircuit for well know domains
+originIsHubsServer.set(avnBridge.assetDomain, true);
+originIsHubsServer.set(avnBridge.dataDomain, false);
+
 async function isHubsServer(url) {
   if (!url) return false;
   if (!url.startsWith("http")) {
@@ -199,11 +212,12 @@ export const isLocalHubsSceneUrl = async url => (await isHubsSceneUrl(url)) && (
 export const isHubsAvatarUrl = async url => (await isHubsServer(url)) && hubsAvatarRegex.test(url);
 export const isLocalHubsAvatarUrl = async url => (await isHubsAvatarUrl(url)) && (await isLocalHubsUrl(url));
 
+// AVN: the 7-digit Hubs code pattern doesn't apply to scene.link URLs so this requirement has been relaxed
 export const isHubsRoomUrl = async url =>
   (await isHubsServer(url)) &&
   !(await isHubsAvatarUrl(url)) &&
-  !(await isHubsSceneUrl(url)) &&
-  url.match(hubsRoomRegex)?.groups.id;
+  !(await isHubsSceneUrl(url)) /* &&
+  url.match(hubsRoomRegex)?.groups.id*/;
 
 export const isHubsDestinationUrl = async url =>
   (await isHubsServer(url)) && ((await isHubsSceneUrl(url)) || (await isHubsRoomUrl(url)));
@@ -213,5 +227,6 @@ export const idForAvatarUrl = url => {
   if (match) {
     return match.groups.id;
   }
-  return null;
+  // AVN: Absolute URLs may not match the regex, but may be valid
+  return url;
 };
