@@ -25,6 +25,8 @@ import { waitForDOMContentLoaded } from "../utils/async-utils";
 
 import { SHAPE } from "three-ammo/constants";
 
+import { avnBridge } from "../avn-bridge";
+
 let loadingObject;
 
 waitForDOMContentLoaded().then(() => {
@@ -40,6 +42,7 @@ const fetchContentType = url => {
 const forceMeshBatching = qsTruthy("batchMeshes");
 const forceImageBatching = qsTruthy("batchImages");
 const disableBatching = qsTruthy("disableBatching");
+const isDebug = qsTruthy("debug");
 
 AFRAME.registerComponent("media-loader", {
   schema: {
@@ -118,7 +121,8 @@ AFRAME.registerComponent("media-loader", {
       } else {
         // Move the mesh such that the center of its bounding box is in the same position as the parent matrix position
         const box = getBox(this.el, mesh);
-        const scaleCoefficient = fitToBox ? getScaleCoefficient(0.5, box) : 1;
+        // Target a bounding box of 1m so models are more consistent with other media types
+        const scaleCoefficient = fitToBox ? getScaleCoefficient(1.0, box) : 1;
         const { min, max } = box;
         center.addVectors(min, max).multiplyScalar(0.5 * scaleCoefficient);
         mesh.scale.multiplyScalar(scaleCoefficient);
@@ -188,7 +192,7 @@ AFRAME.registerComponent("media-loader", {
       : new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
     this.el.setObject3D("mesh", mesh);
 
-    this.updateScale(true, false);
+    this.updateScale(false, false);
 
     if (useFancyLoader) {
       this.loaderMixer = new THREE.AnimationMixer(mesh);
@@ -318,6 +322,8 @@ AFRAME.registerComponent("media-loader", {
   },
 
   async update(oldData, forceLocalRefresh) {
+
+
     const { version, contentSubtype } = this.data;
     let src = this.data.src;
     if (!src) return;
@@ -343,8 +349,17 @@ AFRAME.registerComponent("media-loader", {
       this.el.removeAttribute("media-pdf");
       this.el.removeAttribute("media-image");
     }
-
     try {
+
+      // Short circuit for external web links (don't bother with fetching content types and thumbnails)
+      if(this.data.contentType === "text/html" && !avnBridge.isAvnUrl(src)) {
+        // Change image to be a 1x1 transparent PNG (image mesh provides the hover target)
+        this.el.setAttribute("media-image", { src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", contentType: "image/png" });
+        this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+        this.el.setAttribute("shape-helper", { type: SHAPE.BOX, minHalfExtent: 0.04 });  
+        return;
+      }
+
       if ((forceLocalRefresh || srcChanged) && !this.showLoaderTimeout) {
         this.showLoaderTimeout = setTimeout(this.showLoader, 100);
       }
@@ -359,6 +374,9 @@ AFRAME.registerComponent("media-loader", {
       let accessibleUrl = src;
       let contentType = this.data.contentType;
       let thumbnail;
+
+      let isSceneLink = false;
+      let absoluteAvatarUrl;
 
       const parsedUrl = new URL(src);
 
@@ -383,8 +401,17 @@ AFRAME.registerComponent("media-loader", {
           canonicalAudioUrl = location.protocol + canonicalAudioUrl;
         }
 
+        // AVN: All link elements should be inflated as links
+        if(contentType !== "text/html") {
         contentType = (result.meta && result.meta.expected_content_type) || contentType;
+        }
         thumbnail = result.meta && result.meta.thumbnail && proxiedUrlFor(result.meta.thumbnail);
+        // AVN: Record tags from ClassConnect
+        const tags = result.meta && result.meta.tags && new Set(result.meta.tags);
+        if(tags && tags.has("Avatar")) {
+          absoluteAvatarUrl = canonicalUrl;
+        }
+        isSceneLink = tags && tags.has("Scene");
       }
 
       // todo: we don't need to proxy for many things if the canonical URL has permissive CORS headers
@@ -533,9 +560,11 @@ AFRAME.registerComponent("media-loader", {
           this.el.setAttribute("position-at-border__freeze-unprivileged", { isFlat: true });
         }
       } else if (
+        absoluteAvatarUrl == undefined && (
         contentType.includes("application/octet-stream") ||
         contentType.includes("x-zip-compressed") ||
         contentType.startsWith("model/gltf")
+        )
       ) {
         this.el.removeAttribute("media-image");
         this.el.removeAttribute("media-video");
@@ -570,54 +599,32 @@ AFRAME.registerComponent("media-loader", {
             modelToWorldScale: this.data.fitToBox ? 0.0001 : 1.0
           })
         );
-      } else if (contentType.startsWith("text/html")) {
+      } else if (absoluteAvatarUrl !== undefined || contentType.startsWith("text/html")) {
+
         this.el.removeAttribute("gltf-model-plus");
         this.el.removeAttribute("media-video");
         this.el.removeAttribute("audio-zone-source");
         this.el.removeAttribute("media-pdf");
         this.el.removeAttribute("media-pager");
-        this.el.addEventListener(
-          "image-loaded",
-          async () => {
-            const mayChangeScene = this.el.sceneEl.systems.permissions.can("update_hub");
 
-            if (await isLocalHubsAvatarUrl(src)) {
-              this.el.setAttribute("hover-menu__hubs-item", {
-                template: "#avatar-link-hover-menu",
-                isFlat: true
+        if(isDebug) {
+        // Bounding box is defined so that one face is aligned with the XY plane for compatability with the default Hubs link system         
+          this.el.setObject3D("mesh", new THREE.Mesh(new THREE.BoxGeometry().translate(0, 0, -0.5), new THREE.MeshBasicMaterial({wireframe: true})));
+        } else {
+          this.el.removeObject3D("mesh");
+        }
+        const linksrc = absoluteAvatarUrl || avnBridge.transformRoomUrl(src);
+        this.el.setAttribute("action-trigger-volume", {
+          colliders: "#avatar-pov-node",
+          // Either it's an avatar file or it's a scene link that needs the dimension replacing
+          src: linksrc,
+          isSceneLink: isSceneLink,
+          isAvatarLink: !!absoluteAvatarUrl,
               });
-            } else if ((await isHubsRoomUrl(src)) || ((await isLocalHubsSceneUrl(src)) && mayChangeScene)) {
-              this.el.setAttribute("hover-menu__hubs-item", {
-                template: "#hubs-destination-hover-menu",
-                isFlat: true
-              });
-            } else {
-              this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
-            }
-            this.onMediaLoaded(SHAPE.BOX);
-          },
-          { once: true }
-        );
-        this.el.setAttribute("floaty-object", { reduceAngularFloat: true, releaseGravity: -1 });
-        let batch = !disableBatching && forceImageBatching;
-        if (this.data.mediaOptions.hasOwnProperty("batch") && !this.data.mediaOptions.batch) {
-          batch = false;
-        }
-        this.el.setAttribute(
-          "media-image",
-          Object.assign({}, this.data.mediaOptions, {
-            src: thumbnail,
-            version,
-            contentType: guessContentType(thumbnail) || "image/png",
-            batch
-          })
-        );
-        if (this.el.components["position-at-border__freeze"]) {
-          this.el.setAttribute("position-at-border__freeze", { isFlat: true });
-        }
-        if (this.el.components["position-at-border__freeze-unprivileged"]) {
-          this.el.setAttribute("position-at-border__freeze-unprivileged", { isFlat: true });
-        }
+
+        this.onMediaLoaded(null);
+
+
       } else {
         throw new Error(`Unsupported content type: ${contentType}`);
       }

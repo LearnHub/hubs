@@ -434,11 +434,16 @@ class GLTFHubsPlugin {
   }
 
   afterRoot(gltf) {
+    // AVN: High quality materials are only allowed on scenes that have been post-processed by dwindle
+    const allowHighQuality = gltf.asset?.generator == "Avantis dwindle";
+    let materialQuality = "low";
+    if(allowHighQuality) {
+      materialQuality = window.APP.store.materialQualitySetting;
+    }
     gltf.scene.traverse(object => {
       // GLTFLoader sets matrixAutoUpdate on animated objects, we want to keep the defaults
       // @TODO: Should this be fixed in the gltf loader?
       object.matrixAutoUpdate = THREE.Object3D.DefaultMatrixAutoUpdate;
-      const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
       updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
     });
 
@@ -567,6 +572,18 @@ class GLTFHubsLightMapExtension {
   }
 }
 
+function instrumentTextureLoader(loader) {
+  const originalLoad = loader.load.bind(loader);
+  loader.load = function(url, onLoad, onProgress, onError) {
+    const loadStart = performance.now();
+    const newOnLoad = function(texture) {
+      console.log(`${loader.constructor.name} took ${Math.round(performance.now() - loadStart)}ms for ${url}`);
+      onLoad(texture);
+    }
+    originalLoad(url, newOnLoad, onProgress, onError);
+  }
+}
+
 class GLTFHubsTextureBasisExtension {
   constructor(parser) {
     this.parser = parser;
@@ -585,6 +602,7 @@ class GLTFHubsTextureBasisExtension {
 
     if (this.basisLoader === null) {
       this.basisLoader = new BasisTextureLoader(parser.options.manager).detectSupport(AFRAME.scenes[0].renderer);
+      instrumentTextureLoader(this.basisLoader);
     }
 
     if (!this.basisLoader) {
@@ -655,6 +673,7 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
   // "taking control of the render loop" which is something we want to tackle for many reasons.
   if (!ktxLoader && AFRAME && AFRAME.scenes && AFRAME.scenes[0]) {
     ktxLoader = new KTX2Loader(loadingManager).detectSupport(AFRAME.scenes[0].renderer);
+    instrumentTextureLoader(ktxLoader);
   }
   if (!dracoLoader && AFRAME && AFRAME.scenes && AFRAME.scenes[0]) {
     dracoLoader = new DRACOLoader(loadingManager);
@@ -667,9 +686,11 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     gltfLoader.setDRACOLoader(dracoLoader);
   }
 
+  const loadStart = performance.now();
   return new Promise((resolve, reject) => {
     gltfLoader.load(gltfUrl, resolve, onProgress, reject);
   }).finally(() => {
+    console.log(`GLTF loaded in ${Math.round(performance.now() - loadStart)}ms for ${gltfUrl}`);
     if (fileMap) {
       // The GLTF is now cached as a THREE object, we can get rid of the original blobs
       Object.keys(fileMap).forEach(URL.revokeObjectURL);
@@ -678,7 +699,16 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
 }
 
 export async function loadModel(src, contentType = null, useCache = false, jsonPreprocessor = null) {
-  console.log(`Loading model ${src}`);
+  console.log(`Loading model %c${src}`, "font-style:italic");
+  const startTime = performance.now();
+  const downloadProgressMonitor = progressEvent => {
+    if(progressEvent.total && progressEvent.loaded >= progressEvent.total) {
+      const delta = performance.now() - startTime;
+      const totalKB = progressEvent.total / 1000;
+      const rateMbps = delta > 0 ? 8 * totalKB / delta : 0;
+      console.log(`Downloaded ${totalKB.toFixed(2)}kB in ${Math.round(delta)}ms (${rateMbps.toFixed(2)}Mbps) for model %c${src}`, "font-style:italic");      
+    }
+  }
   if (useCache) {
     if (gltfCache.has(src)) {
       gltfCache.retain(src);
@@ -689,7 +719,7 @@ export async function loadModel(src, contentType = null, useCache = false, jsonP
         gltfCache.retain(src);
         return cloneGltf(gltf);
       } else {
-        const promise = loadGLTF(src, contentType, null, jsonPreprocessor);
+        const promise = loadGLTF(src, contentType, downloadProgressMonitor, jsonPreprocessor);
         inflightGltfs.set(src, promise);
         const gltf = await promise;
         inflightGltfs.delete(src);
@@ -698,7 +728,7 @@ export async function loadModel(src, contentType = null, useCache = false, jsonP
       }
     }
   } else {
-    return loadGLTF(src, contentType, null, jsonPreprocessor);
+    return loadGLTF(src, contentType, downloadProgressMonitor, jsonPreprocessor);
   }
 }
 

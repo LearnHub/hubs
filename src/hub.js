@@ -17,6 +17,10 @@ console.log(
   }`
 );
 
+// AVN: Write out useful debug info
+import { writeEnvironmentToConsole } from "./utils/logging";
+writeEnvironmentToConsole();
+
 import "./react-components/styles/global.scss";
 import "./assets/stylesheets/globals.scss";
 import "./assets/stylesheets/hub.scss";
@@ -32,7 +36,6 @@ import "./utils/aframe-overrides";
 // So we disable it here.
 THREE.Cache.enabled = false;
 
-import "./utils/logging";
 import { patchWebGLRenderingContext } from "./utils/webgl";
 patchWebGLRenderingContext();
 
@@ -187,6 +190,7 @@ import "./systems/hubs-systems";
 import "./systems/capture-system";
 import "./systems/listed-media";
 import "./systems/linked-media";
+import "./systems/moveable";
 import "./systems/audio-debug-system";
 import "./systems/audio-gain-system";
 
@@ -201,9 +205,10 @@ import { platformUnsupported } from "./support";
 window.APP = new App();
 window.APP.dialog = new DialogAdapter();
 window.APP.RENDER_ORDER = {
-  HUD_BACKGROUND: 1,
-  HUD_ICONS: 2,
-  CURSOR: 3
+  CAMERA_FADER: 1,
+  HUD_BACKGROUND: 2,
+  HUD_ICONS: 3,
+  CURSOR: 4
 };
 
 const store = window.APP.store;
@@ -254,6 +259,7 @@ import { OAuthScreenContainer } from "./react-components/auth/OAuthScreenContain
 import { SignInMessages } from "./react-components/auth/SignInModal";
 import { ThemeProvider } from "./react-components/styles/theme";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
+import { avnBridge } from "./avn-bridge";
 
 const PHOENIX_RELIABLE_NAF = "phx-reliable";
 NAF.options.firstSyncSource = PHOENIX_RELIABLE_NAF;
@@ -323,7 +329,12 @@ if (document.location.pathname.includes("hub.html")) {
 const history = routerBaseName === "/" ? createMemoryHistory() : createBrowserHistory({ basename: routerBaseName });
 window.APP.history = history;
 
-const qsVREntryType = qs.get("vr_entry_type");
+let qsVREntryType = qs.get("vr_entry_type");
+
+// AVN: Jump straight in when there's a fragment to support coming back from the media browser
+if(!qsVREntryType && document.location.hash) {
+  qsVREntryType = "2d_now";
+}
 
 function mountUI(props = {}) {
   const scene = document.querySelector("a-scene");
@@ -404,6 +415,10 @@ export async function getSceneUrlForHub(hub) {
 
 export async function updateEnvironmentForHub(hub, entryManager) {
   console.log("Updating environment for hub");
+
+  // AVN: Set AVN context
+  avnBridge.updateFromHub(hub);
+
   const sceneUrl = await getSceneUrlForHub(hub);
 
   const sceneErrorHandler = () => {
@@ -439,7 +454,8 @@ export async function updateEnvironmentForHub(hub, entryManager) {
         envSystem.updateEnvironment(environmentEl);
 
         //TODO: check if the environment was made with spoke to determine if a shape should be added
-        traverseMeshesAndAddShapes(environmentEl);
+        //AVN: SKIP ALL COLLISION INFO
+        //traverseMeshesAndAddShapes(environmentEl);
       },
       { once: true }
     );
@@ -469,14 +485,15 @@ export async function updateEnvironmentForHub(hub, entryManager) {
 
             console.log(`Scene file update load took ${Math.round(performance.now() - loadStart)}ms`);
 
-            traverseMeshesAndAddShapes(environmentEl);
+            //AVN: SKIP ALL COLLISION INFO
+            //traverseMeshesAndAddShapes(environmentEl);
 
             // We've already entered, so move to new spawn point once new environment is loaded
             if (sceneEl.is("entered")) {
               waypointSystem.moveToSpawnPoint();
             }
 
-            const fader = document.getElementById("viewing-camera").components["fader"];
+            const fader = document.getElementById("viewing-rig").components["fader"];
 
             // Add a slight delay before de-in to reduce hitching.
             setTimeout(() => fader.fadeIn(), 2000);
@@ -646,7 +663,9 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data,
       scene.components["networked-scene"]
         .connect()
         .then(() => {
-          scene.emit("didConnectToNetworkedScene");
+          // AVN: Decoupled load because the didConnectToNetworkedScene event can fire before the event 
+          // listener has been registered in the react component (in useRoomLoadingState)
+          setTimeout(() => scene.emit("didConnectToNetworkedScene"));
         })
         .catch(connectError => {
           onConnectionError(entryManager, connectError);
@@ -980,6 +999,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   availableVREntryTypesPromise.then(async availableVREntryTypes => {
+    // AVN: Report VR entry types
+    console.info("Available VR Entry Types", availableVREntryTypes);
     if (isMobileVR) {
       remountUI({
         availableVREntryTypes,
@@ -1355,7 +1376,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       stale_fields.includes("scene_listing") ||
       stale_fields.includes("default_environment_gltf_bundle_url")
     ) {
-      const fader = document.getElementById("viewing-camera").components["fader"];
+      const fader = document.getElementById("viewing-rig").components["fader"];
 
       fader.fadeOut().then(() => {
         scene.emit("reset_scene");

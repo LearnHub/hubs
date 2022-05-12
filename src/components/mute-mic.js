@@ -35,6 +35,8 @@ AFRAME.registerComponent("mute-mic", {
     this.onToggle = this.onToggle.bind(this);
     this.onMute = this.onMute.bind(this);
     this.onUnmute = this.onUnmute.bind(this);
+    this.store = window.APP.store;
+    this.store.addEventListener("statechanged", this.onStoreUpdated.bind(this));
   },
 
   play: function() {
@@ -55,13 +57,55 @@ AFRAME.registerComponent("mute-mic", {
     APP.mediaDevicesManager.toggleMic();
     if (!this.el.sceneEl.is("entered")) return;
     this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_TOGGLE_MIC);
+    if (this.el.is("muted")) {
+      NAF.connection.adapter.enableMicrophone(true);
+      // AVN: See function
+      this.recordStateForSession(false);
+    } else {
+      NAF.connection.adapter.enableMicrophone(false);
+      // AVN: See function
+      this.recordStateForSession(true);
+    }
   },
 
   onMute: function() {
-    APP.mediaDevicesManager.micEnabled = false;
+    if (!NAF.connection.adapter) return;
+    if (!this.el.is("muted")) {
+      APP.dialog.enableMicrophone(false);
+      // AVN: See function
+      this.recordStateForSession(true);
+    }
   },
 
   onUnmute: function() {
-    APP.mediaDevicesManager.micEnabled = true;
+    if (this.el.is("muted")) {
+      APP.dialog.enableMicrophone(true);
+      // AVN: See function
+      this.recordStateForSession(false);
+    }
+  },
+
+  onStoreUpdated: function() {
+    const micMuted = this.store.state.settings["micMuted"];
+    const isMicShared = window.APP.mediaDevicesManager?.isMicShared;
+    if (micMuted !== undefined) {
+      if (isMicShared) {
+        if (micMuted) {
+          this.el.addState("muted");
+        } else {
+          this.el.removeState("muted");
+        }
+      } else {
+        this.el.addState("muted");
   }
+    }
+  },
+
+  // AVN: Track user mute preference for the session
+  recordStateForSession: function(newState) {
+      // AVN: Record mute state for the lifetime of the browser session
+      window.sessionStorage.setItem("muteMicOnEntryForThisSession", newState);      
+      console.log(`Session mic mute state is now '${newState}'`);    
+  },
+
 });

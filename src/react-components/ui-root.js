@@ -33,9 +33,10 @@ import PreferencesScreen from "./preferences-screen.js";
 import PresenceLog from "./presence-log.js";
 import PreloadOverlay from "./preload-overlay.js";
 import RTCDebugPanel from "./debug-panel/RtcDebugPanel.js";
-import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen } from "../utils/fullscreen";
+import { showFullScreenIfAvailable, showFullScreenIfWasFullScreen, exitFullScreen, isFullScreen } from "../utils/fullscreen";
 import { handleExitTo2DInterstitial, exit2DInterstitialAndEnterVR, isIn2DInterstitial } from "../utils/vr-interstitial";
 import maskEmail from "../utils/mask-email";
+import { saveScreenshot } from "../utils/media-utils";
 
 import qsTruthy from "../utils/qs_truthy";
 import { LoadingScreenContainer } from "./room/LoadingScreenContainer";
@@ -50,7 +51,9 @@ import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
-import { ContentMenu, PeopleMenuButton, ObjectsMenuButton } from "./room/ContentMenu";
+import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, EduverseMenuButton } from "./room/ContentMenu";
+import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
+import { ReactComponent as ArrowBackIcon } from "./icons/ArrowBack.svg";
 import { ReactComponent as CameraIcon } from "./icons/Camera.svg";
 import { ReactComponent as AvatarIcon } from "./icons/Avatar.svg";
 import { ReactComponent as AddIcon } from "./icons/Add.svg";
@@ -69,15 +72,20 @@ import { ReactComponent as VRIcon } from "./icons/VR.svg";
 import { ReactComponent as LeaveIcon } from "./icons/Leave.svg";
 import { ReactComponent as EnterIcon } from "./icons/Enter.svg";
 import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
+import { ReactComponent as GatherIcon } from "./icons/People.svg";
+import { ReactComponent as HushIcon } from "./icons/Hush.svg";
+import { ReactComponent as LookIcon } from "./icons/Show.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
 import { ObjectMenuContainer } from "./room/ObjectMenuContainer";
+import { EduverseSidebarContainer } from "./room/EduverseSidebarContainer";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
 import { AudioPopoverContainer } from "./room/AudioPopoverContainer";
 import { ReactionPopoverContainer } from "./room/ReactionPopoverContainer";
+import { AvnHelpPopoverContainer } from "./room/AvnHelpPopoverContainer";
 import { SafariMicModal } from "./room/SafariMicModal";
 import { RoomSignInModalContainer } from "./auth/RoomSignInModalContainer";
 import { SignInStep } from "./auth/SignInModal";
@@ -93,9 +101,14 @@ import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
+import { avnBridge } from "../avn-bridge";
+import { changeHubAvn } from "../change-hub";
 import { MediaDevicesEvents } from "../utils/media-devices-utils";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
+const showHiddenFeatures = qsTruthy("showHiddenFeatures");
+const showPremiumFeatures = qsTruthy("showPremiumFeatures");
+const EDUVERSE_FULL_FEATURE = false;
 
 const IN_ROOM_MODAL_ROUTER_PATHS = ["/media"];
 const IN_ROOM_MODAL_QUERY_VARS = ["media_source"];
@@ -591,7 +604,8 @@ class UIRoot extends Component {
   };
 
   beginOrSkipAudioSetup = () => {
-    const skipAudioSetup = this.props.forcedVREntryType && this.props.forcedVREntryType.endsWith("_now");
+    // AVN: Skip the audio setup dialog in favour of being muted by default
+    const skipAudioSetup = true || this.props.forcedVREntryType && this.props.forcedVREntryType.endsWith("_now");
     if (skipAudioSetup) {
       console.log(`Skipping audio setup (forcedVREntryType = ${this.props.forcedVREntryType})`);
       this.onAudioReadyButton();
@@ -614,7 +628,14 @@ class UIRoot extends Component {
     // Push the new history state before going into VR, otherwise menu button will take us back
     clearHistoryState(this.props.history);
 
-    const muteOnEntry = this.props.store.state.preferences.muteMicOnEntry;
+    // AVN: Microphone is muted by default for each browser session
+    const micMutedForSession = window.sessionStorage.getItem("muteMicOnEntryForThisSession") !== "false";
+    console.log(`Session mic mute state is '${micMutedForSession}'`);
+
+    const muteOnEntry = this.props.store.state.preferences.muteMicOnEntry || micMutedForSession;
+    this.props.store.update({
+      settings: { micMuted: false }
+    });
     await this.props.enterScene(this.state.enterInVR, muteOnEntry);
 
     this.setState({ entered: true, entering: false, showShareDialog: false });
@@ -806,11 +827,13 @@ class UIRoot extends Component {
 
   renderEntryStartPanel = () => {
     const { hasAcceptedProfile, hasChangedName } = this.props.store.state.activity;
-    const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
+    // AVN: Skip name and avatar setting
+    const promptForNameAndAvatarBeforeEntry = false;//this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
 
     // TODO: What does onEnteringCanceled do?
     return (
       <>
+        {/* AVN: Room linking and VR mode have been separated */}
         <RoomEntryModal
           appName={configs.translation("app-name")}
           logoSrc={configs.image("logo")}
@@ -843,6 +866,13 @@ class UIRoot extends Component {
               SignInMessages.roomSettings
             );
           }}
+          headsetConnected={
+            isMobile && (
+              this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no || 
+              this.props.availableVREntryTypes.cardboard !== VR_DEVICE_AVAILABILITY.no
+            )
+          }
+          onEnterOnConnectedHeadset={() => this.enterVR()}
         />
         {!this.state.waitingOnAudio && (
           <EntryStartPanel
@@ -1083,7 +1113,8 @@ class UIRoot extends Component {
 
     const streaming = this.state.isStreaming;
 
-    const showObjectList = enteredOrWatching;
+    // AVN: Don't show the object list for now
+    const showObjectList = enteredOrWatching && showHiddenFeatures;
 
     const streamer = getCurrentStreamer();
     const streamerName = streamer && streamer.displayName;
@@ -1093,7 +1124,6 @@ class UIRoot extends Component {
     const canCreateRoom = !configs.feature("disable_room_creation") || configs.isAdmin();
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
     const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
-
     const moreMenu = [
       {
         id: "user",
@@ -1250,6 +1280,12 @@ class UIRoot extends Component {
             icon: WarningCircleIcon,
             href: configs.link("issue_report", "https://hubs.mozilla.com/docs/help.html")
           },
+          qsTruthy("record_log") && {
+            id: "save-console-logs",
+            label: <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />,
+            icon: SupportIcon,
+            onClick: () => SaveConsoleLog()
+          },
           entered && {
             id: "start-tour",
             label: <FormattedMessage id="more-menu.start-tour" defaultMessage="Start Tour" />,
@@ -1364,10 +1400,17 @@ class UIRoot extends Component {
                 viewport={
                   <>
                     {!this.state.dialog && renderEntryFlow ? entryDialog : undefined}
-                    {!this.props.selectedObject && <CompactMoreMenuButton />}
+                    {/* AVN: Hide "More" button on mobile */}
+                    {showHiddenFeatures && !this.props.selectedObject && <CompactMoreMenuButton />}
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
+                        { EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation && (
+                        <EduverseMenuButton
+                          active={this.state.sidebarId === "eduverse"}
+                          onClick={() => this.toggleSidebar("eduverse")}
+                        />
+                        )}
                         {showObjectList && (
                           <ObjectsMenuButton
                             active={this.state.sidebarId === "objects"}
@@ -1406,7 +1449,7 @@ class UIRoot extends Component {
                         />
                       )}
                     <TipContainer
-                      hide={this.props.activeObject}
+                      hide={!!this.props.activeObject}
                       inLobby={watching}
                       inRoom={entered}
                       isEmbedded={this.props.embed}
@@ -1461,6 +1504,12 @@ class UIRoot extends Component {
                           onCloseDialog={() => this.closeDialog()}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
                           performConditionalSignIn={this.props.performConditionalSignIn}
+                        />
+                      )}
+                      {this.state.sidebarId === "eduverse" && (
+                        <EduverseSidebarContainer
+                          room={this.props.hub}
+                          onClose={() => this.setSidebar(null)}
                         />
                       )}
                       {this.state.sidebarId === "profile" && (
@@ -1525,11 +1574,28 @@ class UIRoot extends Component {
                 }
                 modal={this.state.dialog}
                 toolbarLeft={
-                  <InvitePopoverContainer
-                    hub={this.props.hub}
-                    hubChannel={this.props.hubChannel}
-                    scene={this.props.scene}
+                  <>
+                    { // AVN: Back button (useful for mobile fullscreen)
+                    entered && EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation &&
+                    <ToolbarButton
+                      icon={<ArrowBackIcon />}
+                      label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
+                      onClick={() => {
+                        window.history.back();
+                      }}
+                    />
+                    }
+                    { // AVN: Home button 
+                    entered && avnBridge.assetId !== avnBridge.assetIdHome && EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation &&
+                    <ToolbarButton
+                      icon={<HomeIcon />}
+                      label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}
+                      onClick={() => {
+                        changeHubAvn(`${avnBridge.assetDomain}/${avnBridge.assetIdHome}`);
+                      }}
                   />
+                }
+                  </>
                 }
                 toolbarCenter={
                   <>
@@ -1555,23 +1621,60 @@ class UIRoot extends Component {
                     )}
                     {entered && (
                       <>
-                        <AudioPopoverContainer scene={this.props.scene} />
+                        <AudioPopoverContainer
+                          scene={this.props.scene}
+                          microphoneEnabled={this.mediaDevicesManager.isMicShared}
+                        />
+                        { // AVN: Share menu not required
+                        showHiddenFeatures && 
                         <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
+                        } 
+                        { // AVN: Place menu not required
+                        showHiddenFeatures && 
                         <PlacePopoverContainer
                           scene={this.props.scene}
                           hubChannel={this.props.hubChannel}
                           mediaSearchStore={this.props.mediaSearchStore}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
                         />
-                        {this.props.hubChannel.can("spawn_emoji") && (
-                          <ReactionPopoverContainer
-                            scene={this.props.scene}
-                            initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}
+                        }
+                        { // AVN: React menu not required
+                        showHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />
+                        }
+
+                        { // AVN: Full screen button for mobile 
+                        isMobile && (
+                          <ToolbarButton
+                            icon={<FullScreenIcon />}
+                            label={<FormattedMessage id="toolbar.fullscreen-button" defaultMessage="Fullscreen" />}
+                            onClick={async () => {
+                              if(isFullScreen()) {
+                                await exitFullScreen();
+                              } else {
+                                await showFullScreenIfAvailable();
+                              }
+                            }}
                           />
-                        )}
+                        )
+                        }
+
+                        { // AVN: Photo / screenshot button 
+                        <ToolbarButton
+                          icon={<CameraIcon />}
+                          label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}
+                          onClick={() => {
+                            saveScreenshot(this.props.scene, "jpeg");
+                          }}
+                          />
+                        }
+
                       </>
                     )}
+                    {
+                      // AVN: Chat is not currently enabled
+                      showHiddenFeatures &&
                     <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
+                    }
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
@@ -1586,6 +1689,38 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
+                    { // AVN: Moved invite link to the right as part of the "Teacher Tools"
+                    EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation &&
+                    <InvitePopoverContainer
+                      hub={this.props.hub}
+                      hubChannel={this.props.hubChannel}
+                      scene={this.props.scene}
+                    />                 
+                    }
+                    { // AVN: Placeholder eduverse button
+                    showPremiumFeatures && entered &&
+                    <ToolbarButton
+                      icon={<GatherIcon />}
+                      label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
+                      preset="basic"
+                    />
+                    }
+                    { // AVN: Placeholder eduverse button
+                    showPremiumFeatures && entered &&
+                    <ToolbarButton
+                      icon={<HushIcon />}
+                      label={<FormattedMessage id="toolbar.hush-button" defaultMessage="Hush" />}
+                      preset="basic"
+                    />
+                    }
+                    { // AVN: Placeholder eduverse button
+                    showPremiumFeatures && entered &&
+                    <ToolbarButton
+                      icon={<LookIcon />}
+                      label={<FormattedMessage id="toolbar.look-button" defaultMessage="Look" />}
+                      preset="basic"
+                    />
+                    }
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
@@ -1594,8 +1729,10 @@ class UIRoot extends Component {
                           label={<FormattedMessage id="toolbar.enter-vr-button" defaultMessage="Enter VR" />}
                           onClick={() => exit2DInterstitialAndEnterVR(true)}
                         />
-                      )}
-                    {entered && (
+                      )
+                    }
+                    { /* AVN: "Leave" menu not currently required */ }                       
+                    {showHiddenFeatures && entered && (
                       <ToolbarButton
                         icon={<LeaveIcon />}
                         label={<FormattedMessage id="toolbar.leave-room-button" defaultMessage="Leave" />}
@@ -1608,7 +1745,14 @@ class UIRoot extends Component {
                         }}
                       />
                     )}
+                    { // AVN: Custom help menu 
+                    <AvnHelpPopoverContainer scene={this.props.scene}/>
+                    }
+                    { 
+                      // AVN: "More" menu not currently required
+                      showHiddenFeatures && 
                     <MoreMenuPopoverButton menu={moreMenu} />
+                    }
                   </>
                 }
               />
