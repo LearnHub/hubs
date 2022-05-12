@@ -2,6 +2,8 @@
 import { getReticulumFetchUrl, hubUrl } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
 
+import { avnBridge } from "./avn-bridge"
+
 function unloadRoomObjects() {
   document.querySelectorAll("[pinnable]").forEach(el => {
     if (el.components.pinnable.data.pinned) {
@@ -25,8 +27,18 @@ function loadRoomObjects(hubId) {
   objectsScene.appendChild(objectsEl);
 }
 
-export async function changeHub(hubId, addToHistory = true) {
-  if (hubId === APP.hub.hub_id) {
+// AVN: Scene links need a level of redirection before resolving to a hub ID
+export async function changeHubAvn(hubUrl) {
+  console.log("Fast switching to room " + hubUrl);
+  const newAssetId = new URL(hubUrl).pathname.split("/").pop();
+  const roomData = await avnBridge.fetchRoomData(newAssetId);
+  console.log("Resolved Hub room from AVN server");
+  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnBridge.assetId, name: roomData.name, icon: roomData.icon };
+  await changeHub(nextState, true);
+}
+
+export async function changeHub(nextState, addToHistory = true) {
+  if (nextState.hubId === APP.hub.hub_id) {
     console.log("Change hub called with the current hub id. This is a noop.");
     return;
   }
@@ -36,17 +48,28 @@ export async function changeHub(hubId, addToHistory = true) {
 
   let data;
   try {
-    data = await APP.hubChannel.migrateToHub(hubId);
+    data = await APP.hubChannel.migrateToHub(nextState.hubId);
   } catch (e) {
-    console.warn(`Failed to join hub ${hubId}: ${e.reason}|${e.message}`);
+    console.warn(`Failed to join hub ${nextState.hubId}: ${e.reason}|${e.message}`);
     APP.messageDispatch.log("joinFailed", { message: e.message });
     return;
   }
 
   const hub = data.hubs[0];
 
+  const favicon = document.getElementById("favicon");
+
   if (addToHistory) {
-    window.history.pushState(null, null, hubUrl(hubId, {}, hub.slug));
+    const prevState = { hubId: APP.hub.hub_id, newAssetId: nextState.oldAssetId, oldAssetId: nextState.newAssetId, name: document.title, icon: favicon.getAttribute("href") };
+    // Replace current state so the fragment/waypoint will be set when using the BACK button
+    window.history.replaceState(prevState, null, hubUrl(prevState.hubId, { }, nextState.oldAssetId, nextState.newAssetId));
+    window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, nextState.newAssetId, nextState.oldAssetId));
+  }
+
+  // Page title and icon
+  document.title = nextState.name;
+  if(nextState.icon) {
+    favicon.setAttribute("href", nextState.icon);
   }
 
   APP.hub = hub;
@@ -73,7 +96,7 @@ export async function changeHub(hubId, addToHistory = true) {
     document.querySelector("#environment-scene").childNodes[0].components["gltf-model-plus"].data.src !==
     (await getSceneUrlForHub(hub))
   ) {
-    const fader = document.getElementById("viewing-camera").components["fader"];
+    const fader = document.getElementById("viewing-rig").components["fader"];
     fader.fadeOut().then(() => {
       scene.emit("reset_scene");
       updateEnvironmentForHub(hub, APP.entryManager);
@@ -98,7 +121,7 @@ export async function changeHub(hubId, addToHistory = true) {
     NAF.connection.adapter.connect()
   ]);
 
-  loadRoomObjects(hubId);
+  loadRoomObjects(nextState.hubId);
 
   APP.hubChannel.sendEnteredEvent();
 
@@ -111,11 +134,9 @@ export async function changeHub(hubId, addToHistory = true) {
 window.changeHub = changeHub;
 
 // TODO see if there is a better way to do this with react router
-window.addEventListener("popstate", function() {
-  if (!APP.store.state.preferences.fastRoomSwitching) return;
-  const qs = new URLSearchParams(location.search);
-  const newHubId = qs.get("hub_id") || document.location.pathname.substring(1).split("/")[0];
-  if (newHubId !== APP.hub.hub_id) {
-    changeHub(newHubId, false);
+window.addEventListener("popstate", function(event) {
+  console.log("Processing popstate event", event.state);
+  if(event.state) {
+    changeHub(event.state, false);
   }
 });
