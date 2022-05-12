@@ -1,8 +1,11 @@
+import waterNormalsUrl from "../assets/waternormals.jpg";
+import HubsTextureLoader from "../loaders/HubsTextureLoader";
+
 /**
  * Creates a box around the element (assumed to be the camera's PoV) which can be used for fade-to-black.
  */
 
-const FADE_DURATION_MS = 750;
+const FADE_DURATION_MS = 250;
 
 AFRAME.registerComponent("fader", {
   schema: {
@@ -10,15 +13,34 @@ AFRAME.registerComponent("fader", {
   },
 
   init() {
-    const mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(),
-      new THREE.MeshBasicMaterial({ color: 0x0, side: THREE.BackSide, opacity: 0, transparent: true, fog: false })
-    );
-    mesh.scale.x = mesh.scale.y = 1;
-    mesh.scale.z = 0.15;
+    const material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, opacity: 0, transparent: true, fog: false, depthTest: false, depthWrite: false, vertexColors: true });
+    const geometry = new THREE.IcosahedronGeometry(100, 10);
+
+    // Color each vertex with a random shade
+    const colors = new Uint8Array(geometry.attributes.position.count * 3);
+    const step = 9;
+    for(let i = 0; i < colors.length; i += step) {
+      const shade = Math.pow(Math.random(), 4) * 4;
+      for(let j = 0; j < step; ++j) {
+        colors[i + j] = shade;
+      }
+    }
+    geometry.setAttribute( 'color', new THREE.BufferAttribute(colors, 3, true));
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER;
+
+    // Wireframe outline to give the background depth
+    const wireframeGeometry = new THREE.WireframeGeometry( geometry );
+		const wireframeMaterial = new THREE.LineBasicMaterial( { color: 0x0, depthTest: false, depthWrite: false, transparent: true, fog: false } );
+		const wireframe = new THREE.LineSegments( wireframeGeometry, wireframeMaterial );
+    wireframe.renderOrder = window.APP.RENDER_ORDER.CAMERA_FADER + 0.5;
+		mesh.add(wireframe);
+
     mesh.matrixNeedsUpdate = true;
-    this.el.object3DMap.camera.add(mesh);
+    this.el.object3D.add(mesh);
     this.mesh = mesh;
+    this.wire = wireframe;
   },
 
   fadeOut() {
@@ -33,6 +55,7 @@ AFRAME.registerComponent("fader", {
     if (this._resolveFinish) {
       throw new Error("Cannot fade while a fade is happening.");
     }
+    wir.opacity = mat.opacity;
 
     this.el.setAttribute("fader", { direction });
 
@@ -47,6 +70,7 @@ AFRAME.registerComponent("fader", {
 
   tick(t, dt) {
     const mat = this.mesh.material;
+    const wir = this.wire.material;
     this.mesh.visible = this.data.direction === "out" || mat.opacity !== 0;
     if (!this.mesh.visible) return;
 
