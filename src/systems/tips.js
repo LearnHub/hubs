@@ -19,8 +19,8 @@ const FINISH = 2;
 const LOCAL_STORAGE_KEY = "__hubs_finished_tips";
 
 const TIPS = {
-  desktop: ["look", "locomotion", "turning", "invite"],
-  mobile: ["look", "locomotion", "invite"],
+  desktop: ["look", "locomotion", "turning", "eduverse"],
+  mobile: ["look", "locomotion", "eduverse"],
   standalone: []
 };
 
@@ -40,7 +40,7 @@ const platformTips = TIPS[tipPlatform()];
 function markTipFinished(tip) {
   const storeData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
   storeData[tip] = { finished: true };
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(storeData));
+  window.safeLocalStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(storeData));
   localStorageCache = null;
 }
 
@@ -64,7 +64,11 @@ const VALIDATORS = {
   invite: function(_userinput, scene, hub) {
     if (hub && hub.entry_mode === "invite") return INVALID;
     return scene.is("copresent") ? FINISH : VALID;
-  }
+  },
+  // AVN: Help the user find the Eduverse panel
+  eduverse: function(_userinput, scene) {
+    return FINISH; // Hide until full release: document.getElementsByClassName("eduverse-sidebar").length > 0 ? FINISH : VALID;
+  },
 };
 
 AFRAME.registerSystem("tips", {
@@ -72,8 +76,8 @@ AFRAME.registerSystem("tips", {
     this.activeTip = null;
     this._performStep = this._performStep.bind(this);
 
-    if (localStorage.getItem(LOCAL_STORAGE_KEY) === null) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
+    if (window.safeLocalStorage.getItem(LOCAL_STORAGE_KEY) === null) {
+      window.safeLocalStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({}));
     }
   },
 

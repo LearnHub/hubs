@@ -61,7 +61,7 @@ const orbit = (function() {
   const target = new THREE.Object3D();
   const dhQ = new THREE.Quaternion();
   const dvQ = new THREE.Quaternion();
-  return function orbit(pivot, rig, camera, dh, dv, dz, dt, panY) {
+  return function orbit(pivot, rig, camera, dh, dv, dz, dt, panY, maxDistance) {
     if (!target.parent) {
       // add dummy object to the scene, if this is the first time we call this function
       AFRAME.scenes[0].object3D.add(target);
@@ -78,7 +78,7 @@ const orbit = (function() {
     const zoom = 1 - dz * dt;
     const newLength = dPos.length() * zoom;
     // TODO: These limits should be calculated based on the calculated view distance.
-    if (newLength > 0.1 && newLength < 100) {
+    if (newLength > 0.1 && newLength < maxDistance) {
       dPos.multiplyScalar(zoom);
     }
 
@@ -206,7 +206,8 @@ function getAudio(o) {
 const FALLOFF = 0.9;
 export class CameraSystem {
   constructor(scene) {
-    this.lightsEnabled = localStorage.getItem("show-background-while-inspecting") === "true";
+    // AVN: Default to showning the background when inspecting things for better context
+    this.lightsEnabled = window.safeLocalStorage.getItem("show-background-while-inspecting") !== "false";
     this.verticalDelta = 0;
     this.horizontalDelta = 0;
     this.inspectZoom = 0;
@@ -290,7 +291,13 @@ export class CameraSystem {
     this.inspectable = inspectable;
     this.pivot = pivot;
 
-    const camera = scene.is("vr-mode") ? scene.renderer.xr.getCamera() : scene.camera;
+    // AVN: Record the size of the inspectable to inform the max zoom distance
+    const bbSize = new THREE.Vector3();
+    new THREE.Box3().setFromObject(inspectable).getSize(bbSize);
+    this.inspectableSize = bbSize.length();
+
+    const vrMode = scene.is("vr-mode");
+    const camera = vrMode ? scene.renderer.xr.getCamera() : scene.camera;
     this.snapshot.mask = camera.layers.mask;
     if (!this.lightsEnabled) {
       this.hideEverythingButThisObject(inspectable);
@@ -541,7 +548,8 @@ export class CameraSystem {
             this.verticalDelta,
             this.inspectZoom,
             dt,
-            panY
+            panY,
+            this.inspectableSize * 10
           );
         }
       }
