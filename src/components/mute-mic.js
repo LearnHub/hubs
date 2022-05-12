@@ -97,7 +97,7 @@ AFRAME.registerComponent("mute-mic", {
         }
       } else {
         this.el.addState("muted");
-  }
+      }
     }
   },
 

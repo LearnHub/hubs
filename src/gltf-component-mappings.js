@@ -213,7 +213,7 @@ async function mediaInflator(el, componentName, componentData, components) {
 
   if (components.networked) {
     isControlled = componentData.controls || componentName === "link";
-
+    
     const hasVolume = componentName === "video" || componentName === "audio";
     const templateName = components.moveable
       // Interactable media only has one template and it is currently synonymous with "moveable"

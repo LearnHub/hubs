@@ -138,18 +138,18 @@ AFRAME.registerComponent("stats-plus", {
     
     // AVN: Force stats to update all the time for console debugging
 
-      // Update rStats
+    // Update rStats
     stats("raf").tick();
     stats("fps").frame();
-      stats("physics").set(this.el.sceneEl.systems["hubs-systems"].physicsSystem.stepDuration);
+    stats("physics").set(this.el.sceneEl.systems["hubs-systems"].physicsSystem.stepDuration);
 
-      const batchManagerSystem = this.el.sceneEl.systems["hubs-systems"].batchManagerSystem;
-      if (batchManagerSystem.batchingEnabled) {
-        const batchManager = batchManagerSystem.batchManager;
-        stats("batchdraws").set(batchManager.batches.length);
-        stats("batchinstances").set(batchManager.instanceCount);
-        stats("batchatlassize").set(batchManager.atlas.arrayDepth);
-      }
+    const batchManagerSystem = this.el.sceneEl.systems["hubs-systems"].batchManagerSystem;
+    if (batchManagerSystem.batchingEnabled) {
+      const batchManager = batchManagerSystem.batchManager;
+      stats("batchdraws").set(batchManager.batches.length);
+      stats("batchinstances").set(batchManager.instanceCount);
+      stats("batchatlassize").set(batchManager.atlas.arrayDepth);
+    }
 
     // AVN: Update the stats, but only update the graphics if the HTML panel is visible
     stats().update(this.data);

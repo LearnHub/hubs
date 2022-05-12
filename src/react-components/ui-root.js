@@ -1511,7 +1511,7 @@ class UIRoot extends Component {
                           room={this.props.hub}
                           onClose={() => this.setSidebar(null)}
                         />
-                      )}
+                    )}
                       {this.state.sidebarId === "profile" && (
                         <ProfileEntryPanel
                           history={this.props.history}
@@ -1572,7 +1572,7 @@ class UIRoot extends Component {
                     undefined
                   )
                 }
-                modal={this.state.dialog}
+                modal={this.state.dialog}                
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
@@ -1593,8 +1593,8 @@ class UIRoot extends Component {
                       onClick={() => {
                         changeHubAvn(`${avnBridge.assetDomain}/${avnBridge.assetIdHome}`);
                       }}
-                  />
-                }
+                    />
+                    }
                   </>
                 }
                 toolbarCenter={
@@ -1665,15 +1665,15 @@ class UIRoot extends Component {
                           onClick={() => {
                             saveScreenshot(this.props.scene, "jpeg");
                           }}
-                          />
+                        />
                         }
 
                       </>
-                    )}
+                    )} 
                     {
                       // AVN: Chat is not currently enabled
                       showHiddenFeatures &&
-                    <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
+                      <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
                     }
                     {entered &&
                       isMobileVR && (
@@ -1751,7 +1751,7 @@ class UIRoot extends Component {
                     { 
                       // AVN: "More" menu not currently required
                       showHiddenFeatures && 
-                    <MoreMenuPopoverButton menu={moreMenu} />
+                      <MoreMenuPopoverButton menu={moreMenu} />
                     }
                   </>
                 }

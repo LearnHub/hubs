@@ -77,7 +77,7 @@ export function HomePage() {
             </div>
           ) : (
             showHiddenFeatures && (
-            <SignInButton mobile />
+              <SignInButton mobile />
             )
           )}
           <div className={styles.logoContainer}>

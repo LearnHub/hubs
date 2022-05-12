@@ -403,7 +403,7 @@ AFRAME.registerComponent("media-loader", {
 
         // AVN: All link elements should be inflated as links
         if(contentType !== "text/html") {
-        contentType = (result.meta && result.meta.expected_content_type) || contentType;
+          contentType = (result.meta && result.meta.expected_content_type) || contentType;
         }
         thumbnail = result.meta && result.meta.thumbnail && proxiedUrlFor(result.meta.thumbnail);
         // AVN: Record tags from ClassConnect
@@ -561,9 +561,9 @@ AFRAME.registerComponent("media-loader", {
         }
       } else if (
         absoluteAvatarUrl == undefined && (
-        contentType.includes("application/octet-stream") ||
-        contentType.includes("x-zip-compressed") ||
-        contentType.startsWith("model/gltf")
+          contentType.includes("application/octet-stream") ||
+          contentType.includes("x-zip-compressed") ||
+          contentType.startsWith("model/gltf")
         )
       ) {
         this.el.removeAttribute("media-image");
@@ -620,7 +620,7 @@ AFRAME.registerComponent("media-loader", {
           src: linksrc,
           isSceneLink: isSceneLink,
           isAvatarLink: !!absoluteAvatarUrl,
-              });
+        });
 
         this.onMediaLoaded(null);
 
