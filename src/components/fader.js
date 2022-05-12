@@ -55,7 +55,6 @@ AFRAME.registerComponent("fader", {
     if (this._resolveFinish) {
       throw new Error("Cannot fade while a fade is happening.");
     }
-    wir.opacity = mat.opacity;
 
     this.el.setAttribute("fader", { direction });
 
@@ -79,6 +78,7 @@ AFRAME.registerComponent("fader", {
     } else if (this.data.direction === "out") {
       mat.opacity = Math.min(1, mat.opacity + (1.0 / FADE_DURATION_MS) * Math.min(dt, 50));
     }
+    wir.opacity = mat.opacity;
 
     if (mat.opacity === 0 || mat.opacity === 1) {
       if (this.data.direction !== "none") {
