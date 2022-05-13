@@ -108,7 +108,7 @@ import { MediaDevicesEvents } from "../utils/media-devices-utils";
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 const showPremiumFeatures = qsTruthy("showPremiumFeatures");
-const EDUVERSE_FULL_FEATURE = false;
+const EDUVERSE_FULL_FEATURE = true;
 
 const IN_ROOM_MODAL_ROUTER_PATHS = ["/media"];
 const IN_ROOM_MODAL_QUERY_VARS = ["media_source"];
