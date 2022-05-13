@@ -46,7 +46,6 @@ const isDebug = qsTruthy("debug");
 
 AFRAME.registerComponent("media-loader", {
   schema: {
-    // AVN: Disable all media loaded sound effects for now
     playSoundEffect: { default: false },
     fileId: { type: "string" },
     fileIsOwned: { type: "boolean" },
@@ -57,8 +56,7 @@ AFRAME.registerComponent("media-loader", {
     resolve: { default: false },
     contentType: { default: null },
     contentSubtype: { default: null },
-    // AVN: Diable media loading animation for now
-    animate: { default: false },
+    animate: { default: true },
     linkedEl: { default: null }, // This is the element of which this is a linked derivative. See linked-media.js
     mediaOptions: {
       default: {},
@@ -187,7 +185,8 @@ AFRAME.registerComponent("media-loader", {
       this.clearLoadingTimeout();
       return;
     }
-    const useFancyLoader = !!loadingObject;
+    // AVN: Diable media loading animation for now
+    const useFancyLoader = false; //!!loadingObject;
 
     const mesh = useFancyLoader
       ? cloneObject3D(loadingObject.scene)
@@ -215,6 +214,8 @@ AFRAME.registerComponent("media-loader", {
     }
 
     if (
+      // AVN: Disable all media loaded sound effects for now
+      false &&
       this.el.sceneEl.is("entered") &&
       (!this.networkedEl || NAF.utils.isMine(this.networkedEl)) &&
       this.data.playSoundEffect
