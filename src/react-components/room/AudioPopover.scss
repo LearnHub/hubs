@@ -58,12 +58,14 @@
   svg {
     transform: rotate(180deg);
   }
+  max-height: 36px; /* AVN: hack to match button height */
 }
 
 :local(.arrow-button-selected) {
   svg {
     transform: rotate(0deg);
   }
+  max-height: 36px; /* AVN: hack to match button height */
 }
 
 :local(.level-bar) {
