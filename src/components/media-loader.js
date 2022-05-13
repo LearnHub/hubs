@@ -46,7 +46,8 @@ const isDebug = qsTruthy("debug");
 
 AFRAME.registerComponent("media-loader", {
   schema: {
-    playSoundEffect: { default: true },
+    // AVN: Disable all media loaded sound effects for now
+    playSoundEffect: { default: false },
     fileId: { type: "string" },
     fileIsOwned: { type: "boolean" },
     src: { type: "string" },
@@ -56,7 +57,8 @@ AFRAME.registerComponent("media-loader", {
     resolve: { default: false },
     contentType: { default: null },
     contentSubtype: { default: null },
-    animate: { default: true },
+    // AVN: Diable media loading animation for now
+    animate: { default: false },
     linkedEl: { default: null }, // This is the element of which this is a linked derivative. See linked-media.js
     mediaOptions: {
       default: {},
