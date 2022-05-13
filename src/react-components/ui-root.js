@@ -601,6 +601,7 @@ class UIRoot extends Component {
 
   onRequestMicPermission = async () => {
     await this.mediaDevicesManager.startMicShare({});
+    this.beginOrSkipAudioSetup();
   };
 
   beginOrSkipAudioSetup = () => {
