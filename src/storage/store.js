@@ -105,7 +105,8 @@ export const SCHEMA = {
         disableLeftRightPanning: { type: "bool", default: false },
         audioNormalization: { type: "bool", default: 0.0 },
         invertTouchscreenCameraMove: { type: "bool", default: true },
-        enableOnScreenJoystickLeft: { type: "bool", default: false },
+        // AVN: Make on-screen joystick the default for mobile
+        enableOnScreenJoystickLeft: { type: "bool", default: true },
         enableOnScreenJoystickRight: { type: "bool", default: false },
         enableGyro: { type: "bool", default: true },
         animateWaypointTransitions: { type: "bool", default: true },

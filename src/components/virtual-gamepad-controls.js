@@ -39,7 +39,6 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
     this.rightMock.appendChild(this.rightMockSmall);
     this.mockJoystickContainer.appendChild(this.rightMock);
 
-    this.enableLeft = window.APP.store.state.preferences.enableOnScreenJoystickLeft === undefined; // AVN: Default is true
     this.enableRight = window.APP.store.state.preferences.enableOnScreenJoystickRight === true; // AVN: Default is false
     if (this.enableLeft || this.enableRight) {
       // Add the joystick container after the canvas element but before the rest of the UI.
@@ -73,8 +72,8 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
   },
 
   onPreferenceChange() {
-    const newEnableLeft = window.APP.store.state.preferences.enableOnScreenJoystickLeft === undefined; // AVN: Default is true
-    const newEnableRight = window.APP.store.state.preferences.enableOnScreenJoystickRight === true; // AVN: Default is false
+    const newEnableLeft = window.APP.store.state.preferences.enableOnScreenJoystickLeft;
+    const newEnableRight = window.APP.store.state.preferences.enableOnScreenJoystickRight;
     const isChanged = this.enableLeft !== newEnableLeft || this.enableRight !== newEnableRight;
     if (!isChanged) {
       return;
