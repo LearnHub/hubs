@@ -434,11 +434,11 @@ class GLTFHubsPlugin {
   }
 
   afterRoot(gltf) {
-    // AVN: High quality materials are only allowed on scenes that have been post-processed by dwindle
-    const allowHighQuality = gltf.asset?.generator == "Avantis dwindle";
-    let materialQuality = "low";
-    if(allowHighQuality) {
-      materialQuality = window.APP.store.materialQualitySetting;
+    let materialQuality = window.APP.store.materialQualitySetting;
+    // AVN: Force low quality on legacy scenes exported directly from Blender (heuristic)
+    const forceLowQuality = gltf.asset?.generator && gltf.asset.generator.startsWith("Khronos glTF Blender");
+    if(forceLowQuality) {
+      materialQuality = "low";
     }
     gltf.scene.traverse(object => {
       // GLTFLoader sets matrixAutoUpdate on animated objects, we want to keep the defaults
