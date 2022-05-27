@@ -13,7 +13,6 @@ import { avnBridge } from "../../avn-bridge"
 const QRCode = require('qrcode.react');
 
 function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetchingInvite, inviteUrl, revokeInvite, roomSize }) {
-  const loginDomain = `https://${avnBridge.sessionDomain}/eduverse/login`;
   return (
     <Column center padding grow gap="lg" className={styles.invitePopover}>
       {inviteRequired ? (
@@ -21,34 +20,27 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
           <InviteLinkInputField fetchingInvite={fetchingInvite} inviteUrl={inviteUrl} onRevokeInvite={revokeInvite} />
         </>
       ) : (
-        avnBridge.dimensionOwnerIsAuthenticated ? (
-          <>
-            <QRCode 
-              value={url} 
-              renderAs="svg"
-              size={256}
-            />
-            <CopyableTextInputField
-              label={<FormattedMessage id="invite-popover.room-link" defaultMessage="Room Link" />}
-              value={url}
-              buttonPreset="accent3"
-            />
-            {/* <CopyableTextInputField
-              label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
-              value={embed}
-              buttonPreset="accent5"
-            /> */}
-            {
-              <p>This session can host up to {roomSize} people</p>
-            }
-            { !avnBridge.dimensionOwnerIsSubscriber && (<p><a href="https://www.avantisworld.com/pricing" target="_blank">Subscribe</a> to host more</p>) }
-          </>
-        ) : (
-          <>
-            <p>This session was created by an anonymous user and cannot be shared.</p>
-            <p><a href={loginDomain}>Sign in</a> to start a new session and invite people to join you.</p>
-          </>
-        )
+        <>
+          <QRCode 
+            value={url} 
+            renderAs="svg"
+            size={256}
+          />
+          <CopyableTextInputField
+            label={<FormattedMessage id="invite-popover.room-link" defaultMessage="Room Link" />}
+            value={url}
+            buttonPreset="accent3"
+          />
+          {/* <CopyableTextInputField
+            label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
+            value={embed}
+            buttonPreset="accent5"
+          /> */}
+          {
+            <p>This session can host {roomSize == 1 ? "only one person" : `up to ${roomSize} people`}</p>
+          }
+          { !avnBridge.dimensionOwnerIsSubscriber && (<p><a href="https://www.avantisworld.com/pricing" target="_blank">Subscribe</a> to host more</p>) }
+        </>
       )}
     </Column>
   );
