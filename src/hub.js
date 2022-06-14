@@ -1366,7 +1366,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   hubPhxChannel.on("hub_refresh", ({ session_id, hubs, stale_fields }) => {
     const hub = hubs[0];
     const userInfo = hubChannel.presence.state[session_id];
-    const displayName = (userInfo && userInfo.metas[0].profile.displayName) || "API";
+    const displayName = userInfo && userInfo.metas[0].profile.displayName;
 
     window.APP.hub = hub;
     updateUIForHub(hub, hubChannel);

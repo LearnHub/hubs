@@ -239,6 +239,10 @@ const logMessages = defineMessages({
 
 // TODO: use react-intl's defineMessages to get proper extraction
 export function formatSystemMessage(entry, intl) {
+  // AVN: Don't show system messages. System user has blank name
+  if(!entry.name) {
+    return null;
+  }
   switch (entry.type) {
     case "join":
       return intl.formatMessage(joinedMessages[entry.presence], { name: <b>{entry.name}</b> });
