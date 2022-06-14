@@ -1406,7 +1406,7 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
-                        { EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation && (
+                        { EDUVERSE_FULL_FEATURE && (
                         <EduverseMenuButton
                           active={this.state.sidebarId === "eduverse"}
                           onClick={() => this.toggleSidebar("eduverse")}
