@@ -49,7 +49,7 @@ export const SCHEMA = {
       type: "object",
       additionalProperties: false,
       properties: {
-        displayName: { type: "string", pattern: "^[A-Za-z0-9_~ -]{3,32}$" },
+        displayName: { type: "string", pattern: "^.{1,32}$" }, // AVN: No more than 32 characters of any type
         avatarId: { type: "string" },
         // personalAvatarId is obsolete, but we need it here for backwards compatibility.
         personalAvatarId: { type: "string" }

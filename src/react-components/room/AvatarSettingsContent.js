@@ -27,9 +27,9 @@ export function AvatarSettingsContent({
         required
         onChange={onChangeDisplayName}
         description={
-          <FormattedMessage
-            id="avatar-settings-content.display-name-description"
-            defaultMessage="Alphanumerics, hyphens, underscores, and tildes. At least 3 characters, no more than 32"
+          <FormattedMessage          
+            id="avatar-settings-content.avn-display-name-description"
+            defaultMessage="No more than 32 characters"
           />
         }
         ref={displayNameInputRef}
