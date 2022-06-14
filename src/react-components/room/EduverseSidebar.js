@@ -48,7 +48,8 @@ export function EduverseSidebar({ room, onClose }) {
             <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(room.description) }} />
         )}
       </div>
-      {avnBridge.assetId && (
+      {false && avnBridge.assetId && (
+        // Hidden for now until use case is resolved
         <CopyableTextInputField
           className={styles.shareLinkContainer}
           label={<FormattedMessage id="eduverse-sidebar.share-link" defaultMessage="Share this scene" />}
