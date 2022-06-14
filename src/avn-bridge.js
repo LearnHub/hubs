@@ -43,11 +43,12 @@ class AvnBridge {
           console.info("AVN: No assetid is set")
         }
       }
-      if(userData.iconuri && this._iconUri != userData.iconuri) {
+      if(this._iconUri != userData.iconuri) {
         this._iconUri = userData.iconuri;
         console.info(`AVN: Updated icon to '${this._iconUri}'`);
-      } else {
-        console.error("AVN: No iconuri is set")
+        if(!this._iconUri) {
+          console.error("AVN: No iconuri is set")
+        }
       }
       this._ownerIsAuthenticated = userData.ownerisauthenticated;
       this._ownerIsSubscriber = userData.ownerissubscriber;
