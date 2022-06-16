@@ -61,6 +61,8 @@ export function MediaBrowser({
         </IconButton>
       }
       headerCenter={
+        /* AVN: Search feature not required */
+        false &&
         <>
           {selectedSource === "favorites" ? (
             <>

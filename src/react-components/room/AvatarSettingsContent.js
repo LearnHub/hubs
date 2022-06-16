@@ -36,11 +36,9 @@ export function AvatarSettingsContent({
       />
       <div className={styles.avatarPreviewContainer}>
         {avatarPreview || <div />}
-        {/* AVN: Avatars can only be set from within the scenes
         <Button type="button" preset="basic" onClick={onChangeAvatar}>
           <FormattedMessage id="avatar-settings-content.change-avatar-button" defaultMessage="Change Avatar" />
         </Button>
-        */}
       </div>
       <AcceptButton preset="accept" type="submit" />
     </Column>
