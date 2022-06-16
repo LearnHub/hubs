@@ -15,11 +15,15 @@
 
 :local(.header) {
   position: relative;
+  /* AVN: Nothing useful in the header at the moment
   height: 144px;
   border-bottom: 1px solid theme.$border1-color;
+   */
 
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
+    /* AVN: Nothing useful in the header at the moment
     height: 96px;
+     */
   }
 }
 
@@ -33,25 +37,31 @@
   justify-content: center;
   align-items: center;
 
+  /* AVN: Nothing useful in the header at the moment
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
     margin-left: 24px;
     height: 96px;
   }
+  */
 }
 
 :local(.header-center) {
   margin-top: 48px;
   border-top: 1px solid theme.$border1-color;
   width: 100%;
+  /* AVN: Nothing useful in the header at the moment
   height: 96px;
+  */
   display: flex;
   justify-content: center;
   align-items: center;
   
+  /* AVN: Nothing useful in the header at the moment
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
     margin-top: 0;
     border-top: none;
   }
+  */
 }
 
 :local(.header-right) {
@@ -64,10 +74,12 @@
   justify-content: center;
   align-items: center;
 
+  /* AVN: Nothing useful in the header at the moment
   @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
     margin-right: 24px;
     height: 96px;
   }
+  */
 }
 
 :local(.content) {

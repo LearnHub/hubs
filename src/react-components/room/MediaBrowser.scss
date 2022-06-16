@@ -23,7 +23,10 @@
 }
 
 :local(.button-nav) {
+  /* AVN: No buttons in the header at the moment
   display: flex;
+  */
+  display: none;
   padding: 8px;
   overflow-x: auto;
   flex-shrink: 0;
