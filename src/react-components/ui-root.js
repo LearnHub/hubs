@@ -108,7 +108,6 @@ import { MediaDevicesEvents } from "../utils/media-devices-utils";
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 const showPremiumFeatures = qsTruthy("showPremiumFeatures");
-const EDUVERSE_FULL_FEATURE = true;
 
 const IN_ROOM_MODAL_ROUTER_PATHS = ["/media"];
 const IN_ROOM_MODAL_QUERY_VARS = ["media_source"];
@@ -1406,12 +1405,10 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
-                        { EDUVERSE_FULL_FEATURE && (
                         <EduverseMenuButton
                           active={this.state.sidebarId === "eduverse"}
                           onClick={() => this.toggleSidebar("eduverse")}
                         />
-                        )}
                         {showObjectList && (
                           <ObjectsMenuButton
                             active={this.state.sidebarId === "objects"}
@@ -1577,7 +1574,7 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
-                    entered && EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation &&
+                    entered && avnBridge.allowNavigation &&
                     <ToolbarButton
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
@@ -1587,7 +1584,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Home button 
-                    entered && avnBridge.assetId !== avnBridge.assetIdHome && EDUVERSE_FULL_FEATURE && avnBridge.allowNavigation &&
+                    entered && avnBridge.assetId !== avnBridge.assetIdHome && avnBridge.allowNavigation &&
                     <ToolbarButton
                       icon={<HomeIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}
@@ -1691,7 +1688,6 @@ class UIRoot extends Component {
                 toolbarRight={
                   <>
                     { // AVN: Moved invite link to the right as part of the "Teacher Tools"
-                    EDUVERSE_FULL_FEATURE &&
                     <InvitePopoverContainer
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}
