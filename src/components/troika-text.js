@@ -53,7 +53,12 @@ AFRAME.registerComponent("text", {
     direction: { type: "string", default: "auto", oneOf: ["auto", "ltr", "rtl"] },
     fillOpacity: { type: "number", default: 1 },
     // This is different from the Troika preoperty name, Using "fontUrl" to prevent conflict with previous "font" p=roperty and to allow us to make named fonts later
-    fontUrl: { type: "string" },
+    fontUrl: {
+      type: "string",
+      default:
+        // AVN: temporary solution until fallback font support is available https://github.com/mozilla/hubs/issues/3934
+        "https://data.avncloud.com/public/hubs/fonts/noto-sans-kr-v27-latin_korean-regular.woff"
+     },
     // This default value differs from the Troika default of 0.1, it most closely matches the size of our previous text component.
     fontSize: { type: "number", default: 0.075 },
     letterSpacing: { type: "number", default: 0 },
