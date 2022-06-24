@@ -47,7 +47,7 @@ class AvnBridge {
       if(this._iconUri != userData.iconuri) {
         this._iconUri = userData.iconuri;
         console.info(`AVN: Updated icon to '${this._iconUri}'`);
-        if(this._iconUri) {
+        if(!this._iconUri) {
           console.error("AVN: No iconuri is set")
         }
       }
