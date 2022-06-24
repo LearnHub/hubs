@@ -48,7 +48,6 @@ InvitePopoverContent.propTypes = {
   fetchingInvite: PropTypes.bool,
   inviteUrl: PropTypes.string,
   revokeInvite: PropTypes.func,
-  roomSize: PropTypes.number.isRequired,
 };
 
 const invitePopoverTitle = defineMessage({
@@ -65,7 +64,6 @@ export function InvitePopoverButton({
   fetchingInvite,
   inviteUrl,
   revokeInvite,
-  roomSize,
   ...rest
 }) {
   const intl = useIntl();
@@ -82,7 +80,6 @@ export function InvitePopoverButton({
           fetchingInvite={fetchingInvite}
           inviteUrl={inviteUrl}
           revokeInvite={revokeInvite}
-          roomSize={roomSize}
         />
       )}
       placement="top-start"
