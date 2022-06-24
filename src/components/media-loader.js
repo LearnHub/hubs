@@ -353,13 +353,18 @@ AFRAME.registerComponent("media-loader", {
       this.el.removeAttribute("media-image");
     }
     try {
-
       // Short circuit for external web links (don't bother with fetching content types and thumbnails)
       if(this.data.contentType === "text/html" && !avnBridge.isAvnUrl(src)) {
         // Change image to be a 1x1 transparent PNG (image mesh provides the hover target)
-        this.el.setAttribute("media-image", { src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", contentType: "image/png" });
-        this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
-        this.el.setAttribute("shape-helper", { type: SHAPE.BOX, minHalfExtent: 0.04 });  
+        this.el.setAttribute("media-image", { 
+          src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", 
+          contentType: "image/png" 
+        });
+        // Timeout hack because media-image physics object not loaded immediately
+        setTimeout(() => {
+          this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+          this.el.setAttribute("shape-helper", { type: SHAPE.BOX, minHalfExtent: 0.04 });  
+        }, 1000);
         return;
       }
 
