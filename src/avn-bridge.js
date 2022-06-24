@@ -16,6 +16,7 @@ class AvnBridge {
     this._ownerIsAuthenticated = false;
     this._ownerIsSubscriber = false;
     this._allowNavigation = true;
+    this._isSolo = false;
   }
 
   updateFromHub(hub) {
@@ -46,7 +47,7 @@ class AvnBridge {
       if(this._iconUri != userData.iconuri) {
         this._iconUri = userData.iconuri;
         console.info(`AVN: Updated icon to '${this._iconUri}'`);
-        if(!this._iconUri) {
+        if(this._iconUri) {
           console.error("AVN: No iconuri is set")
         }
       }
@@ -54,6 +55,7 @@ class AvnBridge {
       this._ownerIsSubscriber = userData.ownerissubscriber;
       this._sessionDomain = userData.sessiondomain;
       this._assetIdHome = userData.assetidhome;
+      this._isSolo = hub.room_size <= 1;
     } else {
       console.error("AVN: No user_data is set")
     }
@@ -101,6 +103,10 @@ class AvnBridge {
   // which is it's original intention
   get allowNavigation() {
     return this._allowNavigation;
+  }
+
+  get isSolo() {
+    return this._isSolo;
   }
 
   // Rooms

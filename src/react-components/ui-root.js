@@ -1688,6 +1688,8 @@ class UIRoot extends Component {
                 toolbarRight={
                   <>
                     { // AVN: Moved invite link to the right as part of the "Teacher Tools"
+                    // Only show invite if this isn't a "solo" room
+                    !avnBridge.isSolo() &&
                     <InvitePopoverContainer
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}

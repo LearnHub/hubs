@@ -13,7 +13,6 @@ export function InvitePopoverContainer({ hub, hubChannel, scene, ...rest }) {
   const embedUrl = hubUrl(hub.hub_id, { embed_token: hub.embed_token });
   const embedText = `<iframe src="${embedUrl}" style="width: 1024px; height: 768px;" allow="microphone; camera; vr; speaker;"></iframe>`;
   const popoverApiRef = useRef();
-  const roomSize = hub.room_size;
   // Handle clicking on the invite button while in VR.
   useEffect(
     () => {
@@ -53,7 +52,6 @@ export function InvitePopoverContainer({ hub, hubChannel, scene, ...rest }) {
       url={url}
       embed={embedText}
       popoverApiRef={popoverApiRef}
-      roomSize={roomSize}
       {...rest}
     />
   );
