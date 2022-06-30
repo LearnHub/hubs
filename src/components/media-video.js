@@ -74,6 +74,7 @@ AFRAME.registerComponent("media-video", {
   init() {
     APP.gainMultipliers.set(this.el, 1);
     this.onPauseStateChange = this.onPauseStateChange.bind(this);
+    this.onCameraSetActiveChange = this.onCameraSetActiveChange.bind(this);
     this.updateHoverMenu = this.updateHoverMenu.bind(this);
     this.tryUpdateVideoPlaybackState = this.tryUpdateVideoPlaybackState.bind(this);
     this.ensureOwned = this.ensureOwned.bind(this);
@@ -170,9 +171,7 @@ AFRAME.registerComponent("media-video", {
     if (sceneEl.camera) {
       sceneEl.camera.add(sceneEl.audioListener);
     }
-    sceneEl.addEventListener("camera-set-active", function(evt) {
-      evt.detail.cameraEl.getObject3D("camera").add(sceneEl.audioListener);
-    });
+    sceneEl.addEventListener("camera-set-active", this.onCameraSetActiveChange);
 
     let disableLeftRightPanningPref = APP.store.state.preferences.disableLeftRightPanning;
     this.onPreferenceChanged = () => {
@@ -730,6 +729,10 @@ AFRAME.registerComponent("media-video", {
     });
   },
 
+  onCameraSetActiveChange(evt) {
+    evt.detail.cameraEl.getObject3D("camera").add(this.el.sceneEl.audioListener);
+  },
+  
   updateHoverMenu() {
     if (!this.hoverMenu) return;
 
@@ -871,6 +874,10 @@ AFRAME.registerComponent("media-video", {
       this.seekForwardButton.object3D.removeEventListener("interact", this.seekForward);
       this.seekBackButton.object3D.removeEventListener("interact", this.seekBack);
       this.snapButton.object3D.removeEventListener("interact", this.snap);
+    }
+
+    if(this.el?.sceneEl) {
+      this.el.sceneEl.removeEventListener("camera-set-active", this.onCameraSetActiveChange);
     }
 
     window.APP.store.removeEventListener("statechanged", this.onPreferenceChanged);
