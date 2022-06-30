@@ -377,7 +377,7 @@ AFRAME.registerComponent("media-video", {
     APP.audios.set(this.el, this.audio);
     updateAudioSettings(this.el, this.audio);
     // Original audio source volume can now be restored as audio systems will take over
-    this.mediaEl.volume = 1;
+    this.mediaElementAudioSource.mediaElement.volume = 1;
   },
 
   async updateSrc(oldData) {
