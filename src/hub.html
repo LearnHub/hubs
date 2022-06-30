@@ -1311,7 +1311,9 @@
                     position = "0.15 0 0"
                     teleporter="start: /actions/startTeleport; confirm: /actions/stopTeleport; collisionEntities: [nav-mesh];"
                 ></a-entity>
+                <!-- AVN: Exclude stats from production for performance and to reduce the chance of memory leaks
                 <a-entity id="stats" stats-plus="false" position="0 0 -1"></a-entity>
+                 -->
             </a-entity>
 
             <a-entity
