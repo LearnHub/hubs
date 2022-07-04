@@ -37,7 +37,15 @@ export async function changeHubAvn(hubUrl) {
   await changeHub(nextState, true);
 }
 
+// AVN: Psudeo-mutex to prevent overlapping calls to changeHub
+var isChanging = false
+
 export async function changeHub(nextState, addToHistory = true) {
+  while(isChanging) {
+    await new Promise(r => setTimeout(r, 100));
+  }
+  isChanging = true;
+  try {
   if (nextState.hubId === APP.hub.hub_id) {
     console.log("Change hub called with the current hub id. This is a noop.");
     return;
@@ -130,6 +138,9 @@ export async function changeHub(nextState, addToHistory = true) {
     hubName: hub.name,
     showLineBreak: true
   });
+  } finally {
+    isChanging = false;
+  }
 }
 window.changeHub = changeHub;
 
