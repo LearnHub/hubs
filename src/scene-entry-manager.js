@@ -81,7 +81,9 @@ export default class SceneEntryManager {
     this._setupPlayerRig();
     this._setupKicking();
     this._setupMedia();
+    /* AVN: Camera not supported
     this._setupCamera();
+    */
 
     if (qsTruthy("offline")) return;
 
@@ -415,7 +417,7 @@ export default class SceneEntryManager {
       exit2DInterstitialAndEnterVR();
     });
   };
-
+  /* AVN: Camera not supported
   _setupCamera = () => {
     this.scene.addEventListener("action_toggle_camera", () => {
       if (!this.hubChannel.can("spawn_camera")) return;
@@ -433,11 +435,10 @@ export default class SceneEntryManager {
         this.scene.appendChild(entity);
       }
     });
-
     this.scene.addEventListener("photo_taken", e => this.hubChannel.sendMessage({ src: e.detail }, "photo"));
     this.scene.addEventListener("video_taken", e => this.hubChannel.sendMessage({ src: e.detail }, "video"));
   };
-
+  */
   _spawnAvatar = () => {
     this.avatarRig.setAttribute("networked", "template: #remote-avatar; attachTemplateToLocal: false;");
     this.avatarRig.setAttribute("networked-avatar", "");

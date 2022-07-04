@@ -80,13 +80,13 @@ AFRAME.registerComponent("emoji-hud", {
           e.detail.target.querySelector(".particle-emitter").setAttribute("particle-emitter", particleEmitterConfig);
           e.detail.target.setAttribute("emoji", { particleEmitterConfig: particleEmitterConfig });
         });
-
+        /* AVN: Emojis not supported 
         spawnerEntity.setAttribute("super-spawner", {
           src: emojis[i].model,
           template: "#interactable-emoji",
           spawnScale: { x: this.data.spawnedScale, y: this.data.spawnedScale, z: this.data.spawnedScale }
         });
-
+        */
         const cylinder = document.createElement("a-cylinder");
         cylinder.setAttribute("visibility-while-frozen", {
           requireHoverOnNonMobile: false,

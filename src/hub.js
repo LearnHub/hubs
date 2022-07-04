@@ -119,7 +119,9 @@ import "./components/camera-focus-button";
 import "./components/unmute-video-button";
 import "./components/destroy-at-extreme-distances";
 import "./components/visible-to-owner";
+/* AVN: Camera not supported
 import "./components/camera-tool";
+*/
 import "./components/emit-state-change";
 import "./components/action-to-event";
 import "./components/action-to-remove";
@@ -179,7 +181,9 @@ import "./systems/permissions";
 import "./systems/exit-on-blur";
 import "./systems/auto-pixel-ratio";
 import "./systems/idle-detector";
+/* AVN: Camera not supported
 import "./systems/camera-tools";
+*/
 /* AVN: Drawing not currently supported
 import "./systems/pen-tools";
 */

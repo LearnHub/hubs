@@ -130,6 +130,7 @@ function registerNetworkSchemas() {
     ]
   });
 
+  /* AVN: Emojis not supported 
   NAF.schemas.add({
     template: "#interactable-emoji",
     components: [
@@ -196,7 +197,7 @@ function registerNetworkSchemas() {
       }
     ]
   });
-
+  */
   NAF.schemas.add({
     template: "#static-controlled-media",
     components: [
@@ -251,7 +252,7 @@ function registerNetworkSchemas() {
     ]
   });
   */
-
+  /* AVN: Camera not supported
   NAF.schemas.add({
     template: "#interactable-camera",
     components: [
@@ -271,7 +272,7 @@ function registerNetworkSchemas() {
       }
     ]
   });
-
+  */
   NAF.schemas.add({
     template: "#template-waypoint-avatar",
     components: [
