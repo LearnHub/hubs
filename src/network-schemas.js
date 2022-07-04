@@ -231,6 +231,7 @@ function registerNetworkSchemas() {
     ]
   });
 
+  /* AVN: Drawing not currently supported
   NAF.schemas.add({
     template: "#interactable-drawing",
     components: [
@@ -249,6 +250,7 @@ function registerNetworkSchemas() {
       "networked-drawing"
     ]
   });
+  */
 
   NAF.schemas.add({
     template: "#interactable-camera",
@@ -303,7 +305,7 @@ function registerNetworkSchemas() {
       "waypoint"
     ]
   });
-
+  /* AVN: Drawing not currently supported
   NAF.schemas.add({
     template: "#interactable-pen",
     components: [
@@ -358,6 +360,7 @@ function registerNetworkSchemas() {
       }
     ]
   });
+  */
 }
 
 export default registerNetworkSchemas;

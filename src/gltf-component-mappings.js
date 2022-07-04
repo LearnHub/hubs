@@ -449,8 +449,9 @@ AFRAME.GLTFModelPlus.registerComponent("trimesh", "trimesh", el => {
 
 AFRAME.GLTFModelPlus.registerComponent("particle-emitter", "particle-emitter");
 
+/* AVN: Drawing not currently supported
 AFRAME.GLTFModelPlus.registerComponent("networked-drawing-buffer", "networked-drawing-buffer");
-
+*/
 AFRAME.GLTFModelPlus.registerComponent("audio-settings", "audio-settings", (el, _componentName, componentData) => {
   const removeUndefined = obj => {
     return Object.entries(obj).reduce((result, [key, value]) => {

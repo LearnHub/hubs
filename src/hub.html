@@ -92,7 +92,9 @@
             <img id="nametag-border" crossorigin="anonymous" src="./assets/hud/nametag-border.9.png">
             <img id="hand-raised" crossorigin="anonymous" src="./assets/hud/hand-raised.png">
 
+            <!-- AVN: Drawing not currently supported
             <a-asset-item id="drawing-pen" response-type="arraybuffer" src="./assets/models/DrawingPen.glb"></a-asset-item>
+            -->
             <a-asset-item id="spawn-point" response-type="arraybuffer" src="./assets/models/spawn-point.glb"></a-asset-item>
 
             <template id="template-waypoint-avatar">
@@ -453,7 +455,7 @@
                                 ></a-entity>
                             </a-entity>
                             -->
-                            <!-- AVN: Drawing layer is not currently supported in AVN Hubs 
+                            <!-- AVN: Drawing not currently supported
                             <a-entity
                                 class="deserialize-drawing"
                                 visible="false"
@@ -598,6 +600,7 @@
                 </a-entity>
             </template>
 
+            <!-- AVN: Interactable emoji not currently supported
             <template id="interactable-emoji">
                 <a-entity
                     class="interactable"
@@ -642,6 +645,7 @@
                     </a-entity>
                 </a-entity>
             </template>
+            -->
 
             <template id="interactable-media-frame">
                 <!--
@@ -669,6 +673,7 @@
                 </a-entity>
             </template>
 
+            <!-- AVN: Drawing not currently supported
             <template id="interactable-pen">
                 <a-entity
                     class="pen interactable"
@@ -703,6 +708,7 @@
                     </a-entity>
                 </a-entity>
             </template>
+            -->
 
             <template id="interactable-camera">
                 <a-entity
@@ -826,6 +832,7 @@
                 </a-entity>
             </template>
 
+            <!-- AVN: Drawing not currently supported
             <template id="interactable-drawing">
                 <a-entity
                     class="drawing"
@@ -860,6 +867,7 @@
                     </a-entity>
                 </a-entity>
             </template>
+            -->
 
             <template id="pager-hover-menu">
                 <a-entity class="ui interactable-ui hover-container" visible="false">
@@ -1133,7 +1141,9 @@
 
         <a-entity id="camera-counter" networked-counter="max: 1;"></a-entity>
 
+        <!-- AVN: Drawing not currently supported
         <a-entity id="drawing-manager" drawing-manager="penSpawner: #pen-spawner"></a-entity>
+        -->
 
         <a-entity
             id="right-cursor-controller"
@@ -1386,6 +1396,7 @@
             <a-entity id="objects-scene"></a-entity>
         </a-entity>
 
+        <!-- AVN: Drawing not currently supported
         <a-entity
             id="pen-spawner"
             action-to-event="path: /actions/spawnPen; event: spawn_pen; withPermission: spawn_drawing"
@@ -1396,7 +1407,8 @@
                 spawnScale: 0.5, 0.5, 0.5;
                 "
         ></a-entity>
-
+        -->
+        
         <a-entity matrix-auto-update class="ui interactable-ui vr-notice" follow-in-fov="target: #avatar-pov-node; offset: 0 0 -0.8; angle: 39;" visible="false">
             <a-entity slice9="width: 0.8; height: 0.25; left: 64; top: 64; right: 66; bottom: 66; opacity: 1.0; src: #button"
                 text-button="

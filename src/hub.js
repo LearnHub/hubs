@@ -180,7 +180,9 @@ import "./systems/exit-on-blur";
 import "./systems/auto-pixel-ratio";
 import "./systems/idle-detector";
 import "./systems/camera-tools";
+/* AVN: Drawing not currently supported
 import "./systems/pen-tools";
+*/
 import "./systems/userinput/userinput";
 import "./systems/userinput/userinput-debug";
 import "./systems/ui-hotkeys";
@@ -242,10 +244,12 @@ import "./components/set-yxz-order";
 
 import "./components/cursor-controller";
 
+/* AVN: AVN: Drawing not currently supported
 import "./components/tools/pen";
 import "./components/tools/pen-laser";
 import "./components/tools/networked-drawing";
 import "./components/tools/drawing-manager";
+*/
 
 import "./components/body-helper";
 import "./components/shape-helper";
