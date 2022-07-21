@@ -567,6 +567,12 @@ class GLTFHubsLightMapExtension {
       const lightMap = results[1];
       material.lightMap = lightMap;
       material.lightMapIntensity = extensionDef.intensity !== undefined ? extensionDef.intensity : 1;
+
+      // AVN: Hack while we wait to resolve https://github.com/mozilla/hubs/discussions/5602
+      if (material.isMeshStandardMaterial) {
+        material.lightMapIntensity *= Math.PI;
+      }
+      
       return material;
     });
   }
