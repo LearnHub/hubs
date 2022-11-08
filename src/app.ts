@@ -176,7 +176,8 @@ export class App {
 
     sceneEl.appendChild(renderer.domElement);
 
-    const camera = new PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.05, 10000);
+    // AVN: Retain three.js default FoV rather than Hubs default of 80
+    const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 10000);
 
     const audioListener = new AudioListener();
     this.audioListener = audioListener;
