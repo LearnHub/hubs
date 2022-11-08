@@ -73,7 +73,7 @@
     "@fortawesome/react-fontawesome": "^0.1.0",
     "@mozillareality/easing-functions": "^0.1.1",
     "@popperjs/core": "^2.4.4",
-    "aframe": "github:LearnHub/aframe#08c96d3",
+    "aframe": "github:LearnHub/aframe#production",
     "ammo-debug-drawer": "github:infinitelee/ammo-debug-drawer",
     "ammo.js": "github:mozillareality/ammo.js#hubs/master",
     "animejs": "github:mozillareality/anime#hubs/master",
