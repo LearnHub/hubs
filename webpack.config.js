@@ -719,7 +719,6 @@ module.exports = async (env, argv) => {
       // Extract required css and add a content hash.
       new MiniCssExtractPlugin({
         filename: "assets/stylesheets/[name]-[contenthash].css",
-        disable: argv.mode !== "production",
         attributes: {
           // May be required for dynamically loaded stylesheets
           "crossorigin": "anonymous"

@@ -27,6 +27,7 @@ import { SHAPE } from "three-ammo/constants";
 import { addComponent, entityExists, removeComponent } from "bitecs";
 import { MediaLoading } from "../bit-components";
 
+import qsTruthy from "../utils/qs_truthy";
 import { avnBridge } from "../avn-bridge";
 
 let loadingObject;

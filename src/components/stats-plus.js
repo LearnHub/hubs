@@ -210,7 +210,7 @@ AFRAME.registerComponent("stats-plus", {
     stats("physics").set(this.el.sceneEl.systems["hubs-systems"].physicsSystem.stepDuration);
 
     const batchManagerSystem = this.el.sceneEl.systems["hubs-systems"].batchManagerSystem;
-    if (batchManagerSystem.batchingEnabled) {
+    if (batchManagerSystem && batchManagerSystem.batchingEnabled) {
       const batchManager = batchManagerSystem.batchManager;
       stats("batchdraws").set(batchManager.batches.length);
       stats("batchinstances").set(batchManager.instanceCount);

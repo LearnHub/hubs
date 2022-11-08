@@ -1604,12 +1604,6 @@ class UIRoot extends Component {
                       }}
                     />
                     }
-                  <InvitePopoverContainer
-                    hub={this.props.hub}
-                    hubChannel={this.props.hubChannel}
-                    scene={this.props.scene}
-                    store={this.props.store}
-                  />
                   </>
                 }
                 toolbarCenter={
@@ -1710,6 +1704,7 @@ class UIRoot extends Component {
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}
                       scene={this.props.scene}
+                      store={this.props.store}
                     />                 
                     }
                     { // AVN: Placeholder eduverse button
