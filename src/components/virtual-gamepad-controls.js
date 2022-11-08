@@ -5,6 +5,8 @@ function insertAfter(el, referenceEl) {
   referenceEl.parentNode.insertBefore(el, referenceEl.nextSibling);
 }
 
+const ROTATION_SPEED = 0.025;
+
 /**
  * Instantiates 2D virtual gamepads and emits associated events.
  * @namespace user-input
@@ -78,6 +80,9 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
     if (!isChanged) {
       return;
     }
+    if ((newEnableLeft || newEnableRight) && !this.mockJoystickContainer.parentNode) {
+      insertAfter(this.mockJoystickContainer, this.el.sceneEl.canvas);
+    }
     if (!this.enableLeft && newEnableLeft) {
       this.createLeftStick();
     } else if (this.enableLeft && !newEnableLeft) {
@@ -111,12 +116,8 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
       this.rightMockSmall.classList.remove(styles.hidden);
       this.rightStick.on("start", this.onFirstInteraction);
     }
-    if ((this.enableLeft || this.enableRight) && !this.mockJoystickContainer.parentNode) {
-      insertAfter(this.mockJoystickContainer, this.el.sceneEl.canvas);
-    }
-    if (!this.enableLeft && !this.enableRight) {
-      this.mockJoystickContainer.parentNode &&
-        this.mockJoystickContainer.parentNode.removeChild(this.mockJoystickContainer);
+    if (!this.enableLeft && !this.enableRight && this.mockJoystickContainer.parentNode) {
+      this.mockJoystickContainer.parentNode.removeChild(this.mockJoystickContainer);
     }
   },
 
@@ -126,7 +127,7 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
     insertAfter(this.rightTouchZone, this.mockJoystickContainer);
     this.rightStick = nipplejs.create({
       mode: "static",
-      position: {left: "50%", top: "50%"},
+      position: { left: "50%", top: "50%" },
       zone: this.rightTouchZone,
       color: "white",
       fadeTime: 0
@@ -146,7 +147,7 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
     insertAfter(this.leftTouchZone, this.mockJoystickContainer);
     this.leftStick = nipplejs.create({
       mode: "static",
-      position: {left: "50%", top: "50%"},
+      position: { left: "50%", top: "50%" },
       zone: this.leftTouchZone,
       color: "white",
       fadeTime: 0
@@ -182,10 +183,9 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
     // Set pitch and yaw angles on right stick move
     const angle = joystick.angle.radian;
     const force = joystick.force < 1 ? joystick.force : 1;
-    const turnStrength = 0.05;
     this.rotating = true;
-    this.lookDy = -Math.cos(angle) * force * turnStrength;
-    this.lookDx = Math.sin(angle) * force * turnStrength;
+    this.lookDy = -Math.cos(angle) * force * ROTATION_SPEED;
+    this.lookDx = Math.sin(angle) * force * ROTATION_SPEED;
   },
 
   onLookJoystickEnd() {

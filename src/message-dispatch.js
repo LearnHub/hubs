@@ -7,6 +7,7 @@ import ducky from "./assets/models/DuckyMesh.glb";
 import { EventTarget } from "event-target-shim";
 import { ExitReason } from "./react-components/room/ExitedRoomScreen";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
+import { createNetworkedEntity } from "./systems/netcode";
 
 let uiRoot;
 // Handles user-entered messages
@@ -23,6 +24,13 @@ export default class MessageDispatch extends EventTarget {
 
   addToPresenceLog(entry) {
     entry.key = Date.now().toString();
+
+    const lastEntry = this.presenceLogEntries.length > 0 && this.presenceLogEntries[this.presenceLogEntries.length - 1];
+    if (lastEntry && entry.type === "permission" && lastEntry.type === "permission") {
+      if (lastEntry.body.permission === entry.body.permission && parseInt(entry.key) - parseInt(lastEntry.key) < 10000) {
+        this.presenceLogEntries.pop();
+      }
+    }
 
     this.presenceLogEntries.push(entry);
     this.remountUI({ presenceLogEntries: this.presenceLogEntries });
@@ -122,6 +130,14 @@ export default class MessageDispatch extends EventTarget {
           this.scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_QUACK);
         }
         break;
+      case "cube": {
+        const avatarPov = document.querySelector("#avatar-pov-node").object3D;
+        const eid = createNetworkedEntity(APP.world, "cube");
+        const obj = APP.world.eid2obj.get(eid);
+        obj.position.copy(avatarPov.localToWorld(new THREE.Vector3(0, 0, -1.5)));
+        obj.lookAt(avatarPov.getWorldPosition(new THREE.Vector3()));
+        break;
+      }
       case "debug":
         physicsSystem = document.querySelector("a-scene").systems["hubs-systems"].physicsSystem;
         physicsSystem.setDebug(!physicsSystem.debugEnabled);

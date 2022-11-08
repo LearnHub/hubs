@@ -51,7 +51,7 @@ AFRAME.registerComponent("networked-drawing", {
     this.networkBufferInitialized = false;
 
     const options = {
-      vertexColors: THREE.VertexColors
+      vertexColors: true
     };
 
     this.color = new THREE.Color();
@@ -205,8 +205,9 @@ AFRAME.registerComponent("networked-drawing", {
       }
     };
 
-    const glb = await new Promise(resolve => {
-      exporter.parse(mesh, resolve, {
+    // TODO: Proper error handling
+    const glb = await new Promise((resolve, reject) => {
+      exporter.parse(mesh, resolve, reject, {
         binary: true,
         includeCustomExtensions: true
       });
@@ -237,7 +238,7 @@ AFRAME.registerComponent("networked-drawing", {
     const position = new THREE.Vector3();
     const direction = new THREE.Vector3();
     const normal = new THREE.Vector3();
-    return function(buffer) {
+    return function (buffer) {
       let head = buffer[0];
       if (head === "-") {
         this._undoDraw();
@@ -272,7 +273,7 @@ AFRAME.registerComponent("networked-drawing", {
 
   _broadcastDrawing: (() => {
     const copyArray = [];
-    return function() {
+    return function () {
       copyArray.length = 0;
       copyData(this.networkBuffer, copyArray, this.bufferIndex, this.networkBuffer.length - 1);
 
@@ -291,7 +292,7 @@ AFRAME.registerComponent("networked-drawing", {
     const position = new THREE.Vector3();
     const direction = new THREE.Vector3();
     const normal = new THREE.Vector3();
-    return function() {
+    return function () {
       let head = this.networkBuffer[0];
       if (head === "-") {
         this._undoDraw();
@@ -308,8 +309,9 @@ AFRAME.registerComponent("networked-drawing", {
           this.invalidPointRead = true;
 
           console.error(
-            `Draw networking error: ID ${this.drawingId} expected point ${this.lastReadPointCount +
-              1} but received ${pointCount}`
+            `Draw networking error: ID ${this.drawingId} expected point ${
+              this.lastReadPointCount + 1
+            } but received ${pointCount}`
           );
         }
 
@@ -374,7 +376,7 @@ AFRAME.registerComponent("networked-drawing", {
     //This number needs to be approx. < ~6000 based on napkin math
     //see: https://github.com/webrtc/adapter/blob/682e0f2439e139da6c0c406370eae820637b8sc1a/src/js/common_shim.js#L157
     const chunkAmount = 3000;
-    return function(clientId) {
+    return function (clientId) {
       if (NAF.utils.isMine(this.networkedEl)) {
         if (this.networkBuffer.length <= chunkAmount) {
           NAF.connection.sendDataGuaranteed(clientId, this.drawingId, {
@@ -458,7 +460,7 @@ AFRAME.registerComponent("networked-drawing", {
 
   _draw: (() => {
     const capNormal = new THREE.Vector3();
-    return function(position, direction, normal, radiusMultiplier = 1.0) {
+    return function (position, direction, normal, radiusMultiplier = 1.0) {
       if (!this.lineStarted) {
         this._generateSegments(this.lastSegments, position, direction, normal, this.radius * radiusMultiplier);
 
@@ -534,7 +536,7 @@ AFRAME.registerComponent("networked-drawing", {
   _drawProjectedEndCap: (() => {
     const projectedDirection = new THREE.Vector3();
     const projectedPoint = new THREE.Vector3();
-    return function(position, direction) {
+    return function (position, direction) {
       if (this.lineStarted && this.drawStarted) {
         projectedDirection.copy(direction).multiplyScalar(this.radius);
         projectedPoint.copy(position).add(projectedDirection);
@@ -552,7 +554,7 @@ AFRAME.registerComponent("networked-drawing", {
       networkBufferCount: this.networkBufferCount,
       vertexCount: this.vertexCount - 1,
       indexCount: this.indexCount - 1,
-      time: this.el.sceneEl.clock.elapsedTime * 1000
+      time: APP.world.time.elapsed
     };
     this.networkBufferHistory.push(datum);
     this.vertexCount = 0;
@@ -568,7 +570,7 @@ AFRAME.registerComponent("networked-drawing", {
   _addToNetworkBuffer: (() => {
     const copyDirection = new THREE.Vector3();
     const copyNormal = new THREE.Vector3();
-    return function(position, direction, normal) {
+    return function (position, direction, normal) {
       if (this.networkedEl && NAF.utils.isMine(this.networkedEl)) {
         ++this.currentPointCount;
         this._pushToNetworkBuffer(this.currentPointCount);
@@ -635,7 +637,7 @@ AFRAME.registerComponent("networked-drawing", {
     const left = new THREE.Vector3(1, 0, 0);
     const projectedDirection = new THREE.Vector3();
     const projectedPoint = new THREE.Vector3();
-    return function(position) {
+    return function (position) {
       projectedDirection.copy(up).multiplyScalar(this.radius * 0.75);
       projectedPoint.copy(position).add(projectedDirection);
       this.lastPoint.copy(projectedPoint);
@@ -721,7 +723,7 @@ AFRAME.registerComponent("networked-drawing", {
 
   _rotatePointAroundAxis: (() => {
     const calculatedDirection = new THREE.Vector3();
-    return function(out, point, axis, up, angle, radius) {
+    return function (out, point, axis, up, angle, radius) {
       calculatedDirection.copy(up);
       calculatedDirection.applyAxisAngle(axis, angle);
       out.copy(point).add(calculatedDirection.normalize().multiplyScalar(radius));

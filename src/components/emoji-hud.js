@@ -1,4 +1,6 @@
+import { addComponent, removeComponent } from "bitecs";
 import { TYPE } from "three-ammo/constants";
+import { HandCollisionTarget } from "../bit-components";
 import { emojis } from "./emoji";
 
 const COLLISION_LAYERS = require("../constants").COLLISION_LAYERS;
@@ -87,27 +89,13 @@ AFRAME.registerComponent("emoji-hud", {
           spawnScale: { x: this.data.spawnedScale, y: this.data.spawnedScale, z: this.data.spawnedScale }
         });
         */
-        const cylinder = document.createElement("a-cylinder");
-        cylinder.setAttribute("visibility-while-frozen", {
-          requireHoverOnNonMobile: false,
-          withPermission: "spawn_emoji"
-        });
-        cylinder.setAttribute("material", { opacity: 0.2, color: "#2f7fee" });
-        cylinder.setAttribute("segments-height", 1);
-        cylinder.setAttribute("segments-radial", 16);
-        cylinder.setAttribute("scale", { x: width / 2, y: width / 20, z: width / 5 });
-        cylinder.setAttribute("rotation", { x: 45, y: 0, z: 0 });
 
         setOffsetVector(i, emojis.length, width, spacing, offsetVector);
 
         spawnerEntity.object3D.position.copy(offsetVector);
         spawnerEntity.object3D.matrixNeedsUpdate = true;
 
-        cylinder.object3D.position.set(offsetVector.x, -width / 2, offsetVector.z + 0.01); //move back to avoid transparency issues with emojis
-        cylinder.object3D.matrixNeedsUpdate = true;
-
         this.el.appendChild(spawnerEntity);
-        this.el.appendChild(cylinder);
 
         this.spawnerEntities.push(spawnerEntity);
       }
@@ -129,7 +117,7 @@ AFRAME.registerComponent("emoji-hud", {
     if (e.detail === "frozen") {
       this._updateOffset();
       for (let i = 0; i < this.spawnerEntities.length; i++) {
-        this.spawnerEntities[i].components.tags.data.isHandCollisionTarget = true;
+        addComponent(APP.world, HandCollisionTarget, this.spawnerEntities[i].eid);
       }
     }
   },
@@ -137,7 +125,7 @@ AFRAME.registerComponent("emoji-hud", {
   _onThaw(e) {
     if (e.detail === "frozen") {
       for (let i = 0; i < this.spawnerEntities.length; i++) {
-        this.spawnerEntities[i].components.tags.data.isHandCollisionTarget = false;
+        removeComponent(APP.world, HandCollisionTarget, this.spawnerEntities[i].eid);
       }
     }
   },

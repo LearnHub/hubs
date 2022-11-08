@@ -117,7 +117,6 @@ export async function changeHub(nextState, addToHistory = true) {
     APP.dialog.connect({
       serverUrl: `wss://${hub.host}:${hub.port}`,
       roomId: hub.hub_id,
-      joinToken: data.perms_token,
       serverParams: { host: hub.host, port: hub.port, turn: hub.turn },
       scene,
       clientId: APP.dialog._clientId,

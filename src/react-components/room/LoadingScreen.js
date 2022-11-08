@@ -6,11 +6,11 @@ import { useRandomMessageTransition } from "./useRandomMessageTransition";
 import SaveConsoleLog from "../../utils/record-log.js";
 import { Button } from "../input/Button";
 import styles from "../layout/LoadingScreenLayout.scss";
-export function LoadingScreen({ logoSrc, message, infoMessages }) {
-  const infoMessage = useRandomMessageTransition(infoMessages);
+export function LoadingScreen({ message, infoMessages }) {
+  // AVN: Hide info messages as not currently relevant
+  //const infoMessage = useRandomMessageTransition(infoMessages);
   return (
     <LoadingScreenLayout
-      logoSrc={logoSrc}
       center={
         <>
           <Spinner />
@@ -20,7 +20,6 @@ export function LoadingScreen({ logoSrc, message, infoMessages }) {
       bottom={
         <>
 {
-          // AVN: Hide info messages as not currently relevant
           // <h3>{infoMessage.heading}</h3>
           // <p>{infoMessage.message}</p>
 }
@@ -36,7 +35,6 @@ export function LoadingScreen({ logoSrc, message, infoMessages }) {
 }
 
 LoadingScreen.propTypes = {
-  logoSrc: PropTypes.string,
   message: PropTypes.node,
   infoMessages: PropTypes.arrayOf(
     PropTypes.shape({

@@ -11,10 +11,9 @@ import { SignInButton } from "../home/SignInButton";
 import qsTruthy from "../../utils/qs_truthy";
 
 const showHiddenFeatures = qsTruthy("showHiddenFeatures");
+import { AppLogo } from "../misc/AppLogo";
 
 export function Header({
-  appName,
-  appLogo,
   showCloud,
   enableSpoke,
   editorName,
@@ -36,7 +35,12 @@ export function Header({
           <ul>
             <li>
               <a href="/" className={styles.homeLink}>
-                <img crossOrigin="anonymous" alt={appName} src={appLogo} />
+                {/*
+                This forceConfigurableLogo prop is a bit of a hack, since we want the home page on HMC to use our 
+                configured logo, which is left-aligned, as opposed to the logo that we typically used for HMC, 
+                which is center-aligned.
+                */}
+                <AppLogo forceConfigurableLogo />
               </a>
             </li>
             {enableSpoke && (
@@ -121,8 +125,6 @@ export function Header({
 }
 
 Header.propTypes = {
-  appName: PropTypes.string,
-  appLogo: PropTypes.string,
   showCloud: PropTypes.bool,
   enableSpoke: PropTypes.bool,
   editorName: PropTypes.string,

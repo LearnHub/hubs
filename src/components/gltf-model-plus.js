@@ -10,6 +10,10 @@ import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import GLBRangeRequests from "three-gltf-extensions/loaders/GLB_range_requests/GLB_range_requests";
+import GLTFLodExtension from "three-gltf-extensions/loaders/MSFT_lod/MSFT_lod";
+import qsTruthy from "../utils/qs_truthy";
 
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
@@ -17,6 +21,7 @@ class GLTFCache {
   cache = new Map();
 
   set(src, gltf) {
+    gltf.scene.userData.gltfCacheKey = src;
     this.cache.set(src, {
       gltf,
       count: 0
@@ -53,7 +58,7 @@ class GLTFCache {
     }
   }
 }
-const gltfCache = new GLTFCache();
+export const gltfCache = new GLTFCache();
 const inflightGltfs = new Map();
 
 const extractZipFile = promisifyWorker(new SketchfabZipWorker());
@@ -111,9 +116,10 @@ function generateMeshBVH(object3D) {
 }
 
 function cloneGltf(gltf) {
+  const scene = cloneObject3D(gltf.scene);
   return {
-    animations: gltf.scene.animations,
-    scene: cloneObject3D(gltf.scene)
+    animations: scene.animations,
+    scene
   };
 }
 
@@ -145,7 +151,7 @@ function getHubsComponentsFromMaterial(node) {
 /// or templates associated with any of their nodes.)
 ///
 /// Returns the A-Frame entity associated with the given node, if one was constructed.
-const inflateEntities = function(indexToEntityMap, node, templates, isRoot, modelToWorldScale = 1) {
+const inflateEntities = function (indexToEntityMap, node, templates, isRoot, modelToWorldScale = 1) {
   // TODO: Remove this once we update the legacy avatars to the new node names
   if (node.name === "Chest") {
     node.name = "Spine";
@@ -210,7 +216,7 @@ const inflateEntities = function(indexToEntityMap, node, templates, isRoot, mode
   // the group. See `PropertyBinding.findNode`:
   // https://github.com/mrdoob/three.js/blob/dev/src/animation/PropertyBinding.js#L211
   el.object3D.uuid = node.uuid;
-  node.uuid = THREE.Math.generateUUID();
+  node.uuid = THREE.MathUtils.generateUUID();
 
   if (node.animations) {
     // Pass animations up to the group object so that when we can pass the group as
@@ -373,6 +379,12 @@ function runMigration(version, json) {
   }
 }
 
+const convertStandardMaterialsIfNeeded = (object) => {
+  const materialQuality = window.APP.store.state.preferences.materialQualitySetting;
+  updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
+  return object;
+};
+
 let ktxLoader;
 let dracoLoader;
 
@@ -380,6 +392,7 @@ class GLTFHubsPlugin {
   constructor(parser, jsonPreprocessor) {
     this.parser = parser;
     this.jsonPreprocessor = jsonPreprocessor;
+    this.name = 'MOZ_hubs_plugin';
 
     // We override glTF parser textureLoader with our HubsTextureLoader for
     // 1. Clean up the texture image related resources after it is uploaded to WebGL texture
@@ -444,7 +457,7 @@ class GLTFHubsPlugin {
       // GLTFLoader sets matrixAutoUpdate on animated objects, we want to keep the defaults
       // @TODO: Should this be fixed in the gltf loader?
       object.matrixAutoUpdate = THREE.Object3D.DefaultMatrixAutoUpdate;
-      updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
+      convertStandardMaterialsIfNeeded(object);
     });
 
     // Replace animation target node name with the node uuid.
@@ -464,7 +477,6 @@ class GLTFHubsPlugin {
       }
     }
 
-    //
     gltf.scene.animations = gltf.animations;
   }
 }
@@ -568,11 +580,11 @@ class GLTFHubsLightMapExtension {
       material.lightMap = lightMap;
       material.lightMapIntensity = extensionDef.intensity !== undefined ? extensionDef.intensity : 1;
 
-      // AVN: Hack while we wait to resolve https://github.com/mozilla/hubs/discussions/5602
-      if (material.isMeshStandardMaterial) {
+      // See https://github.com/mrdoob/three.js/pull/23613
+      if (material.isMeshBasicMaterial) {
         material.lightMapIntensity *= Math.PI;
       }
-      
+
       return material;
     });
   }
@@ -619,7 +631,7 @@ class GLTFHubsTextureBasisExtension {
     console.warn(`The ${this.name} extension is deprecated, you should use KHR_texture_basisu instead.`);
 
     const extensionDef = textureDef.extensions[this.name];
-    const source = json.images[extensionDef.source];
+    const source = extensionDef.source;
 
     return parser.loadTextureImage(textureIndex, source, this.basisLoader);
   }
@@ -642,7 +654,7 @@ class GLTFMozTextureRGBE {
     }
 
     const extensionDef = textureDef.extensions[this.name];
-    const source = json.images[extensionDef.source];
+    const source = extensionDef.source;
     return parser.loadTextureImage(textureIndex, source, this.loader).then(t => {
       // TODO pretty severe artifacting when using mipmaps, disable for now
       if (t.minFilter == THREE.NearestMipmapNearestFilter || t.minFilter == THREE.NearestMipmapLinearFilter) {
@@ -666,13 +678,61 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
 
   const loadingManager = new THREE.LoadingManager();
   loadingManager.setURLModifier(getCustomGLTFParserURLResolver(gltfUrl));
-  const gltfLoader = new THREE.GLTFLoader(loadingManager);
+  const gltfLoader = new GLTFLoader(loadingManager);
   gltfLoader
     .register(parser => new GLTFHubsComponentsExtension(parser))
     .register(parser => new GLTFHubsPlugin(parser, jsonPreprocessor))
     .register(parser => new GLTFHubsLightMapExtension(parser))
     .register(parser => new GLTFHubsTextureBasisExtension(parser))
-    .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)));
+    .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
+    .register(parser => new GLTFLodExtension(parser, {
+      loadingMode: 'progressive',
+      onLoadMesh: (lod, mesh, level, lowestLevel) => {
+        // Higher levels are progressively loaded on demand.
+        // So some post-loading processings done in gltf-model-plus and media-loader
+        // need to be done here now.
+
+        // Nothing to do if this is the lowest level mesh.
+        if (level === lowestLevel || lod.levels.length === 0) {
+          return mesh;
+        }
+
+        let lowestMeshLevel = null;
+        for (let index = lowestLevel; index > level; index--) {
+          if (lod.levels[index].object.type !== 'Object3D') {
+            lowestMeshLevel = index;
+            break;
+          }
+        }
+
+        if (lowestMeshLevel === null) {
+          return mesh;
+        }
+
+        // Create a mesh clone. Otherwise if an lod instance is cloned before higher
+        // levels are loaded the lods instance can refer to the same mesh instance,
+        // therefore the lods can be broken because an object can't be placed
+        // at multiple places in a Three.js scene tree.
+        mesh = mesh.clone();
+
+        convertStandardMaterialsIfNeeded(mesh);
+
+        // A hacky solution. media-loader and media-utils make a material clone
+        // and inject shader code chunk for hover effects on before compile hook
+        // as a post-loading process. Here simulates them.
+        // @TODO: Check if this always works. Replace with a better and simpler solution.
+        const currentOnBeforeRender = mesh.material.onBeforeRender;
+        mesh.material = mesh.material.clone();
+        mesh.material.onBeforeRender = currentOnBeforeRender;
+
+        // onBeforeCompile of the material of the lowest level mesh should be
+        // already set up because the lowest level should be loaded first.
+        mesh.material.onBeforeCompile =
+          lod.levels[lowestMeshLevel].object.material.onBeforeCompile;
+
+        return mesh;
+      }
+    }));
 
   // TODO some models are loaded before the renderer exists. This is likely things like the camera tool and loading cube.
   // They don't currently use KTX textures but if they did this would be an issue. Fixing this is hard but is part of
@@ -694,7 +754,11 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
 
   const loadStart = performance.now();
   return new Promise((resolve, reject) => {
-    gltfLoader.load(gltfUrl, resolve, onProgress, reject);
+    if (qsTruthy("rangerequests")) {
+      GLBRangeRequests.load(gltfUrl, gltfLoader, resolve, onProgress, reject);
+    } else {
+      gltfLoader.load(gltfUrl, resolve, onProgress, reject);
+    }
   }).finally(() => {
     console.log(`GLTF loaded in ${Math.round(performance.now() - loadStart)}ms for ${gltfUrl}`);
     if (fileMap) {
@@ -702,6 +766,15 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
       Object.keys(fileMap).forEach(URL.revokeObjectURL);
     }
   });
+}
+
+export function cloneModelFromCache(src) {
+  if (gltfCache.has(src)) {
+    gltfCache.retain(src);
+    return cloneGltf(gltfCache.get(src).gltf);
+  } else {
+    throw new Error(`Model not in cache: ${src}`);
+  }
 }
 
 export async function loadModel(src, contentType = null, useCache = false, jsonPreprocessor = null) {
@@ -761,7 +834,6 @@ AFRAME.registerComponent("gltf-model-plus", {
     contentType: { type: "string" },
     useCache: { default: true },
     inflate: { default: false },
-    batch: { default: false },
     modelToWorldScale: { type: "number", default: 1 }
   },
 
@@ -781,9 +853,6 @@ AFRAME.registerComponent("gltf-model-plus", {
   },
 
   remove() {
-    if (this.data.batch && this.model) {
-      this.el.sceneEl.systems["hubs-systems"].batchManagerSystem.removeObject(this.el.object3DMap.mesh);
-    }
     if (this.data.useCache) {
       const src = resolveAsset(this.data.src);
       if (src) {
@@ -827,13 +896,9 @@ AFRAME.registerComponent("gltf-model-plus", {
 
       this.model = gltf.scene;
 
-      if (this.data.batch) {
-        this.el.sceneEl.systems["hubs-systems"].batchManagerSystem.addObject(this.model);
-      }
-
       if (gltf.animations.length > 0) {
         this.el.setAttribute("animation-mixer", {});
-        this.el.components["animation-mixer"].initMixer(this.model.animations);
+        this.el.components["animation-mixer"].initMixer(gltf.animations);
       } else {
         generateMeshBVH(this.model);
       }
