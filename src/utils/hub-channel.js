@@ -153,26 +153,7 @@ export default class HubChannel extends EventTarget {
   setPermissionsFromToken = token => {
     // Note: token is not verified.
     this.token = token;
-    this._permissions = { 
-      ...jwtDecode(token),
-      // AVN: OVERRIDE UNSUPPORTED PERMISSIONS GRANTED BECAUSE ROOMS ARE PERMISSIVE
-      fly: false,
-      amplify_audio: false,
-      close_hub: false,
-      create_hub: true,
-      embed_hub: false,
-      kick_users: false,
-      mute_users: false,
-      pin_objects: false,
-      spawn_and_move_media: false,
-      spawn_camera: false,
-      spawn_drawing: false,
-      spawn_emoji: false,
-      tweet: false,
-      update_hub: false,
-      update_hub_promotion: false,
-      update_roles: false,
-    };
+    this._permissions = jwtDecode(token);
     configs.setIsAdmin(this._permissions.postgrest_role === "ret_admin");
     this.dispatchEvent(new CustomEvent("permissions_updated"));
 
