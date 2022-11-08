@@ -19,6 +19,7 @@ export function InvitePopoverContainer({ hub, hubChannel, scene, store, ...rest 
   }
 
   const popoverApiRef = useRef();
+
   // Handle clicking on the invite button while in VR.
   useEffect(
     () => {
