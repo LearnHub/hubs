@@ -290,8 +290,11 @@ AFRAME.registerComponent("media-loader", {
         this.data.linkedEl.addEventListener("componentremoved", this.handleLinkedElRemoved);
       }
 
-      // TODO this does duplicate work in some cases, but finish() is the only consistent place to do it
-      this.contentBounds = getBox(this.el, this.el.getObject3D("mesh")).getSize(new THREE.Vector3());
+      // AVN: Not all media has a mesh and hence bounds
+      if(this.el.getObject3D("mesh")) {
+        // TODO this does duplicate work in some cases, but finish() is the only consistent place to do it
+        this.contentBounds = getBox(this.el, this.el.getObject3D("mesh")).getSize(new THREE.Vector3());
+      }
 
       el.emit("media-loaded");
       if (el.eid && entityExists(APP.world, el.eid)) {
