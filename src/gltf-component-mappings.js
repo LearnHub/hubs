@@ -254,6 +254,7 @@ async function mediaInflator(el, componentName, componentData, components) {
         coneOuterGain: componentData.coneOuterGain,
         gain: componentData.volume
       });
+      APP.sourceType.set(el, SourceType.MEDIA_VIDEO);
 
       const audio = APP.audios.get(el);
       if (audio) {
@@ -546,6 +547,7 @@ AFRAME.GLTFModelPlus.registerComponent(
         coneOuterGain: componentData.coneOuterGain,
         gain: componentData.gain
       });
+      APP.sourceType.set(el, SourceType.AUDIO_TARGET);
 
       const audio = APP.audios.get(el);
       if (audio) {
