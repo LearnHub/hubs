@@ -75,6 +75,8 @@ import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
 import { ReactComponent as GatherIcon } from "./icons/People.svg";
 import { ReactComponent as HushIcon } from "./icons/Hush.svg";
 import { ReactComponent as LookIcon } from "./icons/Show.svg";
+import { ReactComponent as SaveIcon } from "./icons/Save.svg";
+import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
@@ -85,7 +87,6 @@ import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
 import { AudioPopoverContainer } from "./room/AudioPopoverContainer";
 import { ReactionPopoverContainer } from "./room/ReactionPopoverContainer";
-import { AvnHelpPopoverContainer } from "./room/AvnHelpPopoverContainer";
 import { SafariMicModal } from "./room/SafariMicModal";
 import { RoomSignInModalContainer } from "./auth/RoomSignInModalContainer";
 import { SignInStep } from "./auth/SignInModal";
@@ -110,8 +111,7 @@ import { NotificationsContainer } from "./room/NotificationsContainer";
 import { usePermissions } from "./room/usePermissions";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
-const showHiddenFeatures = qsTruthy("showHiddenFeatures");
-const showPremiumFeatures = qsTruthy("showPremiumFeatures");
+const avnShowHiddenFeatures = qsTruthy("showHiddenFeatures");
 
 const IN_ROOM_MODAL_ROUTER_PATHS = ["/media"];
 const IN_ROOM_MODAL_QUERY_VARS = ["media_source"];
@@ -1110,7 +1110,7 @@ class UIRoot extends Component {
     const streaming = this.state.isStreaming;
 
     // AVN: Don't show the object list for now
-    const showObjectList = enteredOrWatching && showHiddenFeatures;
+    const showObjectList = enteredOrWatching && avnShowHiddenFeatures;
     const showECSObjectsMenuButton = qsTruthy("ecsDebug");
 
     const streamer = getCurrentStreamer();
@@ -1121,6 +1121,7 @@ class UIRoot extends Component {
     const canCreateRoom = !configs.feature("disable_room_creation") || configs.isAdmin();
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
     const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
+
     const moreMenu = [
       {
         id: "user",
@@ -1150,7 +1151,8 @@ class UIRoot extends Component {
                 icon: EnterIcon,
                 onClick: () => this.showContextualSignInDialog()
               },
-          canCreateRoom && {
+          // AVN: Feature is incompatible with eduverse
+          avnShowHiddenFeatures && canCreateRoom && {
             id: "create-room",
             label: <FormattedMessage id="more-menu.create-room" defaultMessage="Create Room" />,
             icon: AddIcon,
@@ -1162,11 +1164,13 @@ class UIRoot extends Component {
           },
           {
             id: "user-profile",
-            label: <FormattedMessage id="more-menu.profile" defaultMessage="Change Name & Avatar" />,
+            // AVN: Name changes are not allowed to avoid disruption
+            label: <FormattedMessage id="more-menu.profile-avatar" defaultMessage="Change Avatar" />,
             icon: AvatarIcon,
             onClick: () => this.setSidebar("profile")
           },
-          {
+          // AVN: Feature is incompatible with eduverse
+          avnShowHiddenFeatures && {
             id: "favorite-rooms",
             label: <FormattedMessage id="more-menu.favorite-rooms" defaultMessage="Favorite Rooms" />,
             icon: FavoritesIcon,
@@ -1180,7 +1184,8 @@ class UIRoot extends Component {
                 SignInMessages.favoriteRooms
               )
           },
-          {
+          // AVN: Feature not exposed to simplify UX
+          avnShowHiddenFeatures && {
             id: "preferences",
             label: <FormattedMessage id="more-menu.preferences" defaultMessage="Preferences" />,
             icon: SettingsIcon,
@@ -1189,6 +1194,19 @@ class UIRoot extends Component {
         ].filter(item => item)
       },
       {
+        id: "eduverse",
+        label: "Eduverse",
+        items: [
+          {
+            id: "user-profile",
+            label: <FormattedMessage id="more-menu.scene-selector" defaultMessage="Scene Selector" />,
+            icon: SceneIcon,
+            onClick: () => this.setSidebar("profile")
+          },
+        ].filter(item => item)
+      },
+      // AVN: Features are incompatible with eduverse
+      avnShowHiddenFeatures && {
         id: "room",
         label: <FormattedMessage id="more-menu.room" defaultMessage="Room" />,
         items: [
@@ -1241,7 +1259,8 @@ class UIRoot extends Component {
                 });
               }
             },
-          canCloseRoom && {
+          // AVN: Feature is incompatible with eduverse
+          avnShowHiddenFeatures && canCloseRoom && {
             id: "close-room",
             label: <FormattedMessage id="more-menu.close-room" defaultMessage="Close Room" />,
             icon: DeleteIcon,
@@ -1277,13 +1296,8 @@ class UIRoot extends Component {
             icon: WarningCircleIcon,
             href: configs.link("issue_report", "https://hubs.mozilla.com/docs/help.html")
           },
-          qsTruthy("record_log") && {
-            id: "save-console-logs",
-            label: <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />,
-            icon: SupportIcon,
-            onClick: () => SaveConsoleLog()
-          },
-          entered && {
+          // AVN: UX clutter
+          avnShowHiddenFeatures && entered && {
             id: "start-tour",
             label: <FormattedMessage id="more-menu.start-tour" defaultMessage="Start Tour" />,
             icon: SupportIcon,
@@ -1293,7 +1307,15 @@ class UIRoot extends Component {
             id: "help",
             label: <FormattedMessage id="more-menu.help" defaultMessage="Help" />,
             icon: SupportIcon,
-            href: configs.link("docs", "https://hubs.mozilla.com/docs")
+            // AVN: Alt help link
+            href: configs.link("docs", "https://support.avantiseducation.com")
+          },
+          // AVN: Expose log saving support feature
+          {
+            id: "save-console-logs",
+            label: <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />,
+            icon: SaveIcon,
+            onClick: () => SaveConsoleLog()
           },
           configs.feature("show_controls_link") && {
             id: "controls",
@@ -1321,7 +1343,8 @@ class UIRoot extends Component {
           }
         ].filter(item => item)
       }
-    ];
+      // AVN: Allow whole groups to be filtered out
+    ].filter(group => group);
 
     return (
       <MoreMenuContextProvider>
@@ -1396,7 +1419,7 @@ class UIRoot extends Component {
                   <>
                     {!this.state.dialog && renderEntryFlow ? entryDialog : undefined}
                     {/* AVN: Hide "More" button on mobile */}
-                    {showHiddenFeatures && !this.props.selectedObject && <CompactMoreMenuButton />}
+                    {avnShowHiddenFeatures && !this.props.selectedObject && <CompactMoreMenuButton />}
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
@@ -1606,6 +1629,16 @@ class UIRoot extends Component {
                       }}
                     />
                     }
+                    { 
+                    // AVN: Only show invite if this isn't a "solo" room
+                    !avnBridge.isSolo &&
+                    <InvitePopoverContainer
+                      hub={this.props.hub}
+                      hubChannel={this.props.hubChannel}
+                      scene={this.props.scene}
+                      store={this.props.store}
+                    />                 
+                    }
                   </>
                 }
                 toolbarCenter={
@@ -1632,16 +1665,13 @@ class UIRoot extends Component {
                     )}
                     {entered && (
                       <>
-                        <AudioPopoverContainer
-                          scene={this.props.scene}
-                          microphoneEnabled={this.mediaDevicesManager.isMicShared}
-                        />
+                        <AudioPopoverContainer scene={this.props.scene} />
                         { // AVN: Share menu not required
-                        showHiddenFeatures && 
+                        avnShowHiddenFeatures && 
                         <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
                         } 
                         { // AVN: Place menu not required
-                        showHiddenFeatures && 
+                        avnShowHiddenFeatures && 
                         <PlacePopoverContainer
                           scene={this.props.scene}
                           hubChannel={this.props.hubChannel}
@@ -1650,8 +1680,12 @@ class UIRoot extends Component {
                         />
                         }
                         { // AVN: React menu not required
-                        showHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && <ReactionPopoverContainer />
-                        }
+                          avnShowHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && (
+                          <ReactionPopoverContainer
+                            scene={this.props.scene}
+                            initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}
+                          />
+                        )}
 
                         { // AVN: Full screen button for mobile 
                         isMobile && (
@@ -1668,23 +1702,21 @@ class UIRoot extends Component {
                           />
                         )
                         }
-
-                        { // AVN: Photo / screenshot button 
-                        <ToolbarButton
-                          icon={<CameraIcon />}
-                          label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}
-                          onClick={() => {
-                            saveScreenshot(this.props.scene, "jpeg");
-                          }}
-                        />
-                        }
-
                       </>
                     )}
                     {
                       // AVN: Chat is not currently enabled
-                      showHiddenFeatures &&
+                      avnShowHiddenFeatures &&
                       <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
+                    }
+                    { // AVN: Photo / screenshot button 
+                    <ToolbarButton
+                      icon={<CameraIcon />}
+                      label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}
+                      onClick={() => {
+                        saveScreenshot(this.props.scene, "jpeg");
+                      }}
+                    />
                     }
                     {entered && isMobileVR && (
                       <ToolbarButton
@@ -1699,18 +1731,8 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
-                    { // AVN: Moved invite link to the right as part of the "Teacher Tools"
-                    // Only show invite if this isn't a "solo" room
-                    !avnBridge.isSolo &&
-                    <InvitePopoverContainer
-                      hub={this.props.hub}
-                      hubChannel={this.props.hubChannel}
-                      scene={this.props.scene}
-                      store={this.props.store}
-                    />                 
-                    }
                     { // AVN: Placeholder eduverse button
-                    showPremiumFeatures && entered &&
+                    entered &&
                     <ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
@@ -1718,7 +1740,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Placeholder eduverse button
-                    showPremiumFeatures && entered &&
+                    entered &&
                     <ToolbarButton
                       icon={<HushIcon />}
                       label={<FormattedMessage id="toolbar.hush-button" defaultMessage="Hush" />}
@@ -1726,7 +1748,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Placeholder eduverse button
-                    showPremiumFeatures && entered &&
+                    entered &&
                     <ToolbarButton
                       icon={<LookIcon />}
                       label={<FormattedMessage id="toolbar.look-button" defaultMessage="Look" />}
@@ -1744,7 +1766,7 @@ class UIRoot extends Component {
                       )
                     }
                     { /* AVN: "Leave" menu not currently required */ }                       
-                    {showHiddenFeatures && entered && (
+                    {avnShowHiddenFeatures && entered && (
                       <ToolbarButton
                         icon={<LeaveIcon />}
                         label={<FormattedMessage id="toolbar.leave-room-button" defaultMessage="Leave" />}
@@ -1757,14 +1779,7 @@ class UIRoot extends Component {
                         }}
                       />
                     )}
-                    { // AVN: Custom help menu 
-                    <AvnHelpPopoverContainer scene={this.props.scene}/>
-                    }
-                    { 
-                      // AVN: "More" menu not currently required
-                      showHiddenFeatures && 
-                      <MoreMenuPopoverButton menu={moreMenu} />
-                    }
+                    <MoreMenuPopoverButton menu={moreMenu} />
                   </>
                 }
               />

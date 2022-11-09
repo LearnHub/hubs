@@ -19,19 +19,21 @@ export function AvatarSettingsContent({
   return (
     <Column as="form" className={styles.content} {...rest}>
       <TextInputField
-        disabled={disableDisplayNameInput}
+        disabled={true}
         label={<FormattedMessage id="avatar-settings-content.display-name-label" defaultMessage="Display Name" />}
         value={displayName}
         pattern={displayNamePattern}
         spellCheck="false"
         required
         onChange={onChangeDisplayName}
+        /*
         description={
-          <FormattedMessage          
-            id="avatar-settings-content.avn-display-name-description"
-            defaultMessage="No more than 32 characters"
+          <FormattedMessage
+            id="avatar-settings-content.display-name-description"
+            defaultMessage="Alphanumerics, hyphens, underscores, and tildes. At least 3 characters, no more than 32"
           />
         }
+        */
         ref={displayNameInputRef}
       />
       <div className={styles.avatarPreviewContainer}>

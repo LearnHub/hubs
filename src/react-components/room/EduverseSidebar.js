@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import styles from "./EduverseSidebar.scss";
 import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
-import { InputField } from "../input/InputField";
-import { Column } from "../layout/Column";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import markdownit from "markdown-it";
 import { avnBridge } from "../../avn-bridge"
@@ -32,7 +30,7 @@ export function EduverseSidebar({ room, onClose }) {
       title={
         <FormattedMessage
           id="eduverse-sidebar.title"
-          defaultMessage="Eduverse"
+          defaultMessage="Guide"
         />
       }
       beforeTitle={<CloseButton onClick={onClose} />}

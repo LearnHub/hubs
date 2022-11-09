@@ -5,7 +5,7 @@ import { joinChildren } from "../misc/joinChildren";
 import styles from "./ContentMenu.scss";
 import { ReactComponent as ObjectsIcon } from "../icons/Objects.svg";
 import { ReactComponent as PeopleIcon } from "../icons/People.svg";
-import { ReactComponent as EduverseIcon } from "../icons/Eduverse.svg";
+import { ReactComponent as TextDocumentIcon } from "../icons/TextDocument.svg";
 import { FormattedMessage } from "react-intl";
 
 export function ContentMenuButton({ active, children, ...props }) {
@@ -64,11 +64,11 @@ PeopleMenuButton.propTypes = {
 export function EduverseMenuButton(props) {
   return (
     <ContentMenuButton {...props}>
-      <EduverseIcon />
+      <TextDocumentIcon />
       <span>
         <FormattedMessage
           id="content-menu.eduverse-menu-button"
-          defaultMessage="Eduverse"
+          defaultMessage="Guide"
         />
       </span>
     </ContentMenuButton>
