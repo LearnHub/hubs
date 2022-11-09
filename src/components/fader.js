@@ -1,6 +1,3 @@
-import waterNormalsUrl from "../assets/waternormals.jpg";
-import HubsTextureLoader from "../loaders/HubsTextureLoader";
-
 /**
  * Creates a box around the element (assumed to be the camera's PoV) which can be used for fade-to-black.
  */
