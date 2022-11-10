@@ -839,9 +839,7 @@ class UIRoot extends Component {
 
   renderEntryStartPanel = () => {
     const { hasAcceptedProfile, hasChangedName } = this.props.store.state.activity;
-    // AVN: Skip name and avatar setting
-    const promptForNameAndAvatarBeforeEntry = false;//this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
-
+    const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
     // TODO: What does onEnteringCanceled do?
     return (
       <>
@@ -850,6 +848,9 @@ class UIRoot extends Component {
           roomName={this.props.hub.name}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {
+            // AVN: Skip avatar setting and audio dialog (all users are muted by default)
+            this.performDirectEntryFlow(false);
+            return;
             if (promptForNameAndAvatarBeforeEntry || !this.props.forcedVREntryType) {
               this.setState({ entering: true });
               this.props.hubChannel.sendEnteringEvent();
