@@ -19,6 +19,7 @@ export function AvatarSettingsContent({
   return (
     <Column as="form" className={styles.content} {...rest}>
       <TextInputField
+        // AVN: Display name should not be edited
         disabled={true}
         label={<FormattedMessage id="avatar-settings-content.display-name-label" defaultMessage="Display Name" />}
         value={displayName}
