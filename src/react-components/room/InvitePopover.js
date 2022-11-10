@@ -49,7 +49,7 @@ InvitePopoverContent.propTypes = {
   inviteRequired: PropTypes.bool,
   fetchingInvite: PropTypes.bool,
   inviteUrl: PropTypes.string,
-  revokeInvite: PropTypes.func,
+  revokeInvite: PropTypes.func
 };
 
 const invitePopoverTitle = defineMessage({
