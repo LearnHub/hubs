@@ -6,6 +6,7 @@ import { useRandomMessageTransition } from "./useRandomMessageTransition";
 import SaveConsoleLog from "../../utils/record-log.js";
 import { Button } from "../input/Button";
 import styles from "../layout/LoadingScreenLayout.scss";
+import { FormattedMessage } from "react-intl";
 export function LoadingScreen({ message, infoMessages }) {
   // AVN: Hide info messages as not currently relevant
   //const infoMessage = useRandomMessageTransition(infoMessages);
@@ -24,9 +25,10 @@ export function LoadingScreen({ message, infoMessages }) {
           // <p>{infoMessage.message}</p>
 }
           { 
-          // AVN: Button should be on by default
-          //qsTruthy("record_log") && 
-          <Button className={styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>Download Logs</Button> 
+          // AVN: Button for saving logs will appear if load takes a long time
+          <Button className={styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>
+            <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />
+          </Button> 
           }
         </>
       }
