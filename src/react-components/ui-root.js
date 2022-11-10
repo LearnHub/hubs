@@ -1763,7 +1763,8 @@ class UIRoot extends Component {
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
                       preset="basic"
-                    />
+                      onClick={() => alert("NOT IMPLEMENTED")}
+                      />
                     }
                     { // AVN: Placeholder eduverse button
                     entered &&
@@ -1771,6 +1772,7 @@ class UIRoot extends Component {
                       icon={<HushIcon />}
                       label={<FormattedMessage id="toolbar.hush-button" defaultMessage="Hush" />}
                       preset="basic"
+                      onClick={() => alert("NOT IMPLEMENTED")}
                     />
                     }
                     { // AVN: Placeholder eduverse button
@@ -1779,6 +1781,7 @@ class UIRoot extends Component {
                       icon={<LookIcon />}
                       label={<FormattedMessage id="toolbar.look-button" defaultMessage="Look" />}
                       preset="basic"
+                      onClick={() => alert("NOT IMPLEMENTED")}
                     />
                     }
                     {entered &&
