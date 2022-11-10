@@ -415,6 +415,19 @@ class UIRoot extends Component {
     this.forceUpdate();
   };
 
+  // AVN: Streamlined version of sign-in dialog flow
+  avnShowContextualSignInDialog = async () => {
+    const { authChannel, onContinueAfterSignIn } = this.props;
+    this.showNonHistoriedDialog(RoomSignInModalContainer, {
+      step: SignInStep.waitForVerification,
+      onClose: onContinueAfterSignIn || this.closeDialog
+    });
+    const { authComplete } = await authChannel.startOIDCAuthentication(this.props.hubChannel);
+    await authComplete;
+    this.setState({ signedIn: true });
+    (onContinueAfterSignIn || this.closeDialog)();
+  };
+
   showContextualSignInDialog = () => {
     const { signInMessage, authChannel, onContinueAfterSignIn } = this.props;
     this.showNonHistoriedDialog(RoomSignInModalContainer, {
@@ -1149,7 +1162,8 @@ class UIRoot extends Component {
                 id: "sign-in",
                 label: <FormattedMessage id="more-menu.sign-in" defaultMessage="Sign In" />,
                 icon: EnterIcon,
-                onClick: () => this.showContextualSignInDialog()
+                //onClick: () => this.showContextualSignInDialog()
+                onClick: async () => await this.avnShowContextualSignInDialog()
               },
           // AVN: Feature is incompatible with eduverse
           avnShowHiddenFeatures && canCreateRoom && {

@@ -367,6 +367,10 @@ export default class Store extends EventTarget {
     });
   };
 
+  resetToRandomName = async () => {
+    this.update({ profile: { displayName: generateRandomName() } });
+  };
+
   get state() {
     if (!this.hasOwnProperty(STORE_STATE_CACHE_KEY)) {
       const state = (this[STORE_STATE_CACHE_KEY] = JSON.parse(window.safeLocalStorage.getItem(LOCAL_STORE_KEY)));

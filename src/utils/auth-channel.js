@@ -25,6 +25,7 @@ export default class AuthChannel {
     }
     this.store.update({ credentials: { token: null, email: null, extras: null } });
     await this.store.resetToRandomDefaultAvatar();
+    await this.store.resetToRandomName();
     this._signedIn = false;
   };
 
@@ -113,7 +114,14 @@ export default class AuthChannel {
   }
 
   async handleAuthCredentials(email, token, hubChannel, extras) {
-    this.store.update({ credentials: { email, token, extras } });
+    if(extras) {
+      // AVN: Email is currently unique in ClassConnect and makes a good user-facing ID
+      this.store.update({ credentials: { email: extras.email, token, extras } });
+      // AVN: Set users display name from OIDC
+      this.store.update({ profile: { displayName: extras.name } });
+    } else {
+      this.store.update({ credentials: { email, token, extras } });
+    }
     if (hubChannel) {
       await hubChannel.signIn(token);
     }
