@@ -130,7 +130,6 @@ function registerNetworkSchemas() {
     ]
   });
 
-  /* AVN: Emojis not supported 
   NAF.schemas.add({
     template: "#interactable-emoji",
     components: [
@@ -156,7 +155,7 @@ function registerNetworkSchemas() {
       },
       "media-loader",
       // AVN: Pinning is incompatible with a number of AVN Hubs concepts
-      // "pinnable",
+      //"pinnable",
       {
         selector: ".particle-emitter",
         component: "particle-emitter"
@@ -181,7 +180,7 @@ function registerNetworkSchemas() {
       }
     ]
   });
-  */
+
   NAF.schemas.add({
     template: "#static-controlled-media",
     components: [
@@ -216,7 +215,6 @@ function registerNetworkSchemas() {
     ]
   });
 
-  /* AVN: Drawing not currently supported
   NAF.schemas.add({
     template: "#interactable-drawing",
     components: [
@@ -235,7 +233,7 @@ function registerNetworkSchemas() {
       "networked-drawing"
     ]
   });
-  */
+
   NAF.schemas.add({
     template: "#template-waypoint-avatar",
     components: [
@@ -269,7 +267,7 @@ function registerNetworkSchemas() {
       "waypoint"
     ]
   });
-  /* AVN: Drawing not currently supported
+
   NAF.schemas.add({
     template: "#interactable-pen",
     components: [
@@ -324,7 +322,6 @@ function registerNetworkSchemas() {
       }
     ]
   });
-  */
 }
 
 export default registerNetworkSchemas;

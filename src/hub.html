@@ -71,9 +71,7 @@
     >
         <a-assets>
             <!-- Note our fork of aframe doesn't actually do any preloading with a-assets. These a-asset-items are only used for their src attribute. -->
-            <!-- AVN: Drawing not currently supported
             <a-asset-item id="drawing-pen" src="./assets/models/DrawingPen.glb"></a-asset-item>
-            -->
             <a-asset-item id="spawn-point" src="./assets/models/spawn-point.glb"></a-asset-item>
 
             <template id="template-waypoint-avatar">
@@ -425,7 +423,6 @@
                                 ></a-entity>
                             </a-entity>
                             -->
-                            <!-- AVN: Drawing not currently supported
                             <a-entity
                                 class="deserialize-drawing"
                                 visible="false"
@@ -441,7 +438,6 @@
                                     position="0 0 0.001"
                                 ></a-entity>
                             </a-entity>
-                            -->
                             <!-- AVN: Open Link button is not required in AVN Hubs
                             <a-entity is-remote-hover-target tags="singleActionButton:true;" mixin="rounded-text-button" open-media-button="onlyOpenLink: true" position="0.43 -0.375 0.001">
                                 <a-entity text="value:open link; textAlign:center;" text-raycast-hack position="0 0 0.02"></a-entity>
@@ -570,7 +566,6 @@
                 </a-entity>
             </template>
 
-            <!-- AVN: Interactable emoji not currently supported
             <template id="interactable-emoji">
                 <a-entity
                     class="interactable"
@@ -614,7 +609,6 @@
                     </a-entity>
                 </a-entity>
             </template>
-            -->
 
             <template id="linked-media">
                 <a-entity
@@ -630,7 +624,6 @@
                 </a-entity>
             </template>
 
-            <!-- AVN: Drawing not currently supported
             <template id="interactable-pen">
                 <a-entity
                     class="pen interactable"
@@ -664,7 +657,6 @@
                     </a-entity>
                 </a-entity>
             </template>
-            -->
 
             <template id="interactable-drawing">
                 <a-entity
@@ -700,7 +692,6 @@
                     </a-entity>
                 </a-entity>
             </template>
-            -->
 
             <template id="pager-hover-menu">
                 <a-entity class="ui interactable-ui hover-container" visible="false">
@@ -956,7 +947,6 @@
         ></a-entity>
 
         <a-entity id="drawing-manager" drawing-manager="penSpawner: #pen-spawner"></a-entity>
-        -->
 
 
         <a-entity

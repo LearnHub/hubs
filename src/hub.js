@@ -227,12 +227,10 @@ import "./components/set-yxz-order";
 
 import "./components/cursor-controller";
 
-/* AVN: AVN: Drawing not currently supported
 import "./components/tools/pen";
 import "./components/tools/pen-laser";
 import "./components/tools/networked-drawing";
 import "./components/tools/drawing-manager";
-*/
 
 import "./components/body-helper";
 import "./components/shape-helper";
