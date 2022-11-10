@@ -77,6 +77,7 @@ import { ReactComponent as HushIcon } from "./icons/Hush.svg";
 import { ReactComponent as LookIcon } from "./icons/Show.svg";
 import { ReactComponent as SaveIcon } from "./icons/Save.svg";
 import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
+import { ReactComponent as PassIcon } from "./icons/Pass.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
@@ -1644,14 +1645,14 @@ class UIRoot extends Component {
                     />
                     }
                     { 
-                    // AVN: Only show invite if this isn't a "solo" room
-                    !avnBridge.isSolo &&
-                    <InvitePopoverContainer
-                      hub={this.props.hub}
-                      hubChannel={this.props.hubChannel}
-                      scene={this.props.scene}
-                      store={this.props.store}
-                    />                 
+                    // AVN: Share button
+                    <ToolbarButton
+                      icon={<PassIcon />}
+                      label={<FormattedMessage id="toolbar.share-button" defaultMessage="Share" />}
+                      onClick={() => {
+                        alert("NOT IMPLEMENTED")
+                      }}
+                    />
                     }
                   </>
                 }
@@ -1745,6 +1746,16 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
+                    { 
+                    // AVN: Only show invite if this isn't a "solo" room
+                    !avnBridge.isSolo &&
+                    <InvitePopoverContainer
+                      hub={this.props.hub}
+                      hubChannel={this.props.hubChannel}
+                      scene={this.props.scene}
+                      store={this.props.store}
+                    />                 
+                    }
                     { // AVN: Placeholder eduverse button
                     entered &&
                     <ToolbarButton
