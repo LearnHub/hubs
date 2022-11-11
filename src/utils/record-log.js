@@ -3,7 +3,7 @@
 var consoleHistory = null;
 
 // Save recorded log to file
-export default function SaveConsoleLog() {
+export function SaveConsoleLog() {
   if (consoleHistory) {
     consoleHistory.saveToFile();
   } else {
