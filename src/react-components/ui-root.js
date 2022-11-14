@@ -1210,18 +1210,6 @@ class UIRoot extends Component {
           }
         ].filter(item => item)
       },
-      {
-        id: "eduverse",
-        label: "Eduverse",
-        items: [
-          {
-            id: "user-profile",
-            label: <FormattedMessage id="more-menu.scene-selector" defaultMessage="Scene Selector" />,
-            icon: SceneIcon,
-            onClick: () => this.setSidebar("profile")
-          },
-        ].filter(item => item)
-      },
       // AVN: Features are incompatible with eduverse
       avnShowHiddenFeatures && {
         id: "room",
@@ -1636,13 +1624,13 @@ class UIRoot extends Component {
                       }}
                     />
                     }
-                    { // AVN: Home button 
-                    entered && avnBridge.assetId !== avnBridge.assetIdHome && avnBridge.allowNavigation &&
+                    { // AVN: Scene selection
+                    avnBridge.allowNavigation &&
                     <ToolbarButton
-                      icon={<HomeIcon />}
-                      label={<FormattedMessage id="toolbar.home-button" defaultMessage="Home" />}
+                      icon={<SceneIcon />}
+                      label={<FormattedMessage id="toolbar.home-button" defaultMessage="Go" />}
                       onClick={() => {
-                        changeHubAvn(`${avnBridge.assetDomain}/${avnBridge.assetIdHome}`);
+                        alert("NOT IMPLEMENTED")
                       }}
                     />
                     }
