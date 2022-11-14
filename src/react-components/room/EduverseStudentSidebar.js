@@ -24,12 +24,12 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   return defaultRender(tokens, idx, options, env, self);
 };
 
-export function EduverseSidebar({ room, onClose }) {
+export function EduverseStudentSidebar({ room, onClose }) {
   return (
     <Sidebar
       title={
         <FormattedMessage
-          id="eduverse-sidebar.title"
+          id="eduverse-student-sidebar.title"
           defaultMessage="Learn"
         />
       }
@@ -42,8 +42,8 @@ export function EduverseSidebar({ room, onClose }) {
           {avnBridge.iconUri && (<img src={avnBridge.iconUri} className={styles.sceneIcon}/>)}
           <span className={styles.sceneName}>{room.name}</span>
         </h1>
-        {room.description && (
-            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(room.description) }} />
+        {(avnBridge.instructions || avnBridge.description) && (
+            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(avnBridge.instructions || avnBridge.description) }} />
         )}
       </div>
       {false && avnBridge.assetId && (
@@ -59,10 +59,10 @@ export function EduverseSidebar({ room, onClose }) {
   );
 }
 
-EduverseSidebar.propTypes = {
+EduverseStudentSidebar.propTypes = {
   room: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };
 
-EduverseSidebar.defaultProps = {
+EduverseStudentSidebar.defaultProps = {
 };

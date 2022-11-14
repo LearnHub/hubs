@@ -51,7 +51,7 @@ import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
-import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, ECSDebugMenuButton, EduverseMenuButton } from "./room/ContentMenu";
+import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, ECSDebugMenuButton, EduverseTeacherMenuButton, EduverseStudentMenuButton } from "./room/ContentMenu";
 import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
 import { ReactComponent as ArrowBackIcon } from "./icons/ArrowBack.svg";
 import { ReactComponent as CameraIcon } from "./icons/Camera.svg";
@@ -72,9 +72,6 @@ import { ReactComponent as VRIcon } from "./icons/VR.svg";
 import { ReactComponent as LeaveIcon } from "./icons/Leave.svg";
 import { ReactComponent as EnterIcon } from "./icons/Enter.svg";
 import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
-import { ReactComponent as GatherIcon } from "./icons/People.svg";
-import { ReactComponent as HushIcon } from "./icons/Hush.svg";
-import { ReactComponent as LookIcon } from "./icons/Show.svg";
 import { ReactComponent as SaveIcon } from "./icons/Save.svg";
 import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
 import { ReactComponent as PassIcon } from "./icons/Pass.svg";
@@ -82,7 +79,8 @@ import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarCo
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
 import { ObjectMenuContainer } from "./room/ObjectMenuContainer";
-import { EduverseSidebarContainer } from "./room/EduverseSidebarContainer";
+import { EduverseTeacherSidebarContainer } from "./room/EduverseTeacherSidebarContainer";
+import { EduverseStudentSidebarContainer } from "./room/EduverseStudentSidebarContainer";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
@@ -1428,9 +1426,13 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
-                        <EduverseMenuButton
-                          active={this.state.sidebarId === "eduverse"}
-                          onClick={() => this.toggleSidebar("eduverse")}
+                        <EduverseTeacherMenuButton
+                          active={this.state.sidebarId === "eduverse-teacher"}
+                          onClick={() => this.toggleSidebar("eduverse-teacher")}
+                        />
+                        <EduverseStudentMenuButton
+                          active={this.state.sidebarId === "eduverse-student"}
+                          onClick={() => this.toggleSidebar("eduverse-student")}
                         />
                         {showObjectList && (
                           <ObjectsMenuButton
@@ -1544,12 +1546,18 @@ class UIRoot extends Component {
                           performConditionalSignIn={this.props.performConditionalSignIn}
                         />
                       )}
-                      {this.state.sidebarId === "eduverse" && (
-                        <EduverseSidebarContainer
+                      {this.state.sidebarId === "eduverse-teacher" && (
+                        <EduverseTeacherSidebarContainer
                           room={this.props.hub}
                           onClose={() => this.setSidebar(null)}
                         />
-                    )}
+                      )}
+                      {this.state.sidebarId === "eduverse-student" && (
+                        <EduverseStudentSidebarContainer
+                          room={this.props.hub}
+                          onClose={() => this.setSidebar(null)}
+                        />
+                      )}
                       {this.state.sidebarId === "profile" && (
                         <ProfileEntryPanel
                           history={this.props.history}
@@ -1745,33 +1753,6 @@ class UIRoot extends Component {
                       scene={this.props.scene}
                       store={this.props.store}
                     />                 
-                    }
-                    { // AVN: Placeholder eduverse button
-                    entered &&
-                    <ToolbarButton
-                      icon={<GatherIcon />}
-                      label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
-                      preset="basic"
-                      onClick={() => alert("NOT IMPLEMENTED")}
-                      />
-                    }
-                    { // AVN: Placeholder eduverse button
-                    entered &&
-                    <ToolbarButton
-                      icon={<HushIcon />}
-                      label={<FormattedMessage id="toolbar.hush-button" defaultMessage="Hush" />}
-                      preset="basic"
-                      onClick={() => alert("NOT IMPLEMENTED")}
-                    />
-                    }
-                    { // AVN: Placeholder eduverse button
-                    entered &&
-                    <ToolbarButton
-                      icon={<LookIcon />}
-                      label={<FormattedMessage id="toolbar.look-button" defaultMessage="Look" />}
-                      preset="basic"
-                      onClick={() => alert("NOT IMPLEMENTED")}
-                    />
                     }
                     {entered &&
                       isMobileVR && (

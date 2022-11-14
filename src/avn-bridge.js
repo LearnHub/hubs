@@ -17,6 +17,8 @@ class AvnBridge {
     this._ownerIsSubscriber = false;
     this._allowNavigation = true;
     this._isSolo = false;
+    this._description = null;
+    this._instructions = null;
   }
 
   updateFromHub(hub) {
@@ -56,6 +58,9 @@ class AvnBridge {
       this._sessionDomain = userData.sessiondomain;
       this._assetIdHome = userData.assetidhome;
       this._isSolo = hub.room_size <= 1;
+      this._description = userData.description;
+      this._instructions = userData.instructions;
+
     } else {
       console.error("AVN: No user_data is set")
     }
@@ -90,6 +95,15 @@ class AvnBridge {
   get iconUri() {
     return this._iconUri;
   }
+
+  get description() {
+    return this._description;
+  }
+
+  get instructions() {
+    return this._instructions;
+  }
+
 
   get dimensionOwnerIsAuthenticated() {
     return this._ownerIsAuthenticated;

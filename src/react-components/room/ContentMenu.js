@@ -5,7 +5,8 @@ import { joinChildren } from "../misc/joinChildren";
 import styles from "./ContentMenu.scss";
 import { ReactComponent as ObjectsIcon } from "../icons/Objects.svg";
 import { ReactComponent as PeopleIcon } from "../icons/People.svg";
-import { ReactComponent as TextDocumentIcon } from "../icons/TextDocument.svg";
+import { ReactComponent as TeacherIcon } from "../icons/Teacher.svg";
+import { ReactComponent as StudentIcon } from "../icons/Student.svg";
 import { FormattedMessage } from "react-intl";
 
 export function ContentMenuButton({ active, children, ...props }) {
@@ -61,20 +62,36 @@ PeopleMenuButton.propTypes = {
   presencecount: PropTypes.number
 };
 
-export function EduverseMenuButton(props) {
+export function EduverseTeacherMenuButton(props) {
   return (
     <ContentMenuButton {...props}>
-      <TextDocumentIcon />
+      <TeacherIcon />
       <span>
         <FormattedMessage
-          id="content-menu.eduverse-menu-button"
+          id="content-menu.eduverse-teacher-menu-button"
+          defaultMessage="Guide"
+        />
+      </span>
+    </ContentMenuButton>
+  );
+}
+EduverseStudentMenuButton.propTypes = {
+};
+
+export function EduverseStudentMenuButton(props) {
+  return (
+    <ContentMenuButton {...props}>
+      <StudentIcon />
+      <span>
+        <FormattedMessage
+          id="content-menu.eduverse-student-menu-button"
           defaultMessage="Learn"
         />
       </span>
     </ContentMenuButton>
   );
 }
-EduverseMenuButton.propTypes = {
+EduverseStudentMenuButton.propTypes = {
 };
 
 
