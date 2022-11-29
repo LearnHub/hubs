@@ -136,7 +136,6 @@ class AvatarPage extends React.Component {
           )}
         </div>
         <img
-          crossOrigin="anonymous"
           className={styles.logo}
           src={configs.image("logo")}
           alt={<FormattedMessage id="avatar-page.logo" defaultMessage="Logo" />}

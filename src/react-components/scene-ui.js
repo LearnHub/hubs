@@ -188,7 +188,7 @@ class SceneUI extends Component {
             [styles.screenshot]: true
           })}
         >
-          {<img crossOrigin="anonymous" src={this.props.sceneScreenshotURL} />}
+          {<img src={this.props.sceneScreenshotURL} />}
         </div>
         <div className={styles.grid}>
           <div className={styles.mainPanel}>

@@ -11,7 +11,7 @@ export function AppLogo({ className, forceConfigurableLogo }) {
   if (isHmc() && !forceConfigurableLogo) {
     return <HmcLogo className="hmc-logo" />;
   } else {
-    return <img crossOrigin="anonymous" className={className} alt={configs.translation("app-name")} src={logo} />;
+    return <img className={className} alt={configs.translation("app-name")} src={logo} />;
   }
 }
 

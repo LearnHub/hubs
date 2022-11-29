@@ -39,7 +39,7 @@ class DiscordPage extends Component {
               <div className={styles.heroPane}>
                 <div className={styles.heroMessage}>
                   <div className={styles.discordLogo}>
-                    <img crossOrigin="anonymous" src={discordBotLogo} />
+                    <img src={discordBotLogo} />
                   </div>
                   <div className={styles.primaryTagline}>
                     <FormattedMessage

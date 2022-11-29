@@ -91,7 +91,6 @@ export function Footer({
             {showCompanyLogo && (
               <li>
                 <img
-                  crossOrigin="anonymous"
                   className={styles.companyLogo}
                   src={companyLogoUrl}
                   alt={<FormattedMessage id="footer.logo-alt" defaultMessage="Logo" />}
