@@ -63,7 +63,6 @@ export function useRoomLoadingState(sceneEl) {
   // Holds the id of the current
   const loadingTimeoutRef = useRef();
   // AVN: Force lazy load for all users
-  const lazyLoadMedia = true; //APP.store.state.preferences.lazyLoadSceneMedia;
 
   const [
     {

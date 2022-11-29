@@ -660,14 +660,7 @@ class UIRoot extends Component {
     // Push the new history state before going into VR, otherwise menu button will take us back
     clearHistoryState(this.props.history);
 
-    // AVN: Microphone is muted by default for each browser session
-    const micMutedForSession = window.sessionStorage.getItem("muteMicOnEntryForThisSession") !== "false";
-    console.log(`Session mic mute state is '${micMutedForSession}'`);
-
-    const muteOnEntry = this.props.store.state.preferences.muteMicOnEntry || micMutedForSession;
-    this.props.store.update({
-      settings: { micMuted: false }
-    });
+    const muteOnEntry = this.props.store.state.preferences.muteMicOnEntry;
     await this.props.enterScene(this.state.enterInVR, muteOnEntry);
 
     this.setState({ entered: true, entering: false, showShareDialog: false });
@@ -855,6 +848,7 @@ class UIRoot extends Component {
   renderEntryStartPanel = () => {
     const { hasAcceptedProfile, hasChangedName } = this.props.store.state.activity;
     const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
+
     // TODO: What does onEnteringCanceled do?
     return (
       <>

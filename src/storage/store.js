@@ -117,19 +117,19 @@ export const SCHEMA = {
         preferredMic: { type: "string", default: NO_DEVICE_ID },
         preferredSpeakers: { type: "string", default: NO_DEVICE_ID },
         preferredCamera: { type: "string", default: NO_DEVICE_ID },
-        muteMicOnEntry: { type: "bool", default: false },
+        muteMicOnEntry: { type: "bool", default: true }, // AVN: Safer default
         disableLeftRightPanning: { type: "bool", default: false },
         audioNormalization: { type: "bool", default: 0.0 },
         invertTouchscreenCameraMove: { type: "bool", default: false },
         enableOnScreenJoystickLeft: { type: "bool", default: detectMobile() },
-        enableOnScreenJoystickRight: { type: "bool", default: detectMobile() },
+        enableOnScreenJoystickRight: { type: "bool", default: false && detectMobile() }, // AVN: Use touch-to-drag on mobile
         enableGyro: { type: "bool", default: true },
         animateWaypointTransitions: { type: "bool", default: true },
         showFPSCounter: { type: "bool", default: false },
         allowMultipleHubsInstances: { type: "bool", default: false },
         disableIdleDetection: { type: "bool", default: false },
-        fastRoomSwitching: { type: "bool", default: false },
-        lazyLoadSceneMedia: { type: "bool", default: false },
+        fastRoomSwitching: { type: "bool", default: true }, // AVN: Force for all users
+        lazyLoadSceneMedia: { type: "bool", default: true }, // AVN: Force for all users
         preferMobileObjectInfoPanel: { type: "bool", default: false },
         // if unset, maxResolution = screen resolution
         maxResolutionWidth: { type: "number", default: undefined },
