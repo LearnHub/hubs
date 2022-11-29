@@ -1,6 +1,6 @@
 import { SOUND_TOGGLE_MIC } from "../systems/sound-effects-system";
 
-const bindAllEvents = function(elements, events, f) {
+const bindAllEvents = function (elements, events, f) {
   if (!elements || !elements.length) return;
   for (const el of elements) {
     events.length &&
@@ -9,7 +9,7 @@ const bindAllEvents = function(elements, events, f) {
       });
   }
 };
-const unbindAllEvents = function(elements, events, f) {
+const unbindAllEvents = function (elements, events, f) {
   if (!elements || !elements.length) return;
   for (const el of elements) {
     events.length &&
@@ -31,7 +31,7 @@ AFRAME.registerComponent("mute-mic", {
     muteEvents: { type: "array" },
     unmuteEvents: { type: "array" }
   },
-  init: function() {
+  init: function () {
     this.onToggle = this.onToggle.bind(this);
     this.onMute = this.onMute.bind(this);
     this.onUnmute = this.onUnmute.bind(this);
@@ -39,21 +39,21 @@ AFRAME.registerComponent("mute-mic", {
     this.store.addEventListener("statechanged", this.onStoreUpdated.bind(this));
   },
 
-  play: function() {
+  play: function () {
     const { eventSrc, toggleEvents, muteEvents, unmuteEvents } = this.data;
     bindAllEvents(eventSrc, toggleEvents, this.onToggle);
     bindAllEvents(eventSrc, muteEvents, this.onMute);
     bindAllEvents(eventSrc, unmuteEvents, this.onUnmute);
   },
 
-  pause: function() {
+  pause: function () {
     const { eventSrc, toggleEvents, muteEvents, unmuteEvents } = this.data;
     unbindAllEvents(eventSrc, toggleEvents, this.onToggle);
     unbindAllEvents(eventSrc, muteEvents, this.onMute);
     unbindAllEvents(eventSrc, unmuteEvents, this.onUnmute);
   },
 
-  onToggle: function() {
+  onToggle: function () {
     APP.mediaDevicesManager.toggleMic();
     if (!this.el.sceneEl.is("entered")) return;
     this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_TOGGLE_MIC);
@@ -68,44 +68,11 @@ AFRAME.registerComponent("mute-mic", {
     }
   },
 
-  onMute: function() {
-    if (!NAF.connection.adapter) return;
-    if (!this.el.is("muted")) {
-      APP.dialog.enableMicrophone(false);
-      // AVN: See function
-      this.recordStateForSession(true);
-    }
+  onMute: function () {
+    APP.mediaDevicesManager.micEnabled = false;
   },
 
-  onUnmute: function() {
-    if (this.el.is("muted")) {
-      APP.dialog.enableMicrophone(true);
-      // AVN: See function
-      this.recordStateForSession(false);
-    }
-  },
-
-  onStoreUpdated: function() {
-    const micMuted = this.store.state.settings["micMuted"];
-    const isMicShared = window.APP.mediaDevicesManager?.isMicShared;
-    if (micMuted !== undefined) {
-      if (isMicShared) {
-        if (micMuted) {
-          this.el.addState("muted");
-        } else {
-          this.el.removeState("muted");
-        }
-      } else {
-        this.el.addState("muted");
-      }
-    }
-  },
-
-  // AVN: Track user mute preference for the session
-  recordStateForSession: function(newState) {
-      // AVN: Record mute state for the lifetime of the browser session
-      window.sessionStorage.setItem("muteMicOnEntryForThisSession", newState);      
-      console.log(`Session mic mute state is now '${newState}'`);    
-  },
-
+  onUnmute: function () {
+    APP.mediaDevicesManager.micEnabled = true;
+  }
 });

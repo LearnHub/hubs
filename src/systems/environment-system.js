@@ -31,6 +31,8 @@ const defaultEnvSettings = {
   toneMappingExposure: 1,
   physicallyCorrectLights: true,
   envMapTexture: null,
+
+  skybox: null,
   backgroundTexture: null,
   backgroundColor: new THREE.Color("#000000"),
 
@@ -109,6 +111,14 @@ export class EnvironmentSystem {
     };
 
     window.$E = this;
+  }
+
+  updateEnvironmentSettings(newSettings) {
+    const envSettings = {
+      ...defaultEnvSettings,
+      ...newSettings
+    };
+    this.applyEnvSettings(envSettings);
   }
 
   updateEnvironment(envEl) {
@@ -305,7 +315,7 @@ AFRAME.registerComponent("environment-settings", {
     fogType: { type: "string", default: defaultEnvSettings.fogType },
     fogColor: { type: "color", default: defaultEnvSettings.fogColor },
     fogDensity: { type: "number", default: defaultEnvSettings.fogDensity },
-    fogNear: { type: "number", default: defaultEnvSettings.forNear },
+    fogNear: { type: "number", default: defaultEnvSettings.fogNear },
     fogFar: { type: "number", default: defaultEnvSettings.fogFar }
   }
 });
