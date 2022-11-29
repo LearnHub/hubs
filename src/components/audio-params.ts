@@ -46,7 +46,7 @@ export const AvatarAudioDefaults: AudioSettings = {
   panningModel: PanningModelType.HRTF,
   rolloffFactor: 5,
   // AVN: Emperically better defaults
-  refDistance: 5,
+  refDistance: 8,
   maxDistance: 1000,
   coneInnerAngle: 180,
   coneOuterAngle: 360,
@@ -60,7 +60,7 @@ export const MediaAudioDefaults: AudioSettings = {
   panningModel: PanningModelType.HRTF,
   rolloffFactor: 5,
   // AVN: Emperically better defaults
-  refDistance: 5,
+  refDistance: 8,
   maxDistance: 1000,
   coneInnerAngle: 360,
   coneOuterAngle: 0,
