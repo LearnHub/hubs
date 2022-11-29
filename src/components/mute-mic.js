@@ -35,8 +35,6 @@ AFRAME.registerComponent("mute-mic", {
     this.onToggle = this.onToggle.bind(this);
     this.onMute = this.onMute.bind(this);
     this.onUnmute = this.onUnmute.bind(this);
-    this.store = window.APP.store;
-    this.store.addEventListener("statechanged", this.onStoreUpdated.bind(this));
   },
 
   play: function () {
@@ -57,15 +55,6 @@ AFRAME.registerComponent("mute-mic", {
     APP.mediaDevicesManager.toggleMic();
     if (!this.el.sceneEl.is("entered")) return;
     this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_TOGGLE_MIC);
-    if (this.el.is("muted")) {
-      NAF.connection.adapter.enableMicrophone(true);
-      // AVN: See function
-      this.recordStateForSession(false);
-    } else {
-      NAF.connection.adapter.enableMicrophone(false);
-      // AVN: See function
-      this.recordStateForSession(true);
-    }
   },
 
   onMute: function () {
