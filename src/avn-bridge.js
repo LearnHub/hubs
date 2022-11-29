@@ -3,7 +3,12 @@
 class AvnBridge {
 
   constructor() {
-    this._assetDomain = "https://scene.link";
+    // The prefix that indicates dimension-specific dynamic content
+    this._assetPrefix = "https://scene.link";
+    // The domain to use for resolving all AVN assets
+    this._assetDomain = "https://rest.avncloud.com";
+    // this._assetDomain = "http://localhost:9191";
+    // this._assetDomain = "https://rest-alpha.avncloud.com";
     this._dataDomain = "https://data.avncloud.com";
     this._defaultSessionDomain = "go.eduverse.com";
     this._defaultAssetIdHome = "homeroom";
@@ -71,8 +76,8 @@ class AvnBridge {
     return this._sessionDomain ? this._sessionDomain : this._defaultSessionDomain;
   }
 
-  get assetDomain() {
-    return this._assetDomain;
+  get assetPrefix() {
+    return this._assetPrefix;
   }
 
   get dataDomain() {
@@ -130,7 +135,7 @@ class AvnBridge {
     // if no asset ID is supplied then the scene link is void because this room is not navigable
     // Note: the fragment sets the waypoint for the users entry position
     return this._assetId 
-      ? url.replace(this._assetDomain, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId 
+      ? url.replace(this._assetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId 
       : "";
   }
 
@@ -144,7 +149,7 @@ class AvnBridge {
   // Media
 
   isAvnUrl(url) {
-    return url.startsWith(this._assetDomain);
+    return url.startsWith(this._assetPrefix);
   }
 
   get mediaEndpoint() {
