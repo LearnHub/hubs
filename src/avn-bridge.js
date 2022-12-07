@@ -1,14 +1,18 @@
 // Utilities for linking Hubs and AVN Cloud
 
+import { AVNConnect } from "connect-sdk"
+
+const dockerMode = false
+
+export const AVN = new AVNConnect(dockerMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
+
 class AvnBridge {
 
   constructor() {
     // The prefix that indicates dimension-specific dynamic content
     this._assetPrefix = "https://scene.link";
     // The domain to use for resolving all AVN assets
-    this._assetDomain = "https://rest.avncloud.com";
-    // this._assetDomain = "http://localhost:9191";
-    // this._assetDomain = "https://rest-alpha.avncloud.com";
+    this._assetDomain = dockerMode ? "http://localhost:8181" : "https://rest.avncloud.com";
     this._dataDomain = "https://data.avncloud.com";
     this._defaultSessionDomain = "go.eduverse.com";
     this._defaultAssetIdHome = "homeroom";
