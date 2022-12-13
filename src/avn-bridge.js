@@ -1,6 +1,6 @@
 // Utilities for linking Hubs and AVN Cloud (will be replaced by avn-connect.js)
 
-export const DockerMode = true
+export const DockerMode = false
 
 class AvnBridge {
 
