@@ -228,6 +228,7 @@
   "link-page.try-again": "Não encontramos este código.{linebreak}Por favor, tente novamente.",
   "loading-screen.connecting": "Conectando à cena...",
   "loading-screen.default": "Carregando cena...",
+  "loading-screen.loading-scene": "Carregando cena...",
   "loading-screen.entering-room": "Entrando na sala...",
   "loading-screen.heading.tip": "Dica:",
   "loading-screen.heading.whats-new": "Novidades",

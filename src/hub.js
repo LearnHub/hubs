@@ -253,6 +253,9 @@ import "./load-media-on-paste-or-drop";
 import { swapActiveScene } from "./bit-systems/scene-loading";
 import { setLocalClientID } from "./bit-systems/networking";
 import { listenForNetworkMessages } from "./utils/listen-for-network-messages";
+import { AVN } from "./avn-connect";
+import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb";
+import { DimensionState, JoinDimensionResponse } from 'connect-sdk/dist/gen/avn/connect/v1/dimensions_pb';
 
 const PHOENIX_RELIABLE_NAF = "phx-reliable";
 NAF.options.firstSyncSource = PHOENIX_RELIABLE_NAF;
@@ -830,6 +833,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     embed: isEmbed,
     showPreload: isEmbed
   });
+
+  // AVN
+
+  // Check connection to Eduverse server
+  if(!await AVN.isHealthy()) {
+    console.error(`AVN health check failed`)
+    //TODO: ENTER ERROR STATE AND STOP
+    return
+  }
+  scene.emit("didConnectToEduverse");
+  
+  // Lookup dimension for this room
+  if(!await AVN.setDimensionFromRoomId(hubId)) {
+    console.error(`AVN failed to match dimension`)
+    //TODO: ENTER ERROR STATE AND STOP
+    return
+  }
+
+  // Join dimension
+  if(!await AVN.joinDimension()) {
+    console.error(`AVN failed to join room dimension`)
+    //TODO: ENTER ERROR STATE AND STOP
+    return
+  }
+  scene.emit("didJoinDimension");
+
   entryManager.performConditionalSignIn = performConditionalSignIn;
   entryManager.init();
 

@@ -1,7 +1,7 @@
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb";
 import React, { useContext, useEffect } from "react";
 import { PageContainer } from "../layout/PageContainer";
-import { AVN } from "../../avn-bridge"
+import { AVN } from "../../avn-connect"
 import { sleep } from "../../utils/async-utils";
 import { AppLogo } from "../misc/AppLogo";
 import styles from "./HomePage.scss";
@@ -45,30 +45,19 @@ export class AVNHomePage extends React.Component {
 
     console.log("AVNHomePage::componentDidMount")
     this.setState({statusMessage: "Checking AVN Cloud connection..." })
-    // DEBUG_DELAY
-    await sleep(1000)
-    const healthCheckResult = await AVN.Health.check()
-    console.log(`healthCheckResult = ${healthCheckResult}`)
-    // DEBUG_DELAY
-    await sleep(1000)
-
-    if(healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING) {
+    if(await AVN.isHealthy()) {
       this.setState({statusMessage: "Opening new dimension..." })
-      // DEBUG_DELAY
-      await sleep(1000)
+      if(await AVN.openNewDimension()) {
+        console.log(`newDimensionId = ${AVN.dimensionId}`)
+        this.setState({statusMessage: `New dimension is open ${AVN.dimensionId} with default asset ID ${AVN.assetId}` })  
+      } else {
+        this.setState({statusMessage: "Failed to create a new dimension" })
+      }
       
-      const newDimension = await AVN.Dimensions.openDimension()
-      console.log(`newDimensionId = ${newDimension.dimensionId}`)
-      this.setState({statusMessage: `New dimension is open ${newDimension.dimensionId} with default asset ID ${newDimension.defaultAssetId}` })
-      // DEBUG_DELAY
-      await sleep(1000)
-
-      const room = await AVN.Rooms.findRoom({dimensionId: newDimension.dimensionId, assetId: newDimension.defaultAssetId})
+      const room = await AVN.Connect.Rooms.findRoom({dimensionId: AVN.dimensionId, assetId: AVN.assetId})
       console.log(`room = ${room.domain} ${room.roomId}`)
       this.setState({statusMessage: `Found room ${room.domain} ${room.roomId}` })
-      // DEBUG_DELAY
-      await sleep(1000)
-
+            
       if (isLocalClient()) {
         document.location.replace(`/hub.html?hub_id=${room.roomId}`)
       } else {

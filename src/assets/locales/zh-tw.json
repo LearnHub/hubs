@@ -231,6 +231,7 @@
 	"link-page.try-again": "我們無法找到這個房間密碼.{linebreak}請再試一次.",
 	"loading-screen.connecting": "連結到場景中...",
 	"loading-screen.default": "讀取場景中...",
+	"loading-screen.loading-scene": "讀取場景中...",
 	"loading-screen.entering-room": "進入房間中...",
 	"loading-screen.heading.tip": "提示：",
 	"loading-screen.heading.whats-new": "新消息",

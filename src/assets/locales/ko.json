@@ -36,6 +36,7 @@
   "button.accept": "확인",
   "button.apply": "적용",
   "loading-screen.default": "Scene을 로딩중입니다...",
+  "loading-screen.loading-scene": "Scene을 로딩중입니다...",
   "loading-screen.loading-objects": "Object를 로딩중입니다 {loadedCount}/{objectCount}",
   "loading-screen.connecting": "Scene에 연결중입니다...",
   "loading-screen.entering-room": "Room에 입장합니다...",

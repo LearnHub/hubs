@@ -205,6 +205,7 @@
   "link-page.try-again": "Wir konnten den Code nicht finden. Bitte versuche es erneut.",
   "loading-screen.connecting": "Mit der Szene verbinden...",
   "loading-screen.default": "Szene lädt...",
+  "loading-screen.loading-scene": "Szene lädt...",
   "loading-screen.entering-room": "Betreten des Raums...",
   "loading-screen.heading.tip": "Tipp:",
   "loading-screen.heading.whats-new": "Was gibt's Neues?",

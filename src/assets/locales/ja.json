@@ -66,6 +66,7 @@
   "link-page.toggle-mode-button": "レターコードをお持ちですか？",
   "link-page.try-again": "そのコードが見つかりませんでした。{linebreak}もう一度やり直してください。",
   "loading-screen.default": "Loading scene...",
+  "loading-screen.loading-scene": "Loading scene...",
   "loading-screen.loading-objects": "Loading objects {loadedCount}/{objectCount}",
   "media-browser.add_custom_avatar": "アバターGLBファイルのURL",
   "media-browser.add_custom_object": "カスタムURLまたはファイル",

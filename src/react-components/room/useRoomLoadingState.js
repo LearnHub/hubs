@@ -4,6 +4,10 @@ import { waitForPreloads } from "../../utils/preload";
 
 function reducer(state, action) {
   switch (action.type) {
+    case "eduverse-connected":
+      return { ...state, eduverseConnected: true };
+    case "dimension-joined":
+      return { ...state, dimensionJoined: true };
     case "done-preloading":
       return { ...state, donePreloading: true };
     case "object-loading":
@@ -36,8 +40,18 @@ function reducer(state, action) {
 
 // defineMessages informs babel-plugin-react-intl what i18n data can be stripped/embedded when bundling.
 const messages = defineMessages({
-  default: {
-    id: "loading-screen.default",
+  connectingEduverse: {
+    id: "loading-screen.connecting-eduverse",
+    description: "Waiting to connect to Eduverse.",
+    defaultMessage: "Connecting to Edvuerse..."
+  },
+  joiningDimension: {
+    id: "loading-screen.joining-dimension",
+    description: "Waiting to join the dimension.",
+    defaultMessage: "Joining dimension..."
+  },
+  loadingScene: {
+    id: "loading-screen.loading-scene",
     description: "The scene has started loading.",
     defaultMessage: "Loading scene..."
   },
@@ -66,6 +80,8 @@ export function useRoomLoadingState(sceneEl) {
 
   const [
     {
+      eduverseConnected,
+      dimensionJoined,
       environmentLoaded,
       networkConnected,
       dialogConnected,
@@ -90,9 +106,14 @@ export function useRoomLoadingState(sceneEl) {
     sceneEl.is("loaded") ||
     (environmentLoaded && networkConnected && dialogConnected && doneLoadingObjects && donePreloading);
 
-  let messageKey = "default";
-  if (!environmentLoaded) {
-    messageKey = "default";
+  let messageKey = "";
+
+  if (!eduverseConnected) {
+    messageKey = "connectingEduverse";
+  } else if (!dimensionJoined) {
+    messageKey = "joiningDimension";
+  } else if (!environmentLoaded) {
+    messageKey = "loadingScene";
   } else if (!networkConnected || !dialogConnected) {
     messageKey = "connectingScene";
   } else if (!doneLoadingObjects) {
@@ -132,6 +153,14 @@ export function useRoomLoadingState(sceneEl) {
     dispatch({ type: "dialog-connected" });
   }, [dispatch]);
 
+  const onEduverseConnected = useCallback(() => {
+    dispatch({ type: "eduverse-connected" });
+  }, [dispatch]);
+
+  const onDimensionJoined = useCallback(() => {
+    dispatch({ type: "dimension-joined" });
+  }, [dispatch]);
+
   useEffect(() => {
     waitForPreloads().then(() => {
       // TODO: Is this OK to do? Seems bad to be async here somehow
@@ -158,6 +187,8 @@ export function useRoomLoadingState(sceneEl) {
       sceneEl.addEventListener("environment-scene-loaded", onEnvironmentLoaded);
       sceneEl.addEventListener("didConnectToNetworkedScene", onNetworkConnected);
       sceneEl.addEventListener("didConnectToDialog", onDialogConnected);
+      sceneEl.addEventListener("didConnectToEduverse", onEduverseConnected);
+      sceneEl.addEventListener("didJoinDimension", onDimensionJoined);
     }
 
     return () => {
