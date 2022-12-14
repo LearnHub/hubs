@@ -6,12 +6,12 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import markdownit from "markdown-it";
-import { avnBridge } from "../../avn-bridge"
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
 import { ReactComponent as GatherIcon } from "../icons/People.svg";
 import { ReactComponent as HushIcon } from "../icons/Hush.svg";
 import { ReactComponent as LookIcon } from "../icons/Show.svg";
 import { ToolbarButton } from "../input/ToolbarButton";
+import { AVN } from "../../avn-connect";
 
 const md = markdownit();
 
@@ -44,11 +44,11 @@ export function EduverseTeacherSidebar({ room, onClose }) {
     >
       <div className={styles.informationContainer}>
         <h1>
-          {avnBridge.iconUri && (<img src={avnBridge.iconUri} className={styles.sceneIcon}/>)}
+          {AVN.iconUri && (<img src={AVN.iconUri} className={styles.sceneIcon}/>)}
           <span className={styles.sceneName}>{room.name}</span>
         </h1>
-        {avnBridge.description && (
-            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(avnBridge.description) }} />
+        {AVN.description && (
+            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(AVN.description) }} />
         )}
       </div>
       <Toolbar right={

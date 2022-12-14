@@ -128,7 +128,9 @@ export class WaypointSystem {
     waitForDOMContentLoaded().then(() => {
       loadTemplateAndAddToScene(scene, "waypoint-preview-avatar-template").then(el => {
         this.waypointPreviewAvatar = el;
-        this.waypointPreviewAvatar.object3D.visible = false;
+        if(this.waypointPreviewAvatar.object3D) {
+          this.waypointPreviewAvatar.object3D.visible = false;
+        }
       });
     });
     this.characterController = characterController;

@@ -1,8 +1,8 @@
 import { isLocalHubsUrl, isLocalHubsSceneUrl, isHubsRoomUrl, isLocalHubsAvatarUrl } from "../utils/media-url-utils";
 import { guessContentType } from "../utils/media-url-utils";
 import { handleExitTo2DInterstitial } from "../utils/vr-interstitial";
-import { avnBridge } from "../avn-bridge"
 import { changeHub } from "../change-hub";
+import { AVN } from "../avn-connect";
 
 AFRAME.registerComponent("open-media-button", {
   schema: {
@@ -68,7 +68,7 @@ AFRAME.registerComponent("open-media-button", {
         } else {
           await exitImmersive();
           // AVN: Insert dimension into scene.link HREFs
-          location.href = avnBridge.transformRoomUrl(this.src);
+          location.href = AVN.transformRoomUrl(this.src);
         }
       } else {
         await exitImmersive();

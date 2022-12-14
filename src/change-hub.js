@@ -1,7 +1,7 @@
 import { getReticulumFetchUrl, hubUrl } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
 
-import { avnBridge } from "./avn-bridge"
+import { AVN } from "./avn-connect";
 
 function unloadRoomObjects() {
   document.querySelectorAll("[pinnable]").forEach(el => {
@@ -30,9 +30,9 @@ function loadRoomObjects(hubId) {
 export async function changeHubAvn(hubUrl) {
   console.log("Fast switching to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
-  const roomData = await avnBridge.fetchRoomData(newAssetId);
+  const roomData = await AVN.fetchRoomData(newAssetId);
   console.log("Resolved Hub room from AVN server");
-  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: avnBridge.assetId, name: roomData.name, icon: roomData.icon };
+  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
   await changeHub(nextState, true);
 }
 

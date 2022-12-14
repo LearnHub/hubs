@@ -1,7 +1,7 @@
 import { hasReticulumServer } from "./phoenix-utils";
 import configs from "./configs";
 
-import { avnBridge } from "../avn-bridge"
+import { AVN } from "../avn-connect"
 
 const nonCorsProxyDomains = (configs.NON_CORS_PROXY_DOMAINS || "").split(",");
 if (configs.CORS_PROXY_SERVER) {
@@ -172,8 +172,9 @@ export const guessContentType = url => {
 const originIsHubsServer = new Map();
 
 // AVN: shortcircuit for well know domains
-originIsHubsServer.set(avnBridge.assetPrefix, true);
-originIsHubsServer.set(avnBridge.dataDomain, false);
+AVN.dataServerDomains.forEach((domain) => originIsHubsServer.set(domain, false));
+//TODO: IS THIS NEEDED?
+//originIsHubsServer.set(AVN.dynamicAssetPrefix, true);
 
 async function isHubsServer(url) {
   if (!url) return false;

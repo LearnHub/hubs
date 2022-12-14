@@ -101,7 +101,6 @@ import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip, RecordModeTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
-import { avnBridge } from "../avn-bridge";
 import { changeHubAvn } from "../change-hub";
 import { MediaDevicesEvents } from "../utils/media-devices-utils";
 import { TERMS, PRIVACY } from "../constants";
@@ -109,6 +108,7 @@ import { ECSDebugSidebarContainer } from "./debug-panel/ECSSidebar";
 import { NotificationsContainer } from "./room/NotificationsContainer";
 import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
+import { AVN } from "../avn-connect";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const avnShowHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -1642,7 +1642,7 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
-                    entered && avnBridge.allowNavigation &&
+                    entered && AVN.allowNavigation &&
                     <ToolbarButton
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
@@ -1652,7 +1652,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Scene selection
-                    avnBridge.allowNavigation &&
+                    AVN.allowNavigation &&
                     <ToolbarButton
                       icon={<SceneIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Go" />}
@@ -1765,7 +1765,7 @@ class UIRoot extends Component {
                   <>
                     { 
                     // AVN: Only show invite if this isn't a "solo" room
-                    !avnBridge.isSolo &&
+                    !AVN.isSolo &&
                     <InvitePopoverContainer
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}

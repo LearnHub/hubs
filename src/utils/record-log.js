@@ -37,7 +37,7 @@ function getSerializationTransform() {
 };
 
 // AVN: Make record_log opt-out by default
-if ('URLSearchParams' in window && (new URLSearchParams(window.location.search).get("record_log") || "true") == "true") {
+if (false && 'URLSearchParams' in window && (new URLSearchParams(window.location.search).get("record_log") || "true") == "true") {
 
   class ConsoleHistory {
     constructor(maximumEntries) {

@@ -5,8 +5,8 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import markdownit from "markdown-it";
-import { avnBridge } from "../../avn-bridge"
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
+import { AVN } from "../../avn-connect";
 
 const md = markdownit();
 
@@ -39,22 +39,13 @@ export function EduverseStudentSidebar({ room, onClose }) {
     >
       <div className={styles.informationContainer}>
         <h1>
-          {avnBridge.iconUri && (<img src={avnBridge.iconUri} className={styles.sceneIcon}/>)}
+          {AVN.iconUri && (<img src={AVN.iconUri} className={styles.sceneIcon}/>)}
           <span className={styles.sceneName}>{room.name}</span>
         </h1>
-        {(avnBridge.instructions || avnBridge.description) && (
-            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(avnBridge.instructions || avnBridge.description) }} />
+        {(AVN.instructions || AVN.description) && (
+            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(AVN.instructions || AVN.description) }} />
         )}
       </div>
-      {false && avnBridge.assetId && (
-        // Hidden for now until use case is resolved
-        <CopyableTextInputField
-          className={styles.shareLinkContainer}
-          label={<FormattedMessage id="eduverse-sidebar.share-link" defaultMessage="Share this scene" />}
-          value={`https://${avnBridge.sessionDomain}/${avnBridge.assetId}`}
-          buttonPreset="accent2"
-        />
-      )}
     </Sidebar>
   );
 }

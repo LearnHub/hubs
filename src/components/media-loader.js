@@ -28,7 +28,7 @@ import { addComponent, entityExists, removeComponent } from "bitecs";
 import { MediaLoading } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
-import { avnBridge } from "../avn-bridge";
+import { AVN } from "../avn-connect";
 
 let loadingObject;
 
@@ -354,7 +354,7 @@ AFRAME.registerComponent("media-loader", {
     }
     try {
       // Short circuit for external web links (don't bother with fetching content types and thumbnails)
-      if(this.data.contentType === "text/html" && !avnBridge.isAvnUrl(src)) {
+      if(this.data.contentType === "text/html" && !AVN.isAvnUrl(src)) {
         // Change image to be a 1x1 transparent PNG (image mesh provides the hover target)
         this.el.setAttribute("media-image", { 
           src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", 
@@ -611,7 +611,7 @@ AFRAME.registerComponent("media-loader", {
         } else {
           this.el.removeObject3D("mesh");
         }
-        const linksrc = absoluteAvatarUrl || avnBridge.transformRoomUrl(src);
+        const linksrc = absoluteAvatarUrl || AVN.transformRoomUrl(src);
         this.el.setAttribute("action-trigger-volume", {
           colliders: "#avatar-pov-node",
           // Either it's an avatar file or it's a scene link that needs the dimension replacing

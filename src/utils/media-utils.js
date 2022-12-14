@@ -11,10 +11,10 @@ import Linkify from "linkify-it";
 import tlds from "tlds";
 import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
 
-import { avnBridge } from "../avn-bridge"
 import { mediaTypeFor } from "./media-type";
 
 import anime from "animejs";
+import { AVN } from "../avn-connect";
 
 export const MediaType = {
   MODEL: 1 << 0,
@@ -59,7 +59,7 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
   // AVN: Authenticated queries are accessed through an alternative API with the dimension ID tacked on the end
-  const apiEndpoint = avnBridge.isAvnUrl(url) ? avnBridge.mediaEndpoint : mediaAPIEndpoint;
+  const apiEndpoint = AVN.isAvnUrl(url) ? AVN.mediaEndpoint : mediaAPIEndpoint;
 
   const resultPromise = fetch(apiEndpoint, {
     method: "POST",

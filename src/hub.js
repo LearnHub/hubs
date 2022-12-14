@@ -248,7 +248,6 @@ import { OAuthScreenContainer } from "./react-components/auth/OAuthScreenContain
 import { SignInMessages } from "./react-components/auth/SignInModal";
 import { ThemeProvider } from "./react-components/styles/theme";
 import { LogMessageType } from "./react-components/room/ChatSidebar";
-import { avnBridge } from "./avn-bridge";
 import "./load-media-on-paste-or-drop";
 import { swapActiveScene } from "./bit-systems/scene-loading";
 import { setLocalClientID } from "./bit-systems/networking";
@@ -410,7 +409,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
   console.log("Updating environment for hub");
 
   // AVN: Set AVN context
-  avnBridge.updateFromHub(hub);
+  AVN.updateFromHub(hub);
 
   const sceneUrl = await getSceneUrlForHub(hub);
 

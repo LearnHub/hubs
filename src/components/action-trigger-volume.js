@@ -1,6 +1,5 @@
 const colliderWorldPositionVec = new THREE.Vector3();
 import { SOUND_CHAT_MESSAGE, SOUND_MEDIA_LOADED, SOUND_FREEZE } from "../systems/sound-effects-system";
-import { avnBridge } from "../avn-bridge";
 import { changeHubAvn } from "../change-hub";
 
 AFRAME.registerComponent("action-trigger-volume", {
