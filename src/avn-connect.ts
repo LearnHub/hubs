@@ -3,7 +3,7 @@ import { DimensionState, JoinDimensionResponse } from "connect-sdk/dist/gen/avn/
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 
 // For debug
-const LocalDevMode = true
+const LocalDevMode = false
 
 class AVNBridge {
 
