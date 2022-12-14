@@ -40,10 +40,17 @@
 }
 
 
-:local(.late-fade-in) {
-  animation: 30s fadein;
+:local(.quick-fade-in) {
+  animation: 1s fadein;
 }
-@keyframes fadein{
+@keyframes quickfadein{
+  0% { opacity:0; }
+  100% { opacity:1; }
+}
+:local(.late-fade-in) {
+  animation: 30s latefadein;
+}
+@keyframes latefadein{
   0% { opacity:0; }
   95% { opacity:0; }
   100% { opacity:1; }

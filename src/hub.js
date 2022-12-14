@@ -838,23 +838,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Check connection to Eduverse server
   if(!await AVN.isHealthy()) {
     console.error(`AVN health check failed`)
-    //TODO: ENTER ERROR STATE AND STOP
+    scene.emit("errorLoadingRoom", `Eduverse is not available`);
     return
-  }
+}
   scene.emit("didConnectToEduverse");
   
   // Lookup dimension for this room
   if(!await AVN.setDimensionFromRoomId(hubId)) {
     console.error(`AVN failed to match dimension`)
-    //TODO: ENTER ERROR STATE AND STOP
+    scene.emit("errorLoadingRoom", `No dimension could be found for this room`);
     return
-  }
+}
 
   // Join dimension
-  if(!await AVN.joinDimension()) {
-    console.error(`AVN failed to join room dimension`)
-    //TODO: ENTER ERROR STATE AND STOP
-    return
+  const joinResult = await AVN.joinDimension()
+  switch (joinResult) {
+    case DimensionState.CLOSED:
+      console.error(`AVN dimension closed`)
+      scene.emit("errorLoadingRoom", `Dimension is closed`);
+      return
+    case DimensionState.NOT_FOUND:
+      console.error(`AVN dimension not found`)
+      scene.emit("errorLoadingRoom", `Dimension not found`);
+      return
+    case DimensionState.EXPIRED:
+      console.error(`AVN dimension expired`)
+      scene.emit("errorLoadingRoom", `Dimension has expired`);
+      return
+    case DimensionState.FORBIDDEN:
+      console.error(`AVN dimension forbidden`)
+      scene.emit("errorLoadingRoom", `Dimension is forbidden`);
+      return
+    case DimensionState.UNSPECIFIED:
+      console.error(`AVN dimension join error`)
+      scene.emit("errorLoadingRoom", `Dimension is not available`);
+      return        
   }
   scene.emit("didJoinDimension");
 

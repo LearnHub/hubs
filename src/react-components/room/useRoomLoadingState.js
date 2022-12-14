@@ -4,6 +4,8 @@ import { waitForPreloads } from "../../utils/preload";
 
 function reducer(state, action) {
   switch (action.type) {
+    case "loading-error":
+      return { ...state, loadingError: action.errorMessage };
     case "eduverse-connected":
       return { ...state, eduverseConnected: true };
     case "dimension-joined":
@@ -40,6 +42,11 @@ function reducer(state, action) {
 
 // defineMessages informs babel-plugin-react-intl what i18n data can be stripped/embedded when bundling.
 const messages = defineMessages({
+  loadingError: {
+    id: "loading-screen.loading-error",
+    description: "An error occured loading the room.",
+    defaultMessage: "Unable to load room"
+  },
   connectingEduverse: {
     id: "loading-screen.connecting-eduverse",
     description: "Waiting to connect to Eduverse.",
@@ -88,7 +95,8 @@ export function useRoomLoadingState(sceneEl) {
       allObjectsLoaded,
       donePreloading,
       objectCount,
-      loadedCount
+      loadedCount,
+      loadingError
     },
     dispatch
   ] = useReducer(reducer, {
@@ -99,6 +107,9 @@ export function useRoomLoadingState(sceneEl) {
     networkConnected: false,
     dialogConnected: false,
     donePreloading: false,
+    eduverseConnected: false,
+    dimensionJoined: false,
+    loadingError: "",
     lazyLoadMedia
   });
   const doneLoadingObjects = lazyLoadMedia || allObjectsLoaded;
@@ -108,7 +119,9 @@ export function useRoomLoadingState(sceneEl) {
 
   let messageKey = "";
 
-  if (!eduverseConnected) {
+  if (loadingError) {
+    messageKey = "loadingError";
+  } else if (!eduverseConnected) {
     messageKey = "connectingEduverse";
   } else if (!dimensionJoined) {
     messageKey = "joiningDimension";
@@ -161,6 +174,10 @@ export function useRoomLoadingState(sceneEl) {
     dispatch({ type: "dimension-joined" });
   }, [dispatch]);
 
+  const onLoadingError = useCallback((errorMessage) => {
+    dispatch({ type: "loading-error", errorMessage: errorMessage.detail });
+  }, [dispatch]);
+
   useEffect(() => {
     waitForPreloads().then(() => {
       // TODO: Is this OK to do? Seems bad to be async here somehow
@@ -189,6 +206,7 @@ export function useRoomLoadingState(sceneEl) {
       sceneEl.addEventListener("didConnectToDialog", onDialogConnected);
       sceneEl.addEventListener("didConnectToEduverse", onEduverseConnected);
       sceneEl.addEventListener("didJoinDimension", onDimensionJoined);
+      sceneEl.addEventListener("errorLoadingRoom", onLoadingError);
     }
 
     return () => {
@@ -206,6 +224,9 @@ export function useRoomLoadingState(sceneEl) {
       sceneEl.removeEventListener("environment-scene-loaded", onEnvironmentLoaded);
       sceneEl.removeEventListener("didConnectToNetworkedScene", onNetworkConnected);
       sceneEl.removeEventListener("didConnectToDialog", onDialogConnected);
+      sceneEl.removeEventListener("didConnectToEduverse", onEduverseConnected);
+      sceneEl.removeEventListener("didJoinDimension", onDimensionJoined);
+      sceneEl.removeEventListener("errorLoadingRoom", onLoadingError);
     };
   }, [
     sceneEl,
@@ -241,5 +262,5 @@ export function useRoomLoadingState(sceneEl) {
     };
   }, []);
 
-  return { loading: !done, message };
+  return { loading: !done, message, errorMessage: loadingError };
 }

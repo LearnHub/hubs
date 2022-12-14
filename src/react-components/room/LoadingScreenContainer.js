@@ -7,7 +7,7 @@ import { useRoomLoadingState } from "./useRoomLoadingState";
 export function LoadingScreenContainer({ onLoaded, scene }) {
   const intl = useIntl();
 
-  const { loading, message } = useRoomLoadingState(scene);
+  const { loading, message, errorMessage } = useRoomLoadingState(scene);
 
   useEffect(() => {
     if (!loading) {
@@ -46,7 +46,7 @@ export function LoadingScreenContainer({ onLoaded, scene }) {
     [intl]
   );
 
-  return <LoadingScreen message={message} infoMessages={infoMessages} />;
+  return <LoadingScreen message={message} errorMessage={errorMessage} infoMessages={infoMessages} />;
 }
 
 LoadingScreenContainer.propTypes = {

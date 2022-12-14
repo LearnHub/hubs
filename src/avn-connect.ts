@@ -21,9 +21,14 @@ class AVNBridge {
     public Connect = new AVNConnect(DockerMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
     public async isHealthy(): Promise<boolean> {
-        const healthCheckResult = await this.Connect.Health.check({})
-        console.info(`AVN health check result: ${healthCheckResult.status}`)
-        return healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING
+        try {
+            const healthCheckResult = await this.Connect.Health.check({})
+            console.info(`AVN health check result: ${healthCheckResult.status}`)
+            return healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING
+        } catch(error: unknown) {
+            console.error(`AVN health check exception`, error)
+        }
+        return false
     }
 
     _dimensionId: string = ""
