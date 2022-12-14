@@ -58,10 +58,9 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
-  // AVN: Authenticated queries are accessed through an alternative API with the dimension ID tacked on the end
-  const apiEndpoint = AVN.isAvnUrl(url) ? AVN.mediaEndpoint : mediaAPIEndpoint;
-
-  const resultPromise = fetch(apiEndpoint, {
+  // AVN: Authenticated queries are accessed through an alternative API
+  const resultPromise = AVN.isAvnUrl(url) ? AVN.fetchMediaData(url) : 
+  fetch(mediaAPIEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ media: { url, quality: quality || getDefaultResolveQuality() }, version })

@@ -3,22 +3,21 @@ import { DimensionState, JoinDimensionResponse } from "connect-sdk/dist/gen/avn/
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 
 // For debug
-const DockerMode = true
+const LocalDevMode = true
 
 class AVNBridge {
 
     // TODO: NOT CLEAR WHICH OF THESE LEGACY FIELDS ARE STILL USEFUL
     _iconUri: string | null = null
-    _mediaEndpoint: string | null = null
     _ownerIsAuthenticated = false
     _ownerIsSubscriber = false
     _allowNavigation = true
     _isSolo = false
     _description: string | null = null
     _instructions: string | null = null
-    _assetDomain = DockerMode ? "http://localhost:8181" : "https://rest.avncloud.com";
+    _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
 
-    public Connect = new AVNConnect(DockerMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
+    public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
     public async isHealthy(): Promise<boolean> {
         try {
@@ -53,7 +52,6 @@ class AVNBridge {
             const getRoomDimensionResult = await this.Connect.Rooms.getRoomDimension({ roomId: roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
             console.log(`AVN matched dimension ID '${this._dimensionId}' for room`)
-            this._mediaEndpoint = `${this._assetDomain}/com/Dimensions.cfc?method=media&dimensionid=${this._dimensionId}`;
             return true
         } catch {
             console.error(`AVN failed to match dimension`)
@@ -150,32 +148,49 @@ class AVNBridge {
 
     // Rooms
 
+    // Used to add dimension to URLs for the legacy media browser to be resolved by the REST server
     transformRoomUrl(url: string) {
-        // Use the absolute avatar URL is supplied otherwise it is a scene link
-        // if no asset ID is supplied then the scene link is void because this room is not navigable
-        // Note: the fragment sets the waypoint for the users entry position
-        return this._assetId
-            ? url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId
-            : "";
+        return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._assetId
     }
 
-    async fetchRoomData(assetid: string) {
-        const resolveRoomUrl = `${this._assetDomain}/com/Dimensions.cfc?method=room&dimensionid=${this._dimensionId}&assetid=${assetid}`;
-        const resolveRoomResponse = await fetch(resolveRoomUrl);
-        const roomData = await resolveRoomResponse.json();
-        return roomData;
+    async fetchRoomData(assetId: string) {
+        try {
+            const findRoomResult = await this.Connect.Rooms.findRoom({dimensionId: this.dimensionId, assetId})
+            return {
+                hubid: findRoomResult.roomId,
+                name: findRoomResult.name,
+                icon: findRoomResult.iconUrl,
+            }
+        } catch(error: unknown) {
+            console.error(`Error fetching room '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
+        }   
+        return null
     }
 
     // Media
 
+    // TODO: LEGACY
     isAvnUrl(url: string) {
         return url.startsWith(this.dynamicAssetPrefix);
     }
 
-    get mediaEndpoint() {
-        return this._mediaEndpoint;
+    async fetchMediaData(mediaUrl: string) {
+        try {
+            const assetId = mediaUrl.split("/").pop()
+            const resolveMediaResult = await this.Connect.Rooms.resolveMedia({dimensionId: this.dimensionId, assetId})
+            return {
+                "origin": resolveMediaResult.assetUrl,
+                "meta": {
+                    "tags": resolveMediaResult.tagNames,            
+                    "tag_ids": resolveMediaResult.tagIds,            
+                    "thumbnail": resolveMediaResult.thumbnailUrl,
+                    "expected_content_type": resolveMediaResult.mimeType,
+                }
+            }
+        } catch(error: unknown) {
+            throw new Error(`Unexpected error resolving media '${mediaUrl}' ${error instanceof Error ? error.message : "Unknown Error"}`)
+        }   
     }
-
 
 }
 

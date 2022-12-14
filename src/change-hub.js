@@ -31,9 +31,13 @@ export async function changeHubAvn(hubUrl) {
   console.log("Fast switching to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
   const roomData = await AVN.fetchRoomData(newAssetId);
-  console.log("Resolved Hub room from AVN server");
-  const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
-  await changeHub(nextState, true);
+  if(roomData) {
+    console.log("Resolved Hub room from AVN server");
+    const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
+    await changeHub(nextState, true);
+  } else {
+    console.error("Failed to change hub room");
+  }
 }
 
 // AVN: Psudeo-mutex to prevent overlapping calls to changeHub

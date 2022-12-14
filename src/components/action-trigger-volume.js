@@ -41,11 +41,12 @@ AFRAME.registerComponent("action-trigger-volume", {
           window.APP.store.update({ profile: { avatarId } });
           this.el.sceneEl.emit("avatar_updated");
         } else {
-          console.log("Navigating to", this.data.src);
           this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
           if(this.data.isSceneLink) {
+            console.log("Navigating to scene link", this.data.src);
             changeHubAvn(this.data.src);
           } else {
+            console.log("Navigating to generic link", this.data.src);
             // Mark the exit point in case the user returns with the back button
             const sceneId = new URL(this.data.src).pathname.split("/").pop();
             document.location.hash = sceneId;
