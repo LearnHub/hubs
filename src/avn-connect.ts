@@ -195,3 +195,8 @@ class AVNBridge {
 }
 
 export const AVN = new AVNBridge()
+
+// Useful for accessing AVN singleton in legacy Javascript contexts 
+// where we don't want to include this file because it breaks the build for the admin pages
+declare global { var AVNGlobal : AVNBridge }
+global.AVNGlobal = AVN

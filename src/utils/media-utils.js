@@ -14,7 +14,6 @@ import { SOUND_SCREENSHOT } from "../systems/sound-effects-system";
 import { mediaTypeFor } from "./media-type";
 
 import anime from "animejs";
-import { AVN } from "../avn-connect";
 
 export const MediaType = {
   MODEL: 1 << 0,
@@ -59,7 +58,7 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
   // AVN: Authenticated queries are accessed through an alternative API
-  const resultPromise = AVN.isAvnUrl(url) ? AVN.fetchMediaData(url) : 
+  const resultPromise = global.AVNGlobal.isAvnUrl(url) ? global.AVNGlobal.fetchMediaData(url) : 
   fetch(mediaAPIEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
