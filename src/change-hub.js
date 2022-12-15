@@ -140,9 +140,14 @@ export async function changeHub(nextState, addToHistory = true) {
     hubName: hub.name,
     showLineBreak: true
   });
+
+  // AVN: Update Eduverse presence
+  await AVN.enterRoom(hub.hub_id, NAF.clientId)
+
   } finally {
     isChanging = false;
   }
+
 }
 window.changeHub = changeHub;
 

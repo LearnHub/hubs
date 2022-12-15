@@ -663,6 +663,9 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data)
     updateUIForHub(hub, hubChannel);
     scene.emit("hub_updated", { hub });
 
+    // AVN: Update Eduverse presence
+    await AVN.enterRoom(hub.hub_id, data.session_id)
+
     if (!isEmbed) {
       console.log("Page is not embedded so environment initialization will start immediately");
       loadEnvironmentAndConnect();

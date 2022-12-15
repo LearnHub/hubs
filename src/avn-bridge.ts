@@ -96,6 +96,10 @@ class AVNBridge {
         return DimensionState.OPEN
     }
 
+    public async enterRoom(roomId: string, sessionId: string): Promise<void> {
+        await this.Connect.Rooms.enterRoom({ roomId, sessionId }, { headers: this._authHeaders})
+    }
+
     // The prefix that indicates dimension-specific dynamic content
     get dynamicAssetPrefix() {
         return "https://scene.link";
