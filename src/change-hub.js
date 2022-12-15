@@ -1,7 +1,7 @@
 import { getReticulumFetchUrl, hubUrl } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
 
-import { AVN } from "./avn-connect";
+import { AVN } from "./avn-bridge";
 
 function unloadRoomObjects() {
   document.querySelectorAll("[pinnable]").forEach(el => {

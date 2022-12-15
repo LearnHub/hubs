@@ -108,7 +108,7 @@ import { ECSDebugSidebarContainer } from "./debug-panel/ECSSidebar";
 import { NotificationsContainer } from "./room/NotificationsContainer";
 import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
-import { AVN } from "../avn-connect";
+import { AVN } from "../avn-bridge";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const avnShowHiddenFeatures = qsTruthy("showHiddenFeatures");

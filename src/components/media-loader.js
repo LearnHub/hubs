@@ -28,7 +28,7 @@ import { addComponent, entityExists, removeComponent } from "bitecs";
 import { MediaLoading } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
-import { AVN } from "../avn-connect";
+import { AVN } from "../avn-bridge";
 
 let loadingObject;
 

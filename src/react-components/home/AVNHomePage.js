@@ -1,11 +1,13 @@
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb";
 import React, { useContext, useEffect } from "react";
 import { PageContainer } from "../layout/PageContainer";
-import { AVN } from "../../avn-connect"
+import { AVN } from "../../avn-bridge"
 import { sleep } from "../../utils/async-utils";
 import { AppLogo } from "../misc/AppLogo";
 import styles from "./HomePage.scss";
 import { isLocalClient } from "../../utils/phoenix-utils";
+import { store } from "../../utils/store-instance";
+
 export class AVNHomePage extends React.Component {
 
   static propTypes = {
@@ -40,22 +42,28 @@ export class AVNHomePage extends React.Component {
   }
 
   async componentDidMount() {
+    console.log("AVNHomePage::componentDidMount")
 
     // Belt and braces code to create a new dimension
 
-    console.log("AVNHomePage::componentDidMount")
+    const accessToken = store.state.credentials?.extras?.access_token;
+    if(accessToken) {
+      console.log("AVN authenticating with existing token")
+      this.setState({statusMessage: "Authenticating..." })
+      await AVN.authenticate(accessToken)
+    } else {
+      console.log("AVN no token found so connection will be anonymous")
+    }
     this.setState({statusMessage: "Checking AVN Cloud connection..." })
     if(await AVN.isHealthy()) {
       this.setState({statusMessage: "Opening new dimension..." })
       if(await AVN.openNewDimension()) {
-        console.log(`newDimensionId = ${AVN.dimensionId}`)
         this.setState({statusMessage: `New dimension is open ${AVN.dimensionId} with default asset ID ${AVN.assetId}` })  
       } else {
         this.setState({statusMessage: "Failed to create a new dimension" })
       }
       
       const room = await AVN.Connect.Rooms.findRoom({dimensionId: AVN.dimensionId, assetId: AVN.assetId})
-      console.log(`room = ${room.domain} ${room.roomId}`)
       this.setState({statusMessage: `Found room ${room.domain} ${room.roomId}` })
             
       if (isLocalClient()) {

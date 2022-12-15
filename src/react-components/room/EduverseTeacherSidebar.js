@@ -11,7 +11,7 @@ import { ReactComponent as GatherIcon } from "../icons/People.svg";
 import { ReactComponent as HushIcon } from "../icons/Hush.svg";
 import { ReactComponent as LookIcon } from "../icons/Show.svg";
 import { ToolbarButton } from "../input/ToolbarButton";
-import { AVN } from "../../avn-connect";
+import { AVN } from "../../avn-bridge";
 
 const md = markdownit();
 

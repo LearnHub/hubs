@@ -15,7 +15,7 @@ export function LoadingScreen({ message, errorMessage, infoMessages }) {
       center={
         <>          
           {!errorMessage && (<Spinner />)}
-          <h3>{message}</h3>
+          <b>{message}</b>
           <p>{errorMessage}</p>
         </>
       }

@@ -3,7 +3,7 @@ import { DimensionState, JoinDimensionResponse } from "connect-sdk/dist/gen/avn/
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 
 // For debug
-const LocalDevMode = false
+const LocalDevMode = true
 
 class AVNBridge {
 
@@ -13,11 +13,25 @@ class AVNBridge {
     _ownerIsSubscriber = false
     _allowNavigation = true
     _isSolo = false
-    _description: string | null = null
-    _instructions: string | null = null
+    _description: string | undefined = undefined
+    _instructions: string | undefined = undefined
     _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
 
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
+
+    _accessToken : string | undefined = undefined
+    _authHeaders : HeadersInit | undefined = undefined
+
+    public async authenticate(accessToken: string) : Promise<boolean> {
+        this._accessToken = accessToken
+        this._authHeaders = { "Authentication": `Bearer ${this._accessToken}` }
+        return true
+    }
+
+    public async deauthenticate() : Promise<void> {        
+        this._accessToken = undefined
+        this._authHeaders = undefined
+    }
 
     public async isHealthy(): Promise<boolean> {
         try {
@@ -41,7 +55,7 @@ class AVNBridge {
     }
 
     public async openNewDimension(): Promise<boolean> {
-        const openDimensionResult = await this.Connect.Dimensions.openDimension({})
+        const openDimensionResult = await this.Connect.Dimensions.openDimension({}, { headers: this._authHeaders})
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
         return true
@@ -59,12 +73,13 @@ class AVNBridge {
         return false
     }
 
+    //TODO: REJOIN WHEN AUTHENTICATED? USE THE ABORT SIGNAL TO AS A SIGN JOIN IS ACTIVE
     public async joinDimension(): Promise<DimensionState> {
         if (!this.dimensionId) {
             console.error("No dimension ID has been set")
             return DimensionState.UNSPECIFIED
         }
-        const dimensionStream = this.Connect.Dimensions.joinDimension({ dimensionId: this.dimensionId })
+        const dimensionStream = this.Connect.Dimensions.joinDimension({ dimensionId: this.dimensionId }, { headers: this._authHeaders})
         const dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse> = dimensionStream[Symbol.asyncIterator]()
         const { done, value } = await dimensionStreamIterator.next()
         if (done) {
@@ -76,7 +91,7 @@ class AVNBridge {
             return value.state
         }
 
-        //TODO: MONITOR FOR DIMENSION CLOSING
+        //TODO: MONITOR FOR DIMENSION CLOSING USING SETTIMEOUT OR OTHER BACKGROUND WORKER
 
         return DimensionState.OPEN
     }

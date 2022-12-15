@@ -252,7 +252,7 @@ import "./load-media-on-paste-or-drop";
 import { swapActiveScene } from "./bit-systems/scene-loading";
 import { setLocalClientID } from "./bit-systems/networking";
 import { listenForNetworkMessages } from "./utils/listen-for-network-messages";
-import { AVN } from "./avn-connect";
+import { AVN } from "./avn-bridge";
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb";
 import { DimensionState, JoinDimensionResponse } from 'connect-sdk/dist/gen/avn/connect/v1/dimensions_pb';
 
@@ -834,6 +834,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // AVN
+
+  const accessToken = store.state.credentials?.extras?.access_token;
+  if(accessToken) {
+    console.log("AVN authenticating with existing token")
+    await AVN.authenticate(accessToken)
+  } else {
+    console.log("AVN no token found so connection will be anonymous")
+  }
 
   // Check connection to Eduverse server
   if(!await AVN.isHealthy()) {

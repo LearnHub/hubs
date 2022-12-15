@@ -6,7 +6,7 @@ import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import markdownit from "markdown-it";
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
-import { AVN } from "../../avn-connect";
+import { AVN } from "../../avn-bridge";
 
 const md = markdownit();
 
