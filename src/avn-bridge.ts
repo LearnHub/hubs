@@ -3,9 +3,10 @@ import { DimensionState, JoinDimensionResponse } from "connect-sdk/dist/gen/avn/
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 import { store } from "./utils/store-instance"
 import { v4 as uuidv4 } from 'uuid'
+import { isLocalClient } from "./utils/phoenix-utils"
 
 // For debug
-const LocalDevMode = true
+const LocalDevMode = isLocalClient()
 
 // Set ID if not already done
 if(!store.state.profile.clientId) {
