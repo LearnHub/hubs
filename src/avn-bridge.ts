@@ -1,9 +1,17 @@
 import { AVNConnect } from "connect-sdk"
 import { DimensionState, JoinDimensionResponse } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
+import { store } from "./utils/store-instance"
+import { v4 as uuidv4 } from 'uuid'
 
 // For debug
-const LocalDevMode = false
+const LocalDevMode = true
+
+// Set ID if not already done
+if(!store.state.profile.clientId) {
+    store.update({ profile: { clientId: uuidv4() } });
+    console.info(`AVN: Created new client ID '${store.state.profile.clientId}'`)
+}
 
 class AVNBridge {
 
@@ -19,18 +27,21 @@ class AVNBridge {
 
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
-    _accessToken : string | undefined = undefined
-    _authHeaders : HeadersInit | undefined = undefined
+    // Headers to use for unauthenticated API calls
+    _unauthenticatedApiHeaders : HeadersInit = { "X-Client-Id": store.state.profile.clientId }
+    // Headers to use for authenticated API calls
+    _authenticatedApiHeaders : HeadersInit = this._unauthenticatedApiHeaders
 
     public async authenticate(accessToken: string) : Promise<boolean> {
-        this._accessToken = accessToken
-        this._authHeaders = { "Authentication": `Bearer ${this._accessToken}` }
+        this._authenticatedApiHeaders = { 
+            "Authentication": `Bearer ${accessToken}`, 
+            "X-Client-Id": store.state.profile.clientId 
+        }
         return true
     }
 
     public async deauthenticate() : Promise<void> {        
-        this._accessToken = undefined
-        this._authHeaders = undefined
+        this._authenticatedApiHeaders = this._unauthenticatedApiHeaders
     }
 
     public async isHealthy(): Promise<boolean> {
@@ -55,7 +66,7 @@ class AVNBridge {
     }
 
     public async openNewDimension(): Promise<boolean> {
-        const openDimensionResult = await this.Connect.Dimensions.openDimension({}, { headers: this._authHeaders})
+        const openDimensionResult = await this.Connect.Dimensions.openDimension({}, { headers: this._authenticatedApiHeaders})
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
         return true
@@ -79,25 +90,25 @@ class AVNBridge {
             console.error("No dimension ID has been set")
             return DimensionState.UNSPECIFIED
         }
-        const dimensionStream = this.Connect.Dimensions.joinDimension({ dimensionId: this.dimensionId }, { headers: this._authHeaders})
+        const dimensionStream = this.Connect.Dimensions.joinDimension({ dimensionId: this.dimensionId }, { headers: this._authenticatedApiHeaders})
         const dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse> = dimensionStream[Symbol.asyncIterator]()
         const { done, value } = await dimensionStreamIterator.next()
         if (done) {
             console.error(`AVN dimension stream unexpectedly terminated`)
             return DimensionState.UNSPECIFIED
         }
-        if (value.state !== DimensionState.OPEN) {
-            console.error(`AVN failed to join dimension '${this.dimensionId}', got state ${value.state}`)
-            return value.state
+        if (value.message.case !== "status" || value.message.value.state !== DimensionState.OPEN) {
+            console.error(`AVN failed to join dimension '${this.dimensionId}', got message ${value.message}`)
+            return value.message.case === "status" ? value.message.value.state : DimensionState.UNSPECIFIED
         }
-
+        console.log(`AVN: Joined dimension '${this.dimensionId}'`)
         //TODO: MONITOR FOR DIMENSION CLOSING USING SETTIMEOUT OR OTHER BACKGROUND WORKER
 
         return DimensionState.OPEN
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
-        await this.Connect.Rooms.enterRoom({ roomId, sessionId }, { headers: this._authHeaders})
+        await this.Connect.Rooms.enterRoom({ roomId, sessionId }, { headers: this._authenticatedApiHeaders})
     }
 
     // The prefix that indicates dimension-specific dynamic content

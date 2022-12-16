@@ -67,7 +67,8 @@ export const SCHEMA = {
         displayName: { type: "string", pattern: "^.{1,32}$" }, // AVN: No more than 32 characters of any type
         avatarId: { type: "string" },
         // personalAvatarId is obsolete, but we need it here for backwards compatibility.
-        personalAvatarId: { type: "string" }
+        personalAvatarId: { type: "string" },
+        clientId: { type: "string" },
       }
     },
 
