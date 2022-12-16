@@ -9,7 +9,7 @@ import { isLocalClient } from "./utils/phoenix-utils"
 const LocalDevMode = isLocalClient()
 
 // Set ID if not already done
-if(!store.state.profile.clientId) {
+if (!store.state.profile.clientId) {
     store.update({ profile: { clientId: uuidv4() } });
     console.info(`AVN: Created new client ID '${store.state.profile.clientId}'`)
 }
@@ -29,20 +29,22 @@ class AVNBridge {
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
     // Headers to use for unauthenticated API calls
-    _unauthenticatedApiHeaders : HeadersInit = { "X-Client-Id": store.state.profile.clientId }
+    _unauthenticatedApiHeaders: HeadersInit = { "X-Client-Id": store.state.profile.clientId }
     // Headers to use for authenticated API calls
-    _authenticatedApiHeaders : HeadersInit = this._unauthenticatedApiHeaders
+    _authenticatedApiHeaders: HeadersInit = this._unauthenticatedApiHeaders
 
-    public async authenticate(accessToken: string) : Promise<boolean> {
-        this._authenticatedApiHeaders = { 
-            "Authorization": `Bearer ${accessToken}`, 
-            "X-Client-Id": store.state.profile.clientId 
+    public async authenticate(accessToken: string): Promise<boolean> {
+        this._authenticatedApiHeaders = {
+            "Authorization": `Bearer ${accessToken}`,
+            "X-Client-Id": store.state.profile.clientId
         }
+        this.abortStreamIfActive()
         return true
     }
 
-    public async deauthenticate() : Promise<void> {        
+    public async deauthenticate(): Promise<void> {
         this._authenticatedApiHeaders = this._unauthenticatedApiHeaders
+        this.abortStreamIfActive()
     }
 
     public async isHealthy(): Promise<boolean> {
@@ -50,7 +52,7 @@ class AVNBridge {
             const healthCheckResult = await this.Connect.Health.check({})
             console.info(`AVN health check result: ${healthCheckResult.status}`)
             return healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING
-        } catch(error: unknown) {
+        } catch (error: unknown) {
             console.error(`AVN health check exception`, error)
         }
         return false
@@ -67,7 +69,7 @@ class AVNBridge {
     }
 
     public async openNewDimension(): Promise<boolean> {
-        const openDimensionResult = await this.Connect.Dimensions.openDimension({}, { headers: this._authenticatedApiHeaders})
+        const openDimensionResult = await this.Connect.Dimensions.openDimension({}, { headers: this._authenticatedApiHeaders })
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
         return true
@@ -85,31 +87,111 @@ class AVNBridge {
         return false
     }
 
-    //TODO: REJOIN WHEN AUTHENTICATED? USE THE ABORT SIGNAL TO AS A SIGN JOIN IS ACTIVE
-    public async joinDimension(): Promise<DimensionState> {
-        if (!this.dimensionId) {
-            console.error("No dimension ID has been set")
-            return DimensionState.UNSPECIFIED
-        }
-        const dimensionStream = this.Connect.Dimensions.joinDimension({ dimensionId: this.dimensionId }, { headers: this._authenticatedApiHeaders})
-        const dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse> = dimensionStream[Symbol.asyncIterator]()
-        const { done, value } = await dimensionStreamIterator.next()
-        if (done) {
-            console.error(`AVN dimension stream unexpectedly terminated`)
-            return DimensionState.UNSPECIFIED
-        }
-        if (value.message.case !== "status" || value.message.value.state !== DimensionState.OPEN) {
-            console.error(`AVN failed to join dimension '${this.dimensionId}', got message ${value.message}`)
-            return value.message.case === "status" ? value.message.value.state : DimensionState.UNSPECIFIED
-        }
-        console.log(`AVN: Joined dimension '${this.dimensionId}'`)
-        //TODO: MONITOR FOR DIMENSION CLOSING USING SETTIMEOUT OR OTHER BACKGROUND WORKER
+    // Controls the dimension stream and indicates that a stream is active
+    _streamAbortController: AbortController | null
+    // It might not be necessary to hold a reference to the loop promise, but it makes the code clearer
+    _streamMessageHandlerPromise: Promise<void> | null
 
-        return DimensionState.OPEN
+    _dimensionRejoinTimeout = 1000
+    _lastRejoinTimeout: NodeJS.Timeout
+
+    public async streamMessageHandler(
+        abortController: AbortController,
+        dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse>
+    ): Promise<void> {
+        try {
+            console.debug("AVN: message streaming handler begin")
+            while (!abortController.signal.aborted) {
+                const { done, value } = await dimensionStreamIterator.next()
+                if (done) {
+                    console.info(`AVN: dimension message stream ended`)
+                    break
+                }
+                switch (value.message.case) {
+                    case "status":
+                        console.debug("TODO: status MESSAGE")
+                        break
+                    case "broadcast":
+                        console.debug("TODO: broadcast MESSAGE")
+                        break
+                    case "instructionContext":
+                        console.debug("TODO: instructionContext MESSAGE")
+                        break
+                    default:
+                        console.error(`AVN: Unexpected message type '${value.message.case}'`)
+                }
+            }
+            if (abortController.signal.aborted) {
+                console.info(`AVN: dimension message stream aborted: ${abortController.signal.reason}`)
+            }
+        } catch (error: unknown) {
+            console.warn(`AVN: exception in stream handler: ${error instanceof Error ? error.message : "Unknown error"}`)
+        } finally {
+            console.debug("AVN: message streaming handler end")
+            clearTimeout(this._lastRejoinTimeout)
+            this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), 0)
+        }
+    }
+
+    async rejoinDimension(): Promise<void> {
+        console.log("AVN: rejoining dimension...")
+        const result = await this.joinDimension()
+        if (result === DimensionState.OPEN) {
+            this._dimensionRejoinTimeout = 1000
+        } else {
+            // Try again with an exponential backoff
+            this._dimensionRejoinTimeout *= 2
+            clearTimeout(this._lastRejoinTimeout)
+            this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), this._dimensionRejoinTimeout)
+        }
+    }
+
+    abortStreamIfActive() {
+        // Is there an open stream?
+        if (this._streamAbortController) {
+            this._streamAbortController.abort("STREAM_REPLACEMENT")
+            this._streamAbortController = null
+        }
+    }
+
+    public async joinDimension(): Promise<DimensionState> {
+        try {
+            if (!this.dimensionId) {
+                console.error("No dimension ID has been set")
+                return DimensionState.UNSPECIFIED
+            }
+            this.abortStreamIfActive()
+            const abortController = new AbortController()
+            const dimensionStream = this.Connect.Dimensions.joinDimension(
+                { dimensionId: this.dimensionId },
+                { headers: this._authenticatedApiHeaders, signal: abortController.signal })
+            const dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse> = dimensionStream[Symbol.asyncIterator]()
+            const { done, value } = await dimensionStreamIterator.next()
+            if (done) {
+                console.error(`AVN dimension stream unexpectedly terminated`)
+                abortController.abort("STREAM_OPEN_FAILED")
+                return DimensionState.UNSPECIFIED
+            }
+            if (value.message.case !== "status" || value.message.value.state !== DimensionState.OPEN) {
+                console.error(`AVN failed to join dimension '${this.dimensionId}', got message ${value.message}`)
+                abortController.abort("STREAM_STATE_UNEXPECTED")
+                return value.message.case === "status" ? value.message.value.state : DimensionState.UNSPECIFIED
+            }
+            console.log(`AVN: Joined dimension '${this.dimensionId}'`)
+            // Record abort controller
+            this._streamAbortController = abortController
+            // Start message loop
+            this._streamMessageHandlerPromise = this.streamMessageHandler(abortController, dimensionStreamIterator)
+
+            return DimensionState.OPEN
+        } catch (error: unknown) {
+            console.warn(`AVN: exception joining dimension: ${error instanceof Error ? error.message : "Unknown error"}`)
+        }
+        return DimensionState.UNSPECIFIED
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
-        await this.Connect.Rooms.enterRoom({ roomId, sessionId }, { headers: this._authenticatedApiHeaders})
+        await this.Connect.Rooms.enterRoom({ roomId, sessionId }, { headers: this._authenticatedApiHeaders })
     }
 
     // The prefix that indicates dimension-specific dynamic content
@@ -186,15 +268,15 @@ class AVNBridge {
 
     async fetchRoomData(assetId: string) {
         try {
-            const findRoomResult = await this.Connect.Rooms.findRoom({dimensionId: this.dimensionId, assetId})
+            const findRoomResult = await this.Connect.Rooms.findRoom({ dimensionId: this.dimensionId, assetId })
             return {
                 hubid: findRoomResult.roomId,
                 name: findRoomResult.name,
                 icon: findRoomResult.iconUrl,
             }
-        } catch(error: unknown) {
+        } catch (error: unknown) {
             console.error(`Error fetching room '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
-        }   
+        }
         return null
     }
 
@@ -208,19 +290,19 @@ class AVNBridge {
     async fetchMediaData(mediaUrl: string) {
         try {
             const assetId = mediaUrl.split("/").pop()
-            const resolveMediaResult = await this.Connect.Rooms.resolveMedia({dimensionId: this.dimensionId, assetId})
+            const resolveMediaResult = await this.Connect.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
             return {
                 "origin": resolveMediaResult.assetUrl,
                 "meta": {
-                    "tags": resolveMediaResult.tagNames,            
-                    "tag_ids": resolveMediaResult.tagIds,            
+                    "tags": resolveMediaResult.tagNames,
+                    "tag_ids": resolveMediaResult.tagIds,
                     "thumbnail": resolveMediaResult.thumbnailUrl,
                     "expected_content_type": resolveMediaResult.mimeType,
                 }
             }
-        } catch(error: unknown) {
+        } catch (error: unknown) {
             throw new Error(`Unexpected error resolving media '${mediaUrl}' ${error instanceof Error ? error.message : "Unknown Error"}`)
-        }   
+        }
     }
 
 }
@@ -229,5 +311,5 @@ export const AVN = new AVNBridge()
 
 // Useful for accessing AVN singleton in legacy Javascript contexts 
 // where we don't want to include this file because it breaks the build for the admin pages
-declare global { var AVNGlobal : AVNBridge }
+declare global { var AVNGlobal: AVNBridge }
 global.AVNGlobal = AVN
