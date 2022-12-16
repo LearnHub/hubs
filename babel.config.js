@@ -28,9 +28,6 @@ module.exports = {
     ["@babel/plugin-proposal-private-property-in-object", { loose: true }],
     ["@babel/plugin-proposal-private-methods", { loose: true }],
     "@babel/proposal-object-rest-spread",
-    // Samsung Internet on the Oculus Go version is stuck at version 5.2, which is a
-    // Chromium 51, as of this writing. It needs babel to transpile async/await.
-    "@babel/plugin-transform-async-to-generator",
     "@babel/plugin-proposal-optional-chaining"
   ]
 };
