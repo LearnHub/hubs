@@ -35,7 +35,7 @@ class AVNBridge {
 
     public async authenticate(accessToken: string) : Promise<boolean> {
         this._authenticatedApiHeaders = { 
-            "Authentication": `Bearer ${accessToken}`, 
+            "Authorization": `Bearer ${accessToken}`, 
             "X-Client-Id": store.state.profile.clientId 
         }
         return true
