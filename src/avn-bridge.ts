@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { isLocalClient } from "./utils/phoenix-utils"
 
 // For debug
-const LocalDevMode = isLocalClient()
+const LocalDevMode = isLocalClient() //&& false
 
 // Set ID if not already done
 if (!store.state.profile.clientId) {

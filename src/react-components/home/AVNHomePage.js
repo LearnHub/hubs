@@ -37,12 +37,15 @@ export class AVNHomePage extends React.Component {
           this.setState({ message: `Joining room...` })
           document.location.replace(roomUrl)
         } else {
+          console.error("AVN: Failed to create a new dimension")
           this.setState({ message: "An unexpected error occured", errorMessage: "Failed to create a new dimension" })
         }
       } else {
+        console.error("AVN: Failed to connect to AVN Cloud")
         this.setState({ message: "An unexpected error occured", errorMessage: "Failed to connect to AVN Cloud" })
       }
     } catch(error) {
+      console.error(error)
       this.setState({ message: "An unexpected exception occured", errorMessage: error?.message })
     }
   }
