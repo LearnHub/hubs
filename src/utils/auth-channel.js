@@ -116,7 +116,7 @@ export default class AuthChannel {
       // AVN: Email is currently unique in ClassConnect and makes a good user-facing ID
       this.store.update({ credentials: { email: extras.email, token, extras } });
       // AVN: Set users display name from OIDC
-      this.store.update({ profile: { displayName: extras.name } });
+      this.store.update({ activity: { hasChangedName: true }, profile: { displayName: extras.name } });
       // AVN: Pass through auth token
       if(extras.access_token) {
           await AVN.authenticate(extras.access_token)

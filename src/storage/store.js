@@ -368,7 +368,7 @@ export default class Store extends EventTarget {
   };
 
   resetToRandomName = async () => {
-    this.update({ profile: { displayName: generateRandomName() } });
+    this.update({ activity: { hasChangedName: false }, profile: { displayName: generateRandomName() } });
   };
 
   get state() {
