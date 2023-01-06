@@ -1,14 +1,15 @@
 import { AVNConnect } from "connect-sdk"
-import { DimensionState, JoinDimensionResponse } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
+import { DimensionState, DimensionEvent } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 import { store } from "./utils/store-instance"
 import { v4 as uuidv4 } from 'uuid'
 import { isLocalClient } from "./utils/phoenix-utils"
+import { ConnectionCredentials } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
 
 // For debug
 const LocalDevMode = isLocalClient() //&& false
 
-// Set ID if not already done
+// Create unique client ID if not already done
 if (!store.state.profile.clientId) {
     store.update({ profile: { clientId: uuidv4() } });
     console.info(`AVN: Created new client ID '${store.state.profile.clientId}'`)
@@ -25,25 +26,21 @@ class AVNBridge {
     _description: string | undefined = undefined
     _instructions: string | undefined = undefined
     _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
+    _accessToken: string | undefined = undefined
+    // Dimension connection credentials
+    _connectionCredentials: ConnectionCredentials | undefined
+    _connectionSecret: string = ""
 
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
-    // Headers to use for unauthenticated API calls
-    _unauthenticatedApiHeaders: HeadersInit = { "X-Client-Id": store.state.profile.clientId }
-    // Headers to use for authenticated API calls
-    _authenticatedApiHeaders: HeadersInit = this._unauthenticatedApiHeaders
-
     public async authenticate(accessToken: string): Promise<boolean> {
-        this._authenticatedApiHeaders = {
-            "Authorization": `Bearer ${accessToken}`,
-            "X-Client-Id": store.state.profile.clientId
-        }
+        this._accessToken = accessToken
         this.abortStreamIfActive()
         return true
     }
 
     public async deauthenticate(): Promise<void> {
-        this._authenticatedApiHeaders = this._unauthenticatedApiHeaders
+        this._accessToken = undefined
         this.abortStreamIfActive()
     }
 
@@ -69,7 +66,10 @@ class AVNBridge {
     }
 
     public async openNewDimension(): Promise<boolean> {
-        const openDimensionResult = await this.Connect.Dimensions.openDimension({}, { headers: this._authenticatedApiHeaders })
+        const openDimensionResult = await this.Connect.Dimensions.openDimension({
+            clientId: store.state.profile.clientId,
+            userJwt: this._accessToken,
+        })
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
         return true
@@ -97,7 +97,7 @@ class AVNBridge {
 
     public async streamMessageHandler(
         abortController: AbortController,
-        dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse>
+        dimensionStreamIterator: AsyncIterator<DimensionEvent, DimensionEvent>
     ): Promise<void> {
         try {
             console.debug("AVN: message streaming handler begin")
@@ -109,13 +109,27 @@ class AVNBridge {
                 }
                 switch (value.message.case) {
                     case "status":
-                        console.debug("TODO: status MESSAGE")
+                        if(value.message.value.state == DimensionState.CLOSED) {
+                            console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
+                            //TODO: PROPER ABORT AND UI DISPLAY
+                            // this.abortStreamIfActive()
+                            // APP.entryManager?.exitScene()
+                        } else {
+                            console.warn(`Unexpected dimension state change '${value.message.value.state}'`)
+                        }
+                        break
+                    case "credentials":
+                        this._connectionCredentials = value.message.value
+                        console.info(`AVN update connection credentials. Connection id is now '${this._connectionCredentials?.connectionId}'`)
                         break
                     case "broadcast":
-                        console.debug("TODO: broadcast MESSAGE")
+                        console.debug("TODO: broadcast MESSAGE", value.message)
                         break
-                    case "instructionContext":
-                        console.debug("TODO: instructionContext MESSAGE")
+                    case "presence":
+                        console.debug("TODO: presence MESSAGE", value.message)
+                        break
+                    case "lesson":
+                        console.debug("TODO: lesson MESSAGE", value.message)
                         break
                     default:
                         console.error(`AVN: Unexpected message type '${value.message.case}'`)
@@ -163,15 +177,21 @@ class AVNBridge {
             this.abortStreamIfActive()
             const abortController = new AbortController()
             const dimensionStream = this.Connect.Dimensions.joinDimension(
-                { dimensionId: this.dimensionId },
-                { headers: this._authenticatedApiHeaders, signal: abortController.signal })
-            const dimensionStreamIterator: AsyncIterator<JoinDimensionResponse, JoinDimensionResponse> = dimensionStream[Symbol.asyncIterator]()
+                { 
+                    dimensionId: this.dimensionId, 
+                    clientId: store.state.profile.clientId,
+                    userJwt: this._accessToken,
+                },
+                { signal: abortController.signal }
+            )
+            const dimensionStreamIterator: AsyncIterator<DimensionEvent, DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
             const { done, value } = await dimensionStreamIterator.next()
             if (done) {
                 console.error(`AVN dimension stream unexpectedly terminated`)
                 abortController.abort("STREAM_OPEN_FAILED")
                 return DimensionState.UNSPECIFIED
             }
+            // First message must say that the dimension is OPEN
             if (value.message.case !== "status" || value.message.value.state !== DimensionState.OPEN) {
                 console.error(`AVN failed to join dimension '${this.dimensionId}', got message ${value.message}`)
                 abortController.abort("STREAM_STATE_UNEXPECTED")
@@ -191,7 +211,11 @@ class AVNBridge {
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
-        await this.Connect.Rooms.enterRoom({ roomId, sessionId }, { headers: this._authenticatedApiHeaders })
+        await this.Connect.Rooms.enterRoom({ 
+            credentials: this._connectionCredentials, 
+            roomId, 
+            sessionId 
+        })
     }
 
     // The prefix that indicates dimension-specific dynamic content
