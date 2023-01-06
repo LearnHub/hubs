@@ -169,17 +169,17 @@ export const guessContentType = url => {
 
 const originIsHubsServer = new Map();
 
-// AVN: shortcircuit for well know domains
-global.AVNGlobal.dataServerDomains.forEach((domain) => originIsHubsServer.set(domain, false));
-//TODO: IS THIS NEEDED?
-//originIsHubsServer.set(global.AVNGlobal.dynamicAssetPrefix, true);
-
 async function isHubsServer(url) {
   if (!url) return false;
   if (!url.startsWith("http")) {
     url = "https://" + url;
   }
   const { origin } = new URL(url);
+
+  // AVN: shortcircuit for well know domains (deferred to avoid initialization ordering problems)
+  if(originIsHubsServer.size === 0) {
+    global.AVNGlobal.dataServerDomains.forEach((domain) => originIsHubsServer.set(domain, false));
+  }
 
   if (originIsHubsServer.has(origin)) {
     return originIsHubsServer.get(origin);
