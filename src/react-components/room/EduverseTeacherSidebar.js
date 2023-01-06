@@ -51,7 +51,7 @@ export function EduverseTeacherSidebar({ room, onClose }) {
             <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(AVN.description) }} />
         )}
       </div>
-      <Toolbar right={
+      {/* <Toolbar right={
         <>
           <ToolbarButton
             icon={<GatherIcon />}
@@ -72,7 +72,7 @@ export function EduverseTeacherSidebar({ room, onClose }) {
             onClick={() => alert("NOT IMPLEMENTED")}
           />
         </>
-      }/>
+      }/> */}
     </Sidebar>
   );
 }

@@ -5,6 +5,8 @@ import { store } from "./utils/store-instance"
 import { v4 as uuidv4 } from 'uuid'
 import { isLocalClient } from "./utils/phoenix-utils"
 import { ConnectionCredentials } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
+import { LessonContext } from "connect-sdk/dist/gen/avn/connect/v1/lesson_context_pb"
+import { changeHubAvn } from "./change-hub"
 
 // For debug
 const LocalDevMode = isLocalClient() //&& false
@@ -27,9 +29,8 @@ class AVNBridge {
     _instructions: string | undefined = undefined
     _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
     _accessToken: string | undefined = undefined
-    // Dimension connection credentials
     _connectionCredentials: ConnectionCredentials | undefined
-    _connectionSecret: string = ""
+    _roomId: string | undefined = undefined
 
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
@@ -129,7 +130,16 @@ class AVNBridge {
                         console.debug("TODO: presence MESSAGE", value.message)
                         break
                     case "lesson":
-                        console.debug("TODO: lesson MESSAGE", value.message)
+                        // Has a lesson focus been request?
+                        if(value.message.value.focus) {
+                            if(value.message.value.focus.roomId !== this._roomId) {
+                                const sceneLinkUrl = `${this.dynamicAssetPrefix}/${value.message.value.focus.assetId}`
+                                console.log(`AVN responding to focus request to asset '${value.message.value.focus.assetId}' (expecting room ${value.message.value.focus.roomId})`)
+                                changeHubAvn(sceneLinkUrl)
+                            } else {
+                                console.log("AVN focus request room already active")
+                            }
+                        }
                         break
                     default:
                         console.error(`AVN: Unexpected message type '${value.message.case}'`)
@@ -211,11 +221,25 @@ class AVNBridge {
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
+        this._roomId = roomId
         await this.Connect.Rooms.enterRoom({ 
             credentials: this._connectionCredentials, 
             roomId, 
             sessionId 
         })
+    }
+
+    public async setLessonContext(): Promise<void> {
+        const lessonContext = new LessonContext({focus: {
+            roomId: this._roomId,
+            assetId: this._assetId,
+        }})
+        const result = await this.Connect.Dimensions.setLessonContext({ 
+            credentials: this._connectionCredentials, 
+            dimensionId: this._dimensionId,
+            context: lessonContext,
+        })
+        console.log("AVN setLessonContext result", result)
     }
 
     // The prefix that indicates dimension-specific dynamic content

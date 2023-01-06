@@ -75,6 +75,7 @@ import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
 import { ReactComponent as SaveIcon } from "./icons/Save.svg";
 import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
 import { ReactComponent as PassIcon } from "./icons/Pass.svg";
+import { ReactComponent as GatherIcon } from "./icons/People.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
@@ -1153,6 +1154,9 @@ class UIRoot extends Component {
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
     const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
 
+    // AVN: Good enough synonym for now
+    const canGuide = isModerator;
+
     const moreMenu = [
       {
         id: "user",
@@ -1443,10 +1447,10 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
-                        <EduverseTeacherMenuButton
+                        {canGuide && (<EduverseTeacherMenuButton
                           active={this.state.sidebarId === "eduverse-teacher"}
                           onClick={() => this.toggleSidebar("eduverse-teacher")}
-                        />
+                        />)}
                         <EduverseStudentMenuButton
                           active={this.state.sidebarId === "eduverse-student"}
                           onClick={() => this.toggleSidebar("eduverse-student")}
@@ -1773,6 +1777,12 @@ class UIRoot extends Component {
                       store={this.props.store}
                     />                 
                     }
+                    {entered && canGuide && (<ToolbarButton
+                      icon={<GatherIcon />}
+                      label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
+                      preset="basic"
+                      onClick={async () => await AVN.setLessonContext() }
+                    />)}
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
