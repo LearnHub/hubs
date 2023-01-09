@@ -174,7 +174,7 @@ AFRAME.registerComponent("personal-space-invader", {
     radius: { type: "number", default: 0.1 },
     useMaterial: { default: false },
     debug: { default: false },
-    invadingOpacity: { default: 0.3 }
+    invadingOpacity: { default: 0.1 }
   },
 
   init() {
