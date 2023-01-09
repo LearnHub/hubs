@@ -22,14 +22,12 @@ if (!store.state.profile.clientId) {
 
 class AVNBridge {
 
+    _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
     // TODO: NOT CLEAR WHICH OF THESE LEGACY FIELDS ARE STILL USEFUL
     _iconUri: string | null = null
-    _ownerIsAuthenticated = false
-    _allowNavigation = true
     _isSolo = false
     _description: string | undefined = undefined
     _instructions: string | undefined = undefined
-    _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
     _accessToken: string | undefined = undefined
     _connectionCredentials: ConnectionCredentials | undefined
     _roomId: string | undefined = undefined
@@ -142,6 +140,9 @@ class AVNBridge {
                         break
                     case "lesson":
                         this._learnLessonContext = value.message.value
+                        if(!this._teachLessonContext) {
+                            global.dispatchEvent(new Event("avn-allow-navigation-changed"))
+                        }
                         console.log(`AVN lesson context set`, value.message.value)
                         break
                     default:
@@ -236,7 +237,7 @@ class AVNBridge {
 
     // Guiding
 
-    public async setLessonFocus(position: THREE.Vector3): Promise<boolean> {
+    public async setLessonFocus(position: THREE.Vector3 | undefined): Promise<boolean> {
         const newContext = new LessonContext({
             focus: {
                 roomId: this._roomId,
@@ -295,17 +296,9 @@ class AVNBridge {
     public updateFromHub(hub: any) {
         const userData = hub.user_data;
         if (userData) {
-            this._allowNavigation = userData.allownavigation;
             if (userData.assetid && this._assetId != userData.assetid) {
                 this._assetId = userData.assetid;
                 console.info(`AVN: Updated asset id to '${this._assetId}'`);
-            } else {
-                // Asset ID is expected if room allows navigation
-                if (this._allowNavigation) {
-                    console.error("AVN: No assetid is set")
-                } else {
-                    console.info("AVN: No assetid is set")
-                }
             }
             if (this._iconUri != userData.iconuri) {
                 this._iconUri = userData.iconuri;
@@ -314,7 +307,6 @@ class AVNBridge {
                     console.error("AVN: No iconuri is set")
                 }
             }
-            this._ownerIsAuthenticated = userData.ownerisauthenticated;
             this._isSolo = hub.room_size <= 1;
             this._description = userData.description;
             this._instructions = userData.instructions;
@@ -329,20 +321,19 @@ class AVNBridge {
     }
 
     get description() {
-        return this._description;
+        return this._description
     }
 
     get instructions() {
-        return this._instructions;
+        return this._instructions
     }
 
     get isSolo() {
-        return this._isSolo;
+        return this._isSolo
     }
 
-    // TODO: LEGACY
     get allowNavigation() {
-        return this._allowNavigation;
+        return this._teachLessonContext || !this._learnLessonContext?.focus
     }
 
     // Rooms
@@ -411,20 +402,41 @@ class AVNBridge {
         }
     }
 
+    private _pendingFocusUpdate : Promise<void> | undefined = undefined
+    private async asyncFocusUpdate() : Promise<void> {
+        try {
+            await this.setLessonFocus(undefined)
+        } catch (error: unknown) {
+            throw new Error(`Unexpected error updating focus: ${error instanceof Error ? error.message : "Unknown Error"}`)
+        } finally {
+            this._pendingFocusUpdate = undefined
+        }
+    }
+
     // Process AVN events that should happen in system space    
     public tick(characterController: CharacterControllerSystem) {
-        // Default to no tethering
-        characterController.tether(null)
-        // Has a room been mandated?
-        if(this._learnLessonContext?.focus) {
-            // Are we in the right room?
-            if(this._learnLessonContext.focus?.roomId === this._roomId) {
-                // Tether to the focus position
-                characterController.tether(this._learnLessonContext?.focus?.position)
-            } else {
-                // Change to the right room if not already started
-                if(!this._pendingSceneChange) {
-                    this._pendingSceneChange = this.asyncChangeScene(this._learnLessonContext.focus.assetId)
+        if(this._teachLessonContext) {
+            // Have we changed room since setting the focus?
+            if(this._teachLessonContext.focus?.roomId !== this._roomId) {
+                // Change room focus if not already started
+                if(!this._pendingFocusUpdate) {
+                    this._pendingFocusUpdate = this.asyncFocusUpdate()
+                }
+            }
+        } else {
+            // Default to no tethering
+            characterController.tether(null)
+            // Has a focus been mandated?
+            if(this._learnLessonContext?.focus) {
+                // Are we in the right room?
+                if(this._learnLessonContext.focus?.roomId === this._roomId) {
+                    // Tether to the focus position
+                    characterController.tether(this._learnLessonContext?.focus?.position)
+                } else {
+                    // Change to the right room if not already started
+                    if(!this._pendingSceneChange) {
+                        this._pendingSceneChange = this.asyncChangeScene(this._learnLessonContext.focus.assetId)
+                    }
                 }
             }
         }

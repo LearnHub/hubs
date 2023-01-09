@@ -180,7 +180,9 @@ class UIRoot extends Component {
     activeObject: PropTypes.object,
     selectedObject: PropTypes.object,
     breakpoint: PropTypes.string,
+    // AVN Properties
     avnIsLicensedCreator: PropTypes.bool,
+    avnAllowNavigation: PropTypes.bool,
     canVoiceChat: PropTypes.bool
   };
 
@@ -1657,8 +1659,10 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
-                    entered && AVN.allowNavigation &&
+                    entered &&
                     <ToolbarButton
+                      disabled={!this.props.avnAllowNavigation}
+                      title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
                       onClick={() => {
@@ -1667,8 +1671,9 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Scene selection
-                    AVN.allowNavigation &&
                     <ToolbarButton
+                      disabled={!this.props.avnAllowNavigation}
+                      title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
                       icon={<SceneIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Go" />}
                       onClick={() => {

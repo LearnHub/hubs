@@ -885,7 +885,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       return        
   }
   scene.emit("didJoinDimension");
-  remountUI({ avnIsLicensedCreator: AVN.dimensionIsLicensed });
+  remountUI({ avnIsLicensedCreator: AVN.dimensionIsLicensed, avnAllowNavigation: AVN.allowNavigation });
+  global.addEventListener("avn-allow-navigation-changed", () => { remountUI({ avnAllowNavigation: AVN.allowNavigation }) })
 
   entryManager.performConditionalSignIn = performConditionalSignIn;
   entryManager.init();
