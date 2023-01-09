@@ -64,7 +64,15 @@ export class CharacterControllerSystem {
       this.avatarPOV = document.getElementById("avatar-pov-node");
       this.avatarRig = document.getElementById("avatar-rig");
     });
+    // AVN
+    this.avnTetherPosition = null;
   }
+
+  // AVN
+  tether(pos) {
+    this.avnTetherPosition = pos;
+  }
+
   // Use this API for waypoint travel so that your matrix doesn't end up in the pool
   enqueueWaypointTravelTo(inTransform, isInstant, waypointComponentData) {
     this.waypoints.push({ transform: getPooledMatrix4().copy(inTransform), isInstant, waypointComponentData }); //TODO: don't create new object
@@ -169,6 +177,12 @@ export class CharacterControllerSystem {
       const vrMode = this.scene.is("vr-mode");
       this.sfx = this.sfx || this.scene.systems["hubs-systems"].soundEffectsSystem;
       this.waypointSystem = this.waypointSystem || this.scene.systems["hubs-systems"].waypointSystem;
+
+      // AVN
+      if(this.avnTetherPosition) {
+        this.teleportTo(this.avnTetherPosition);
+        return;
+      }
 
       if (!this.activeWaypoint && this.waypoints.length) {
         this.activeWaypoint = this.waypoints.splice(0, 1)[0];

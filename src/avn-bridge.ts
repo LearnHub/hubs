@@ -6,7 +6,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { isLocalClient } from "./utils/phoenix-utils"
 import { ConnectionCredentials } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
 import { LessonContext } from "connect-sdk/dist/gen/avn/connect/v1/lesson_context_pb"
-import { changeHubAvn } from "./change-hub"
+import { changeHub, changeHubAvn } from "./change-hub"
+import { Vector3 } from "three"
+import { CharacterControllerSystem } from "./systems/character-controller-system"
 
 // For debug
 const LocalDevMode = isLocalClient() //&& false
@@ -31,6 +33,8 @@ class AVNBridge {
     _accessToken: string | undefined = undefined
     _connectionCredentials: ConnectionCredentials | undefined
     _roomId: string | undefined = undefined
+    _teachLessonContext: LessonContext | undefined = undefined
+    _learnLessonContext: LessonContext | undefined = undefined
 
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
@@ -110,7 +114,7 @@ class AVNBridge {
                 }
                 switch (value.message.case) {
                     case "status":
-                        if(value.message.value.state == DimensionState.CLOSED) {
+                        if (value.message.value.state == DimensionState.CLOSED) {
                             console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
                             //TODO: PROPER ABORT AND UI DISPLAY
                             // this.abortStreamIfActive()
@@ -130,16 +134,8 @@ class AVNBridge {
                         console.debug("TODO: presence MESSAGE", value.message)
                         break
                     case "lesson":
-                        // Has a lesson focus been request?
-                        if(value.message.value.focus) {
-                            if(value.message.value.focus.roomId !== this._roomId) {
-                                const sceneLinkUrl = `${this.dynamicAssetPrefix}/${value.message.value.focus.assetId}`
-                                console.log(`AVN responding to focus request to asset '${value.message.value.focus.assetId}' (expecting room ${value.message.value.focus.roomId})`)
-                                changeHubAvn(sceneLinkUrl)
-                            } else {
-                                console.log("AVN focus request room already active")
-                            }
-                        }
+                        this._learnLessonContext = value.message.value
+                        console.log(`AVN lesson context set`, value.message.value)
                         break
                     default:
                         console.error(`AVN: Unexpected message type '${value.message.case}'`)
@@ -187,8 +183,8 @@ class AVNBridge {
             this.abortStreamIfActive()
             const abortController = new AbortController()
             const dimensionStream = this.Connect.Dimensions.joinDimension(
-                { 
-                    dimensionId: this.dimensionId, 
+                {
+                    dimensionId: this.dimensionId,
                     clientId: store.state.profile.clientId,
                     userJwt: this._accessToken,
                 },
@@ -222,24 +218,48 @@ class AVNBridge {
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
         this._roomId = roomId
-        await this.Connect.Rooms.enterRoom({ 
-            credentials: this._connectionCredentials, 
-            roomId, 
-            sessionId 
+        await this.Connect.Rooms.enterRoom({
+            credentials: this._connectionCredentials,
+            roomId,
+            sessionId
         })
     }
 
-    public async setLessonContext(): Promise<void> {
-        const lessonContext = new LessonContext({focus: {
-            roomId: this._roomId,
-            assetId: this._assetId,
-        }})
-        const result = await this.Connect.Dimensions.setLessonContext({ 
-            credentials: this._connectionCredentials, 
+    // Guiding
+
+    public async setLessonFocus(position: THREE.Vector3): Promise<void> {
+        this._teachLessonContext = new LessonContext({
+            focus: {
+                roomId: this._roomId,
+                assetId: this._assetId,
+                position
+            }
+        })
+        console.log("AVN setting lesson context", this._teachLessonContext)
+        const result = await this.Connect.Dimensions.setLessonContext({
+            credentials: this._connectionCredentials,
             dimensionId: this._dimensionId,
-            context: lessonContext,
+            context: this._teachLessonContext,
         })
         console.log("AVN setLessonContext result", result)
+    }
+
+    public async resetLessonFocus(): Promise<void> {
+        this._teachLessonContext = undefined
+        console.log("AVN resetting lesson context")
+        const result = await this.Connect.Dimensions.setLessonContext({
+            credentials: this._connectionCredentials,
+            dimensionId: this._dimensionId
+        })
+        console.log("AVN setLessonContext result", result)
+    }
+
+    get isGuiding() {
+        return !!this._teachLessonContext
+    }
+
+    get learnLessonContext() {
+        return this._learnLessonContext
     }
 
     // The prefix that indicates dimension-specific dynamic content
@@ -353,6 +373,45 @@ class AVNBridge {
         }
     }
 
+    private _pendingSceneChange : Promise<void> | undefined = undefined
+
+    private async asyncChangeScene(newAssetId: string) : Promise<void> {
+        try {
+            const roomData = await AVN.fetchRoomData(newAssetId);
+            if (roomData) {
+                console.log(`AVN responding to focus by changing scene to '${newAssetId}'`)
+                const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
+                await changeHub(nextState, true);
+
+            } else {
+                console.error("Failed to change hub room");
+            }
+
+        } catch (error: unknown) {
+            throw new Error(`Unexpected error changing scene: ${error instanceof Error ? error.message : "Unknown Error"}`)
+        } finally {
+            this._pendingSceneChange = undefined
+        }
+    }
+
+    // Process AVN events that should happen in system space    
+    public tick(characterController: CharacterControllerSystem) {
+        // Default to no tethering
+        characterController.tether(null)
+        // Has a room been mandated?
+        if(this._learnLessonContext?.focus) {
+            // Are we in the right room?
+            if(this._learnLessonContext.focus?.roomId === this._roomId) {
+                // Tether to the focus position
+                characterController.tether(this._learnLessonContext?.focus?.position)
+            } else {
+                // Change to the right room if not already started
+                if(!this._pendingSceneChange) {
+                    this._pendingSceneChange = this.asyncChangeScene(this._learnLessonContext.focus.assetId)
+                }
+            }
+        }
+    }
 }
 
 export const AVN = new AVNBridge()

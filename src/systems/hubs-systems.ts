@@ -57,6 +57,9 @@ import { HubsWorld } from "../app";
 import { EffectComposer } from "postprocessing";
 import { sceneLoadingSystem } from "../bit-systems/scene-loading";
 
+// AVN
+import { AVN } from "../avn-bridge"
+
 declare global {
   interface Window {
     $S: HubsSystems;
@@ -222,6 +225,8 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   hubsSystems.audioZonesSystem.tick(hubsSystems.el);
   hubsSystems.gainSystem.tick();
   hubsSystems.nameTagSystem.tick();
+
+  AVN.tick(hubsSystems.characterController);
 
   deleteEntitySystem(world, aframeSystems.userinput);
   destroyAtExtremeDistanceSystem(world);

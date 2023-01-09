@@ -1777,11 +1777,20 @@ class UIRoot extends Component {
                       store={this.props.store}
                     />                 
                     }
-                    {entered && canGuide && (<ToolbarButton
+                    {canGuide && (<ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
-                      preset="basic"
-                      onClick={async () => await AVN.setLessonContext() }
+                      preset={ AVN.isGuiding ? "accent3" : "basic" }
+                      onClick={ async () => {
+                        if(AVN.isGuiding) {
+                          await AVN.resetLessonFocus()
+                        } else {
+                          // Get current position if set
+                          const position = document.getElementById("avatar-rig").object3D.getWorldPosition(new THREE.Vector3())
+                          await AVN.setLessonFocus(position)
+                        }
+                        this.forceUpdate();
+                      }}
                     />)}
                     {entered &&
                       isMobileVR && (
