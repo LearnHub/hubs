@@ -35,7 +35,7 @@ export function EduverseTeacherSidebar({ room, onClose }) {
       title={
         <FormattedMessage
           id="eduverse-teacher-sidebar.title"
-          defaultMessage="Guide"
+          defaultMessage="Teach"
         />
       }
       beforeTitle={<CloseButton onClick={onClose} />}

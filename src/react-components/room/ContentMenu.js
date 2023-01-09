@@ -69,7 +69,7 @@ export function EduverseTeacherMenuButton(props) {
       <span>
         <FormattedMessage
           id="content-menu.eduverse-teacher-menu-button"
-          defaultMessage="Guide"
+          defaultMessage="Teach"
         />
       </span>
     </ContentMenuButton>
