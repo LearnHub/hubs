@@ -1,5 +1,6 @@
 import { AVNConnect } from "connect-sdk"
-import { DimensionState, DimensionEvent } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
+import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_pb"
+import { DimensionEvent } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 import { store } from "./utils/store-instance"
 import { v4 as uuidv4 } from 'uuid'
@@ -24,7 +25,6 @@ class AVNBridge {
     // TODO: NOT CLEAR WHICH OF THESE LEGACY FIELDS ARE STILL USEFUL
     _iconUri: string | null = null
     _ownerIsAuthenticated = false
-    _ownerIsSubscriber = false
     _allowNavigation = true
     _isSolo = false
     _description: string | undefined = undefined
@@ -35,6 +35,7 @@ class AVNBridge {
     _roomId: string | undefined = undefined
     _teachLessonContext: LessonContext | undefined = undefined
     _learnLessonContext: LessonContext | undefined = undefined
+    _dimensionLicensedCreator: boolean = false
 
     public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
 
@@ -70,6 +71,10 @@ class AVNBridge {
         return this._assetId
     }
 
+    get dimensionIsLicensed() {
+        return this._dimensionLicensedCreator
+    }
+
     public async openNewDimension(): Promise<boolean> {
         const openDimensionResult = await this.Connect.Dimensions.openDimension({
             clientId: store.state.profile.clientId,
@@ -77,6 +82,7 @@ class AVNBridge {
         })
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
+        this._dimensionLicensedCreator = false
         return true
     }
 
@@ -84,6 +90,7 @@ class AVNBridge {
         try {
             const getRoomDimensionResult = await this.Connect.Rooms.getRoomDimension({ roomId: roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
+            this._dimensionLicensedCreator = false
             console.log(`AVN matched dimension ID '${this._dimensionId}' for room`)
             return true
         } catch {
@@ -114,7 +121,7 @@ class AVNBridge {
                 }
                 switch (value.message.case) {
                     case "status":
-                        if (value.message.value.state == DimensionState.CLOSED) {
+                        if (value.message.value.state == OperationState.CLOSED) {
                             console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
                             //TODO: PROPER ABORT AND UI DISPLAY
                             // this.abortStreamIfActive()
@@ -156,7 +163,7 @@ class AVNBridge {
     async rejoinDimension(): Promise<void> {
         console.log("AVN: rejoining dimension...")
         const result = await this.joinDimension()
-        if (result === DimensionState.OPEN) {
+        if (result === OperationState.OPEN) {
             this._dimensionRejoinTimeout = 1000
         } else {
             // Try again with an exponential backoff
@@ -174,11 +181,11 @@ class AVNBridge {
         }
     }
 
-    public async joinDimension(): Promise<DimensionState> {
+    public async joinDimension(): Promise<OperationState> {
         try {
             if (!this.dimensionId) {
                 console.error("No dimension ID has been set")
-                return DimensionState.UNSPECIFIED
+                return OperationState.UNSPECIFIED
             }
             this.abortStreamIfActive()
             const abortController = new AbortController()
@@ -195,25 +202,27 @@ class AVNBridge {
             if (done) {
                 console.error(`AVN dimension stream unexpectedly terminated`)
                 abortController.abort("STREAM_OPEN_FAILED")
-                return DimensionState.UNSPECIFIED
+                return OperationState.UNSPECIFIED
             }
             // First message must say that the dimension is OPEN
-            if (value.message.case !== "status" || value.message.value.state !== DimensionState.OPEN) {
+            if (value.message.case !== "status" || value.message.value.state !== OperationState.OPEN) {
                 console.error(`AVN failed to join dimension '${this.dimensionId}', got message ${value.message}`)
                 abortController.abort("STREAM_STATE_UNEXPECTED")
-                return value.message.case === "status" ? value.message.value.state : DimensionState.UNSPECIFIED
+                return value.message.case === "status" ? value.message.value.state : OperationState.UNSPECIFIED
             }
-            console.log(`AVN: Joined dimension '${this.dimensionId}'`)
+            // Record license status
+            this._dimensionLicensedCreator = value.message.value.licensed
+            console.log(`AVN: Joined dimension '${this.dimensionId}' with licensed status '${this._dimensionLicensedCreator}'`)
             // Record abort controller
             this._streamAbortController = abortController
             // Start message loop
             this._streamMessageHandlerPromise = this.streamMessageHandler(abortController, dimensionStreamIterator)
 
-            return DimensionState.OPEN
+            return OperationState.OPEN
         } catch (error: unknown) {
             console.warn(`AVN: exception joining dimension: ${error instanceof Error ? error.message : "Unknown error"}`)
         }
-        return DimensionState.UNSPECIFIED
+        return OperationState.UNSPECIFIED
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
@@ -227,8 +236,8 @@ class AVNBridge {
 
     // Guiding
 
-    public async setLessonFocus(position: THREE.Vector3): Promise<void> {
-        this._teachLessonContext = new LessonContext({
+    public async setLessonFocus(position: THREE.Vector3): Promise<boolean> {
+        const newContext = new LessonContext({
             focus: {
                 roomId: this._roomId,
                 assetId: this._assetId,
@@ -239,12 +248,17 @@ class AVNBridge {
         const result = await this.Connect.Dimensions.setLessonContext({
             credentials: this._connectionCredentials,
             dimensionId: this._dimensionId,
-            context: this._teachLessonContext,
+            context: newContext,
         })
         console.log("AVN setLessonContext result", result)
+        if(result.state == OperationState.OPEN) {
+            this._teachLessonContext = newContext
+            return true
+        }
+        return false
     }
 
-    public async resetLessonFocus(): Promise<void> {
+    public async resetLessonFocus(): Promise<boolean> {
         this._teachLessonContext = undefined
         console.log("AVN resetting lesson context")
         const result = await this.Connect.Dimensions.setLessonContext({
@@ -252,6 +266,11 @@ class AVNBridge {
             dimensionId: this._dimensionId
         })
         console.log("AVN setLessonContext result", result)
+        if(result.state == OperationState.OPEN) {
+            this._teachLessonContext = undefined
+            return true
+        }
+        return false
     }
 
     get isGuiding() {
@@ -296,7 +315,6 @@ class AVNBridge {
                 }
             }
             this._ownerIsAuthenticated = userData.ownerisauthenticated;
-            this._ownerIsSubscriber = userData.ownerissubscriber;
             this._isSolo = hub.room_size <= 1;
             this._description = userData.description;
             this._instructions = userData.instructions;
@@ -374,7 +392,6 @@ class AVNBridge {
     }
 
     private _pendingSceneChange : Promise<void> | undefined = undefined
-
     private async asyncChangeScene(newAssetId: string) : Promise<void> {
         try {
             const roomData = await AVN.fetchRoomData(newAssetId);

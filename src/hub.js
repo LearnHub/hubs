@@ -253,8 +253,7 @@ import { swapActiveScene } from "./bit-systems/scene-loading";
 import { setLocalClientID } from "./bit-systems/networking";
 import { listenForNetworkMessages } from "./utils/listen-for-network-messages";
 import { AVN } from "./avn-bridge";
-import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb";
-import { DimensionState, JoinDimensionResponse } from 'connect-sdk/dist/gen/avn/connect/v1/dimensions_pb';
+import { OperationState } from 'connect-sdk/dist/gen/avn/connect/v1/operations_pb';
 
 const PHOENIX_RELIABLE_NAF = "phx-reliable";
 NAF.options.firstSyncSource = PHOENIX_RELIABLE_NAF;
@@ -864,28 +863,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Join dimension
   const joinResult = await AVN.joinDimension()
   switch (joinResult) {
-    case DimensionState.CLOSED:
+    case OperationState.CLOSED:
       console.error(`AVN dimension closed`)
       scene.emit("errorLoadingRoom", `Dimension is closed`);
       return
-    case DimensionState.NOT_FOUND:
+    case OperationState.NOT_FOUND:
       console.error(`AVN dimension not found`)
       scene.emit("errorLoadingRoom", `Dimension not found`);
       return
-    case DimensionState.EXPIRED:
+    case OperationState.EXPIRED:
       console.error(`AVN dimension expired`)
       scene.emit("errorLoadingRoom", `Dimension has expired`);
       return
-    case DimensionState.FORBIDDEN:
+    case OperationState.FORBIDDEN:
       console.error(`AVN dimension forbidden`)
       scene.emit("errorLoadingRoom", `Dimension is forbidden`);
       return
-    case DimensionState.UNSPECIFIED:
+    case OperationState.UNSPECIFIED:
       console.error(`AVN dimension join error`)
       scene.emit("errorLoadingRoom", `Dimension is not available`);
       return        
   }
   scene.emit("didJoinDimension");
+  remountUI({ avnIsLicensedCreator: AVN.dimensionIsLicensed });
 
   entryManager.performConditionalSignIn = performConditionalSignIn;
   entryManager.init();

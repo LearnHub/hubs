@@ -110,6 +110,7 @@ import { NotificationsContainer } from "./room/NotificationsContainer";
 import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
+import { AvnSubscriptionModal } from "./room/AvnSubscriptionModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const avnShowHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -179,6 +180,7 @@ class UIRoot extends Component {
     activeObject: PropTypes.object,
     selectedObject: PropTypes.object,
     breakpoint: PropTypes.string,
+    avnIsLicensedCreator: PropTypes.bool,
     canVoiceChat: PropTypes.bool
   };
 
@@ -1155,7 +1157,7 @@ class UIRoot extends Component {
     const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
 
     // AVN: Good enough synonym for now
-    const canGuide = isModerator;
+    const isDimensionCreator = isModerator;
 
     const moreMenu = [
       {
@@ -1447,9 +1449,18 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
-                        {canGuide && (<EduverseTeacherMenuButton
+                        {isDimensionCreator && (<EduverseTeacherMenuButton
                           active={this.state.sidebarId === "eduverse-teacher"}
-                          onClick={() => this.toggleSidebar("eduverse-teacher")}
+                          onClick={() => {
+                            if(this.props.avnIsLicensedCreator) {
+                              this.toggleSidebar("eduverse-teacher")
+                            } else {
+                              this.showNonHistoriedDialog(AvnSubscriptionModal, {
+                                closeable: true,
+                                onClose: this.closeDialog,
+                              });
+                            }    
+                          }}
                         />)}
                         <EduverseStudentMenuButton
                           active={this.state.sidebarId === "eduverse-student"}
@@ -1777,19 +1788,27 @@ class UIRoot extends Component {
                       store={this.props.store}
                     />                 
                     }
-                    {canGuide && (<ToolbarButton
+                    {isDimensionCreator && (<ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
                       preset={ AVN.isGuiding ? "accent3" : "basic" }
                       onClick={ async () => {
-                        if(AVN.isGuiding) {
-                          await AVN.resetLessonFocus()
+                        if(this.props.avnIsLicensedCreator) {
+                          if(AVN.isGuiding) {
+                            await AVN.resetLessonFocus()
+                          } else {
+                            // Get current position if set
+                            const position = document.getElementById("avatar-rig").object3D.getWorldPosition(new THREE.Vector3())
+                            await AVN.setLessonFocus(position)
+                          }
+                          this.forceUpdate();
+  
                         } else {
-                          // Get current position if set
-                          const position = document.getElementById("avatar-rig").object3D.getWorldPosition(new THREE.Vector3())
-                          await AVN.setLessonFocus(position)
+                          this.showNonHistoriedDialog(AvnSubscriptionModal, {
+                            closeable: true,
+                            onClose: this.closeDialog,
+                          });
                         }
-                        this.forceUpdate();
                       }}
                     />)}
                     {entered &&
