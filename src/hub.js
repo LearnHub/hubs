@@ -1233,7 +1233,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ) {
       return;
     }
-    // AVN: lobby messages
+    // AVN: lobby messages are too verbose
     // messageDispatch.receive({
     //   type: "join",
     //   presence: meta.presence,

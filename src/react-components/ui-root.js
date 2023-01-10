@@ -1796,7 +1796,7 @@ class UIRoot extends Component {
                     {isDimensionCreator && (<ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
-                      preset={ AVN.isGuiding ? "accent3" : "basic" }
+                      preset={ AVN.isGuiding ? "primary" : "basic" }
                       onClick={ async () => {
                         if(this.props.avnIsLicensedCreator) {
                           if(AVN.isGuiding) {
