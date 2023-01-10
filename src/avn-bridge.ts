@@ -51,7 +51,7 @@ class AVNBridge {
     public async isHealthy(): Promise<boolean> {
         try {
             const healthCheckResult = await this.Connect.Health.check({})
-            console.info(`AVN health check result: ${healthCheckResult.status}`)
+            console.debug(`AVN health check result: ${healthCheckResult.status}`)
             return healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING
         } catch (error: unknown) {
             console.error(`AVN health check exception`, error)
@@ -140,10 +140,8 @@ class AVNBridge {
                         break
                     case "lesson":
                         this._learnLessonContext = value.message.value
-                        if(!this._teachLessonContext) {
-                            global.dispatchEvent(new Event("avn-allow-navigation-changed"))
-                        }
-                        console.log(`AVN lesson context set`, value.message.value)
+                        global.dispatchEvent(new Event("avn-allow-navigation-changed"))
+                        console.debug(`AVN lesson context set`, value.message.value)
                         break
                     default:
                         console.error(`AVN: Unexpected message type '${value.message.case}'`)
@@ -251,26 +249,27 @@ class AVNBridge {
             dimensionId: this._dimensionId,
             context: newContext,
         })
-        console.log("AVN setLessonContext result", result)
         if(result.state == OperationState.OPEN) {
             this._teachLessonContext = newContext
+            global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
         }
+        console.error("AVN unexpected setLessonContext result", result)
         return false
     }
 
     public async resetLessonFocus(): Promise<boolean> {
-        this._teachLessonContext = undefined
         console.log("AVN resetting lesson context")
         const result = await this.Connect.Dimensions.setLessonContext({
             credentials: this._connectionCredentials,
             dimensionId: this._dimensionId
         })
-        console.log("AVN setLessonContext result", result)
         if(result.state == OperationState.OPEN) {
             this._teachLessonContext = undefined
+            global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
         }
+        console.error("AVN unexpected resetLessonFocus result", result)
         return false
     }
 
@@ -333,7 +332,7 @@ class AVNBridge {
     }
 
     get allowNavigation() {
-        return this._teachLessonContext || !this._learnLessonContext?.focus
+        return !!this._teachLessonContext || !this._learnLessonContext?.focus
     }
 
     // Rooms
@@ -431,7 +430,7 @@ class AVNBridge {
                 // Are we in the right room?
                 if(this._learnLessonContext.focus?.roomId === this._roomId) {
                     // Tether to the focus position
-                    characterController.tether(this._learnLessonContext?.focus?.position)
+                    //characterController.tether(this._learnLessonContext?.focus?.position)
                 } else {
                     // Change to the right room if not already started
                     if(!this._pendingSceneChange) {
