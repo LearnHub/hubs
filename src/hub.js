@@ -1233,11 +1233,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     ) {
       return;
     }
-    messageDispatch.receive({
-      type: "join",
-      presence: meta.presence,
-      name: meta.profile.displayName
-    });
+    // AVN: lobby messages
+    // messageDispatch.receive({
+    //   type: "join",
+    //   presence: meta.presence,
+    //   name: meta.profile.displayName
+    // });
   });
 
   events.on(`hub:leave`, ({ meta }) => {
