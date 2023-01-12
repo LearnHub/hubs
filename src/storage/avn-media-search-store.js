@@ -154,6 +154,12 @@ export default class AvnMediaSearchStore extends EventTarget {
 
   activate = () => {
     const searchParams = new URLSearchParams(this.history.location.search);
+    if(this._stashedParams) {
+      for (const [k, v] of Object.entries(this._stashedParams)) {
+        searchParams.set(k, v)
+      }
+      this._stashedParams = null;
+    }
     if (isLocalClient()) {
       searchParams.set("avn-media", "active");
       pushHistoryPath(this.history, this.history.location.pathname, searchParams.toString());
@@ -170,16 +176,24 @@ export default class AvnMediaSearchStore extends EventTarget {
   };
 
   //TODO: THIS MIGHT NEED FIXING IN PRODUCTION
-  pushExitMediaBrowserHistory = (history) => {
-    if (!history) history = this.history;
-
-    const { pathname } = history.location;
+  deactivate = () => {
+    // Stash the current search for next time the dialog is opened
+    const searchParams = new URLSearchParams(this.history.location.search);
+    this._stashedParams = {};
+    for (const param of SEARCH_CONTEXT_PARAMS) {
+      const value = searchParams.get(param);
+      if (value) {
+        this._stashedParams[param] = value;
+      }
+    }
+    
+    const { pathname } = this.history.location;
     const hasMediaPath = true //sluglessPath(history.location).startsWith("/avn-media")
 
     pushHistoryPath(
-      history,
-      hasMediaPath ? withSlug(history.location, "/") : pathname,
-      this.getSearchClearedSearchParams(history.location).toString()
+      this.history,
+      hasMediaPath ? withSlug(this.history.location, "/") : pathname,
+      this.getSearchClearedSearchParams(this.history.location).toString()
     );
     this.dispatchEvent(new CustomEvent("media-exit"));
   };

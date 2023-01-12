@@ -140,7 +140,7 @@ class AvnMediaBrowserContainer extends Component {
 
   close = () => {
     showFullScreenIfWasFullScreen();
-    this.props.avnMediaSearchStore.pushExitMediaBrowserHistory(this.props.history);
+    this.props.avnMediaSearchStore.deactivate();
   };
 
   handlePager = delta => {
