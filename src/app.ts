@@ -3,6 +3,7 @@ import { addEntity, createWorld, IWorld } from "bitecs";
 import "./aframe-to-bit-components";
 import { AEntity, Networked, Object3DTag, Owned } from "./bit-components";
 import MediaSearchStore from "./storage/media-search-store";
+import AvnMediaSearchStore from "./storage/avn-media-search-store";
 import Store from "./storage/store";
 import qsTruthy from "./utils/qs_truthy";
 
@@ -64,6 +65,7 @@ export class App {
   store: Store;
 
   mediaSearchStore = new MediaSearchStore();
+  avnMediaSearchStore = new AvnMediaSearchStore();
 
   audios = new Map<AElement | number, PositionalAudio | Audio>();
   sourceType = new Map<AElement | number, SourceType>();

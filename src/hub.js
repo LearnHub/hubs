@@ -201,6 +201,7 @@ renderAsEntity(APP.world, VideoMenuPrefab());
 const store = window.APP.store;
 store.update({ preferences: { shouldPromptForRefresh: false } }); // Clear flag that prompts for refresh from preference screen
 const mediaSearchStore = window.APP.mediaSearchStore;
+const avnMediaSearchStore = window.APP.avnMediaSearchStore;
 const OAUTH_FLOW_PERMS_TOKEN_KEY = "ret-oauth-flow-perms-token";
 const NOISY_OCCUPANT_COUNT = 30; // Above this # of occupants, we stop posting join/leaves/renames
 
@@ -352,6 +353,7 @@ function mountUI(props = {}) {
                     forcedVREntryType,
                     store,
                     mediaSearchStore,
+                    avnMediaSearchStore,
                     ...props,
                     ...routeProps
                   }}

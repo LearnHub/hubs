@@ -248,6 +248,7 @@ export default class SceneEntryManager {
     this.scene.addEventListener("action_spawn", () => {
       handleExitTo2DInterstitial(false, () => window.APP.mediaSearchStore.pushExitMediaBrowserHistory());
       window.APP.mediaSearchStore.sourceNavigateToDefaultSource();
+      window.APP.avnMediaSearchStore.sourceNavigateToDefaultSource();
     });
 
     this.scene.addEventListener("action_kick_client", ({ detail: { clientId } }) => {

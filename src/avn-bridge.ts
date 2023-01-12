@@ -1,6 +1,7 @@
 import { AVNConnect } from "connect-sdk"
 import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_pb"
 import { DimensionEvent } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
+import { Channel } from "connect-sdk/dist/gen/avn/connect/v1/channels_pb"
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 import { store } from "./utils/store-instance"
 import { v4 as uuidv4 } from 'uuid'
@@ -10,6 +11,10 @@ import { LessonContext } from "connect-sdk/dist/gen/avn/connect/v1/lesson_contex
 import { changeHub, changeHubAvn } from "./change-hub"
 import { Vector3 } from "three"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
+import { Authorization } from "connect-sdk/dist/gen/avn/connect/v1/authorization_pb"
+import { Profile } from "connect-sdk/dist/gen/avn/connect/v1/profiles_pb"
+import { Category } from "connect-sdk/dist/gen/avn/connect/v1/categories_pb"
+import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
 
 // For debug
 const LocalDevMode = isLocalClient() //&& false
@@ -69,6 +74,26 @@ class AVNBridge {
         return this._assetId
     }
 
+    public async getLicensedChannels(): Promise<Channel[]> {
+        const result = await this.Connect.Channels.getLicensedChannels({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }})})
+        return result.results
+    }
+
+    public async getProfilesForChannel(channelId: number): Promise<Profile[]> {
+        const result = await this.Connect.Channels.getProfiles({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }}), channelId})
+        return result.results
+    }
+
+    public async getCategoriesForProfile(profileId: number): Promise<Category[]> {
+        const result = await this.Connect.Profiles.getCategories({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }}), profileId})
+        return result.results
+    }
+
+    public async getActivitiesForCategory(categoryId: number): Promise<Activity[]> {
+        const result = await this.Connect.Categories.getActivities({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }}), categoryId})
+        return result.results
+    }
+
     get dimensionIsLicensed() {
         return this._dimensionLicensedCreator
     }
@@ -81,6 +106,7 @@ class AVNBridge {
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
         this._dimensionLicensedCreator = false
+
         return true
     }
 
@@ -381,6 +407,13 @@ class AVNBridge {
         }
     }
 
+    // Best-effort scene change
+    public tryChangeScene(newAssetId: string) {
+        if(!this._pendingSceneChange) {
+            this._pendingSceneChange = this.asyncChangeScene(newAssetId)
+        }
+    }
+
     private _pendingSceneChange : Promise<void> | undefined = undefined
     private async asyncChangeScene(newAssetId: string) : Promise<void> {
         try {
@@ -389,7 +422,6 @@ class AVNBridge {
                 console.log(`AVN responding to focus by changing scene to '${newAssetId}'`)
                 const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
                 await changeHub(nextState, true);
-
             } else {
                 console.error("Failed to change hub room");
             }
@@ -434,7 +466,7 @@ class AVNBridge {
                 } else {
                     // Change to the right room if not already started
                     if(!this._pendingSceneChange) {
-                        this._pendingSceneChange = this.asyncChangeScene(this._learnLessonContext.focus.assetId)
+                        this.tryChangeScene(this._learnLessonContext.focus.assetId)
                     }
                 }
             }

@@ -26,6 +26,7 @@ import { isIOS } from "../utils/is-mobile";
 
 import ProfileEntryPanel from "./profile-entry-panel";
 import MediaBrowserContainer from "./media-browser";
+import AvnMediaBrowserContainer from "./avn-media-browser";
 
 import EntryStartPanel from "./entry-start-panel.js";
 import AvatarEditor from "./avatar-editor";
@@ -144,6 +145,7 @@ class UIRoot extends Component {
     isBotMode: PropTypes.bool,
     store: PropTypes.object,
     mediaSearchStore: PropTypes.object,
+    avnMediaSearchStore: PropTypes.object,
     scene: PropTypes.object,
     authChannel: PropTypes.object,
     hubChannel: PropTypes.object,
@@ -227,6 +229,7 @@ class UIRoot extends Component {
     super(props);
 
     props.mediaSearchStore.setHistory(props.history);
+    props.avnMediaSearchStore.setHistory(props.history);
 
     // An exit handler that discards event arguments and can be cleaned up.
     this.exitEventHandler = () => this.props.exitScene();
@@ -1143,6 +1146,8 @@ class UIRoot extends Component {
     const showMediaBrowser =
       mediaSource && (["scenes", "avatars", "favorites"].includes(mediaSource) || this.state.entered);
 
+    const showAvnMediaBrowser = this.props.avnMediaSearchStore.isActive(this.props.history.location);
+
     const streaming = this.state.isStreaming;
 
     // AVN: Don't show the object list for now
@@ -1437,6 +1442,25 @@ class UIRoot extends Component {
                 scene={this.props.scene}
               />
             )}
+            {!this.state.dialog && showAvnMediaBrowser && (
+              <AvnMediaBrowserContainer
+                history={this.props.history}
+                avnMediaSearchStore={this.props.avnMediaSearchStore}
+                hubChannel={this.props.hubChannel}
+                onActivitySelected={activity => {
+                  const assetId = activity?.assetId
+                  if(assetId) {
+                    AVN.tryChangeScene(assetId);
+                  } else {
+                    console.error(`Unexpected blank asset ID for selected activity ${activity}`)
+                  }
+                }}
+                performConditionalSignIn={this.props.performConditionalSignIn}
+                showNonHistoriedDialog={this.showNonHistoriedDialog}
+                store={this.props.store}
+                scene={this.props.scene}
+              />
+            )}
             {this.props.hub && (
               <RoomLayoutContainer
                 scene={this.props.scene}
@@ -1677,7 +1701,7 @@ class UIRoot extends Component {
                       icon={<SceneIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Go" />}
                       onClick={() => {
-                        alert("NOT IMPLEMENTED")
+                        this.props.avnMediaSearchStore.activate();
                       }}
                     />
                     }
