@@ -13,10 +13,10 @@
   padding: 8px;
   /* Uncomment for scrolling nav bars
   overflow-x: auto;
+  white-space: nowrap;
    */
   border-bottom: 1px solid theme.$border1-color;
   min-height: 50px;
-  white-space: nowrap;
 }
 
 :local(.button-nav) > * {
