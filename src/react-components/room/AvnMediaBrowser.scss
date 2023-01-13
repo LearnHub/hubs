@@ -10,16 +10,19 @@
 }
 
 :local(.button-nav) {
-  display: flex;
   padding: 8px;
+  /* Uncomment for scrolling nav bars
   overflow-x: auto;
-  flex-shrink: 0;
+   */
   border-bottom: 1px solid theme.$border1-color;
   min-height: 50px;
+  white-space: nowrap;
 }
 
 :local(.button-nav) > * {
   margin-right: theme.$spacing-sm;
+  display: inline-block;
+  min-width: 0px;
 }
 
 :local(.button-nav) > :last-child {

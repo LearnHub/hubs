@@ -13,8 +13,8 @@ const searchPlaceholderMessages = defineMessages({
 
 const emptyMessages = defineMessages({
   default: {
-    id: "media-browser.empty.default",
-    defaultMessage: "No results. Try entering a new search above."
+    id: "avn-media-browser.empty.default",
+    defaultMessage: "Browse and search for rooms in Eduverse"
   },
   noLicense: {
     id: "media-browser.empty.no-license",
