@@ -46,6 +46,7 @@ export default class AvnMediaSearchStore extends EventTarget {
     return this._categoriesByProfile[profileId];
   }
 
+  _fullSearchByChannel = {}
 
   setHistory(history) {
     this.history = history;
@@ -74,8 +75,34 @@ export default class AvnMediaSearchStore extends EventTarget {
     this.isFetching = true;
     this.dispatchEvent(new CustomEvent("statechanged"));
 
+    // A channel must be set for searching
+    const channelId = Number(searchParams.get("channel"));
+    if(!channelId) return;
+    const profileId = Number(searchParams.get("profile"));
     const categoryId = Number(searchParams.get("category"));
-    const entries = categoryId > 0 ? await AVN.getActivitiesForCategory(categoryId) : []
+    let entries = undefined;
+    if(categoryId > 0) {
+      entries = await AVN.getActivitiesForCategory(categoryId);
+    } else {
+      if(profileId > 0) {
+        // Waiting for a category selection
+        entries = [];
+      } else {
+        const query = (searchParams.get("q") || "").trim();
+        if(query) {
+          entries = await AVN.searchActivitiesForChannel(channelId, query);
+        } else {
+          const cachedResult = this._fullSearchByChannel[channelId];
+          if(cachedResult) {
+            entries = cachedResult;
+          } else {
+            entries = await AVN.searchActivitiesForChannel(channelId, query);
+            this._fullSearchByChannel[channelId] = entries;
+          }
+        }
+      }
+    }
+
     const result = { entries, meta: { /*next_cursor: 25*/  } }
 
     if (this.requestIndex != currentRequestIndex) return;

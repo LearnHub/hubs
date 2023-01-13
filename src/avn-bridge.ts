@@ -94,6 +94,11 @@ class AVNBridge {
         return result.results
     }
 
+    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Activity[]> {
+        const result = await this.Connect.Activities.searchActivities({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }}), channelId, searchText})
+        return result.results
+    }
+
     get dimensionIsLicensed() {
         return this._dimensionLicensedCreator
     }

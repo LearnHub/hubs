@@ -8,8 +8,8 @@
   font-weight: 700;
   font-size: 12px;
   border-radius: 8px;
-  border-width: 0;
-  border-color: transparent;
+  /* AVN: Match border size for themed buttons to avoid jitter */
+  border: 2px solid transparent;
   transition: background-color 0.1s ease-in-out;
   white-space: nowrap;
   padding: 0 24px;
