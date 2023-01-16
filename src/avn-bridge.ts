@@ -16,8 +16,10 @@ import { Profile } from "connect-sdk/dist/gen/avn/connect/v1/profiles_pb"
 import { Category } from "connect-sdk/dist/gen/avn/connect/v1/categories_pb"
 import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
 
-// For debug
-const LocalDevMode = isLocalClient() //&& false
+// Debug configuration (do not check in)
+const ConnectToAlpha = false
+const ChannelPostfix = ConnectToAlpha ? `-alpha` : ""
+const LocalDevMode = isLocalClient() && !ConnectToAlpha //&& false
 
 // Create unique client ID if not already done
 if (!store.state.profile.clientId) {
@@ -27,8 +29,8 @@ if (!store.state.profile.clientId) {
 
 class AVNBridge {
 
-    _assetDomain = LocalDevMode ? "https://localhost:8181" : "https://rest.avncloud.com"
     // TODO: NOT CLEAR WHICH OF THESE LEGACY FIELDS ARE STILL USEFUL
+    _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
     _iconUri: string | null = null
     _isSolo = false
     _description: string | undefined = undefined
@@ -40,7 +42,9 @@ class AVNBridge {
     _learnLessonContext: LessonContext | undefined = undefined
     _dimensionLicensedCreator: boolean = false
 
-    public Connect = new AVNConnect(LocalDevMode ? "http://127.0.0.1:8282" : "https://gweb.avncloud.com")
+    public Connect = new AVNConnect(LocalDevMode 
+        ? "http://127.0.0.1:8282" 
+        : `https://gweb${ChannelPostfix}.avncloud.com`)
 
     public async authenticate(accessToken: string): Promise<boolean> {
         this._accessToken = accessToken
