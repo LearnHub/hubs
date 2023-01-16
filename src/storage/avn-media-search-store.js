@@ -57,6 +57,7 @@ export default class AvnMediaSearchStore extends EventTarget {
   }
 
   _update = async location => {
+
     this.result = null;
     this.dispatchEvent(new CustomEvent("statechanged"));
 
@@ -64,9 +65,8 @@ export default class AvnMediaSearchStore extends EventTarget {
 
     this.requestIndex++;
     const currentRequestIndex = this.requestIndex;
-    const searchParams = new URLSearchParams();
-    const locationSearchParams = new URLSearchParams(location.search);
 
+    const searchParams = new URLSearchParams();
     for (const param of SEARCH_CONTEXT_PARAMS) {
       if (!urlParams.get(param)) continue;
       searchParams.set(param, urlParams.get(param));
@@ -80,13 +80,13 @@ export default class AvnMediaSearchStore extends EventTarget {
     if(!channelId) return;
     const profileId = Number(searchParams.get("profile"));
     const categoryId = Number(searchParams.get("category"));
+
     let entries = undefined;
     if(categoryId > 0) {
       entries = await AVN.getActivitiesForCategory(categoryId);
     } else {
       if(profileId > 0) {
-        // Waiting for a category selection
-        entries = [];
+        entries = await AVN.getActivitiesForProfile(profileId);
       } else {
         const query = (searchParams.get("q") || "").trim();
         if(query) {
@@ -175,7 +175,6 @@ export default class AvnMediaSearchStore extends EventTarget {
     searchParams.delete("channel");
     searchParams.delete("profile");
     searchParams.delete("category");
-
     return searchParams;
   };
 

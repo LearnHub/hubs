@@ -52,7 +52,6 @@ class AvnMediaBrowserContainer extends Component {
   storeUpdated = () => {
     const newState = this.getStoreAndHistoryState(this.props);
     this.setState(newState);
-
     if (this.state.selectNextResult) {
       if (newState.result && newState.result.entries.length > 0) {
         this.selectEntry(newState.result.entries[0]);
@@ -88,15 +87,8 @@ class AvnMediaBrowserContainer extends Component {
       if(newState.selectedProfileId) {
         newState.categoryList = props.avnMediaSearchStore.getCategoriesForProfile(newState.selectedProfileId);
         newState.selectedCategoryId = this.getSelectedCategoryId(searchParams);
-        // Select a category if none is currently active
-        if(!newState.selectedCategoryId &&  newState.categoryList &&  newState.categoryList.length > 0) {
-          const category = newState.categoryList[0];
-          newState.selectedCategoryId = category.categoryId;
-          props.avnMediaSearchStore.categoryNavigate(category.categoryId);
-        }
       }
     }
-
     return newState;
   };
 

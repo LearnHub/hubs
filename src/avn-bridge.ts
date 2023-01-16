@@ -89,6 +89,11 @@ class AVNBridge {
         return result.results
     }
 
+    public async getActivitiesForProfile(profileId: number): Promise<Activity[]> {
+        const result = await this.Connect.Profiles.getActivities({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }}), profileId})
+        return result.results
+    }
+
     public async getActivitiesForCategory(categoryId: number): Promise<Activity[]> {
         const result = await this.Connect.Categories.getActivities({auth: new Authorization({method: {case:"dimensionId", value: this._dimensionId }}), categoryId})
         return result.results
