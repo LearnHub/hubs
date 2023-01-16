@@ -114,6 +114,7 @@ class AVNBridge {
             userJwt: this._accessToken,
         })
         this._dimensionId = openDimensionResult.dimensionId
+        this._assetId = openDimensionResult.defaultAssetId
         this._dimensionLicensedCreator = false
 
         return true

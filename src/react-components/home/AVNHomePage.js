@@ -27,7 +27,7 @@ export class AVNHomePage extends React.Component {
       }
       this.setState({ message: "Checking Eduverse connection..." })
       if (await AVN.isHealthy()) {
-        this.setState({ message: "Opening new dimension..." })
+        this.setState({ message: "Opening new session..." })
         if (await AVN.openNewDimension()) {
           console.log(`New dimension is open ${AVN.dimensionId} with default asset ID ${AVN.assetId}`)
           this.setState({ message: "Finding a room..." })
@@ -38,11 +38,11 @@ export class AVNHomePage extends React.Component {
           document.location.replace(roomUrl)
         } else {
           console.error("AVN: Failed to create a new dimension")
-          this.setState({ message: "An unexpected error occured", errorMessage: "Failed to create a new dimension" })
+          this.setState({ message: "An unexpected error occured", errorMessage: "Failed to create a new session" })
         }
       } else {
         console.error("AVN: Failed to connect to AVN Cloud")
-        this.setState({ message: "An unexpected error occured", errorMessage: "Failed to connect to AVN Cloud" })
+        this.setState({ message: "An unexpected error occured", errorMessage: "Failed to connect to Eduverse" })
       }
     } catch(error) {
       console.error(error)

@@ -858,7 +858,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Lookup dimension for this room
   if(!await AVN.setDimensionFromRoomId(hubId)) {
     console.error(`AVN failed to match dimension`)
-    scene.emit("errorLoadingRoom", `No dimension could be found for this room`);
+    scene.emit("errorLoadingRoom", `No session could be found for this room`);
     return
 }
 
@@ -867,23 +867,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   switch (joinResult) {
     case OperationState.CLOSED:
       console.error(`AVN dimension closed`)
-      scene.emit("errorLoadingRoom", `Dimension is closed`);
+      scene.emit("errorLoadingRoom", `Session is closed`);
       return
     case OperationState.NOT_FOUND:
       console.error(`AVN dimension not found`)
-      scene.emit("errorLoadingRoom", `Dimension not found`);
+      scene.emit("errorLoadingRoom", `Session not found`);
       return
     case OperationState.EXPIRED:
       console.error(`AVN dimension expired`)
-      scene.emit("errorLoadingRoom", `Dimension has expired`);
+      scene.emit("errorLoadingRoom", `Session has expired`);
       return
     case OperationState.FORBIDDEN:
       console.error(`AVN dimension forbidden`)
-      scene.emit("errorLoadingRoom", `Dimension is forbidden`);
+      scene.emit("errorLoadingRoom", `Session is forbidden`);
       return
     case OperationState.UNSPECIFIED:
       console.error(`AVN dimension join error`)
-      scene.emit("errorLoadingRoom", `Dimension is not available`);
+      scene.emit("errorLoadingRoom", `Session is not available`);
       return        
   }
   scene.emit("didJoinDimension");

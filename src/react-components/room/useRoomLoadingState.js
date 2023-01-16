@@ -54,8 +54,8 @@ const messages = defineMessages({
   },
   joiningDimension: {
     id: "loading-screen.joining-dimension",
-    description: "Waiting to join the dimension.",
-    defaultMessage: "Joining dimension..."
+    description: "Waiting to join the session.",
+    defaultMessage: "Joining session..."
   },
   loadingScene: {
     id: "loading-screen.loading-scene",
