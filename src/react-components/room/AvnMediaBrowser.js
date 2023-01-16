@@ -6,6 +6,7 @@ import { ReactComponent as SearchIcon } from "../icons/Search.svg";
 import { ReactComponent as CloseIcon } from "../icons/Close.svg";
 import { ReactComponent as ArrowForwardIcon } from "../icons/ArrowForward.svg";
 import { ReactComponent as ArrowBackIcon } from "../icons/ArrowBack.svg";
+import { ReactComponent as HomeIcon } from "../icons/Home.svg";
 import { FormattedMessage, defineMessages, useIntl } from "react-intl";
 import { TextInputField } from "../input/TextInputField";
 import { IconButton } from "../input/IconButton";
@@ -13,6 +14,7 @@ import { FullscreenLayout } from "../layout/FullscreenLayout";
 import { Button } from "../input/Button";
 import { Column } from "../layout/Column";
 import { MediaGrid } from "./MediaGrid";
+import { AVN } from "../../avn-bridge";
 
 export function AvnMediaBrowser({
   onClose,
@@ -33,7 +35,6 @@ export function AvnMediaBrowser({
   onSelectCategory,
   query,
   onChangeQuery,
-  headerRight,
   hasNext,
   hasPrevious,
   onNextPage,
@@ -65,7 +66,14 @@ export function AvnMediaBrowser({
             }
           />
         }
-      headerRight={headerRight}
+      headerRight={
+        <IconButton onClick={() => {
+          AVN.goHome();
+          onClose();
+        }}>
+          <HomeIcon />
+        </IconButton>
+      }
     >
       {/* Channels */}
       <div className={styles.buttonNav}>
@@ -153,7 +161,6 @@ AvnMediaBrowser.propTypes = {
   onSelectCategory: PropTypes.func,
   query: PropTypes.string,
   onChangeQuery: PropTypes.func,
-  headerRight: PropTypes.node,
   hasNext: PropTypes.bool,
   hasPrevious: PropTypes.bool,
   onNextPage: PropTypes.func,

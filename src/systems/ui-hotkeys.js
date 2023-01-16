@@ -16,6 +16,7 @@ const MEDIA_SEARCH_PATHS = [
 AFRAME.registerSystem("ui-hotkeys", {
   init() {
     this.mediaSearchStore = window.APP.mediaSearchStore;
+    this.avnMediaSearchStore = window.APP.avnMediaSearchStore;
   },
 
   tick: function () {
@@ -44,6 +45,7 @@ AFRAME.registerSystem("ui-hotkeys", {
         //       Until then, we push "exit media browser"
         //       to the history if state is undefined.
         this.mediaSearchStore.pushExitMediaBrowserHistory();
+        this.avnMediaSearchStore.deactivate();
       }
 
       this.el.emit("action_exit_watch");
