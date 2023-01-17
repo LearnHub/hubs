@@ -18,11 +18,11 @@ import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
 import configs from "./utils/configs"
 
 // Debug configuration (do not check in)
-const ConnectToAlpha = false
-const ChannelPostfix = ConnectToAlpha ? `-alpha` : ""
-const LocalDevMode = isLocalClient() && !ConnectToAlpha //&& false
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN PreferredDomain: ${PreferredDomain}`)
+const ConnectToAlphaBackend = PreferredDomain.equals("ap.eduverse.com")
+const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
+const LocalDevMode = isLocalClient() && !ConnectToAlphaBackend //&& false
 
 // Create unique client ID if not already done
 if (!store.state.profile.clientId) {
