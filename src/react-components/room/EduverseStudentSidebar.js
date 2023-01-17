@@ -5,10 +5,14 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import markdownit from "markdown-it";
+import markdownitattrs from "markdown-it-attrs";
+import markdownitbracketedspans from "markdown-it-bracketed-spans";
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
 import { AVN } from "../../avn-bridge";
 
-const md = markdownit();
+const md = markdownit()
+  .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
+  .use(markdownitbracketedspans);
 
 // Opens links with target="_blank" (https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer)
 const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
