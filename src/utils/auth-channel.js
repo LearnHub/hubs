@@ -1,5 +1,4 @@
 import uuid from "uuid/v4";
-import { AVN } from "../avn-bridge";
 
 export default class AuthChannel {
   constructor(store) {
@@ -27,7 +26,7 @@ export default class AuthChannel {
     this.store.update({ credentials: { token: null, email: null, extras: null } });
     await this.store.resetToRandomDefaultAvatar();
     await this.store.resetToRandomName();
-    await AVN.deauthenticate()
+    await global.AVNGlobal.deauthenticate()
 
     this._signedIn = false;
   };
@@ -119,7 +118,7 @@ export default class AuthChannel {
       this.store.update({ activity: { hasChangedName: true }, profile: { displayName: extras.name } });
       // AVN: Pass through auth token
       if(extras.access_token) {
-          await AVN.authenticate(extras.access_token)
+          await global.AVNGlobal.authenticate(extras.access_token)
       } else {
         console.error("Expected 'access_token' in authentication payload")
       }
