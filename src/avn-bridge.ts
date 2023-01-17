@@ -15,11 +15,14 @@ import { Authorization } from "connect-sdk/dist/gen/avn/connect/v1/authorization
 import { Profile } from "connect-sdk/dist/gen/avn/connect/v1/profiles_pb"
 import { Category } from "connect-sdk/dist/gen/avn/connect/v1/categories_pb"
 import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
+import configs from "./utils/configs"
 
 // Debug configuration (do not check in)
 const ConnectToAlpha = false
 const ChannelPostfix = ConnectToAlpha ? `-alpha` : ""
 const LocalDevMode = isLocalClient() && !ConnectToAlpha //&& false
+const PreferredDomain = (configs as any).RETICULUM_SERVER
+console.log(`AVN PreferredDomain: ${PreferredDomain}`)
 
 // Create unique client ID if not already done
 if (!store.state.profile.clientId) {
@@ -116,6 +119,7 @@ class AVNBridge {
         const openDimensionResult = await this.Connect.Dimensions.openDimension({
             clientId: store.state.profile.clientId,
             userJwt: this._accessToken,
+            preferredDomain: PreferredDomain,            
         })
         this._dimensionId = openDimensionResult.dimensionId
         this._assetId = openDimensionResult.defaultAssetId
