@@ -20,9 +20,9 @@ import configs from "./utils/configs"
 // Debug configuration (do not check in)
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN PreferredDomain: ${PreferredDomain}`)
-const ConnectToAlphaBackend = PreferredDomain.equals("ap.eduverse.com")
+const ConnectToAlphaBackend = PreferredDomain === "ap.eduverse.com"
 const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
-const LocalDevMode = isLocalClient() && !ConnectToAlphaBackend //&& false
+const LocalDevMode = isLocalClient()
 
 // Create unique client ID if not already done
 if (!store.state.profile.clientId) {
