@@ -102,6 +102,7 @@
     content: "?";
     color:#78C0A8;
     font-size:50px;
+    font-family: serif;
     position: absolute;
     left: 20px;
     top:-5px;
@@ -121,9 +122,10 @@
     min-height: 60px;
   }
   .info::before{
-    content: "!";
+    content: "i";
     color:#78A8C0;
     font-size:50px;
+    font-family: serif;
     position: absolute;
     left: 20px;
     top:-5px;
