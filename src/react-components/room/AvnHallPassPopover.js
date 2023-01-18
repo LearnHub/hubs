@@ -24,7 +24,7 @@ function AvnHallPassPopoverContent({}) {
     <Column center padding grow gap="lg" className={styles.hallPassPopover}>
       <>
         <p>
-          <FormattedMessage id="avn-hall-pass-popover.invitation-preamble" defaultMessage="Invite students to create their own session starting from" />          
+          <FormattedMessage id="avn-hall-pass-popover.invitation-preamble" defaultMessage="Invite people to create their own session starting from" />          
           <b> {AVN.assetName}</b>
         </p>
         <CopyableTextInputField

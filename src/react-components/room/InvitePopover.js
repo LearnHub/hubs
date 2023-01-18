@@ -20,6 +20,9 @@ function InvitePopoverContent({ url, shortUrl, code, embed, inviteRequired, fetc
         </>
       ) : (
         <>
+          <p>
+            <FormattedMessage id="invite-popover.invitation" defaultMessage="Invite people to join you in this session" />          
+          </p>
           <QRCode 
             value={url} 
             renderAs="svg"
