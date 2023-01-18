@@ -76,6 +76,7 @@ import { ReactComponent as EnterIcon } from "./icons/Enter.svg";
 import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
 import { ReactComponent as SaveIcon } from "./icons/Save.svg";
 import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
+import { ReactComponent as ExploreIcon } from "./icons/Explore.svg";
 import { ReactComponent as PassIcon } from "./icons/Pass.svg";
 import { ReactComponent as GatherIcon } from "./icons/Gather.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
@@ -1699,8 +1700,8 @@ class UIRoot extends Component {
                     <ToolbarButton
                       disabled={!this.props.avnAllowNavigation}
                       title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
-                      icon={<SceneIcon />}
-                      label={<FormattedMessage id="toolbar.home-button" defaultMessage="Go" />}
+                      icon={<ExploreIcon />}
+                      label={<FormattedMessage id="toolbar.home-button" defaultMessage="Explore" />}
                       onClick={() => {
                         this.props.avnMediaSearchStore.activate();
                       }}
