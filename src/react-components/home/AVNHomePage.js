@@ -29,13 +29,13 @@ export class AVNHomePage extends React.Component {
       }
       this.setState({ message: "Checking Eduverse connection..." })
       if (await AVN.isHealthy()) {
-        let passId = searchParams.get("pass");
+        let passId = searchParams.get("pass") || undefined;
         if(passId) {
           this.setState({ message: "Checking Hall Pass..." })
           const pass = await AVN.getPass(passId);
           if(pass) {
             if(pass.expires && pass.expires < new Date()) {
-              passId = "";
+              passId = undefined
               console.error(`AVN: Hall pass has expired '${passId}'`)
               const errorMessage = "The hall pass provided has expired so a new session will be created with default settings in ";
               for(let n = 5; n > 0; --n) {
@@ -47,7 +47,7 @@ export class AVNHomePage extends React.Component {
               console.log("AVN Hall pass is valid")
             }
           } else {
-            passId = "";
+            passId = undefined;
             console.error(`AVN: Failed to connect to find hall pass '${passId}'`)            
             const errorMessage = "The hall pass provided could not be found so a new session will be created with default settings in ";
             for(let n = 5; n > 0; --n) {

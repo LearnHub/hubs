@@ -14,7 +14,7 @@ export function AvnSubscriptionModal({ closeable, onClose, ...rest }) {
     >
     <Column center padding>
         <p>
-          <FormattedMessage id="avn-subscription-modal.function-requires-subscription" defaultMessage="A subcription is required to access this function"/>
+          <FormattedMessage id="avn-subscription-modal.function-requires-subscription" defaultMessage="A subcription is required to access teacher notes and controls."/>
         </p>
         <p>
           <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">

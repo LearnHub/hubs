@@ -169,7 +169,7 @@ class AVNBridge {
         return undefined
     }
 
-    public async openNewDimension(passId: string): Promise<boolean> {
+    public async openNewDimension(passId: string | undefined): Promise<boolean> {
         const openDimensionResult = await this.Connect.Dimensions.openDimension({
             clientId: store.state.profile.clientId,
             userJwt: this._accessToken,
