@@ -16,6 +16,7 @@ import { Profile } from "connect-sdk/dist/gen/avn/connect/v1/profiles_pb"
 import { Category } from "connect-sdk/dist/gen/avn/connect/v1/categories_pb"
 import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
 import configs from "./utils/configs"
+import { Pass } from "connect-sdk/dist/gen/avn/connect/v1/passes_pb"
 
 // Debug configuration (do not check in)
 const PreferredDomain = (configs as any).RETICULUM_SERVER
@@ -76,9 +77,14 @@ class AVNBridge {
         return this._dimensionId
     }
 
-    _assetId: string = ""
+    _assetId: string | undefined = undefined
     get assetId(): string {
-        return this._assetId
+        return this._assetId || "homeroom"
+    }
+
+    _assetName: string = ""
+    get assetName(): string {
+        return this._assetName
     }
 
     public async getLicensedChannels(): Promise<Channel[]> {
@@ -115,14 +121,62 @@ class AVNBridge {
         return this._dimensionLicensedCreator
     }
 
-    public async openNewDimension(): Promise<boolean> {
+    _passFetchPromise: Promise<void> | null
+
+    private async updatePassId() {
+        try {
+            if(this._accessToken) {
+                const auth = new Authorization({ method: {case: "userJwt", value: this._accessToken }})
+                const response = await this.Connect.Passes.createPass({auth})
+                console.debug("New hall pass response", response)
+                this._passId = response.result?.passId || ""
+                if(this._passId) {
+                    global.dispatchEvent(new Event("avn-pass-id-changed"))
+                } else {
+                    // Allow a retry if that failed for some reason
+                    this._passFetchPromise = null
+                }
+            } else {
+                console.error("Hall pass should not be requested before authentication")                
+                this._passFetchPromise = null
+            }
+        } catch(error: unknown) {
+            console.error("Error fetching hall pass", error)
+        }
+    }
+    
+    get hallPassPrefix(): string {
+        return "https://edvr.se"
+    }
+
+    _passId: string | undefined = undefined
+    get passId(): string | undefined {
+        if(!this._passId) {
+            if(!this._passFetchPromise) {
+                this._passFetchPromise = this.updatePassId()
+            }
+        }
+        return this._passId
+    }
+
+    public async getPass(passId: string): Promise<Pass | undefined> {
+        try {
+            const getPassResult = await this.Connect.Passes.getPass({ passId })
+            return getPassResult.result
+        } catch(e: unknown) {
+            console.error(`AVN failed to get pass '${passId}'`, e)
+        }
+        return undefined
+    }
+
+    public async openNewDimension(passId: string): Promise<boolean> {
         const openDimensionResult = await this.Connect.Dimensions.openDimension({
             clientId: store.state.profile.clientId,
             userJwt: this._accessToken,
-            preferredDomain: PreferredDomain,            
+            preferredDomain: PreferredDomain,
+            passId,     
         })
         this._dimensionId = openDimensionResult.dimensionId
-        this._assetId = openDimensionResult.defaultAssetId
         this._dimensionLicensedCreator = false
 
         return true
@@ -255,6 +309,7 @@ class AVNBridge {
             }
             // Record license status
             this._dimensionLicensedCreator = value.message.value.licensed
+            this._passId = value.message.value.passId
             console.log(`AVN: Joined dimension '${this.dimensionId}' with licensed status '${this._dimensionLicensedCreator}'`)
             // Record abort controller
             this._streamAbortController = abortController
@@ -341,22 +396,24 @@ class AVNBridge {
 
     // TODO: REVIEW THIS LEGACY BEHVAIOUR
     public updateFromHub(hub: any) {
-        const userData = hub.user_data;
+        const userData = hub.user_data
         if (userData) {
             if (userData.assetid && this._assetId != userData.assetid) {
                 this._assetId = userData.assetid;
-                console.info(`AVN: Updated asset id to '${this._assetId}'`);
+                global.dispatchEvent(new Event("avn-asset-id-changed"))
+                console.info(`AVN: Updated asset id to '${this._assetId}'`)
             }
             if (this._iconUri != userData.iconuri) {
                 this._iconUri = userData.iconuri;
-                console.info(`AVN: Updated icon to '${this._iconUri}'`);
+                console.info(`AVN: Updated icon to '${this._iconUri}'`)
                 if (!this._iconUri) {
                     console.error("AVN: No iconuri is set")
                 }
             }
-            this._isSolo = hub.room_size <= 1;
-            this._description = userData.description;
-            this._instructions = userData.instructions;
+            this._isSolo = hub.room_size <= 1
+            this._assetName = hub.name
+            this._description = userData.description
+            this._instructions = userData.instructions
 
         } else {
             console.error("AVN: No user_data is set")

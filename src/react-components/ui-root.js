@@ -50,6 +50,7 @@ import { RoomEntryModal } from "./room/RoomEntryModal";
 import { EnterOnDeviceModal } from "./room/EnterOnDeviceModal";
 import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
+import { AvnHallPassPopoverContainer } from "./room/AvnHallPassPopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, ECSDebugMenuButton, EduverseTeacherMenuButton, EduverseStudentMenuButton } from "./room/ContentMenu";
@@ -1706,14 +1707,11 @@ class UIRoot extends Component {
                     />
                     }
                     { 
-                    // AVN: Share button
-                    <ToolbarButton
-                      icon={<PassIcon />}
-                      label={<FormattedMessage id="toolbar.share-button" defaultMessage="Share" />}
-                      onClick={() => {
-                        alert("NOT IMPLEMENTED")
-                      }}
-                    />
+                    // AVN: Hall Pass button
+                    <AvnHallPassPopoverContainer
+                      disabled={!this.state.signedIn}
+                      title={this.state.signedIn ? "" : "Sign in to share a hall pass" }
+                    />                 
                     }
                   </>
                 }
@@ -1807,16 +1805,14 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
-                    { 
-                    // AVN: Only show invite if this isn't a "solo" room
-                    !AVN.isSolo &&
                     <InvitePopoverContainer
+                      disabled={!this.state.signedIn}
+                      title={this.state.signedIn ? "" : "Sign in to invite people to join you" }
                       hub={this.props.hub}
                       hubChannel={this.props.hubChannel}
                       scene={this.props.scene}
                       store={this.props.store}
                     />                 
-                    }
                     {isDimensionCreator && (<ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}

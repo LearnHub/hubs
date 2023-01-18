@@ -1,5 +1,6 @@
 import React from "react";
 import { AVN } from "../../avn-bridge"
+import { sleep } from "../../utils/async-utils";
 import { isLocalClient } from "../../utils/phoenix-utils";
 import { store } from "../../utils/store-instance";
 import { LoadingScreen } from "../room/LoadingScreen";
@@ -17,6 +18,7 @@ export class AVNHomePage extends React.Component {
 
   async componentDidMount() {
     try {
+      const searchParams = new URLSearchParams(document.location.search);
       const accessToken = store.state.credentials?.extras?.access_token;
       if (accessToken) {
         console.log("AVN: authenticating with existing token")
@@ -27,11 +29,41 @@ export class AVNHomePage extends React.Component {
       }
       this.setState({ message: "Checking Eduverse connection..." })
       if (await AVN.isHealthy()) {
-        this.setState({ message: "Opening new session..." })
-        if (await AVN.openNewDimension()) {
-          console.log(`New dimension is open ${AVN.dimensionId} with default asset ID ${AVN.assetId}`)
+        let passId = searchParams.get("pass");
+        if(passId) {
+          this.setState({ message: "Checking Hall Pass..." })
+          const pass = await AVN.getPass(passId);
+          if(pass) {
+            if(pass.expires && pass.expires < new Date()) {
+              passId = "";
+              console.error(`AVN: Hall pass has expired '${passId}'`)
+              const errorMessage = "The hall pass provided has expired so a new session will be created with default settings in ";
+              for(let n = 5; n > 0; --n) {
+                this.setState({ message: "Hall pass has expired", errorMessage: errorMessage + ` ${n}s`})
+                await sleep(1000);
+              }
+              this.setState({ message: null, errorMessage: null })
+            } else {
+              console.log("AVN Hall pass is valid")
+            }
+          } else {
+            passId = "";
+            console.error(`AVN: Failed to connect to find hall pass '${passId}'`)            
+            const errorMessage = "The hall pass provided could not be found so a new session will be created with default settings in ";
+            for(let n = 5; n > 0; --n) {
+              this.setState({ message: "Hall pass not found", errorMessage: errorMessage + ` ${n}s`})
+              await sleep(1000);
+            }
+            this.setState({ message: null, errorMessage: null })
+          }
+        }
+
+        this.setState({ message: "Creating new session..." })
+        if (await AVN.openNewDimension(passId)) {
+          console.log(`New dimension '${AVN.dimensionId}' is open`)
           this.setState({ message: "Finding a room..." })
-          const room = await AVN.Connect.Rooms.findRoom({ dimensionId: AVN.dimensionId, assetId: AVN.assetId })
+          const assetId = searchParams.get("asset") || AVN.assetId
+          const room = await AVN.Connect.Rooms.findRoom({ dimensionId: AVN.dimensionId, assetId })
           console.log(`Found room ${room.domain} ${room.roomId}`)
           const roomUrl = isLocalClient() ? `/hub.html?hub_id=${room.roomId}` : `https://${room.domain}/${room.roomId}`
           this.setState({ message: `Joining room...` })

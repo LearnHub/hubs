@@ -1,0 +1,11 @@
+@use "../styles/theme.scss";
+
+:local(.hall-pass-popover) {
+  width: 100%;
+
+  @media(min-width: theme.$breakpoint-lg) and (min-height: theme.$breakpoint-vr) {
+    padding-top: 8px;
+    /* AVN: Increase width so URL is more visible */
+    width: 400px;
+  }
+}

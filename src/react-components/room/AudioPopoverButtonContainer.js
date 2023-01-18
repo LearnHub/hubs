@@ -27,6 +27,7 @@ export const AudioPopoverButtonContainer = ({ scene, initiallyVisible, content }
           statusColor={!micPermissionDenied && canVoiceChat ? (isMicMuted ? "disabled" : "enabled") : undefined}
           type={"right"}
           disabled={!canVoiceChat || micPermissionDenied}
+          title={canVoiceChat ? "" : "Sign in to activate voice chat" }
         />
       }
       onChangeMicrophoneMuted={toggleMute}
