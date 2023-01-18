@@ -76,7 +76,7 @@ import { ReactComponent as InviteIcon } from "./icons/Invite.svg";
 import { ReactComponent as SaveIcon } from "./icons/Save.svg";
 import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
 import { ReactComponent as PassIcon } from "./icons/Pass.svg";
-import { ReactComponent as GatherIcon } from "./icons/People.svg";
+import { ReactComponent as GatherIcon } from "./icons/Gather.svg";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
 import { ObjectListProvider } from "./room/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";

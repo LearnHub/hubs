@@ -5,8 +5,8 @@ import { joinChildren } from "../misc/joinChildren";
 import styles from "./ContentMenu.scss";
 import { ReactComponent as ObjectsIcon } from "../icons/Objects.svg";
 import { ReactComponent as PeopleIcon } from "../icons/People.svg";
-import { ReactComponent as TeacherIcon } from "../icons/Teacher.svg";
-import { ReactComponent as StudentIcon } from "../icons/Student.svg";
+import { ReactComponent as TeachIcon } from "../icons/Teach.svg";
+import { ReactComponent as LearnIcon } from "../icons/Learn.svg";
 import { FormattedMessage } from "react-intl";
 
 export function ContentMenuButton({ active, children, ...props }) {
@@ -65,7 +65,7 @@ PeopleMenuButton.propTypes = {
 export function EduverseTeacherMenuButton(props) {
   return (
     <ContentMenuButton {...props}>
-      <TeacherIcon />
+      <TeachIcon />
       <span>
         <FormattedMessage
           id="content-menu.eduverse-teacher-menu-button"
@@ -81,7 +81,7 @@ EduverseStudentMenuButton.propTypes = {
 export function EduverseStudentMenuButton(props) {
   return (
     <ContentMenuButton {...props}>
-      <StudentIcon />
+      <LearnIcon />
       <span>
         <FormattedMessage
           id="content-menu.eduverse-student-menu-button"
