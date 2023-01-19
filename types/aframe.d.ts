@@ -64,6 +64,9 @@ declare module "aframe" {
     nameTagSystem: NameTagVisibilitySystem;
 
     DOMContentDidLoad: bool;
+
+    // AVN: Screenshot hack
+    screenshotRequest: Function | undefined;
   }
 
   interface UserInputSystem extends ASystem {

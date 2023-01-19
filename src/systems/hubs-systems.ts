@@ -246,6 +246,12 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   } else {
     renderer.render(scene, camera);
   }
+  // AVN: Screenshot hack
+  const screenshotRequest = hubsSystems.screenshotRequest
+  if(screenshotRequest) {
+    hubsSystems.screenshotRequest = undefined;
+    screenshotRequest();
+  }
 
   // tock()s on components and system will fire here. (As well as any other time render() is called without unbinding onAfterRender)
   // TODO inline invoking tocks instead of using onAfterRender registered in a-scene

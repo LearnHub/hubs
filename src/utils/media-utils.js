@@ -567,8 +567,7 @@ export function closeExistingMediaMirror() {
 // AVN: Used for simple screenshot functionality
 export async function saveScreenshot(scene, format) {
   console.info("User requested screenshot");
-  const screenshotFunction = () => {
-    scene.removeEventListener("renderer.render.end", screenshotFunction);
+  scene.systems["hubs-systems"].screenshotRequest = () => {
     console.info("Saving screenshot...");
     scene.canvas.toBlob(function (blob) {
       const fileName = document.title + ' ' + new Date().toISOString().substr(0, 19) + '.' + format;
@@ -584,7 +583,6 @@ export async function saveScreenshot(scene, format) {
       scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_SCREENSHOT);
     }, 'image/' + format);
   };
-  scene.addEventListener("renderer.render.end", screenshotFunction);
 }
 
 export function hasAudioTracks(el) {
