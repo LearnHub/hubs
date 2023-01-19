@@ -38,7 +38,7 @@ export class AVNHomePage extends React.Component {
               passId = undefined
               console.error(`AVN: Hall pass has expired '${passId}'`)
               const errorMessage = "The hall pass provided has expired so a new session will be created with default settings in ";
-              for(let n = 5; n > 0; --n) {
+              for(let n = 10; n > 0; --n) {
                 this.setState({ message: "Hall pass has expired", errorMessage: errorMessage + ` ${n}s`})
                 await sleep(1000);
               }
@@ -50,7 +50,7 @@ export class AVNHomePage extends React.Component {
             passId = undefined;
             console.error(`AVN: Failed to connect to find hall pass '${passId}'`)            
             const errorMessage = "The hall pass provided could not be found so a new session will be created with default settings in ";
-            for(let n = 5; n > 0; --n) {
+            for(let n = 10; n > 0; --n) {
               this.setState({ message: "Hall pass not found", errorMessage: errorMessage + ` ${n}s`})
               await sleep(1000);
             }
@@ -66,7 +66,7 @@ export class AVNHomePage extends React.Component {
           const room = await AVN.Connect.Rooms.findRoom({ dimensionId: AVN.dimensionId, assetId })
           console.log(`Found room ${room.domain} ${room.roomId}`)
           const roomUrl = isLocalClient() ? `/hub.html?hub_id=${room.roomId}` : `https://${room.domain}/${room.roomId}`
-          this.setState({ message: `Joining room...` })
+          this.setState({ message: `Joining ${room.name}...` })
           document.location.replace(roomUrl)
         } else {
           console.error("AVN: Failed to create a new dimension")

@@ -53,6 +53,12 @@ class AVNBridge {
     public async authenticate(accessToken: string): Promise<boolean> {
         this._accessToken = accessToken
         this.abortStreamIfActive()
+        // If this is a solo dimension it was created anonymously and the user must be the owner (mostly true)
+        // so a replacement dimension should be created with the full auth permissions
+        if(this.isSolo) {
+            console.log("AVN dimension is solo, so it will be replaced")
+            document.location.replace(`/?asset=${this.assetId}`);
+        }
         return true
     }
 
