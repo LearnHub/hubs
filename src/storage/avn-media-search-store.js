@@ -1,6 +1,4 @@
 import { EventTarget } from "event-target-shim";
-import { isLocalClient } from "../utils/phoenix-utils";
-import { pushHistoryPath, sluglessPath, withSlug } from "../utils/history";
 import { AVN } from "../avn-bridge";
 
 const EMPTY_RESULT = { entries: [], meta: {} };
