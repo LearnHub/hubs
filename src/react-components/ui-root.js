@@ -196,6 +196,7 @@ class UIRoot extends Component {
     entering: false,
     dialog: null,
     showShareDialog: false,
+    avnShowMediaBrowser: false,
     linkCode: null,
     linkCodeCancel: null,
     miniInviteActivated: false,
@@ -231,7 +232,6 @@ class UIRoot extends Component {
     super(props);
 
     props.mediaSearchStore.setHistory(props.history);
-    props.avnMediaSearchStore.setHistory(props.history);
 
     // An exit handler that discards event arguments and can be cleaned up.
     this.exitEventHandler = () => this.props.exitScene();
@@ -324,6 +324,10 @@ class UIRoot extends Component {
     }
   };
 
+  onAvnMediaStoreStateChanged = () => {
+    this.setState({ avnShowMediaBrowser: this.props.avnMediaSearchStore.active });
+  };
+
   componentDidMount() {
     window.addEventListener("concurrentload", this.onConcurrentLoad);
     window.addEventListener("idle_detected", this.onIdleDetected);
@@ -334,7 +338,6 @@ class UIRoot extends Component {
         this.setState({ showShareDialog: false });
       }
     });
-
     this.props.scene.addEventListener("loaded", this.onSceneLoaded);
     this.props.scene.addEventListener("share_video_enabled", this.onShareVideoEnabled);
     this.props.scene.addEventListener("share_video_disabled", this.onShareVideoDisabled);
@@ -368,6 +371,9 @@ class UIRoot extends Component {
     this.props.scene.addEventListener("devicechange", () => {
       this.forceUpdate();
     });
+
+    // AVN
+    this.props.avnMediaSearchStore.addEventListener("statechanged", this.onAvnMediaStoreStateChanged);
 
     const scene = this.props.scene;
 
@@ -435,6 +441,8 @@ class UIRoot extends Component {
     window.removeEventListener("idle_detected", this.onIdleDetected);
     window.removeEventListener("activity_detected", this.onActivityDetected);
     window.removeEventListener("focus_chat", this.onFocusChat);
+    // AVN
+    this.props.avnMediaSearchStore.removeEventListener("statechanged", this.onAvnMediaStoreStateChanged);
   }
 
   storeUpdated = () => {
@@ -1148,7 +1156,6 @@ class UIRoot extends Component {
     const showMediaBrowser =
       mediaSource && (["scenes", "avatars", "favorites"].includes(mediaSource) || this.state.entered);
 
-    const showAvnMediaBrowser = this.props.avnMediaSearchStore.isActive(this.props.history.location);
 
     const streaming = this.state.isStreaming;
 
@@ -1444,7 +1451,7 @@ class UIRoot extends Component {
                 scene={this.props.scene}
               />
             )}
-            {!this.state.dialog && showAvnMediaBrowser && (
+            {!this.state.dialog && this.state.avnShowMediaBrowser && (
               <AvnMediaBrowserContainer
                 history={this.props.history}
                 avnMediaSearchStore={this.props.avnMediaSearchStore}
@@ -1703,7 +1710,7 @@ class UIRoot extends Component {
                       icon={<ExploreIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Explore" />}
                       onClick={() => {
-                        this.props.avnMediaSearchStore.activate();
+                        this.props.avnMediaSearchStore.active = true;
                       }}
                     />
                     }

@@ -5,12 +5,18 @@ import { AVN } from "../avn-bridge";
 
 const EMPTY_RESULT = { entries: [], meta: {} };
 
-const SEARCH_CONTEXT_PARAMS = ["q", "cursor", "channel", "profile", "category"];
-
 export default class AvnMediaSearchStore extends EventTarget {
   constructor() {
     super();
     this.requestIndex = 0;
+  }
+
+  get active() {
+    return this._active;
+  }
+  set active(value) {
+    this._active = value;
+    this._update();
   }
 
   _channels = undefined
@@ -48,56 +54,41 @@ export default class AvnMediaSearchStore extends EventTarget {
 
   _fullSearchByChannel = {}
 
-  setHistory(history) {
-    this.history = history;
-    this._update(this.history.location);
-    this.history.listen(location => {
-      this._update(location);
-    });
-  }
+  _update = async () => {
 
-  _update = async location => {
+    if(!this._active) {
+      this.result = EMPTY_RESULT;
+      this.dispatchEvent(new CustomEvent("statechanged"));
+      return
+    }
 
-    this.result = null;
+    this.result = null;    
     this.dispatchEvent(new CustomEvent("statechanged"));
-
-    const urlParams = new URLSearchParams(location.search);
 
     this.requestIndex++;
     const currentRequestIndex = this.requestIndex;
-
-    const searchParams = new URLSearchParams();
-    for (const param of SEARCH_CONTEXT_PARAMS) {
-      if (!urlParams.get(param)) continue;
-      searchParams.set(param, urlParams.get(param));
-    }
 
     this.isFetching = true;
     this.dispatchEvent(new CustomEvent("statechanged"));
 
     // A channel must be set for searching
-    const channelId = Number(searchParams.get("channel"));
-    if(!channelId) return;
-    const profileId = Number(searchParams.get("profile"));
-    const categoryId = Number(searchParams.get("category"));
-
+    if(!this._channelId) return;
     let entries = undefined;
-    if(categoryId > 0) {
-      entries = await AVN.getActivitiesForCategory(categoryId);
+    if(this._categoryId > 0) {
+      entries = await AVN.getActivitiesForCategory(this._categoryId);
     } else {
-      if(profileId > 0) {
-        entries = await AVN.getActivitiesForProfile(profileId);
+      if(this._profileId > 0) {
+        entries = await AVN.getActivitiesForProfile(this._profileId);
       } else {
-        const query = (searchParams.get("q") || "").trim();
-        if(query) {
-          entries = await AVN.searchActivitiesForChannel(channelId, query);
+        if(this._query) {
+          entries = await AVN.searchActivitiesForChannel(this._channelId, this._query);
         } else {
-          const cachedResult = this._fullSearchByChannel[channelId];
+          const cachedResult = this._fullSearchByChannel[this._channelId];
           if(cachedResult) {
             entries = cachedResult;
           } else {
-            entries = await AVN.searchActivitiesForChannel(channelId, query);
-            this._fullSearchByChannel[channelId] = entries;
+            entries = await AVN.searchActivitiesForChannel(this._channelId, this._query);
+            this._fullSearchByChannel[this._channelId] = entries;
           }
         }
       }
@@ -113,114 +104,57 @@ export default class AvnMediaSearchStore extends EventTarget {
     this.dispatchEvent(new CustomEvent("statechanged"));
   };
 
+  _cursor = undefined;
   pageNavigate = delta => {
     if (delta === -1) {
       this.history.goBack();
     } else {
-      const location = this.history.location;
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("cursor", this.nextCursor);
-      pushHistoryPath(this.history, location.pathname, searchParams.toString());
+      this._cursor = this.nextCursor;
     }
+    this._update();
   };
 
-  queryNavigate = (query) => {
-    const location = this.history.location;
-    const searchParams = new URLSearchParams(location.search);
-    if (query) {
-      searchParams.set("q", query);
-    } else {
-      searchParams.delete("q");
-    }
-    searchParams.delete("cursor");
-    searchParams.delete("profile");
-    searchParams.delete("category");
-    pushHistoryPath(this.history, location.pathname, searchParams.toString());
-  };
-
-  channelNavigate = async (channelId) => {
-    const location = this.history.location;
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("channel", channelId)
-    searchParams.delete("cursor");
-    searchParams.delete("profile");
-    searchParams.delete("category");
-    pushHistoryPath(this.history, location.pathname, searchParams.toString());
-  };
-
-  profileNavigate = async (profileId) => {
-    const location = this.history.location;
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("profile", profileId)
-    searchParams.delete("q");
-    searchParams.delete("cursor");
-    searchParams.delete("category");
-    pushHistoryPath(this.history, location.pathname, searchParams.toString());
-  };
-
-  categoryNavigate = async (categoryId) => {
-    const location = this.history.location;
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("category", categoryId)
-    searchParams.delete("q");
-    searchParams.delete("cursor");
-    pushHistoryPath(this.history, location.pathname, searchParams.toString());
-  };
-
-  getSearchClearedSearchParams = (location, keepSource, keepNav, keepSelectAction) => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.delete("avn-media");
-    searchParams.delete("q");
-    searchParams.delete("cursor");
-    searchParams.delete("channel");
-    searchParams.delete("profile");
-    searchParams.delete("category");
-    return searchParams;
-  };
-
-  activate = () => {
-    const searchParams = new URLSearchParams(this.history.location.search);
-    if(this._stashedParams) {
-      for (const [k, v] of Object.entries(this._stashedParams)) {
-        searchParams.set(k, v)
-      }
-      this._stashedParams = null;
-    }
-    if (isLocalClient()) {
-      searchParams.set("avn-media", "active");
-      pushHistoryPath(this.history, this.history.location.pathname, searchParams.toString());
-    } else {
-      pushHistoryPath(this.history, withSlug(this.history.location, `/avn-media`), searchParams.toString());
-    }
+  get query() {
+    return this._query;
+  }
+  set query(q) {
+    this._query = q?.trim();
+    this._cursor = undefined;
+    this._profileId = undefined;
+    this._categoryId = undefined;
+    this._update();
   }
 
-  isActive = location => {
-    const { search } = location;
-    const urlParams = new URLSearchParams(search);
-    const pathname = sluglessPath(location);
-    return pathname.startsWith("/avn-media") || urlParams.get("avn-media");
-  };
+  get channelId() {
+    return this._channelId;
+  }
+  set channelId(id) {
+    this._channelId = id;
+    this._cursor = undefined;
+    this._profileId = undefined;
+    this._categoryId = undefined;
+    this._update();
+  }
 
-  //TODO: THIS MIGHT NEED FIXING IN PRODUCTION
-  deactivate = () => {
-    // Stash the current search for next time the dialog is opened
-    const searchParams = new URLSearchParams(this.history.location.search);
-    this._stashedParams = {};
-    for (const param of SEARCH_CONTEXT_PARAMS) {
-      const value = searchParams.get(param);
-      if (value) {
-        this._stashedParams[param] = value;
-      }
-    }
-    
-    const { pathname } = this.history.location;
-    const hasMediaPath = true //sluglessPath(history.location).startsWith("/avn-media")
+  get profileId() {
+    return this._profileId;
+  }
+  set profileId(id) {
+    this._profileId = id;
+    this._query = undefined;
+    this._cursor = undefined;
+    this._categoryId = undefined;
+    this._update();
+  }
 
-    pushHistoryPath(
-      this.history,
-      hasMediaPath ? withSlug(this.history.location, "/") : pathname,
-      this.getSearchClearedSearchParams(this.history.location).toString()
-    );
-    this.dispatchEvent(new CustomEvent("media-exit"));
-  };
+  get categoryId() {
+    return this._categoryId;
+  }
+  set categoryId(id) {
+    this._categoryId = id;
+    this._query = undefined;
+    this._cursor = undefined;
+    this._update();
+  }
+
 }

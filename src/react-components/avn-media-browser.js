@@ -61,32 +61,26 @@ class AvnMediaBrowserContainer extends Component {
     }
   };
 
-  getSelectedChannelId = searchParams => Number(searchParams.get("channel"));
-  getSelectedProfileId = searchParams => Number(searchParams.get("profile"));
-  getSelectedCategoryId = searchParams => Number(searchParams.get("category"));
-
   getStoreAndHistoryState = props => {
-    const searchParams = new URLSearchParams(props.history.location.search);
     const result = props.avnMediaSearchStore.result;
-
-    const newState = { result, query: this.state.query || searchParams.get("q") || "" };
+    const newState = { result, query: this.state.query || props.avnMediaSearchStore.query || "" };
 
     newState.channelList = props.avnMediaSearchStore.getChannels();
-    newState.selectedChannelId = this.getSelectedChannelId(searchParams);
+    newState.selectedChannelId = props.avnMediaSearchStore.channelId;
     // Select a channel if none is currently active
     if(!newState.selectedChannelId && newState.channelList && newState.channelList.length > 0) {
       const channel = newState.channelList[0];
       newState.selectedChannelId = channel.channelId;
-      props.avnMediaSearchStore.channelNavigate(channel.channelId);
+      props.avnMediaSearchStore.channelId = channel.channelId;
     }
     newState.profileList = undefined;
     newState.categoryList = undefined;
     if(newState.selectedChannelId) {
       newState.profileList = props.avnMediaSearchStore.getProfilesForChannel(newState.selectedChannelId);
-      newState.selectedProfileId = this.getSelectedProfileId(searchParams);
+      newState.selectedProfileId = props.avnMediaSearchStore.profileId;
       if(newState.selectedProfileId) {
         newState.categoryList = props.avnMediaSearchStore.getCategoriesForProfile(newState.selectedProfileId);
-        newState.selectedCategoryId = this.getSelectedCategoryId(searchParams);
+        newState.selectedCategoryId = props.avnMediaSearchStore.categoryId;
       }
     }
     return newState;
@@ -101,13 +95,13 @@ class AvnMediaBrowserContainer extends Component {
     }
 
     if (forceNow) {
-      this.props.avnMediaSearchStore.queryNavigate(query);
+      this.props.avnMediaSearchStore.query = query;
     } else {
       // Don't update search on every keystroke, but buffer for some ms.
       this._sendQueryTimeout = setTimeout(() => {
         this._sendQueryTimeout = null;
         // Drop filter for now, so entering text drops into "search all" mode
-        this.props.avnMediaSearchStore.queryNavigate(query);
+        this.props.avnMediaSearchStore.query = query;
       }, 500);
     }
 
@@ -125,20 +119,20 @@ class AvnMediaBrowserContainer extends Component {
   };
 
   handleChannelClicked = channelId => {
-    this.props.avnMediaSearchStore.channelNavigate(channelId);
+    this.props.avnMediaSearchStore.channelId = channelId;
   };
 
   handleProfileClicked = profileId => {
-    this.setState({ query: "" }, () => { this.props.avnMediaSearchStore.profileNavigate(profileId) });
+    this.setState({ query: "" }, () => { this.props.avnMediaSearchStore.profileId = profileId });
   };
 
   handleCategoryClicked = categoryId => {
-    this.setState({ query: "" }, () => { this.props.avnMediaSearchStore.categoryNavigate(categoryId) });
+    this.setState({ query: "" }, () => { this.props.avnMediaSearchStore.categoryId = categoryId });
   };
 
   close = () => {
     showFullScreenIfWasFullScreen();
-    this.props.avnMediaSearchStore.deactivate();
+    this.props.avnMediaSearchStore.active = false;
   };
 
   handlePager = delta => {
@@ -149,11 +143,10 @@ class AvnMediaBrowserContainer extends Component {
 
   render() {
     const intl = this.props.intl;
-    const searchParams = new URLSearchParams(this.props.history.location.search);
     const entries = (this.state.result && this.state.result.entries) || [];
     const meta = this.state.result && this.state.result.meta;
     const hasNext = !!(meta && meta.next_cursor);
-    const hasPrevious = !!searchParams.get("cursor");
+    const hasPrevious = !!this.props.avnMediaSearchStore._cursor;
     return (
       <AvnMediaBrowser
         browserRef={r => (this.browserDiv = r)}
