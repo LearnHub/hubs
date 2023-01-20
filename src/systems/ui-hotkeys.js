@@ -45,8 +45,8 @@ AFRAME.registerSystem("ui-hotkeys", {
         //       Until then, we push "exit media browser"
         //       to the history if state is undefined.
         this.mediaSearchStore.pushExitMediaBrowserHistory();
-        this.avnMediaSearchStore.active = false;
       }
+      this.avnMediaSearchStore.active = false;
 
       this.el.emit("action_exit_watch");
     }

@@ -13,8 +13,10 @@ export default class AvnMediaSearchStore extends EventTarget {
     return this._active;
   }
   set active(value) {
-    this._active = value;
-    this._update();
+    if(this._active !== value) {
+      this._active = value;
+      this._update();
+    }
   }
 
   _channels = undefined
