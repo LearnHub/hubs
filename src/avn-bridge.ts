@@ -140,6 +140,16 @@ class AVNBridge {
         return this._passId
     }
 
+    public async getPass(passId: string): Promise<Pass | undefined> {
+        try {
+            const getPassResult = await this.Connect.Passes.getPass({ passId })
+            return getPassResult.result
+        } catch(e: unknown) {
+            console.error(`AVN failed to get pass '${passId}'`, e)
+        }
+        return undefined
+    }
+
     public async openNewDimension(passId: string | undefined): Promise<boolean> {
         const openDimensionResult = await this.Connect.Dimensions.openDimension({
             clientId: store.state.profile.clientId,
