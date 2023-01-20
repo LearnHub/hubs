@@ -1812,14 +1812,6 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
-                    <InvitePopoverContainer
-                      disabled={!this.state.signedIn}
-                      title={this.state.signedIn ? "" : "Sign in to invite people to join you" }
-                      hub={this.props.hub}
-                      hubChannel={this.props.hubChannel}
-                      scene={this.props.scene}
-                      store={this.props.store}
-                    />                 
                     {isDimensionCreator && (<ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
@@ -1843,6 +1835,14 @@ class UIRoot extends Component {
                         }
                       }}
                     />)}
+                    <InvitePopoverContainer
+                      disabled={!this.state.signedIn}
+                      title={this.state.signedIn ? "" : "Sign in to invite people to join you" }
+                      hub={this.props.hub}
+                      hubChannel={this.props.hubChannel}
+                      scene={this.props.scene}
+                      store={this.props.store}
+                    />                 
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
