@@ -65,7 +65,7 @@ export class AVNHomePage extends React.Component {
           const assetId = searchParams.get("asset") || AVN.assetId
           const room = await AVN.Connect.Rooms.findRoom({ dimensionId: AVN.dimensionId, assetId })
           console.log(`Found room ${room.domain} ${room.roomId}`)
-          const roomUrl = isLocalClient() ? `/hub.html?hub_id=${room.roomId}` : `https://${room.domain}/${room.roomId}`
+          const roomUrl = isLocalClient() ? `/hub.html?hub_id=${room.roomId}` : `https://${room.domain}/${room.roomId}/${assetId}`
           this.setState({ message: `Joining ${room.name}...` })
           document.location.replace(roomUrl)
         } else {
