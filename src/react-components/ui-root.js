@@ -1692,9 +1692,8 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
-                    entered &&
                     <ToolbarButton
-                      disabled={!this.props.avnAllowNavigation}
+                      disabled={!entered || !this.props.avnAllowNavigation}
                       title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
