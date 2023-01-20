@@ -1484,6 +1484,21 @@ class UIRoot extends Component {
                     {(!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
+                        <PeopleMenuButton
+                          active={this.state.sidebarId === "people"}
+                          onClick={() => this.toggleSidebar("people")}
+                          presencecount={this.state.presenceCount}
+                        />
+                        {showObjectList && (
+                          <ObjectsMenuButton
+                            active={this.state.sidebarId === "objects"}
+                            onClick={() => this.toggleSidebar("objects")}
+                          />
+                        )}
+                        <EduverseStudentMenuButton
+                          active={this.state.sidebarId === "eduverse-student"}
+                          onClick={() => this.toggleSidebar("eduverse-student")}
+                        />
                         {isDimensionCreator && (<EduverseTeacherMenuButton
                           active={this.state.sidebarId === "eduverse-teacher"}
                           onClick={() => {
@@ -1497,21 +1512,6 @@ class UIRoot extends Component {
                             }    
                           }}
                         />)}
-                        <EduverseStudentMenuButton
-                          active={this.state.sidebarId === "eduverse-student"}
-                          onClick={() => this.toggleSidebar("eduverse-student")}
-                        />
-                        {showObjectList && (
-                          <ObjectsMenuButton
-                            active={this.state.sidebarId === "objects"}
-                            onClick={() => this.toggleSidebar("objects")}
-                          />
-                        )}
-                        <PeopleMenuButton
-                          active={this.state.sidebarId === "people"}
-                          onClick={() => this.toggleSidebar("people")}
-                          presencecount={this.state.presenceCount}
-                        />
                         {showECSObjectsMenuButton && (
                           <ECSDebugMenuButton
                             active={this.state.sidebarId === "ecs-debug"}
