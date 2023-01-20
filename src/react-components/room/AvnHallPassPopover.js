@@ -10,16 +10,6 @@ import { FormattedMessage, defineMessage, useIntl } from "react-intl";
 import { AVN } from "../../avn-bridge";
 
 function AvnHallPassPopoverContent({}) {
-  const [passId, setPassId] = useState(AVN.passId);
-  const updateHandler = useCallback(() => {
-    setPassId(AVN.passId)
-  })
-  useEffect(() => {
-    global.addEventListener("avn-pass-id-changed", updateHandler);
-    return () => {
-      global.removeEventListener("avn-pass-id-changed", updateHandler);
-    };
-  }, [updateHandler]);
   return (
     <Column center padding grow gap="lg" className={styles.hallPassPopover}>
       <>
@@ -29,9 +19,8 @@ function AvnHallPassPopoverContent({}) {
         </p>
         <CopyableTextInputField
           label={<FormattedMessage id="avn-hall-pass-popover.share-link" defaultMessage="Hall Pass" />}
-          disabled={!passId}
-          placeholder="Fetching..."
-          value={passId ? `${AVN.hallPassPrefix}/${passId}/${AVN.assetId}` : ""}
+          disabled={!AVN.passId}
+          value={AVN.passId ? `${AVN.hallPassPrefix}/${AVN.passId}/${AVN.assetId}` : ""}
           buttonPreset="accent3"
         />
       </>

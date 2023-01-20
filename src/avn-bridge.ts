@@ -57,7 +57,11 @@ class AVNBridge {
         // so a replacement dimension should be created with the full auth permissions
         if(this.isSolo) {
             console.log("AVN dimension is solo, so it will be replaced")
-            document.location.replace(`/?asset=${this.assetId}`);
+            if(this._passId) {
+                document.location.replace(`/?asset=${this.assetId}&pass=${this._passId}`);
+            } else {
+                document.location.replace(`/?asset=${this.assetId}`);
+            }
         }
         return true
     }
@@ -126,30 +130,6 @@ class AVNBridge {
     get dimensionIsLicensed() {
         return this._dimensionLicensedCreator
     }
-
-    _passFetchPromise: Promise<void> | null
-
-    private async updatePassId() {
-        try {
-            if(this._accessToken) {
-                const auth = new Authorization({ method: {case: "userJwt", value: this._accessToken }})
-                const response = await this.Connect.Passes.createPass({auth})
-                console.debug("New hall pass response", response)
-                this._passId = response.result?.passId || ""
-                if(this._passId) {
-                    global.dispatchEvent(new Event("avn-pass-id-changed"))
-                } else {
-                    // Allow a retry if that failed for some reason
-                    this._passFetchPromise = null
-                }
-            } else {
-                console.error("Hall pass should not be requested before authentication")                
-                this._passFetchPromise = null
-            }
-        } catch(error: unknown) {
-            console.error("Error fetching hall pass", error)
-        }
-    }
     
     get hallPassPrefix(): string {
         return "https://edvr.se"
@@ -157,22 +137,7 @@ class AVNBridge {
 
     _passId: string | undefined = undefined
     get passId(): string | undefined {
-        if(!this._passId) {
-            if(!this._passFetchPromise) {
-                this._passFetchPromise = this.updatePassId()
-            }
-        }
         return this._passId
-    }
-
-    public async getPass(passId: string): Promise<Pass | undefined> {
-        try {
-            const getPassResult = await this.Connect.Passes.getPass({ passId })
-            return getPassResult.result
-        } catch(e: unknown) {
-            console.error(`AVN failed to get pass '${passId}'`, e)
-        }
-        return undefined
     }
 
     public async openNewDimension(passId: string | undefined): Promise<boolean> {
@@ -237,10 +202,10 @@ class AVNBridge {
                         console.info(`AVN update connection credentials. Connection id is now '${this._connectionCredentials?.connectionId}'`)
                         break
                     case "broadcast":
-                        console.debug("TODO: broadcast MESSAGE", value.message)
+                        //console.debug("TODO: broadcast MESSAGE", value.message)
                         break
                     case "presence":
-                        console.debug("TODO: presence MESSAGE", value.message)
+                        //console.debug("TODO: presence MESSAGE", value.message)
                         break
                     case "lesson":
                         this._learnLessonContext = value.message.value
