@@ -271,6 +271,8 @@ export default class SceneEntryManager {
 
     if (!qsTruthy("newLoader")) {
       document.addEventListener("paste", e => {
+        console.debug("AVN: Clipboard pasting is disabled");
+        return;
         if (
           (e.target.matches("input, textarea") || e.target.contentEditable === "true") &&
           document.activeElement === e.target
@@ -295,6 +297,8 @@ export default class SceneEntryManager {
       let lastDebugScene;
       document.addEventListener("drop", e => {
         e.preventDefault();
+        console.debug("AVN: Drag-and-drop is disabled");
+        return;
 
         if (qsTruthy("debugLocalScene")) {
           URL.revokeObjectURL(lastDebugScene);
