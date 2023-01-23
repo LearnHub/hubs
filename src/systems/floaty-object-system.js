@@ -109,7 +109,10 @@ export const floatyObjectSystem = world => {
     } else {
       physicsSystem.updateBodyOptions(bodyId, {
         collisionFilterMask: COLLISION_LAYERS.DEFAULT_INTERACTABLE,
-        gravity: { x: 0, y: -9.8, z: 0 }
+        // AVN: Drag thrown objects to a halt (probably should be based on THROWABLE flag)
+        linearDamping: 1.0,
+        // AVN: Don't modify gravity (shouldn't this be the default given the name of the flag?)
+        //gravity: { x: 0, y: -9.8, z: 0 }
       });
     }
   });
