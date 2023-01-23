@@ -189,7 +189,8 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
     hubsSystems.soundEffectsSystem
   );
   hubsSystems.superSpawnerSystem.tick();
-  hubsSystems.emojiSystem.tick(t, aframeSystems.userinput);
+  //AVN: Emoji system is disabled
+  //hubsSystems.emojiSystem.tick(t, aframeSystems.userinput);
   hubsSystems.cursorPoseTrackingSystem.tick();
   hubsSystems.hoverMenuSystem.tick();
   hubsSystems.positionAtBorderSystem.tick();

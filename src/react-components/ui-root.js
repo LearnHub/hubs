@@ -354,6 +354,8 @@ class UIRoot extends Component {
       this.setState({ hide: !this.state.hide, hideUITip: false })
     );
     this.props.scene.addEventListener("action_toggle_record", () => {
+      console.debug("AVN: Record is disabled");
+      return;
       const cursor = document.querySelector("#right-cursor");
       if (this.state.isRecordingMode) {
         // If isRecordingMode is true then toggle it off.
@@ -814,10 +816,18 @@ class UIRoot extends Component {
   pushHistoryState = (k, v) => pushHistoryState(this.props.history, k, v);
 
   setSidebar(sidebarId, otherState) {
+    if(sidebarId === "chat") {
+      console.debug("AVN: Chat is disabled");
+      return;  
+    }
     this.setState({ sidebarId, chatInputEffect: () => {}, selectedUserId: null, ...otherState });
   }
 
   toggleSidebar(sidebarId, otherState) {
+    if(sidebarId === "chat") {
+      console.debug("AVN: Chat is disabled");
+      return;  
+    }
     this.setState(({ sidebarId: curSidebarId }) => {
       const nextSidebarId = curSidebarId === sidebarId ? null : sidebarId;
 
@@ -830,6 +840,8 @@ class UIRoot extends Component {
   }
 
   onFocusChat = e => {
+    console.debug("AVN: Chat is disabled");
+    return;
     this.setSidebar("chat", {
       chatInputEffect: input => {
         input.focus();
@@ -1584,7 +1596,8 @@ class UIRoot extends Component {
                 sidebar={
                   this.state.sidebarId ? (
                     <>
-                      {this.state.sidebarId === "chat" && (
+                      {/* AVN: Chat is disabled */}
+                      {false && this.state.sidebarId === "chat" && (
                         <ChatSidebarContainer
                           presences={this.props.presences}
                           occupantCount={this.occupantCount()}
@@ -1594,7 +1607,8 @@ class UIRoot extends Component {
                           inputEffect={this.state.chatInputEffect}
                         />
                       )}
-                      {this.state.sidebarId === "objects" && (
+                      {/* AVN: Object menu is disabled */}
+                      {false && this.state.sidebarId === "objects" && (
                         <ObjectsSidebarContainer
                           hubChannel={this.props.hubChannel}
                           onClose={() => this.setSidebar(null)}

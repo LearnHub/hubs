@@ -424,9 +424,10 @@ export default class SceneEntryManager {
       exit2DInterstitialAndEnterVR();
     });
   };
-  /* AVN: Camera not supported
   _setupCamera = () => {
     this.scene.addEventListener("action_toggle_camera", () => {
+      console.debug("AVN: Camera is disabled");
+      return;
       const myCam = anyEntityWith(APP.world, MyCameraTool);
       if (myCam) {
         removeEntity(APP.world, myCam);
@@ -444,7 +445,7 @@ export default class SceneEntryManager {
       }
     });
   };
-  */
+
   _spawnAvatar = () => {
     this.avatarRig.setAttribute("networked", "template: #remote-avatar; attachTemplateToLocal: false;");
     this.avatarRig.setAttribute("networked-avatar", "");

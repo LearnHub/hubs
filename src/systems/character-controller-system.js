@@ -419,7 +419,8 @@ export class CharacterControllerSystem {
   }
 
   enableFly(enabled) {
-    if (enabled && window.APP.hubChannel && window.APP.hubChannel.can("fly")) {
+    // AVN: Flying is disabled
+    if (false && enabled && window.APP.hubChannel && window.APP.hubChannel.can("fly")) {
       this.fly = true;
     } else {
       this.fly = false;
