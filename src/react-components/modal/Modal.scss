@@ -42,7 +42,8 @@
 }
 
 :local(.sm-fullscreen) {
-  @media(max-width: theme.$breakpoint-lg - 1), (max-height: theme.$breakpoint-vr - 1) {
+  // AVN: Full-screen width for side panels based on height doesn't make sense
+  @media(max-width: theme.$breakpoint-lg)/*, (max-height: theme.$breakpoint-vr - 1)*/ {
     position: fixed;
     top: 0;
     left: 0;

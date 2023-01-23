@@ -67,7 +67,8 @@
   }
 
   &:local(.compact-sm) {
-    @media(max-width: theme.$breakpoint-lg - 1), (max-height: theme.$breakpoint-vr - 1) {
+    // AVN: Full-screen width for side panels based on height doesn't make sense
+    @media(max-width: theme.$breakpoint-lg)/*, (max-height: theme.$breakpoint-vr - 1)*/ {
       flex-direction: column;
       justify-content: center;
 

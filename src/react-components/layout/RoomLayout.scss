@@ -25,13 +25,13 @@
   grid-column-start: sidebar;
   height: 100%;
   overflow: hidden;
-  width: 450px;
+  // AVN: Sidebar doesn't always update properly because of a mix of resize events, split canvas layouts, and grid behaviour
+  // Linking the width of the sidebar to the width of the container forces the resize events to fire and the 
+  width: clamp(0px, 25vw, 450px);
 
   // AVN: Full-screen width for side panels based on height doesn't make sense
-  // also the width limit is relaxed slightly as it was very aggressive
-  // @media(max-width: theme.$breakpoint-lg - 1), (max-height: theme.$breakpoint-vr - 1) {
-  @media(max-width: theme.$breakpoint-md - 1) {
-      position: fixed;
+  @media(max-width: theme.$breakpoint-lg)/*, (max-height: theme.$breakpoint-vr - 1)*/ {
+    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
