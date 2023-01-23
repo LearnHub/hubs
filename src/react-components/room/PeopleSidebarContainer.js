@@ -64,7 +64,7 @@ function PeopleListContainer({ hubChannel, people, onSelectPerson, onClose }) {
       onSelectPerson={onSelectPerson}
       onClose={onClose}
       onMuteAll={onMuteAll}
-      showMuteAll={hubChannel.can("mute_users")}
+      showMuteAll={/*AVN: Disabled for now */false && hubChannel.can("mute_users")}
       canVoiceChat={canVoiceChat}
       voiceChatEnabled={voiceChatEnabled}
       isMod={isMod}

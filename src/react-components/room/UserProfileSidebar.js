@@ -59,7 +59,8 @@ export function UserProfileSidebar({
     >
       <Column center padding>
         <div className={styles.avatarPreviewContainer}>{avatarPreview || <div />}</div>
-        {hasMicPresence && (
+        {/* AVN: Individual user controls disabled */}
+        {/* {hasMicPresence && (
           <div className={styles.sliderContainer}>
             <ToolbarButton
               icon={isNetworkMuted || isMuted ? <VolumeMuted /> : <VolumeHigh />}
@@ -138,7 +139,7 @@ export function UserProfileSidebar({
           <Button preset="cancel" onClick={onKick}>
             <FormattedMessage id="user-profile-sidebar.kick-button" defaultMessage="Kick" />
           </Button>
-        )}
+        )} */}
       </Column>
     </Sidebar>
   );
