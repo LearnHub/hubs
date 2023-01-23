@@ -141,6 +141,40 @@ class AvnMediaBrowserContainer extends Component {
     this.browserDiv.scrollTop = 0;
   };
 
+  // This scene replacement logic is cribbed from the RoomSidebar version
+  // but hacked to skip the call to update_scene, which AVN doesn't currently support
+  handleDrop = e => {
+    e.preventDefault();
+    // Replacement scene URL as a blob
+    const droppedFile = e.dataTransfer.files[0];
+    console.log(`AVN dropped file`, droppedFile);
+    if(!droppedFile.name || !droppedFile.name.endsWith(".glb")) {
+      alert("Expected .glb scene file");
+      return;
+    }
+    const sceneUrl = URL.createObjectURL(droppedFile);
+    this.props.scene.emit("reset_scene");
+    THREE.Cache.clear();
+    const sceneEl = document.querySelector("a-scene");
+    const waypointSystem = sceneEl.systems["hubs-systems"].waypointSystem;
+    waypointSystem.releaseAnyOccupiedWaypoints();
+    const envSystem = sceneEl.systems["hubs-systems"].environmentSystem;
+    const environmentEl = document.querySelector("#environment-scene").childNodes[0];
+    environmentEl.addEventListener(
+      "model-loaded",
+      () => {
+        envSystem.updateEnvironment(environmentEl);
+        if (sceneEl.is("entered")) {
+          waypointSystem.moveToSpawnPoint();
+        }
+      },
+      { once: true }
+    );
+    environmentEl.setAttribute("gltf-model-plus", { src: sceneUrl });
+    this.close();
+  };
+
+
   render() {
     const intl = this.props.intl;
     const entries = (this.state.result && this.state.result.entries) || [];
@@ -148,7 +182,9 @@ class AvnMediaBrowserContainer extends Component {
     const hasNext = !!(meta && meta.next_cursor);
     const hasPrevious = !!this.props.avnMediaSearchStore._cursor;
     return (
+      <div onDrop={this.handleDrop}>
       <AvnMediaBrowser
+
         browserRef={r => (this.browserDiv = r)}
         onClose={this.close}
         searchInputRef={r => (this.inputRef = r)}
@@ -208,7 +244,8 @@ class AvnMediaBrowserContainer extends Component {
           </>) : null
         }
       </AvnMediaBrowser>
-    );
+      </div>
+    );  
   }
 }
 
