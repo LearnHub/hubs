@@ -19,10 +19,10 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
       {informationType === "signin" && (
         <Column center padding>
           <p>
-            <FormattedMessage id="avn-information-modal.function-requires-signin" defaultMessage="Sign in to access this feature." />
+            <FormattedMessage id="avn-information-modal.function-requires-signin" defaultMessage="Sign in to access this feature" />
           </p>
           <p>
-            <FormattedMessage id="avn-information-modal.function-signin-description" defaultMessage="You can sign in using a Google or Microsoft account or you can register an Eduverse account using your email address." />
+            <FormattedMessage id="avn-information-modal.function-signin-description" defaultMessage="You can sign in using a Google or Microsoft account or you can register an Eduverse account using your email address" />
           </p>
           <Button 
             preset="accept" 
@@ -42,7 +42,7 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
       {informationType === "subscribe" && (
         <Column center padding>
           <p>
-            <FormattedMessage id="avn-information-modal.function-requires-subscription" defaultMessage="A subcription is required to access teacher notes and controls." />
+            <FormattedMessage id="avn-information-modal.function-requires-subscription" defaultMessage="A subcription is required to access teacher notes and controls" />
           </p>
           <p>
             <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
