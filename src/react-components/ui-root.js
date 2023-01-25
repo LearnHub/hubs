@@ -113,7 +113,7 @@ import { NotificationsContainer } from "./room/NotificationsContainer";
 import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
-import { AvnSubscriptionModal } from "./room/AvnSubscriptionModal";
+import { AvnInformationModal } from "./room/AvnInformationModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const avnShowHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -1214,7 +1214,6 @@ class UIRoot extends Component {
                 id: "sign-in",
                 label: <FormattedMessage id="more-menu.sign-in" defaultMessage="Sign In" />,
                 icon: EnterIcon,
-                //onClick: () => this.showContextualSignInDialog()
                 onClick: async () => await this.avnShowContextualSignInDialog()
               },
           // AVN: Feature is incompatible with eduverse
@@ -1517,8 +1516,9 @@ class UIRoot extends Component {
                             if(this.props.avnIsLicensedCreator) {
                               this.toggleSidebar("eduverse-teacher")
                             } else {
-                              this.showNonHistoriedDialog(AvnSubscriptionModal, {
+                              this.showNonHistoriedDialog(AvnInformationModal, {
                                 closeable: true,
+                                informationType: "subscribe",
                                 onClose: this.closeDialog,
                               });
                             }    
@@ -1728,11 +1728,20 @@ class UIRoot extends Component {
                     />
                     }
                     { 
-                    // AVN: Hall Pass button
-                    <AvnHallPassPopoverContainer
-                      disabled={!this.state.signedIn}
-                      title={this.state.signedIn ? "" : "Sign in to share a hall pass" }
-                    />                 
+                      // AVN: Hall Pass button
+                      this.state.signedIn                    
+                      ? <AvnHallPassPopoverContainer/>                 
+                      : <ToolbarButton
+                        label={<FormattedMessage id="avn-hall-pass-popover.button-label" defaultMessage="Hall Pass" />}
+                        icon={<PassIcon />}
+                        onClick={() => 
+                          this.showNonHistoriedDialog(AvnInformationModal, {
+                            closeable: true,
+                            informationType: "signin",
+                            onClick: this.avnShowContextualSignInDialog,
+                            onClose: this.closeDialog,
+                          })}
+                      />
                     }
                   </>
                 }
@@ -1842,21 +1851,34 @@ class UIRoot extends Component {
                           this.forceUpdate();
   
                         } else {
-                          this.showNonHistoriedDialog(AvnSubscriptionModal, {
+                          this.showNonHistoriedDialog(AvnInformationModal, {
                             closeable: true,
+                            informationType: "subscribe",
                             onClose: this.closeDialog,
                           });
                         }
                       }}
                     />)}
-                    <InvitePopoverContainer
-                      disabled={!this.state.signedIn}
-                      title={this.state.signedIn ? "" : "Sign in to invite people to join you" }
-                      hub={this.props.hub}
-                      hubChannel={this.props.hubChannel}
-                      scene={this.props.scene}
-                      store={this.props.store}
-                    />                 
+                    {
+                      this.state.signedIn                    
+                      ? <InvitePopoverContainer
+                        hub={this.props.hub}
+                        hubChannel={this.props.hubChannel}
+                        scene={this.props.scene}
+                        store={this.props.store}
+                      />              
+                      : <ToolbarButton
+                        label={<FormattedMessage id="invite-popover.title" defaultMessage="Invite" />}
+                        icon={<InviteIcon />}
+                        onClick={() => 
+                          this.showNonHistoriedDialog(AvnInformationModal, {
+                            closeable: true,
+                            informationType: "signin",
+                            onClick: this.avnShowContextualSignInDialog,
+                            onClose: this.closeDialog,
+                          })}
+                      />
+                    }
                     {entered &&
                       isMobileVR && (
                         <ToolbarButton
