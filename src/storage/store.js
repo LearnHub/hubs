@@ -122,8 +122,8 @@ export const SCHEMA = {
         disableLeftRightPanning: { type: "bool", default: false },
         audioNormalization: { type: "bool", default: 0.0 },
         invertTouchscreenCameraMove: { type: "bool", default: false },
-        enableOnScreenJoystickLeft: { type: "bool", default: detectMobile() },
-        enableOnScreenJoystickRight: { type: "bool", default: false && detectMobile() }, // AVN: Use touch-to-drag on mobile
+        enableOnScreenJoystickLeft: { type: "bool", default: detectMobile() || navigator.maxTouchPoints }, // AVN: Touch test is more appropriate than mobile
+        enableOnScreenJoystickRight: { type: "bool", default: false && detectMobile() }, // AVN: Use touch-to-drag instead
         enableGyro: { type: "bool", default: true },
         animateWaypointTransitions: { type: "bool", default: true },
         showFPSCounter: { type: "bool", default: false },

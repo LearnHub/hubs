@@ -33,6 +33,7 @@ export function writeEnvironmentToConsole() {
   addRow("Platform", navigator.platform);
   addRow("Language", navigator.language + " (" + navigator.languages + ")");
   addRow("User Agent", navigator.userAgent);
+  addRow("Max Touch Points", navigator.maxTouchPoints);
   addRow("Cookies Enabled", navigator.cookieEnabled);
   if(navigator.connection) {
     if(navigator.connection.type) {

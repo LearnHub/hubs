@@ -78,7 +78,8 @@ export default class SceneEntryManager {
     const waypointSystem = this.scene.systems["hubs-systems"].waypointSystem;
     waypointSystem.moveToSpawnPoint();
 
-    if (isMobile || forceEnableTouchscreen || qsTruthy("force_enable_touchscreen")) {
+    // AVN: Matches touchscreen change in store.js for enableOnScreenJoystickLeft
+    if (navigator.maxTouchPoints || isMobile || forceEnableTouchscreen || qsTruthy("force_enable_touchscreen")) {
       this.avatarRig.setAttribute("virtual-gamepad-controls", {});
     }
 
