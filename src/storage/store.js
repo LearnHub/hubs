@@ -10,7 +10,7 @@ const STORE_STATE_CACHE_KEY = Symbol();
 const OAUTH_FLOW_CREDENTIALS_KEY = "ret-oauth-flow-account-credentials";
 const validator = new Validator();
 import { EventTarget } from "event-target-shim";
-import { fetchRandomDefaultAvatarId, generateRandomName } from "../utils/identity.js";
+import { fetchRandomDefaultAvatarId, generateRandomName, fetchDefaultAvatarId } from "../utils/identity.js";
 import { NO_DEVICE_ID } from "../utils/media-devices-utils.js";
 import { AAModes } from "../effects";
 
@@ -444,6 +444,16 @@ export default class Store extends EventTarget {
 
   update(newState, mergeOpts) {
     const finalState = merge({ ...this.state, preferences: this._preferences }, newState, mergeOpts);
+
+    // AVN: Non-authenticated users can only use the default hand-less avatar
+    if(global?.AVNGlobal?.isAuthenticated === false) {
+      const defaultAvatarId = fetchDefaultAvatarId();
+      if(finalState.profile && finalState.profile.avatarId !== defaultAvatarId) {
+        finalState.profile.avatarId = defaultAvatarId;
+        console.warn("AVN: Enforced default avatar for anonymous user")
+      }
+    }
+
     const { valid, errors } = validator.validate(finalState, SCHEMA);
 
     // Cleanup unsupported properties

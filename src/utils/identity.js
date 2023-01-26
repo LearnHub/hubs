@@ -97,7 +97,15 @@ export function generateRandomName() {
   return `${chooseRandom(names)}-${Math.floor(10000 + Math.random() * 10000)}`;
 }
 
+export function fetchDefaultAvatarId() {
+  return new URL(defaultAvatar, location.href).href;
+}
+
 export async function fetchRandomDefaultAvatarId() {
+  // AVN: Non-authenticated users can only use the default hand-less avatar
+  if(!global.AVNGlobal.isAuthenticated) {
+    return new URL(defaultAvatar, location.href).href;
+  }
   const defaultAvatarEndpoint = "/api/v1/media/search?filter=default&source=avatar_listings";
   const defaultAvatars = (await fetchReticulumAuthenticated(defaultAvatarEndpoint)).entries || [];
   if (defaultAvatars.length === 0) {

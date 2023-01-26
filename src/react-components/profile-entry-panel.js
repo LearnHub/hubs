@@ -16,6 +16,7 @@ export default class ProfileEntryPanel extends Component {
     finished: PropTypes.func,
     history: PropTypes.object,
     avatarId: PropTypes.string,
+    onBlockAnon: PropTypes.func,
     onClose: PropTypes.func,
     onBack: PropTypes.func,
     showBackButton: PropTypes.bool
@@ -128,6 +129,7 @@ export default class ProfileEntryPanel extends Component {
       displayNamePattern: this.props.store.schema.definitions.profile.properties.displayName.pattern,
       onChangeDisplayName: e => this.setState({ displayName: e.target.value }),
       avatarPreview: <AvatarPreview avatarGltfUrl={this.state.avatar && this.state.avatar.gltf_url} />,
+      onBlockAnon: this.props.onBlockAnon,
       onChangeAvatar: e => {
         e.preventDefault();
         this.props.mediaSearchStore.sourceNavigateWithNoNav("avatars", "use");

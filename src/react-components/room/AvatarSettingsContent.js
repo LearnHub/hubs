@@ -14,6 +14,7 @@ export function AvatarSettingsContent({
   avatarPreview,
   displayNamePattern,
   onChangeAvatar,
+  onBlockAnon,
   ...rest
 }) {
   return (
@@ -39,7 +40,14 @@ export function AvatarSettingsContent({
       />
       <div className={styles.avatarPreviewContainer}>
         {avatarPreview || <div />}
-        <Button type="button" preset="basic" onClick={onChangeAvatar}>
+        <Button type="button" preset="basic" onClick={e => {
+            if(global?.AVNGlobal?.isAuthenticated === false) {
+              onBlockAnon();
+            } else {
+              onChangeAvatar(e);
+            }
+          }
+        }>
           <FormattedMessage id="avatar-settings-content.change-avatar-button" defaultMessage="Change Avatar" />
         </Button>
       </div>
@@ -56,5 +64,6 @@ AvatarSettingsContent.propTypes = {
   displayNamePattern: PropTypes.string,
   onChangeDisplayName: PropTypes.func,
   avatarPreview: PropTypes.node,
+  onBlockAnon: PropTypes.func,
   onChangeAvatar: PropTypes.func
 };

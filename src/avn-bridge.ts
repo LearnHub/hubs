@@ -71,6 +71,10 @@ class AVNBridge {
         this.abortStreamIfActive()
     }
 
+    public get isAuthenticated() : boolean {
+        return !!this._accessToken
+    }
+
     public async isHealthy(): Promise<boolean> {
         try {
             const healthCheckResult = await this.Connect.Health.check({})

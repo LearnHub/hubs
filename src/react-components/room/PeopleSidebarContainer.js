@@ -89,7 +89,8 @@ export function PeopleSidebarContainer({
   performConditionalSignIn,
   onCloseDialog,
   showNonHistoriedDialog,
-  onClose
+  onClose,
+  onBlockAnon
 }) {
   const people = usePeopleList(presences, mySessionId);
   const [selectedPersonId, setSelectedPersonId] = useState(null);
@@ -113,6 +114,7 @@ export function PeopleSidebarContainer({
           history={history}
           showBackButton
           onBack={() => setSelectedPersonId(null)}
+          onBlockAnon={onBlockAnon}
         />
       );
     } else {
@@ -146,5 +148,6 @@ PeopleSidebarContainer.propTypes = {
   presences: PropTypes.object.isRequired,
   performConditionalSignIn: PropTypes.func.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
+  onBlockAnon: PropTypes.func.isRequired,
   showNonHistoriedDialog: PropTypes.func.isRequired
 };

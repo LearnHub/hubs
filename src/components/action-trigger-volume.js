@@ -36,19 +36,24 @@ AFRAME.registerComponent("action-trigger-volume", {
 
       if (isColliding && !collidingLastFrame) {
         if(this.data.isAvatarLink) {
-          this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
-          const avatarId = this.data.src || new URL(this.data.src).pathname.split("/").pop();
-          console.log("Setting avatar to ", avatarId);
-          window.APP.store.update({ profile: { avatarId } });
-          this.el.sceneEl.emit("avatar_updated");
+          if(AVN.isAuthenticated) {
+            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
+            const avatarId = this.data.src || new URL(this.data.src).pathname.split("/").pop();
+            console.log("AVN: Setting avatar to ", avatarId);
+            window.APP.store.update({ profile: { avatarId } });
+            this.el.sceneEl.emit("avatar_updated");
+          } else {
+            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
+            console.log(`AVN: Avatar change denied because user is not authenticated`);
+          }
         } else {
           if(AVN.allowNavigation) {
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
             if(this.data.isSceneLink) {
-              console.log("Navigating to scene link", this.data.src);
+              console.log("AVN: Navigating to scene link", this.data.src);
               changeHubAvn(this.data.src);
             } else {
-              console.log("Navigating to generic link", this.data.src);
+              console.log("AVN: Navigating to generic link", this.data.src);
               // Mark the exit point in case the user returns with the back button
               const sceneId = new URL(this.data.src).pathname.split("/").pop();
               document.location.hash = sceneId;
@@ -56,7 +61,7 @@ AFRAME.registerComponent("action-trigger-volume", {
             }
           } else {
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
-            console.log(`Navigation denied because room is not explorable`);
+            console.log(`AVN: Navigation denied because room is not explorable`);
           }
         }
       } else if (!isColliding && collidingLastFrame) {

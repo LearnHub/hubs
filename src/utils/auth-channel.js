@@ -24,10 +24,9 @@ export default class AuthChannel {
       await hubChannel.signOut();
     }
     this.store.update({ credentials: { token: null, email: null, extras: null } });
+    await global.AVNGlobal.deauthenticate()
     await this.store.resetToRandomDefaultAvatar();
     await this.store.resetToRandomName();
-    await global.AVNGlobal.deauthenticate()
-
     this._signedIn = false;
   };
 

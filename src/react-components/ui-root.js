@@ -1151,7 +1151,14 @@ class UIRoot extends Component {
                 store={this.props.store}
                 mediaSearchStore={this.props.mediaSearchStore}
                 avatarId={props.location.state.detail && props.location.state.detail.avatarId}
-              />
+                onBlockAnon={() => 
+                  this.showNonHistoriedDialog(AvnInformationModal, {
+                    closeable: true,
+                    informationType: "signin",
+                    onClick: this.avnShowContextualSignInDialog,
+                    onClose: this.closeDialog,
+                  })}
+                />
             )}
           />
           <StateRoute stateKey="entry_step" stateValue="" history={this.props.history}>
@@ -1627,7 +1634,14 @@ class UIRoot extends Component {
                           onCloseDialog={() => this.closeDialog()}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
                           performConditionalSignIn={this.props.performConditionalSignIn}
-                        />
+                          onBlockAnon={() => 
+                            this.showNonHistoriedDialog(AvnInformationModal, {
+                              closeable: true,
+                              informationType: "signin",
+                              onClick: this.avnShowContextualSignInDialog,
+                              onClose: this.closeDialog,
+                            })}
+                          />
                       )}
                       {this.state.sidebarId === "eduverse-teacher" && (
                         <EduverseTeacherSidebarContainer
@@ -1650,7 +1664,14 @@ class UIRoot extends Component {
                           onClose={() => this.setSidebar(null)}
                           store={this.props.store}
                           mediaSearchStore={this.props.mediaSearchStore}
-                        />
+                          onBlockAnon={() => 
+                            this.showNonHistoriedDialog(AvnInformationModal, {
+                              closeable: true,
+                              informationType: "signin",
+                              onClick: this.avnShowContextualSignInDialog,
+                              onClose: this.closeDialog,
+                            })}
+                          />
                       )}
                       {this.state.sidebarId === "user" && (
                         <UserProfileSidebarContainer
