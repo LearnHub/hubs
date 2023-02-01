@@ -29,6 +29,7 @@ import { MediaLoading } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
+import { AvnTags } from "../avn-tags";
 
 let loadingObject;
 
@@ -416,11 +417,11 @@ AFRAME.registerComponent("media-loader", {
         }
         thumbnail = result.meta && result.meta.thumbnail && proxiedUrlFor(result.meta.thumbnail);
         // AVN: Record tags from ClassConnect
-        const tags = result.meta && result.meta.tags && new Set(result.meta.tags);
-        if(tags && tags.has("Avatar")) {
+        const tags = result.meta && result.meta.tags;
+        if(tags && tags.includes(AvnTags.Avatar)) {
           absoluteAvatarUrl = canonicalUrl;
         }
-        isSceneLink = tags && tags.has("Scene");
+        isSceneLink = tags && tags.includes(AvnTags.Scene);
       }
 
       // todo: we don't need to proxy for many things if the canonical URL has permissive CORS headers

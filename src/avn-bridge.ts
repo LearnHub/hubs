@@ -224,7 +224,11 @@ class AVNBridge {
                     case "lesson":
                         this._learnLessonContext = value.message.value
                         global.dispatchEvent(new Event("avn-allow-navigation-changed"))
-                        console.debug(`AVN lesson context set`, value.message.value)
+                        if(value.message.value) {
+                            console.debug(`AVN lesson context set`, value.message.value)
+                        } else {
+                            console.debug(`AVN lesson context reset`)
+                        }                        
                         break
                     default:
                         console.error(`AVN: Unexpected message type '${value.message.case}'`)
@@ -460,8 +464,7 @@ class AVNBridge {
             return {
                 "origin": resolveMediaResult.assetUrl,
                 "meta": {
-                    "tags": resolveMediaResult.tagNames,
-                    "tag_ids": resolveMediaResult.tagIds,
+                    "tags": resolveMediaResult.tagIds,
                     "thumbnail": resolveMediaResult.thumbnailUrl,
                     "expected_content_type": resolveMediaResult.mimeType,
                 }
