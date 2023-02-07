@@ -200,7 +200,8 @@ async function mediaInflator(el, componentName, componentData, components) {
       // Interactable media only has one template and it is currently synonymous with "moveable"
       ? "#interactable-media"
       // Static media can be plain or have playback controls
-      : componentName === "model" || isControlled || hasVolume 
+      // AVN: Only allow controls on links until sanity checking for controls in scene pipeline
+      : componentName === "model" || componentName === "link" //isControlled || hasVolume 
         ? "#static-controlled-media" 
         : "#static-media";
     el.setAttribute("networked", {

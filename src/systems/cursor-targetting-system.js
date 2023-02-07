@@ -49,11 +49,8 @@ export class CursorTargettingSystem {
     if (this.dirty) {
       this.aframeTargets.length = 0;
       const els = AFRAME.scenes[0].querySelectorAll(
-        // AVN Only allow interaction with 'moveable' items for now
-        // Also some media, like skyboxes, are incorrectly given controls and end up being inspectable
-        // so for now new classes are added that are more specific, such as .interactable-link-hover-menu
-        ".collidable, .moveable, .interactable-link-hover-menu, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider"
-        //".collidable, .interactable, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider"
+        // AVN Add 'moveable' items to interaction list
+        ".collidable, .interactable, .moveable, .interactable-link-hover-menu, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider"
       );
       for (let i = 0; i < els.length; i++) {
         if (els[i].object3D) {
