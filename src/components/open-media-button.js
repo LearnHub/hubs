@@ -22,21 +22,22 @@ AFRAME.registerComponent("open-media-button", {
 
       if (visible) {
         let label = "open link";
-        if (!this.data.onlyOpenLink) {
-          let hubId;
-          if (await isLocalHubsAvatarUrl(src)) {
-            label = "use avatar";
-          } else if ((await isLocalHubsSceneUrl(src)) && mayChangeScene) {
-            label = "use scene";
-          } else if ((hubId = await isHubsRoomUrl(src))) {
-            const url = new URL(src);
-            if (url.hash && window.APP.hub.hub_id === hubId) {
-              label = "go to";
-            } else {
-              label = "visit room";
-            }
-          }
-        }
+        // AVN: Only external links are supported
+        // if (!this.data.onlyOpenLink) {
+        //   let hubId;
+        //   if (await isLocalHubsAvatarUrl(src)) {
+        //     label = "use avatar";
+        //   } else if ((await isLocalHubsSceneUrl(src)) && mayChangeScene) {
+        //     label = "use scene";
+        //   } else if ((hubId = await isHubsRoomUrl(src))) {
+        //     const url = new URL(src);
+        //     if (url.hash && window.APP.hub.hub_id === hubId) {
+        //       label = "go to";
+        //     } else {
+        //       label = "visit room";
+        //     }
+        //   }
+        // }
         this.label.setAttribute("text", "value", label);
       }
     };
