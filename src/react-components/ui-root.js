@@ -1507,10 +1507,21 @@ class UIRoot extends Component {
                     {this.props.avnDimensionConnection?.features?.showSidebar && (!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
-                        {this.props.avnDimensionConnection?.features?.showPeople && (
+                        {this.props.avnDimensionConnection?.features?.showPeopleMenu && (
                         <PeopleMenuButton
                           active={this.state.sidebarId === "people"}
-                          onClick={() => this.toggleSidebar("people")}
+                          onClick={() => {
+                            if(this.props.avnDimensionConnection?.permissions?.allowPeopleMenu) {
+                              this.toggleSidebar("people")
+                            } else {
+                              this.showNonHistoriedDialog(AvnInformationModal, {
+                                closeable: true,
+                                informationType: "signin",
+                                onClick: this.avnShowContextualSignInDialog,
+                                onClose: this.closeDialog,
+                              })  
+                            }
+                          }}
                           presencecount={this.state.presenceCount}
                         />
                         )}
@@ -1804,7 +1815,7 @@ class UIRoot extends Component {
                     {entered && (
                       <>
                         { 
-                        this.props.avnDimensionConnection?.permissions?.allowVoip && 
+                        this.props.avnDimensionConnection?.features?.showVoip && 
                         <AudioPopoverContainer scene={this.props.scene} />
                         }
                         { 

@@ -22,7 +22,7 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
             <FormattedMessage id="avn-information-modal.function-requires-signin" defaultMessage="Sign in to access this feature" />
           </p>
           <p>
-            <FormattedMessage id="avn-information-modal.function-signin-description" defaultMessage="You can sign in using a Google or Microsoft account or you can register an Eduverse account using your email address" />
+            <FormattedMessage id="avn-information-modal.function-signin-description" defaultMessage="You can sign in using your school account or you can register an Eduverse account using your email address" />
           </p>
           <Button 
             preset="accept" 
