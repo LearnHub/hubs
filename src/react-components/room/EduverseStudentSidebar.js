@@ -10,7 +10,6 @@ import markdownitsub from "markdown-it-sub";
 import markdownitsup from "markdown-it-sup";
 import markdownitbracketedspans from "markdown-it-bracketed-spans";
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
-import { AVN } from "../../avn-bridge";
 
 const md = markdownit()
   .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
@@ -32,7 +31,7 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   return defaultRender(tokens, idx, options, env, self);
 };
 
-export function EduverseStudentSidebar({ room, onClose }) {
+export function EduverseStudentSidebar({ roomInfo, onClose }) {
   return (
     <Sidebar
       title={
@@ -47,11 +46,11 @@ export function EduverseStudentSidebar({ room, onClose }) {
     >
       <div className={styles.informationContainer}>
         <h1>
-          {AVN.iconUri && (<img src={AVN.iconUri} className={styles.sceneIcon}/>)}
-          <span className={styles.sceneName}>{room.name}</span>
+          {roomInfo.iconUrl && (<img src={roomInfo.iconUrl} className={styles.sceneIcon}/>)}
+          <span className={styles.sceneName}>{roomInfo.name}</span>
         </h1>
-        {(AVN.instructions || AVN.description) && (
-            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(AVN.instructions || AVN.description) }} />
+        {(roomInfo.instructions || roomInfo.description) && (
+            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(roomInfo.instructions || roomInfo.description) }} />
         )}
       </div>
     </Sidebar>
@@ -59,7 +58,7 @@ export function EduverseStudentSidebar({ room, onClose }) {
 }
 
 EduverseStudentSidebar.propTypes = {
-  room: PropTypes.object.isRequired,
+  roomInfo: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };
 

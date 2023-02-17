@@ -18,13 +18,14 @@ export function RoomLayout({
   objectFocused,
   streaming,
   viewportRef,
+  avnDimensionConnection,
   ...rest
 }) {
   return (
     <div className={classNames(styles.roomLayout, { [styles.objectFocused]: objectFocused }, className)} {...rest}>
       {sidebar && <div className={classNames(styles.sidebar, sidebarClassName)}>{sidebar}</div>}
       <div className={classNames(styles.modalContainer, styles.viewport)}>{modal}</div>
-      {(toolbarLeft || toolbarCenter || toolbarRight) && (
+      {avnDimensionConnection?.features?.showNavbar && ( toolbarLeft || toolbarCenter || toolbarRight) && (
         <Toolbar
           className={classNames(styles.main, styles.toolbar, toolbarClassName)}
           left={toolbarLeft}
@@ -55,5 +56,6 @@ RoomLayout.propTypes = {
   viewport: PropTypes.node,
   objectFocused: PropTypes.bool,
   streaming: PropTypes.bool,
-  viewportRef: PropTypes.any
+  viewportRef: PropTypes.any,
+  avnDimensionConnection: PropTypes.object,
 };

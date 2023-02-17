@@ -185,7 +185,9 @@ class UIRoot extends Component {
     selectedObject: PropTypes.object,
     breakpoint: PropTypes.string,
     // AVN Properties
-    avnIsLicensedCreator: PropTypes.bool,
+    avnRoomInfo: PropTypes.object,
+    avnDimensionInfo: PropTypes.object,
+    avnDimensionConnection: PropTypes.object,
     avnAllowNavigation: PropTypes.bool,
     canVoiceChat: PropTypes.bool
   };
@@ -816,7 +818,7 @@ class UIRoot extends Component {
   pushHistoryState = (k, v) => pushHistoryState(this.props.history, k, v);
 
   setSidebar(sidebarId, otherState) {
-    if(sidebarId === "chat") {
+    if(sidebarId === "chat" && !this.props.avnDimensionConnection?.permissions?.allowText) {
       console.debug("AVN: Chat is disabled");
       return;  
     }
@@ -824,7 +826,7 @@ class UIRoot extends Component {
   }
 
   toggleSidebar(sidebarId, otherState) {
-    if(sidebarId === "chat") {
+    if(sidebarId === "chat" && !this.props.avnDimensionConnection?.permissions?.allowText) {
       console.debug("AVN: Chat is disabled");
       return;  
     }
@@ -840,8 +842,10 @@ class UIRoot extends Component {
   }
 
   onFocusChat = e => {
-    console.debug("AVN: Chat is disabled");
-    return;
+    if(!this.props.avnDimensionConnection?.permissions?.allowText) {
+      console.debug("AVN: Chat is disabled");
+      return;
+    }
     this.setSidebar("chat", {
       chatInputEffect: input => {
         input.focus();
@@ -1178,8 +1182,7 @@ class UIRoot extends Component {
 
     const streaming = this.state.isStreaming;
 
-    // AVN: Don't show the object list for now
-    const showObjectList = enteredOrWatching && avnShowHiddenFeatures;
+    const showObjectList = enteredOrWatching && this.props.avnDimensionConnection?.features?.showObjectList;
     const showECSObjectsMenuButton = qsTruthy("ecsDebug");
 
     const streamer = getCurrentStreamer();
@@ -1191,8 +1194,9 @@ class UIRoot extends Component {
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
     const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
 
-    // AVN: Good enough synonym for now
-    const isDimensionCreator = isModerator;
+    const avnShowPlaceMenu = true || this.props.avnDimensionConnection?.permissions?.allowShareMedia 
+    || this.props.avnDimensionConnection?.permissions?.allowPen
+    || this.props.avnDimensionConnection?.permissions?.allowCamera
 
     const moreMenu = [
       {
@@ -1357,7 +1361,7 @@ class UIRoot extends Component {
             href: configs.link("issue_report", "https://hubs.mozilla.com/docs/help.html")
           },
           // AVN: UX clutter
-          avnShowHiddenFeatures && entered && {
+          this.props.avnDimensionConnection?.features?.showStartTour && entered && {
             id: "start-tour",
             label: <FormattedMessage id="more-menu.start-tour" defaultMessage="Start Tour" />,
             icon: SupportIcon,
@@ -1494,33 +1498,38 @@ class UIRoot extends Component {
                 store={this.props.store}
                 objectFocused={!!this.props.selectedObject}
                 streaming={streaming}
+                avnDimensionConnection={this.props.avnDimensionConnection}
                 viewport={
                   <>
                     {!this.state.dialog && renderEntryFlow ? entryDialog : undefined}
                     {/* AVN: Hide "More" button on mobile */}
                     {avnShowHiddenFeatures && !this.props.selectedObject && <CompactMoreMenuButton />}
-                    {(!this.props.selectedObject ||
+                    {this.props.avnDimensionConnection?.features?.showSidebar && (!this.props.selectedObject ||
                       (this.props.breakpoint !== "sm" && this.props.breakpoint !== "md")) && (
                       <ContentMenu>
+                        {this.props.avnDimensionConnection?.features?.showPeople && (
                         <PeopleMenuButton
                           active={this.state.sidebarId === "people"}
                           onClick={() => this.toggleSidebar("people")}
                           presencecount={this.state.presenceCount}
                         />
+                        )}
                         {showObjectList && (
                           <ObjectsMenuButton
                             active={this.state.sidebarId === "objects"}
                             onClick={() => this.toggleSidebar("objects")}
                           />
                         )}
+                        {this.props.avnDimensionConnection?.features?.showStudentNotes && this.props.avnDimensionConnection?.permissions?.allowStudentNotes && (
                         <EduverseStudentMenuButton
                           active={this.state.sidebarId === "eduverse-student"}
                           onClick={() => this.toggleSidebar("eduverse-student")}
-                        />
-                        {isDimensionCreator && (<EduverseTeacherMenuButton
+                        />)}
+                        {this.props.avnDimensionConnection?.features?.showTeacherNotes && (
+                        <EduverseTeacherMenuButton
                           active={this.state.sidebarId === "eduverse-teacher"}
                           onClick={() => {
-                            if(this.props.avnIsLicensedCreator) {
+                            if(this.props.avnDimensionConnection?.permissions?.allowTeacherNotes) {
                               this.toggleSidebar("eduverse-teacher")
                             } else {
                               this.showNonHistoriedDialog(AvnInformationModal, {
@@ -1603,8 +1612,7 @@ class UIRoot extends Component {
                 sidebar={
                   this.state.sidebarId ? (
                     <>
-                      {/* AVN: Chat is disabled */}
-                      {false && this.state.sidebarId === "chat" && (
+                      {this.props.avnDimensionConnection?.permissions?.allowText && this.state.sidebarId === "chat" && (
                         <ChatSidebarContainer
                           presences={this.props.presences}
                           occupantCount={this.occupantCount()}
@@ -1641,17 +1649,18 @@ class UIRoot extends Component {
                               onClick: this.avnShowContextualSignInDialog,
                               onClose: this.closeDialog,
                             })}
-                          />
+                          avnDimensionConnection={this.props.avnDimensionConnection}
+                        />
                       )}
                       {this.state.sidebarId === "eduverse-teacher" && (
                         <EduverseTeacherSidebarContainer
-                          room={this.props.hub}
+                          roomInfo={this.props.avnRoomInfo}
                           onClose={() => this.setSidebar(null)}
                         />
                       )}
                       {this.state.sidebarId === "eduverse-student" && (
                         <EduverseStudentSidebarContainer
-                          room={this.props.hub}
+                          roomInfo={this.props.avnRoomInfo}
                           onClose={() => this.setSidebar(null)}
                         />
                       )}
@@ -1727,6 +1736,7 @@ class UIRoot extends Component {
                 toolbarLeft={
                   <>
                     { // AVN: Back button (useful for mobile fullscreen)
+                    this.props.avnDimensionConnection?.permissions?.allowBack &&
                     <ToolbarButton
                       disabled={!entered || !this.props.avnAllowNavigation}
                       title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
@@ -1738,6 +1748,7 @@ class UIRoot extends Component {
                     />
                     }
                     { // AVN: Scene selection
+                    this.props.avnDimensionConnection?.permissions?.allowExplore &&
                     <ToolbarButton
                       disabled={!this.props.avnAllowNavigation}
                       title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
@@ -1750,7 +1761,8 @@ class UIRoot extends Component {
                     }
                     { 
                       // AVN: Hall Pass button
-                      this.state.signedIn                    
+                      this.props.avnDimensionConnection?.features?.showPass &&
+                      (this.props.avnDimensionConnection?.permissions?.allowPass                    
                       ? <AvnHallPassPopoverContainer/>                 
                       : <ToolbarButton
                         label={<FormattedMessage id="avn-hall-pass-popover.button-label" defaultMessage="Hall Pass" />}
@@ -1762,7 +1774,8 @@ class UIRoot extends Component {
                             onClick: this.avnShowContextualSignInDialog,
                             onClose: this.closeDialog,
                           })}
-                      />
+                        />
+                      )
                     }
                   </>
                 }
@@ -1790,22 +1803,26 @@ class UIRoot extends Component {
                     )}
                     {entered && (
                       <>
+                        { 
+                        this.props.avnDimensionConnection?.permissions?.allowVoip && 
                         <AudioPopoverContainer scene={this.props.scene} />
-                        { // AVN: Share menu not required
-                        avnShowHiddenFeatures && 
+                        }
+                        { 
+                        this.props.avnDimensionConnection?.permissions?.allowShareScreen && 
                         <SharePopoverContainer scene={this.props.scene} hubChannel={this.props.hubChannel} />
                         } 
                         { // AVN: Place menu not required
-                        avnShowHiddenFeatures && 
+                        avnShowPlaceMenu && 
                         <PlacePopoverContainer
                           scene={this.props.scene}
                           hubChannel={this.props.hubChannel}
                           mediaSearchStore={this.props.mediaSearchStore}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
+                          avnDimensionConnection={this.props.avnDimensionConnection}
                         />
                         }
                         { // AVN: React menu not required
-                          avnShowHiddenFeatures && this.props.hubChannel.can("spawn_emoji") && (
+                          this.props.avnDimensionConnection?.permissions?.allowReact && this.props.hubChannel.can("spawn_emoji") && (
                           <ReactionPopoverContainer
                             scene={this.props.scene}
                             initialPresence={getPresenceProfileForSession(this.props.presences, this.props.sessionId)}
@@ -1831,11 +1848,12 @@ class UIRoot extends Component {
                     )}
                     {
                       // AVN: Chat is not currently enabled
-                      avnShowHiddenFeatures &&
+                      this.props.avnDimensionConnection?.permissions?.allowText &&
                       <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
                     }
                     { // AVN: Photo / screenshot button 
-                    <ToolbarButton
+                      this.props.avnDimensionConnection?.features?.showCamera && 
+                      <ToolbarButton
                       icon={<CameraIcon />}
                       label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}
                       onClick={() => {
@@ -1856,12 +1874,12 @@ class UIRoot extends Component {
                 }
                 toolbarRight={
                   <>
-                    {isDimensionCreator && (<ToolbarButton
+                    {this.props.avnDimensionConnection?.features?.showFocus && (<ToolbarButton
                       icon={<GatherIcon />}
                       label={<FormattedMessage id="toolbar.gather-button" defaultMessage="Gather" />}
                       preset={ AVN.isGuiding ? "primary" : "basic" }
                       onClick={ async () => {
-                        if(this.props.avnIsLicensedCreator) {
+                        if(this.props.avnDimensionConnection?.permissions?.allowFocus) {
                           if(AVN.isGuiding) {
                             await AVN.resetLessonFocus()
                           } else {
@@ -1881,7 +1899,9 @@ class UIRoot extends Component {
                       }}
                     />)}
                     {
-                      this.state.signedIn                    
+                      this.props.avnDimensionConnection?.features?.showInvite &&                         
+                      (
+                      this.props.avnDimensionConnection?.permissions?.allowInvite                    
                       ? <InvitePopoverContainer
                         hub={this.props.hub}
                         hubChannel={this.props.hubChannel}
@@ -1898,7 +1918,8 @@ class UIRoot extends Component {
                             onClick: this.avnShowContextualSignInDialog,
                             onClose: this.closeDialog,
                           })}
-                      />
+                        />
+                      )
                     }
                     {entered &&
                       isMobileVR && (

@@ -2,15 +2,15 @@ import React, { useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import { EduverseTeacherSidebar } from "./EduverseTeacherSidebar";
 
-export function EduverseTeacherSidebarContainer({ room, onClose }) {
+export function EduverseTeacherSidebarContainer({ roomInfo, onClose }) {
 
   return (
-    <EduverseTeacherSidebar room={room} onClose={onClose}>
+    <EduverseTeacherSidebar roomInfo={roomInfo} onClose={onClose}>
     </EduverseTeacherSidebar>
   );
 }
 
 EduverseTeacherSidebarContainer.propTypes = {
-  room: PropTypes.object.isRequired,
+  roomInfo: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };

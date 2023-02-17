@@ -285,13 +285,13 @@ export function formatSystemMessage(entry, intl) {
     case "entered":
       return intl.formatMessage(enteredMessages[entry.presence], { name: <b>{entry.name}</b> });
     case "leave":
-      return (
+      if(entry.name) return (
         <FormattedMessage
           id="chat-sidebar.system-message.leave"
           defaultMessage="{name} left."
           values={{ name: <b>{entry.name}</b> }}
         />
-      );
+      ); 
     case "display_name_changed":
       return (
         <FormattedMessage

@@ -16,7 +16,7 @@ import { FormattedMessage } from "react-intl";
 import { anyEntityWith } from "../../utils/bit-utils";
 import { MyCameraTool } from "../../bit-components";
 
-export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistoriedDialog, hubChannel }) {
+export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistoriedDialog, hubChannel, avnDimensionConnection }) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistorie
       const hasActivePen = !!scene.systems["pen-tools"].getMyPen();
 
       let nextItems = [
-        hubChannel.can("spawn_drawing") && {
+        avnDimensionConnection?.permissions?.allowPen && hubChannel.can("spawn_drawing") && {
           id: "pen",
           icon: PenIcon,
           color: "accent5",
@@ -33,7 +33,7 @@ export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistorie
           onSelect: () => scene.emit("penButtonPressed"),
           selected: hasActivePen
         },
-        hubChannel.can("spawn_camera") && {
+        avnDimensionConnection?.features?.showCamera && hubChannel.can("spawn_camera") && {
           id: "camera",
           icon: CameraIcon,
           color: "accent5",
@@ -43,7 +43,7 @@ export function PlacePopoverContainer({ scene, mediaSearchStore, showNonHistorie
         }
       ];
 
-      if (hubChannel.can("spawn_and_move_media")) {
+      if (avnDimensionConnection?.permissions?.allowShareMedia && hubChannel.can("spawn_and_move_media")) {
         nextItems = [
           ...nextItems,
           // TODO: Create text/link dialog
@@ -118,5 +118,6 @@ PlacePopoverContainer.propTypes = {
   hubChannel: PropTypes.object.isRequired,
   scene: PropTypes.object.isRequired,
   mediaSearchStore: PropTypes.object.isRequired,
-  showNonHistoriedDialog: PropTypes.func.isRequired
+  showNonHistoriedDialog: PropTypes.func.isRequired,
+  avnDimensionConnection: PropTypes.object,
 };

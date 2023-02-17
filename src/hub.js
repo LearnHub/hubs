@@ -409,9 +409,6 @@ export async function getSceneUrlForHub(hub) {
 export async function updateEnvironmentForHub(hub, entryManager) {
   console.log("Updating environment for hub");
 
-  // AVN: Set AVN context
-  AVN.updateFromHub(hub);
-
   const sceneUrl = await getSceneUrlForHub(hub);
 
   if (qsTruthy("newLoader")) {
@@ -660,12 +657,12 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data)
         });
     };
 
+    // AVN: Update Eduverse presence
+    await AVN.enterRoom(hub.hub_id, data.session_id)
+
     window.APP.hub = hub;
     updateUIForHub(hub, hubChannel);
     scene.emit("hub_updated", { hub });
-
-    // AVN: Update Eduverse presence
-    await AVN.enterRoom(hub.hub_id, data.session_id)
 
     if (!isEmbed) {
       console.log("Page is not embedded so environment initialization will start immediately");
@@ -850,7 +847,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Check connection to Eduverse server
   if(!await AVN.isHealthy()) {
     console.error(`AVN health check failed`)
-    scene.emit("errorLoadingRoom", `Eduverse is not available`);
+    scene.emit("errorLoadingRoom", `Eduverse is not currently available`);
     return
 }
   scene.emit("didConnectToEduverse");
@@ -887,8 +884,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       return        
   }
   scene.emit("didJoinDimension");
-  remountUI({ avnIsLicensedCreator: AVN.dimensionIsLicensed, avnAllowNavigation: AVN.allowNavigation });
+  remountUI({ 
+    avnRoomInfo: AVN.roomInfo, 
+    avnDimensionInfo: AVN.dimensionInfo, 
+    avnDimensionConnection: AVN.dimensionConnection, 
+    avnAllowNavigation: AVN.allowNavigation 
+  });
   global.addEventListener("avn-allow-navigation-changed", () => { remountUI({ avnAllowNavigation: AVN.allowNavigation }) })
+  global.addEventListener("avn-room-info-changed", () => { remountUI({ avnRoomInfo: AVN.roomInfo }) })
+  global.addEventListener("avn-dimension-info-changed", () => { remountUI({ avnDimensionInfo: AVN.dimensionInfo }) })
+  global.addEventListener("avn-dimension-connection-changed", () => { remountUI({ avnDimensionConnection: AVN.dimensionConnection }) })
 
   entryManager.performConditionalSignIn = performConditionalSignIn;
   entryManager.init();

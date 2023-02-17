@@ -114,6 +114,9 @@ export async function changeHub(nextState, addToHistory = true) {
     });
   }
 
+  // AVN: Update Eduverse presence
+  await AVN.enterRoom(hub.hub_id, NAF.clientId)
+
   APP.retChannel.push("change_hub", { hub_id: hub.hub_id });
 
   await Promise.all([
@@ -140,9 +143,6 @@ export async function changeHub(nextState, addToHistory = true) {
     hubName: hub.name,
     showLineBreak: true
   });
-
-  // AVN: Update Eduverse presence
-  await AVN.enterRoom(hub.hub_id, NAF.clientId)
 
   } finally {
     isChanging = false;

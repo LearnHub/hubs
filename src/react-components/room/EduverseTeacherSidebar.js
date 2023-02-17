@@ -15,7 +15,6 @@ import { ReactComponent as GatherIcon } from "../icons/People.svg";
 import { ReactComponent as HushIcon } from "../icons/Hush.svg";
 import { ReactComponent as LookIcon } from "../icons/Show.svg";
 import { ToolbarButton } from "../input/ToolbarButton";
-import { AVN } from "../../avn-bridge";
 
 const md = markdownit()
   .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
@@ -37,7 +36,7 @@ md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   return defaultRender(tokens, idx, options, env, self);
 };
 
-export function EduverseTeacherSidebar({ room, onClose }) {
+export function EduverseTeacherSidebar({ roomInfo, onClose }) {
   return (
     <Sidebar
       title={
@@ -52,11 +51,11 @@ export function EduverseTeacherSidebar({ room, onClose }) {
     >
       <div className={styles.informationContainer}>
         <h1>
-          {AVN.iconUri && (<img src={AVN.iconUri} className={styles.sceneIcon}/>)}
-          <span className={styles.sceneName}>{room.name}</span>
+          {roomInfo.iconUrl && (<img src={roomInfo.iconUrl} className={styles.sceneIcon}/>)}
+          <span className={styles.sceneName}>{roomInfo.name}</span>
         </h1>
-        {AVN.description && (
-            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(AVN.description) }} />
+        {roomInfo.description && (
+            <div className={styles.markdown} dangerouslySetInnerHTML={{ __html: md.render(roomInfo.description) }} />
         )}
       </div>
       {/* <Toolbar right={
@@ -86,7 +85,7 @@ export function EduverseTeacherSidebar({ room, onClose }) {
 }
 
 EduverseTeacherSidebar.propTypes = {
-  room: PropTypes.object.isRequired,
+  roomInfo: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };
 

@@ -46,12 +46,16 @@ function usePeopleList(presences, mySessionId, micUpdateFrequency = 500) {
   return people;
 }
 
-function PeopleListContainer({ hubChannel, people, onSelectPerson, onClose }) {
+function PeopleListContainer({ hubChannel, people, onSelectPerson, onClose, avnDimensionConnection }) {
   const onMuteAll = useCallback(() => {
-    for (const person of people) {
-      if (person.presence === "room" && person.permissions && !person.permissions.mute_users) {
-        hubChannel.mute(person.id);
+    if(avnDimensionConnection?.permissions?.allowMute) {
+      for (const person of people) {
+        if (person.presence === "room" && person.permissions && !person.permissions.mute_users) {
+          hubChannel.mute(person.id);
+        }
       }
+    } else {
+      console.log("allowMute is false")
     }
   }, [people, hubChannel]);
   const canVoiceChat = useCan("voice_chat");
@@ -64,7 +68,7 @@ function PeopleListContainer({ hubChannel, people, onSelectPerson, onClose }) {
       onSelectPerson={onSelectPerson}
       onClose={onClose}
       onMuteAll={onMuteAll}
-      showMuteAll={/*AVN: Disabled for now */false && hubChannel.can("mute_users")}
+      showMuteAll={avnDimensionConnection?.features?.showMute && hubChannel.can("mute_users")}
       canVoiceChat={canVoiceChat}
       voiceChatEnabled={voiceChatEnabled}
       isMod={isMod}
@@ -76,7 +80,8 @@ PeopleListContainer.propTypes = {
   onSelectPerson: PropTypes.func.isRequired,
   hubChannel: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  people: PropTypes.array.isRequired
+  people: PropTypes.array.isRequired,
+  avnDimensionConnection: PropTypes.object,
 };
 
 export function PeopleSidebarContainer({
@@ -90,7 +95,8 @@ export function PeopleSidebarContainer({
   onCloseDialog,
   showNonHistoriedDialog,
   onClose,
-  onBlockAnon
+  onBlockAnon,
+  avnDimensionConnection,
 }) {
   const people = usePeopleList(presences, mySessionId);
   const [selectedPersonId, setSelectedPersonId] = useState(null);
@@ -133,7 +139,7 @@ export function PeopleSidebarContainer({
   }
 
   return (
-    <PeopleListContainer onSelectPerson={setSelectedPerson} onClose={onClose} hubChannel={hubChannel} people={people} />
+    <PeopleListContainer onSelectPerson={setSelectedPerson} onClose={onClose} hubChannel={hubChannel} people={people} avnDimensionConnection={avnDimensionConnection} />
   );
 }
 
@@ -149,5 +155,6 @@ PeopleSidebarContainer.propTypes = {
   performConditionalSignIn: PropTypes.func.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
   onBlockAnon: PropTypes.func.isRequired,
-  showNonHistoriedDialog: PropTypes.func.isRequired
+  showNonHistoriedDialog: PropTypes.func.isRequired,
+  avnDimensionConnection: PropTypes.object,
 };
