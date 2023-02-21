@@ -71,15 +71,15 @@ export class AVNHomePage extends React.Component {
           document.location.replace(roomUrl)
         } else {
           console.error("AVN: Failed to create a new dimension")
-          this.setState({ message: "An unexpected error occured", errorMessage: "Failed to create a new session" })
+          this.setState({ message: "Session failure", errorMessage: "Unable to create a new session. Try refreshing the page or following the links below for more information." })
         }
       } else {
         console.error("AVN: Failed to connect to AVN Cloud")
-        this.setState({ message: "An unexpected error occured", errorMessage: "Failed to connect to Eduverse" })
+        this.setState({ message: "Connection failed", errorMessage: "Eduverse is currently unavailable. Try refreshing the page or following the links below for more information." })
       }
     } catch(error) {
       console.error(error)
-      this.setState({ message: "An unexpected exception occured", errorMessage: error?.message })
+      this.setState({ message: "An unexpected error occured", errorMessage: error?.message })
     }
   }
 

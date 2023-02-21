@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { LoadingScreenLayout } from "../layout/LoadingScreenLayout";
 import { Spinner } from "../misc/Spinner";
@@ -16,22 +16,17 @@ export function LoadingScreen({ message, errorMessage, infoMessages }) {
         <>          
           {!errorMessage && (<Spinner />)}
           <b>{message}</b>
-          <p>{errorMessage}</p>
+          <p className={styles.errorMessage}>{errorMessage}</p>
         </>
       }
       bottom={
-        <>
-{
-          // <h3>{infoMessage.heading}</h3>
-          // <p>{infoMessage.message}</p>
-}
-          { 
-          // AVN: Button for saving logs will appear if load takes a long time
-          <Button className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>
-            <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />
-          </Button> 
-          }
-        </>
+        <Fragment>
+            <a className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} href="https://status.eduverse.com" target="_blank">Eduverse Service Status</a>
+            <a className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} href="https://support.avantiseducation.com/" target="_blank">Eduverse Support</a>
+            <Button className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>
+              <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />
+            </Button> 
+        </Fragment>
       }
     />
   );

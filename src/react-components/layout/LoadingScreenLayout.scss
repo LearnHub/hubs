@@ -39,6 +39,12 @@
   padding: 0 48px;
 }
 
+:local(.error-message) {
+  max-width: 260px; 
+  display:inline-block;
+  line-height: 1.5em;
+}
+
 
 :local(.quick-fade-in) {
   animation: 1s fadein;
@@ -48,7 +54,7 @@
   100% { opacity:1; }
 }
 :local(.late-fade-in) {
-  animation: 30s latefadein;
+  animation: 15s latefadein;
 }
 @keyframes latefadein{
   0% { opacity:0; }

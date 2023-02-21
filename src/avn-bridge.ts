@@ -178,7 +178,6 @@ class AVNBridge {
             passId,
         })
         this._dimensionId = openDimensionResult.dimensionId
-
         return true
     }
 
@@ -270,6 +269,11 @@ class AVNBridge {
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), 0)
         }
+    }
+
+    public async requestRejoin(): Promise<void> {
+        clearTimeout(this._lastRejoinTimeout)
+        await this.rejoinDimension()
     }
 
     async rejoinDimension(): Promise<void> {
