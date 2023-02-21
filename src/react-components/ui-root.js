@@ -424,6 +424,22 @@ class UIRoot extends Component {
       );
     }
 
+    // AVN: If all the entry flow has been skipped then room entry must be forced now
+      this.props.scene.addEventListener(
+        "loading_finished",
+        () => {
+          if(!this.props.avnDimensionConnection?.features?.showRoomEntryFlow) {
+            // If VOIP is expected there should be some entry interaction to grant permissions
+            if(this.props.avnDimensionConnection?.features?.showVoip) {
+              console.error("AVN: 'showVoip = true' is incompatible with 'showRoomEntryFlow = false'")
+            }
+            console.log("AVN: Room entry flow was skipped, so forcing room entry");
+            this.beginOrSkipAudioSetup();
+          }
+        },
+        { once: true }
+      );
+    
     this.playerRig = scene.querySelector("#avatar-rig");
 
     scene.addEventListener("action_media_tweet", this.onTweet);
@@ -562,7 +578,7 @@ class UIRoot extends Component {
     this.updateSubscribedState();
   };
 
-  handleForceEntry = () => {
+  handleForceEntry = () => {    
     console.log("Forced entry type: " + this.props.forcedVREntryType);
 
     if (!this.props.forcedVREntryType) return;
@@ -615,6 +631,13 @@ class UIRoot extends Component {
   };
 
   performDirectEntryFlow = async enterInVR => {
+    // AVN: don't show audio dialog if VOIP has been hidden
+    if(!this.props.avnDimensionConnection?.features?.showVoip) {
+      console.log("AVN: Audio is disabled so audio dialog will be skipped");
+      this.beginOrSkipAudioSetup();
+      return;
+    }
+
     this.setState({ enterInVR, waitingOnAudio: true });
 
     const hasGrantedMic = (await grantedMicLabels()).length > 0;
@@ -1188,7 +1211,7 @@ class UIRoot extends Component {
     const streamer = getCurrentStreamer();
     const streamerName = streamer && streamer.displayName;
 
-    const renderEntryFlow = (!enteredOrWatching && this.props.hub) || this.isWaitingForAutoExit();
+    const renderEntryFlow = this.props.avnDimensionConnection?.features?.showRoomEntryFlow && ((!enteredOrWatching && this.props.hub) || this.isWaitingForAutoExit());
 
     const canCreateRoom = !configs.feature("disable_room_creation") || configs.isAdmin();
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
@@ -1201,7 +1224,7 @@ class UIRoot extends Component {
     const moreMenu = [
       {
         id: "user",
-        label: !this.state.signedIn ? (
+        label: !this.props.avnDimensionConnection?.features?.showSignIn ? "" : !this.state.signedIn ? (
           <FormattedMessage id="more-menu.not-signed-in" defaultMessage="You are not signed in" />
         ) : (
           <FormattedMessage
@@ -1212,7 +1235,8 @@ class UIRoot extends Component {
         ),
         items: [
           this.state.signedIn
-            ? {
+            ? this.props.avnDimensionConnection?.features?.showSignIn && 
+              {
                 id: "sign-out",
                 label: <FormattedMessage id="more-menu.sign-out" defaultMessage="Sign Out" />,
                 icon: LeaveIcon,
@@ -1221,7 +1245,7 @@ class UIRoot extends Component {
                   this.setState({ signedIn: false });
                 }
               }
-            : {
+            : this.props.avnDimensionConnection?.features?.showSignIn && {
                 id: "sign-in",
                 label: <FormattedMessage id="more-menu.sign-in" defaultMessage="Sign In" />,
                 icon: EnterIcon,
@@ -1238,10 +1262,10 @@ class UIRoot extends Component {
                 reason: LeaveReason.createRoom
               })
           },
-          {
+          this.props.avnDimensionConnection?.features?.showAccountInfo && {
             id: "user-profile",
-            // AVN: Name changes are not allowed to avoid disruption
-            label: <FormattedMessage id="more-menu.profile-avatar" defaultMessage="Change Avatar" />,
+            // AVN: Profile sidebar is more generic
+            label: <FormattedMessage id="more-menu.my-account" defaultMessage="My Account" />,
             icon: AvatarIcon,
             onClick: () => this.setSidebar("profile")
           },
@@ -1863,7 +1887,7 @@ class UIRoot extends Component {
                       <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
                     }
                     { // AVN: Photo / screenshot button 
-                      this.props.avnDimensionConnection?.features?.showCamera && 
+                      this.props.avnDimensionConnection?.features?.showPhoto && 
                       <ToolbarButton
                       icon={<CameraIcon />}
                       label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}

@@ -136,8 +136,8 @@ export function MicSetupModal({
                           />
                         </span>{" "}
                         <FormattedMessage
-                          id="mic-setup-modal.error-description"
-                          defaultMessage="To talk in Hubs you will need to allow microphone access."
+                          id="mic-setup-modal.avn-error-description"
+                          defaultMessage="To talk in Eduverse you will need to allow microphone access."
                         />
                       </p>
                     ))

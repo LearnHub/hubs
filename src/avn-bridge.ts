@@ -66,6 +66,14 @@ class AVNBridge {
         return this._dimensionConnection        
     }
 
+    // Mutations trigger event `avn-allow-navigation-changed`
+    get allowNavigation() {
+        // Global navigation permission
+        return this._dimensionConnection?.permissions?.allowNavigation 
+            // Focus sessesion permissions (teacher can always navigate)
+            && (!!this._teachLessonContext || !this._learnLessonContext?.focus)
+    }
+
     // Helper accessors
 
     get assetId(): string {
@@ -220,6 +228,7 @@ class AVNBridge {
                         this._dimensionConnection = value.message.value
                         console.info(`AVN update dimension connection`, value.message.value)
                         global.dispatchEvent(new Event("avn-dimension-connection-changed"))
+                        global.dispatchEvent(new Event("avn-allow-navigation-changed"))
                         break
                     case "info":
                         this._dimensionInfo = value.message.value
@@ -333,7 +342,6 @@ class AVNBridge {
             sessionId
         })
         this._roomInfo = enterRoomResult.roomInfo
-        // TODO: HOOK UP TO INTERFACE ELEMENTS
         global.dispatchEvent(new Event("avn-room-info-changed"))
     }
 
@@ -397,10 +405,6 @@ class AVNBridge {
     // AVN data servers don't need CORS proxying
     get dataServerDomains() {
         return ["https://data.avncloud.com"];
-    }
-
-    get allowNavigation() {
-        return !!this._teachLessonContext || !this._learnLessonContext?.focus
     }
 
     // Rooms
