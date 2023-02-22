@@ -52,13 +52,19 @@ export function RoomEntryModal({
           <p>{roomName}</p>
         </div>
         <Column center className={styles.buttons}>
-          {showJoinRoom && (
-            <Button preset="accent4" onClick={onJoinRoom}>
+        {showJoinRoom && (
+            <Button preset="accept" onClick={onJoinRoom}>
               <EnterIcon />
               <span>
                 <FormattedMessage id="room-entry-modal.join-room-button" defaultMessage="Join Room" />
               </span>
             </Button>
+          )}
+          { /* AVN: Most likely explanation for showJoinRoom being false is that the room is full, so this message is better than nothing */}
+          {showSpectate && !showJoinRoom && (
+            <span>
+              <FormattedMessage id="room-entry-modal.avn-room-is-full" defaultMessage="This room is currently full" />
+            </span>
           )}
           {showEnterOnDevice && (
             <Button preset="accent5" onClick={onEnterOnDevice}>

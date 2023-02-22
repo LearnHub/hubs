@@ -44,7 +44,7 @@ export class AVNHomePage extends React.Component {
               }
               this.setState({ message: null, errorMessage: null })
             } else {
-              console.log("AVN Hall pass is valid")
+              console.log("AVN: hall pass is valid")
             }
           } else {
             passId = undefined;

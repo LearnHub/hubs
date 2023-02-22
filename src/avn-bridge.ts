@@ -17,10 +17,11 @@ import configs from "./utils/configs"
 import { Pass } from "connect-sdk/dist/gen/avn/connect/v1/passes_pb"
 import { ConnectionInstance } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
 import { RoomInfo } from "connect-sdk/dist/gen/avn/connect/v1/rooms_pb"
+import { DimensionStatus } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 
 // Debug configuration (do not check in)
 const PreferredDomain = (configs as any).RETICULUM_SERVER
-console.log(`AVN PreferredDomain: ${PreferredDomain}`)
+console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
 const ConnectToAlphaBackend = PreferredDomain === "ap.eduverse.com"
 const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
 const LocalDevMode = isLocalClient()
@@ -66,6 +67,12 @@ class AVNBridge {
         return this._dimensionConnection        
     }
 
+    // Mutations trigger event `avn-dimension-status-changed`
+    _lastDimensionStatus: DimensionStatus | undefined
+    get dimensionStatus() : DimensionStatus | undefined {
+        return this._lastDimensionStatus
+    }
+
     // Mutations trigger event `avn-allow-navigation-changed`
     get allowNavigation() {
         // Global navigation permission
@@ -100,7 +107,7 @@ class AVNBridge {
         // If this is a solo dimension it was created anonymously and the user must be the owner (mostly true)
         // so a replacement dimension should be created with the full auth permissions
         if (this._dimensionInfo?.accessLimits?.dimensionCapacity == 1) {
-            console.log("AVN dimension is solo, so it will be replaced")
+            console.log("AVN: dimension is solo, so it will be replaced")
             if (this.passId) {
                 document.location.replace(`/?asset=${this.assetId}&pass=${this.passId}`);
             } else {
@@ -122,10 +129,10 @@ class AVNBridge {
     public async isHealthy(): Promise<boolean> {
         try {
             const healthCheckResult = await this.Connect.Health.check({})
-            console.debug(`AVN health check result: ${healthCheckResult.status}`)
+            console.debug(`AVN: health check result: ${healthCheckResult.status}`)
             return healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING
         } catch (error: unknown) {
-            console.error(`AVN health check exception`, error)
+            console.error(`AVN: health check exception`, error)
         }
         return false
     }
@@ -165,7 +172,7 @@ class AVNBridge {
             const getPassResult = await this.Connect.Passes.getPass({ passId })
             return getPassResult.result
         } catch (e: unknown) {
-            console.error(`AVN failed to get pass '${passId}'`, e)
+            console.error(`AVN: failed to get pass '${passId}'`, e)
         }
         return undefined
     }
@@ -185,10 +192,10 @@ class AVNBridge {
         try {
             const getRoomDimensionResult = await this.Connect.Rooms.getRoomDimension({ roomId: roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
-            console.log(`AVN matched dimension ID '${this._dimensionId}' for room`)
+            console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
             return true
         } catch {
-            console.error(`AVN failed to match dimension`)
+            console.error(`AVN: failed to match dimension`)
         }
         return false
     }
@@ -215,23 +222,24 @@ class AVNBridge {
                 }
                 switch (value.message.case) {
                     case "status":
+                        // CLOSE is the only expected status change after the initial OPEN
                         if (value.message.value.state == OperationState.CLOSED) {
                             console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
-                            //TODO: PROPER ABORT AND UI DISPLAY
-                            // possibly throw and exit room?
                         } else {
                             console.warn(`Unexpected dimension state change '${value.message.value.state}'`)
                         }
+                        this._lastDimensionStatus = value.message.value
+                        global.dispatchEvent(new Event("avn-dimension-status-changed"))
                         break
                     case "connection":
                         this._dimensionConnection = value.message.value
-                        console.info(`AVN update dimension connection`, value.message.value)
+                        console.info(`AVN: update dimension connection`, value.message.value)
                         global.dispatchEvent(new Event("avn-dimension-connection-changed"))
                         global.dispatchEvent(new Event("avn-allow-navigation-changed"))
                         break
                     case "info":
                         this._dimensionInfo = value.message.value
-                        console.info(`AVN update dimension info`, value.message.value)
+                        console.info(`AVN: update dimension info`, value.message.value)
                         global.dispatchEvent(new Event("avn-dimension-info-changed"))
                         break
                     case "broadcast":
@@ -244,9 +252,9 @@ class AVNBridge {
                         this._learnLessonContext = value.message.value
                         global.dispatchEvent(new Event("avn-allow-navigation-changed"))
                         if (value.message.value) {
-                            console.debug(`AVN lesson context set`, value.message.value)
+                            console.debug(`AVN: lesson context set`, value.message.value)
                         } else {
-                            console.debug(`AVN lesson context reset`)
+                            console.debug(`AVN: lesson context reset`)
                         }
                         break
                     default:
@@ -316,13 +324,13 @@ class AVNBridge {
             const dimensionStreamIterator: AsyncIterator<DimensionEvent, DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
             const { done, value } = await dimensionStreamIterator.next()
             if (done) {
-                console.error(`AVN dimension stream unexpectedly terminated`)
+                console.error(`AVN: dimension stream unexpectedly terminated`)
                 abortController.abort("STREAM_OPEN_FAILED")
                 return OperationState.UNSPECIFIED
             }
             // First message must say that the dimension is OPEN
             if (value.message.case !== "status" || value.message.value.state !== OperationState.OPEN) {
-                console.error(`AVN failed to join dimension '${this.dimensionId}', got message ${value.message}`)
+                console.error(`AVN: failed to join dimension '${this.dimensionId}'`, value.message)
                 abortController.abort("STREAM_STATE_UNEXPECTED")
                 return value.message.case === "status" ? value.message.value.state : OperationState.UNSPECIFIED
             }
@@ -363,7 +371,7 @@ class AVNBridge {
                 position
             }
         })
-        console.log("AVN setting lesson context", this._teachLessonContext)
+        console.log("AVN: setting lesson context", this._teachLessonContext)
         const result = await this.Connect.Dimensions.setLessonContext({
             credentials: this._dimensionConnection?.credentials,
             dimensionId: this._dimensionId,
@@ -374,12 +382,12 @@ class AVNBridge {
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
         }
-        console.error("AVN unexpected setLessonContext result", result)
+        console.error("AVN: unexpected setLessonContext result", result)
         return false
     }
 
     public async resetLessonFocus(): Promise<boolean> {
-        console.log("AVN resetting lesson context")
+        console.log("AVN: resetting lesson context")
         const result = await this.Connect.Dimensions.setLessonContext({
             credentials: this._dimensionConnection?.credentials,
             dimensionId: this._dimensionId
@@ -389,7 +397,7 @@ class AVNBridge {
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
         }
-        console.error("AVN unexpected resetLessonFocus result", result)
+        console.error("AVN: unexpected resetLessonFocus result", result)
         return false
     }
 
@@ -468,7 +476,7 @@ class AVNBridge {
         try {
             const roomData = await AVN.fetchRoomData(newAssetId);
             if (roomData) {
-                console.log(`AVN responding to focus by changing scene to '${newAssetId}'`)
+                console.log(`AVN: responding to focus by changing scene to '${newAssetId}'`)
                 const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
                 await changeHub(nextState, true);
             } else {

@@ -147,7 +147,7 @@ class AvnMediaBrowserContainer extends Component {
     e.preventDefault();
     // Replacement scene URL as a blob
     const droppedFile = e.dataTransfer.files[0];
-    console.log(`AVN dropped file`, droppedFile);
+    console.log(`AVN: dropped file`, droppedFile);
     if(!droppedFile.name || !droppedFile.name.endsWith(".glb")) {
       alert("Expected .glb scene file");
       return;

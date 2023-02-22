@@ -114,6 +114,8 @@ import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
 import { AvnInformationModal } from "./room/AvnInformationModal";
+import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_pb";
+import { AvnDimensionStatusModal } from "./room/AvnDimensionStatusModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
 const avnShowHiddenFeatures = qsTruthy("showHiddenFeatures");
@@ -188,6 +190,7 @@ class UIRoot extends Component {
     avnRoomInfo: PropTypes.object,
     avnDimensionInfo: PropTypes.object,
     avnDimensionConnection: PropTypes.object,
+    avnDimensionStatus: PropTypes.object,
     avnAllowNavigation: PropTypes.bool,
     canVoiceChat: PropTypes.bool
   };
@@ -1138,6 +1141,11 @@ class UIRoot extends Component {
       !hide &&
       this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no;
 
+      // AVN Report dimension closure
+      const dimensionClosedDialog = this.props.avnDimensionStatus?.state === OperationState.CLOSED 
+        ? <AvnDimensionStatusModal detail={this.props.avnDimensionStatus?.detail} /> 
+        : undefined
+
     const entryDialog =
       this.props.availableVREntryTypes &&
       !preload &&
@@ -1525,6 +1533,7 @@ class UIRoot extends Component {
                 avnDimensionConnection={this.props.avnDimensionConnection}
                 viewport={
                   <>
+                    {dimensionClosedDialog}
                     {!this.state.dialog && renderEntryFlow ? entryDialog : undefined}
                     {/* AVN: Hide "More" button on mobile */}
                     {avnShowHiddenFeatures && !this.props.selectedObject && <CompactMoreMenuButton />}

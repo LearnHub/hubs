@@ -838,15 +838,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const accessToken = store.state.credentials?.extras?.access_token;
   if(accessToken) {
-    console.log("AVN authenticating with existing token")
+    console.log("AVN: authenticating with existing token")
     await AVN.authenticate(accessToken)
   } else {
-    console.log("AVN no token found so connection will be anonymous")
+    console.log("AVN: no token found so connection will be anonymous")
   }
 
   // Check connection to Eduverse server
   if(!await AVN.isHealthy()) {
-    console.error(`AVN health check failed`)
+    console.error(`AVN: health check failed`)
     scene.emit("errorLoadingRoom", `Eduverse is not currently available`);
     return
 }
@@ -854,7 +854,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   // Lookup dimension for this room
   if(!await AVN.setDimensionFromRoomId(hubId)) {
-    console.error(`AVN failed to match dimension`)
+    console.error(`AVN: failed to match dimension`)
     scene.emit("errorLoadingRoom", `No session could be found for this room`);
     return
 }
@@ -862,38 +862,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Join dimension
   const joinResult = await AVN.joinDimension()
   switch (joinResult) {
+    case OperationState.OPEN:
+      console.info(`AVN: dimension open`);
+      scene.emit("didJoinDimension");
+      break;
     case OperationState.CLOSED:
-      console.error(`AVN dimension closed`)
+      console.error(`AVN: dimension closed`)
       scene.emit("errorLoadingRoom", `Session is closed`);
       return
     case OperationState.NOT_FOUND:
-      console.error(`AVN dimension not found`)
+      console.error(`AVN: dimension not found`)
       scene.emit("errorLoadingRoom", `Session not found`);
       return
     case OperationState.EXPIRED:
-      console.error(`AVN dimension expired`)
+      console.error(`AVN: dimension expired`)
       scene.emit("errorLoadingRoom", `Session has expired`);
       return
     case OperationState.FORBIDDEN:
-      console.error(`AVN dimension forbidden`)
+      console.error(`AVN: dimension forbidden`)
       scene.emit("errorLoadingRoom", `Session is forbidden`);
       return
-    case OperationState.UNSPECIFIED:
-      console.error(`AVN dimension join error`)
-      scene.emit("errorLoadingRoom", `Session is not available`);
+    case OperationState.ERROR:
+      console.error(`AVN: dimension join error`)
+      scene.emit("errorLoadingRoom", `Session is not available because a server error occurred`);
+      return        
+    default:
+      console.error(`AVN: dimension join error`)
+      scene.emit("errorLoadingRoom", `Session is not available, but the reason is unknown`);
       return        
   }
-  scene.emit("didJoinDimension");
   remountUI({ 
     avnRoomInfo: AVN.roomInfo, 
     avnDimensionInfo: AVN.dimensionInfo, 
     avnDimensionConnection: AVN.dimensionConnection, 
-    avnAllowNavigation: AVN.allowNavigation 
+    avnDimensionStatus: AVN.dimensionStatus, 
+    avnAllowNavigation: AVN.allowNavigation,
   });
   global.addEventListener("avn-allow-navigation-changed", () => { remountUI({ avnAllowNavigation: AVN.allowNavigation }) })
   global.addEventListener("avn-room-info-changed", () => { remountUI({ avnRoomInfo: AVN.roomInfo }) })
   global.addEventListener("avn-dimension-info-changed", () => { remountUI({ avnDimensionInfo: AVN.dimensionInfo }) })
   global.addEventListener("avn-dimension-connection-changed", () => { remountUI({ avnDimensionConnection: AVN.dimensionConnection }) })
+  global.addEventListener("avn-dimension-status-changed", () => { remountUI({ avnDimensionStatus: AVN.dimensionStatus }) })
 
   entryManager.performConditionalSignIn = performConditionalSignIn;
   entryManager.init();

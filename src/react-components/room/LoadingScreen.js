@@ -7,9 +7,12 @@ import { SaveConsoleLog } from "../../utils/record-log.js";
 import { Button } from "../input/Button";
 import styles from "../layout/LoadingScreenLayout.scss";
 import { FormattedMessage } from "react-intl";
+import { ReactComponent as SupportIcon } from "../icons/Support.svg";
+
 export function LoadingScreen({ message, errorMessage, infoMessages }) {
   // AVN: Hide info messages as not currently relevant
   //const infoMessage = useRandomMessageTransition(infoMessages);
+  const fadeClass = errorMessage ? styles.showNow : styles.showLater
   return (
     <LoadingScreenLayout
       center={
@@ -21,9 +24,10 @@ export function LoadingScreen({ message, errorMessage, infoMessages }) {
       }
       bottom={
         <Fragment>
-            <a className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} href="https://status.eduverse.com" target="_blank">Eduverse Service Status</a>
-            <a className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} href="https://support.avantiseducation.com/" target="_blank">Eduverse Support</a>
-            <Button className={errorMessage ? styles.quickFadeIn : styles.lateFadeIn} preset="basic" onClick={() => SaveConsoleLog()}>
+            <SupportIcon className={fadeClass}/>
+            <a className={fadeClass} href="https://status.eduverse.com" target="_blank">Check Eduverse service status</a>
+            <a className={fadeClass} href="https://support.avantiseducation.com/" target="_blank">Search Eduverse support</a>
+            <Button className={fadeClass} preset="basic" onClick={() => SaveConsoleLog()}>
               <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />
             </Button> 
         </Fragment>

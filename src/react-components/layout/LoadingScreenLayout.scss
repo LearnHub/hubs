@@ -46,14 +46,15 @@
 }
 
 
-:local(.quick-fade-in) {
-  animation: 1s fadein;
+:local(.show-now) {
+  animation: 2s gradualfadein;
 }
-@keyframes quickfadein{
+@keyframes gradualfadein{
   0% { opacity:0; }
+  50% { opacity:0; }
   100% { opacity:1; }
 }
-:local(.late-fade-in) {
+:local(.show-later) {
   animation: 15s latefadein;
 }
 @keyframes latefadein{
