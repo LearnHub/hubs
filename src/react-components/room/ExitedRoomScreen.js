@@ -104,11 +104,12 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
               }}
             />
           </p>
-        )}
-
+        )}        
+        { /* AVN: Not suitable in all situations */ false && ( 
         <Button as="a" preset="accept" href="/">
           <FormattedMessage id="exited-room-screen.home-button" defaultMessage="Back to Home" />
         </Button>
+        )}
       </>
     );
   } else {

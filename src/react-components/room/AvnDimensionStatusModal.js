@@ -14,7 +14,7 @@ export function AvnDimensionStatusModal({ onCancel, detail }) {
       <p>
           <FormattedMessage
             id="avn-dimension-status-modal.closed-message"
-            defaultMessage="This Eduverse session has now ended and this room will soon close."
+            defaultMessage="Your Eduverse session has ended and this room will soon close."
           />
         </p>
         <p>

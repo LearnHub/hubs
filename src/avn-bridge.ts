@@ -230,6 +230,11 @@ class AVNBridge {
                         }
                         this._lastDimensionStatus = value.message.value
                         global.dispatchEvent(new Event("avn-dimension-status-changed"))
+                        setTimeout(() => {
+                            // Fake the hubs closing until the API supports room closure
+                            // @ts-ignore
+                            document.querySelector("a-scene")?.emit("hub_closed")
+                        }, 20000)
                         break
                     case "connection":
                         this._dimensionConnection = value.message.value
