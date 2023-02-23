@@ -86,6 +86,10 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
             />
           </p>
         )}
+        { /* AVN: Start a new session if this one has been closed down */ }
+        <Button preset="accept" onClick={() => AVNGlobal.startNewSession()}>
+          <FormattedMessage id="avn-exited-room-screen.start-new-session" defaultMessage="Start a new session" />
+        </Button> 
         <p>
           <FormattedMessage
             id="exited-room-screen.contact-us"

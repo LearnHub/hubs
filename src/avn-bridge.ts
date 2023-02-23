@@ -108,13 +108,20 @@ class AVNBridge {
         // so a replacement dimension should be created with the full auth permissions
         if (this._dimensionInfo?.accessLimits?.dimensionCapacity == 1) {
             console.log("AVN: dimension is solo, so it will be replaced")
-            if (this.passId) {
-                document.location.replace(`/?asset=${this.assetId}&pass=${this.passId}`);
-            } else {
-                document.location.replace(`/?asset=${this.assetId}`);
-            }
+            // Don't let this dimension be joined again, which can lead to hanging gRPC-web connections
+            this._dimensionId = ""
+            // Give the connections time to unwind gracefully
+            setTimeout(this.startNewSession, 1_000, this.passId, this.assetId)
         }
         return true
+    }
+
+    public startNewSession(passId : string | undefined = this.passId, assetId : string | undefined = this.assetId) {
+        if (passId) {
+            document.location.replace(`/?asset=${assetId}&pass=${passId}`);
+        } else {
+            document.location.replace(`/?asset=${assetId}`);
+        }
     }
 
     public async deauthenticate(): Promise<void> {
@@ -238,7 +245,7 @@ class AVNBridge {
                             // Fake the hubs closing until the API supports room closure
                             // @ts-ignore
                             document.querySelector("a-scene")?.emit("hub_closed")
-                        }, 30000)
+                        }, 15000)
                         break
                     case "connection":
                         this._dimensionConnection = value.message.value
