@@ -177,14 +177,14 @@ class AVNBridge {
         return undefined
     }
 
-    public async openNewDimension(passId: string | undefined): Promise<boolean> {
-        const openDimensionResult = await this.Connect.Dimensions.openDimension({
+    public async createNewDimension(passId: string | undefined): Promise<boolean> {
+        const createDimensionResult = await this.Connect.Dimensions.createDimension({
             clientId: store.state.profile.clientId,
             userJwt: this._accessToken,
             preferredDomain: PreferredDomain,
             passId,
         })
-        this._dimensionId = openDimensionResult.dimensionId
+        this._dimensionId = createDimensionResult.dimensionId
         return true
     }
 
@@ -208,6 +208,8 @@ class AVNBridge {
     _dimensionRejoinTimeout = 1000
     _lastRejoinTimeout: NodeJS.Timeout
 
+    _closeSceneTimeout: NodeJS.Timeout | undefined
+
     public async streamMessageHandler(
         abortController: AbortController,
         dimensionStreamIterator: AsyncIterator<DimensionEvent, DimensionEvent>
@@ -230,11 +232,13 @@ class AVNBridge {
                         }
                         this._lastDimensionStatus = value.message.value
                         global.dispatchEvent(new Event("avn-dimension-status-changed"))
-                        setTimeout(() => {
+                        // The fake close might be cancelled if the session reopens
+                        clearInterval(this._closeSceneTimeout)
+                        this._closeSceneTimeout = setTimeout(() => {
                             // Fake the hubs closing until the API supports room closure
                             // @ts-ignore
                             document.querySelector("a-scene")?.emit("hub_closed")
-                        }, 20000)
+                        }, 30000)
                         break
                     case "connection":
                         this._dimensionConnection = value.message.value
@@ -339,6 +343,10 @@ class AVNBridge {
                 abortController.abort("STREAM_STATE_UNEXPECTED")
                 return value.message.case === "status" ? value.message.value.state : OperationState.UNSPECIFIED
             }
+            this._lastDimensionStatus = value.message.value
+            global.dispatchEvent(new Event("avn-dimension-status-changed"))
+            // Clear any pending instructions queued due to the session closing
+            clearInterval(this._closeSceneTimeout)
             console.log(`AVN: Joined dimension '${this.dimensionId}'`)
             // Record abort controller
             this._streamAbortController = abortController

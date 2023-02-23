@@ -59,7 +59,7 @@ export class AVNHomePage extends React.Component {
         }
 
         this.setState({ message: "Creating new session..." })
-        if (await AVN.openNewDimension(passId)) {
+        if (await AVN.createNewDimension(passId)) {
           console.log(`New dimension '${AVN.dimensionId}' is open`)
           this.setState({ message: "Finding a room..." })
           const assetId = searchParams.get("asset") || AVN.assetId

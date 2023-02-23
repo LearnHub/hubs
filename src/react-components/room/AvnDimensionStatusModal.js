@@ -14,13 +14,13 @@ export function AvnDimensionStatusModal({ onCancel, detail }) {
       <p>
           <FormattedMessage
             id="avn-dimension-status-modal.closed-message"
-            defaultMessage="Your Eduverse session has ended and this room will soon close."
+            defaultMessage="This Eduverse session has been closed and so this room will also soon close."
           />
         </p>
         <p>
           <FormattedMessage
-            id="avn-dimension-status-modal.rejoin-message"
-            defaultMessage="Please start or join a new session to continue."
+            id="avn-dimension-status-modal.reopen-message"
+            defaultMessage="This session may be reopened if the session owner rejoins."
           />
         </p>
         <p>{detail}</p>
@@ -30,5 +30,5 @@ export function AvnDimensionStatusModal({ onCancel, detail }) {
 }
 
 AvnDimensionStatusModal.propTypes = {
-  detail: PropTypes.string.isRequired,
+  detail: PropTypes.string,
 };
