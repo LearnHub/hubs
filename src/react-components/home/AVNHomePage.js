@@ -29,7 +29,7 @@ export class AVNHomePage extends React.Component {
       }
       this.setState({ message: "Checking Eduverse connection..." })
       if (await AVN.isHealthy()) {
-        let passId = searchParams.get("pass") || undefined;
+        let passId = searchParams.get("passid") || undefined;
         if(passId) {
           this.setState({ message: "Checking Hall Pass..." })
           const pass = await AVN.getPass(passId);
@@ -57,12 +57,12 @@ export class AVNHomePage extends React.Component {
             this.setState({ message: null, errorMessage: null })
           }
         }
-
+return
         this.setState({ message: "Creating new session..." })
         if (await AVN.createNewDimension(passId)) {
           console.log(`New dimension '${AVN.dimensionId}' is open`)
           this.setState({ message: "Finding a room..." })
-          const assetId = searchParams.get("asset") || AVN.assetId
+          const assetId = searchParams.get("assetid") || AVN.assetId
           const findRoomResult = await AVN.Connect.Rooms.findRoom({ dimensionId: AVN.dimensionId, assetId })
           const room = findRoomResult.roomInfo;
           console.log(`Found room ${room.domain} ${room.roomId}`)
