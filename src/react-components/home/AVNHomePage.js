@@ -57,7 +57,7 @@ export class AVNHomePage extends React.Component {
             this.setState({ message: null, errorMessage: null })
           }
         }
-return
+
         this.setState({ message: "Creating new session..." })
         if (await AVN.createNewDimension(passId)) {
           console.log(`New dimension '${AVN.dimensionId}' is open`)
