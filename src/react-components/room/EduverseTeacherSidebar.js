@@ -10,6 +10,7 @@ import markdownitattrs from "markdown-it-attrs";
 import markdownitsub from "markdown-it-sub";
 import markdownitsup from "markdown-it-sup";
 import markdownitbracketedspans from "markdown-it-bracketed-spans";
+import markdownitcontainer from "markdown-it-container";
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
 import { ReactComponent as GatherIcon } from "../icons/People.svg";
 import { ReactComponent as HushIcon } from "../icons/Hush.svg";
@@ -19,6 +20,7 @@ import { ToolbarButton } from "../input/ToolbarButton";
 const md = markdownit()
   .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
   .use(markdownitbracketedspans)
+  .use(markdownitcontainer, "block")
   .use(markdownitsub)
   .use(markdownitsup);
 
