@@ -19,11 +19,12 @@ import { ConnectionInstance } from "connect-sdk/dist/gen/avn/connect/v1/connecti
 import { RoomInfo } from "connect-sdk/dist/gen/avn/connect/v1/rooms_pb"
 import { DimensionStatus } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 
-// Debug configuration (do not check in)
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
 const ConnectToAlphaBackend = PreferredDomain === "ap.eduverse.com"
 const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
+const HallPassPrefix = ConnectToAlphaBackend ? `alpha.` : ""
+
 const LocalDevMode = isLocalClient()
 
 // Create unique client ID if not already done
@@ -96,7 +97,7 @@ class AVNBridge {
     }
 
     get hallPassPrefix(): string {
-        return "https://edvr.se"
+        return `https://${HallPassPrefix}edvr.se`
     }
 
     // Authentication
