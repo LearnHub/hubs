@@ -50,6 +50,7 @@ import { RoomEntryModal } from "./room/RoomEntryModal";
 import { EnterOnDeviceModal } from "./room/EnterOnDeviceModal";
 import { MicSetupModalContainer } from "./room/MicSetupModalContainer";
 import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
+import { AvnDeviceInvitePopoverContainer } from "./room/AvnDeviceInvitePopoverContainer";
 import { AvnHallPassPopoverContainer } from "./room/AvnHallPassPopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
 import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
@@ -1964,6 +1965,15 @@ class UIRoot extends Component {
                           })}
                         />
                       )
+                    }
+                    { // AVN: Device invitation QR code
+                      this.props.avnDimensionConnection?.features?.showDeviceQrInvite && (
+                      <AvnDeviceInvitePopoverContainer
+                        hub={this.props.hub}
+                        hubChannel={this.props.hubChannel}
+                        scene={this.props.scene}
+                        store={this.props.store}
+                      />)
                     }
                     {entered &&
                       isMobileVR && (
