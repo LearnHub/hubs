@@ -31,6 +31,9 @@ const leftHandHoveredQuery = defineQuery([HoveredHandLeft]);
 const rightHandHoveredQuery = defineQuery([HoveredHandRight]);
 export function handHoverSystem(world, legacyInteractionSystem) {
   const interactorSettings = legacyInteractionSystem.options;
+  // AVN: entity is sometimes undefined, possibly if scene is slow to load
+  if(interactorSettings?.leftHand?.entity?.object3D?.eid && interactorSettings?.rightHand?.entity?.object3D?.eid) {
   hoverHand(world, interactorSettings.leftHand.entity.object3D.eid, leftHandHoveredQuery, HoveredHandLeft);
   hoverHand(world, interactorSettings.rightHand.entity.object3D.eid, rightHandHoveredQuery, HoveredHandRight);
+  }
 }
