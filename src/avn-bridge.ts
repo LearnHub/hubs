@@ -119,9 +119,9 @@ class AVNBridge {
 
     public startNewSession(passId : string | undefined = this.passId, assetId : string | undefined = this.assetId) {
         if (passId) {
-            document.location.replace(`/?asset=${assetId}&pass=${passId}`);
+            document.location.replace(`/?assetid=${assetId}&passid=${passId}`);
         } else {
-            document.location.replace(`/?asset=${assetId}`);
+            document.location.replace(`/?assetid=${assetId}`);
         }
     }
 
