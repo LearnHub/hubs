@@ -11,8 +11,7 @@ import markdownitsup from "markdown-it-sup";
 import markdownitbracketedspans from "markdown-it-bracketed-spans";
 import markdownitcontainer from "markdown-it-container";
 import { CopyableTextInputField } from "../input/CopyableTextInputField";
-console.log(markdownitbracketedspans)
-console.log(markdownitcontainer)
+
 const md = markdownit()
   .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
   .use(markdownitbracketedspans)
