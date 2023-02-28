@@ -292,7 +292,7 @@ class AVNBridge {
             global.dispatchEvent(new Event("avn-dimension-info-changed"))
             global.dispatchEvent(new Event("avn-dimension-connection-changed"))            
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
-            this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), 0)
+            this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), this._dimensionRejoinTimeout)
         }
     }
 
