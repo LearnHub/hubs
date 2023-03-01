@@ -24,6 +24,26 @@
   ol { 
     list-style-type: decimal;
   }
+  table {
+    width: 100%;
+    line-height: 1.25;
+    font-size: 80%;
+    margin-bottom: 1em;
+  }
+  th, td {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px 0px;
+    vertical-align: top;
+    padding: 4px 6px;
+  }
+  td:first-child {
+    padding-left: 0px;
+  }
+  td:last-child {
+    padding-right: 0px;
+  }
+
   .premium-feature {
     color: red;
   }
