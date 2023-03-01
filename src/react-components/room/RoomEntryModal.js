@@ -10,6 +10,7 @@ import { ReactComponent as ShowIcon } from "../icons/Show.svg";
 import { ReactComponent as SettingsIcon } from "../icons/Settings.svg";
 import styles from "./RoomEntryModal.scss";
 import styleUtils from "../styles/style-utils.scss";
+import markdownStyles from "./AvnMarkdown.scss";
 import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { Column } from "../layout/Column";
 import { AppLogo } from "../misc/AppLogo";
@@ -32,6 +33,7 @@ export function RoomEntryModal({
   onOptions,
   headsetConnected,
   onEnterOnConnectedHeadset,
+  avnEntryMessage,
   ...rest
 }) {
   const breakpoint = useCssBreakpoints();
@@ -111,6 +113,9 @@ export function RoomEntryModal({
               </Button>
             </>
           )}
+          {avnEntryMessage && (
+            <div className={classNames(styles.avnEntryMessage, markdownStyles.markdown)} dangerouslySetInnerHTML={{ __html: AVNGlobal.MD.render(avnEntryMessage) }} />
+          )}
         </Column>
       </Column>
     </Modal>
@@ -128,7 +133,8 @@ RoomEntryModal.propTypes = {
   showSpectate: PropTypes.bool,
   onSpectate: PropTypes.func,
   showOptions: PropTypes.bool,
-  onOptions: PropTypes.func
+  onOptions: PropTypes.func,
+  avnEntryMessage: PropTypes.string,
 };
 
 RoomEntryModal.defaultProps = {

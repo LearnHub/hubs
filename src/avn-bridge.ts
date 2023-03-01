@@ -19,6 +19,17 @@ import { ConnectionInstance } from "connect-sdk/dist/gen/avn/connect/v1/connecti
 import { RoomInfo } from "connect-sdk/dist/gen/avn/connect/v1/rooms_pb"
 import { DimensionStatus } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 
+// Markdown utility class
+import markdownit from "markdown-it"
+import markdownitattrs from "markdown-it-attrs"
+import markdownitcontainer from "markdown-it-container"
+// @ts-ignore no type def
+import markdownitsub from "markdown-it-sub"
+// @ts-ignore no type def
+import markdownitsup from "markdown-it-sup"
+// @ts-ignore no type def
+import markdownitbracketedspans from "markdown-it-bracketed-spans"
+  
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
 const ConnectToAlphaBackend = PreferredDomain === "ap.eduverse.com"
@@ -35,14 +46,42 @@ if (!store.state.profile.clientId) {
 
 class AVNBridge {
 
-    _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
-    _accessToken: string | undefined
-    _roomInfo: RoomInfo | undefined
-    _teachLessonContext: LessonContext | undefined
-    _learnLessonContext: LessonContext | undefined
-    _dimensionInfo: DimensionInfo | undefined
-    _dimensionConnection: ConnectionInstance | undefined
-    _dimensionId: string = ""
+    private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
+    private _accessToken: string | undefined
+    private _roomInfo: RoomInfo | undefined
+    private _teachLessonContext: LessonContext | undefined
+    private _learnLessonContext: LessonContext | undefined
+    private _dimensionInfo: DimensionInfo | undefined
+    private _dimensionConnection: ConnectionInstance | undefined
+    private _dimensionId: string = ""
+
+    // Markdown utility renderer
+    public MD : markdownit
+
+    constructor() {
+        this.MD = markdownit()
+            .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
+            .use(markdownitbracketedspans)
+            .use(markdownitcontainer, "block")
+            .use(markdownitsub)
+            .use(markdownitsup)
+        // Rule to open links with target="_blank" (https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer)
+        const defaultRender = this.MD.renderer.rules.link_open || function(tokens, idx, options, env, self) {
+            return self.renderToken(tokens, idx, options)
+        }
+        this.MD.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+            const aIndex = tokens[idx].attrIndex('target')
+            if (aIndex < 0) {
+                tokens[idx].attrPush(['target', '_blank'])
+            } else {
+                const attrs = tokens[idx].attrs
+                if(attrs) {
+                    attrs[aIndex][1] = '_blank'
+                }
+            }
+            return defaultRender(tokens, idx, options, env, self)
+        }
+    }
 
     public Connect = new AVNConnect(LocalDevMode
         ? "http://127.0.0.1:8282"
@@ -69,7 +108,7 @@ class AVNBridge {
     }
 
     // Mutations trigger event `avn-dimension-status-changed`
-    _lastDimensionStatus: DimensionStatus | undefined
+    private _lastDimensionStatus: DimensionStatus | undefined
     get dimensionStatus() : DimensionStatus | undefined {
         return this._lastDimensionStatus
     }
@@ -209,14 +248,14 @@ class AVNBridge {
     }
 
     // Controls the dimension stream and indicates that a stream is active
-    _streamAbortController: AbortController | null
+    private _streamAbortController: AbortController | null
     // It might not be necessary to hold a reference to the loop promise, but it makes the code clearer
-    _streamMessageHandlerPromise: Promise<void> | null
+    private _streamMessageHandlerPromise: Promise<void> | null
 
-    _dimensionRejoinTimeout = 1000
-    _lastRejoinTimeout: NodeJS.Timeout
+    private _dimensionRejoinTimeout = 1000
+    private _lastRejoinTimeout: NodeJS.Timeout
 
-    _closeSceneTimeout: NodeJS.Timeout | undefined
+    private _closeSceneTimeout: NodeJS.Timeout | undefined
 
     public async streamMessageHandler(
         abortController: AbortController,

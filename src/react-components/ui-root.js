@@ -955,6 +955,7 @@ class UIRoot extends Component {
             )
           }
           onEnterOnConnectedHeadset={() => this.enterVR()}
+          avnEntryMessage={this.props.avnDimensionInfo?.entryMessage}
         />
         {!this.state.waitingOnAudio && (
           <EntryStartPanel
