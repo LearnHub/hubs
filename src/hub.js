@@ -520,6 +520,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
 }
 
 export async function updateUIForHub(hub, hubChannel) {
+  console.log("AVN: connected to new hub", hub);
   remountUI({ hub, entryDisallowed: !hubChannel.canEnterRoom(hub) });
 }
 

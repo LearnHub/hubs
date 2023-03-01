@@ -916,6 +916,7 @@ class UIRoot extends Component {
         {/* AVN: Room linking and VR mode have been separated */}
         <RoomEntryModal
           roomName={this.props.hub.name}
+          showRoomFull={this.props.entryDisallowed && !this.state.entered}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {
             // AVN: Skip avatar setting and audio dialog (all users are muted by default)
@@ -1220,7 +1221,8 @@ class UIRoot extends Component {
     const streamer = getCurrentStreamer();
     const streamerName = streamer && streamer.displayName;
 
-    const renderEntryFlow = this.props.avnDimensionConnection?.features?.showRoomEntryFlow && ((!enteredOrWatching && this.props.hub) || this.isWaitingForAutoExit());
+    const renderEntryFlow = (this.props.entryDisallowed && !enteredOrWatching)
+      || (this.props.avnDimensionConnection?.features?.showRoomEntryFlow && ((!enteredOrWatching && this.props.hub) || this.isWaitingForAutoExit()));
 
     const canCreateRoom = !configs.feature("disable_room_creation") || configs.isAdmin();
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");

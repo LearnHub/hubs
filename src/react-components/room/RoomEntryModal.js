@@ -21,6 +21,7 @@ const showHiddenFeatures = qsTruthy("showHiddenFeatures");
 export function RoomEntryModal({
   className,
   roomName,
+  showRoomFull,
   showJoinRoom,
   onJoinRoom,
   showEnterOnDevice,
@@ -60,11 +61,9 @@ export function RoomEntryModal({
               </span>
             </Button>
           )}
-          { /* AVN: Most likely explanation for showJoinRoom being false is that the room is full, so this message is better than nothing */}
-          {showSpectate && !showJoinRoom && (
-            <span>
-              <FormattedMessage id="room-entry-modal.avn-room-is-full" defaultMessage="This room is currently full" />
-            </span>
+          { /* AVN: Clear message when room is full */}
+          {showRoomFull && (
+            <span><FormattedMessage id="room-entry-modal.avn-room-is-full" defaultMessage="This room is currently full" /></span>
           )}
           {showEnterOnDevice && (
             <Button preset="accent5" onClick={onEnterOnDevice}>
@@ -121,6 +120,7 @@ export function RoomEntryModal({
 RoomEntryModal.propTypes = {
   className: PropTypes.string,
   roomName: PropTypes.string.isRequired,
+  showRoomFull: PropTypes.bool,
   showJoinRoom: PropTypes.bool,
   onJoinRoom: PropTypes.func,
   showEnterOnDevice: PropTypes.bool,

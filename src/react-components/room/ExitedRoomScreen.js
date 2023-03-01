@@ -92,8 +92,8 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
         </Button> 
         <p>
           <FormattedMessage
-            id="exited-room-screen.contact-us"
-            defaultMessage="If you have questions, contact us at {contactEmail}."
+            id="exited-room-screen.avn-contact-us"
+            defaultMessage="Any quesions? {contactEmail}."
             values={{ contactEmail: <a href={`mailto:${contactEmail}`}>{contactEmail}</a> }}
           />
         </p>
