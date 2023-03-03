@@ -12,7 +12,7 @@ import { ReactComponent as EnterIcon } from "../icons/Enter.svg";
 export function AvnInformationModal({ closeable, onClose, onClick, informationType, ...rest }) {
   return (
     <Modal
-      title={<FormattedMessage id="avn-information-modal.title" defaultMessage="Eduverse Information" />}
+      title={<FormattedMessage id="avn-information-modal.title" defaultMessage="Information" />}
       beforeTitle={closeable && <CloseButton onClick={onClose} />}
       {...rest}
     >
@@ -42,7 +42,7 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
       {informationType === "subscribe" && (
         <Column center padding>
           <p>
-            <FormattedMessage id="avn-information-modal.function-requires-subscription" defaultMessage="A subcription is required to access teacher notes and controls" />
+            <FormattedMessage id="avn-information-modal.function-requires-subscription" defaultMessage="A subcription is required to access premium content, teacher notes, and teacher controls" />
           </p>
           <p>
             <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">

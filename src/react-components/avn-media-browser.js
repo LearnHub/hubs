@@ -4,6 +4,7 @@ import { injectIntl, FormattedMessage, defineMessages } from "react-intl";
 import { showFullScreenIfWasFullScreen } from "../utils/fullscreen";
 import { AvnMediaBrowser } from "./room/AvnMediaBrowser";
 import { AvnMediaTile } from "./room/AvnMediaTiles";
+import { AvnInformationModal } from "./room/AvnInformationModal";
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobileVR();
 
@@ -110,7 +111,14 @@ class AvnMediaBrowserContainer extends Component {
 
   handleEntryClicked = (evt, entry) => {
     evt.preventDefault();
-    this.selectEntry(entry);
+    if(entry.available) {
+      this.selectEntry(entry);
+    } else {
+      this.props.showNonHistoriedDialog(AvnInformationModal, {
+        closeable: true,
+        informationType: "subscribe",
+      });
+    }
   };
 
   selectEntry = entry => {

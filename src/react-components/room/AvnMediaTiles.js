@@ -50,6 +50,7 @@ export function AvnMediaTile({ entry, onClick, ...rest }) {
       wide={true}
       tall={false}
       name={entry.name}
+      className={entry.available ? "" : styles.notAvailable}
       //TODO item metadata such as tags
       description={<></>}
       {...rest}

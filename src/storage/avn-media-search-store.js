@@ -23,7 +23,7 @@ export default class AvnMediaSearchStore extends EventTarget {
   getChannels() {
     if(!this._channels) {
       (async () => {
-        this._channels = await AVN.getLicensedChannels();
+        this._channels = await AVN.getBrowsableChannels();
         this.dispatchEvent(new CustomEvent("statechanged"));
       })();
     }

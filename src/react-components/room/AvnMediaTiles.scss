@@ -56,6 +56,11 @@
   width: 100%;
 }
 
+:local(.not-available) {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
 :local(.tile-actions) {
   position: absolute;
   top: 8px;

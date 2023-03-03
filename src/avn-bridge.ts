@@ -184,8 +184,8 @@ class AVNBridge {
         return false
     }
 
-    public async getLicensedChannels(): Promise<Channel[]> {
-        const result = await this.Connect.Channels.getLicensedChannels({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }) })
+    public async getBrowsableChannels(): Promise<Channel[]> {
+        const result = await this.Connect.Channels.getBrowsableChannels({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }) })
         return result.results
     }
 
