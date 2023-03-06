@@ -48,7 +48,6 @@ AFRAME.registerComponent("action-trigger-volume", {
           }
         } else {
           if(AVN.allowNavigation) {
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
             if(this.data.isSceneLink) {
               console.log("AVN: Navigating to scene link", this.data.src);
               changeHubAvn(this.data.src);

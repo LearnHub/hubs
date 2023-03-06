@@ -1,5 +1,6 @@
 import { getReticulumFetchUrl, hubUrl } from "./utils/phoenix-utils";
 import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI } from "./hub";
+import { SOUND_MEDIA_LOADED } from "./systems/sound-effects-system";
 
 import { AVN } from "./avn-bridge";
 
@@ -56,6 +57,9 @@ export async function changeHub(nextState, addToHistory = true) {
   // Suppress on-screen join and leave messages until we receive a sync.
   APP.hideHubPresenceEvents = true;
   const scene = AFRAME.scenes[0];
+  
+  // AVN: navigation sound
+  scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
 
   let data;
   try {
