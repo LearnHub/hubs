@@ -293,7 +293,8 @@ export function formatSystemMessage(entry, intl) {
         />
       ); 
     case "display_name_changed":
-      return (
+      // AVN: Don't bother with the name change notifications
+      return null && (
         <FormattedMessage
           id="chat-sidebar.system-message.name-change"
           defaultMessage="{oldName} is now known as {newName}"

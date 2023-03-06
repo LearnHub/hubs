@@ -445,12 +445,18 @@ export default class Store extends EventTarget {
   update(newState, mergeOpts) {
     const finalState = merge({ ...this.state, preferences: this._preferences }, newState, mergeOpts);
 
-    // AVN: Non-authenticated users can only use the default hand-less avatar
-    if(global?.AVNGlobal?.isAuthenticated === false) {
-      const defaultAvatarId = fetchDefaultAvatarId();
+    const defaultAvatarId = fetchDefaultAvatarId();
+    if(!this.state.credentials.token) {
+      // AVN: Non-authenticated users can only use the default hand-less avatar
       if(finalState.profile && finalState.profile.avatarId !== defaultAvatarId) {
         finalState.profile.avatarId = defaultAvatarId;
         console.warn("AVN: Enforced default avatar for anonymous user")
+      }
+    } else {
+      // AVN: Conversely Authenticated users should not have the default avatar
+      if(finalState.profile && finalState.profile.avatarId === defaultAvatarId) {
+        this.resetToRandomDefaultAvatar();
+        console.warn("AVN: Enforced non-default avatar for authenticated user")
       }
     }
 
