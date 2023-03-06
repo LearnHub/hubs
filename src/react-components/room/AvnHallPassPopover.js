@@ -12,8 +12,8 @@ import { AVN } from "../../avn-bridge";
 function AvnHallPassPopoverContent({}) {
   const hallPassUrl = AVN.passId 
     ? AVN.assetId === "homeroom"
-      ? `${AVN.hallPassPrefix}/${AVN.passId}` 
-      : `${AVN.hallPassPrefix}/${AVN.passId}/${AVN.assetId}` 
+      ? `${AVN.shortDomain}/${AVN.passId}` 
+      : `${AVN.shortDomain}/${AVN.passId}/${AVN.assetId}` 
     : "";
   return (
     <Column center padding grow gap="lg" className={styles.hallPassPopover}>

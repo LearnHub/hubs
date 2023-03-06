@@ -9,7 +9,8 @@ import { useInviteUrl } from "./useInviteUrl";
 export function InvitePopoverContainer({ hub, hubChannel, scene, store, ...rest }) {
   // TODO: Move to Hub class
   const shortUrl = `https://${configs.SHORTLINK_DOMAIN}`;
-  const url = `${shortUrl}/${hub.hub_id}`;
+  // AVN: Override to short service for remedial redirection
+  const url = `${AVNGlobal.shortDomain}/${hub.hub_id}`;
 
   let embedText = null;
   const embedToken = hub.embed_token || store.getEmbedTokenForHub(hub);

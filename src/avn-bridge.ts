@@ -34,7 +34,7 @@ const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
 const ConnectToAlphaBackend = PreferredDomain === "ap.eduverse.com"
 const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
-const HallPassPrefix = ConnectToAlphaBackend ? `alpha.` : ""
+const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
 
 const LocalDevMode = isLocalClient()
 
@@ -135,8 +135,8 @@ class AVNBridge {
         return this._dimensionInfo?.passId
     }
 
-    get hallPassPrefix(): string {
-        return `https://${HallPassPrefix}edvr.se`
+    get shortDomain(): string {
+        return `https://${ShortDomainPrefix}edvr.se`
     }
 
     // Authentication
