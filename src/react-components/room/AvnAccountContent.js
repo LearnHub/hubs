@@ -19,13 +19,32 @@ export function AvnAccountContent({
   avnDimensionConnection,
   ...rest
 }) {
+  const [joinErrorText, setJoinErrorText] = React.useState(undefined);
+
   // Probably not best react practice but async functions are hard
   const [orgRoles, setOrgRoles] = React.useState(undefined);
-  const [joinErrorText, setJoinErrorText] = React.useState(undefined);
-  if(!orgRoles) {
+  if(orgRoles) {
+    // Reset if connection was lost
+    if(orgRoles.length && !avnDimensionConnection) {
+      setOrgRoles([]);
+    }
+  } else {
     setOrgRoles([]);
     AVNGlobal.getUserOrganizations().then(value => {
       setOrgRoles(value.sort((lhs, rhs) => lhs.organization.name.localeCompare(rhs.organization.name)));
+    });
+  }
+
+  const [userLicenses, setUserLicenses] = React.useState(undefined);
+  if(userLicenses) {
+    // Reset if connection was lost
+    if(userLicenses.length &&!avnDimensionConnection) {
+      setUserLicenses([]);
+    }
+  } else {
+    setUserLicenses([]);
+    AVNGlobal.getUserLicenses().then(value => {
+      setUserLicenses(value);
     });
   }
 
@@ -86,49 +105,86 @@ export function AvnAccountContent({
         </Button>
       </div>
 
-      { isAuthenticated && (
-      <InputField
+      { isAuthenticated && (<>
+        
+        {/* Licenses */}
+        <InputField
+          label={<FormattedMessage id="avn-account-content.licenses-label" defaultMessage="Licenses" />}
+          fullWidth={true}>
+        {
+        userLicenses?.length ? (<>
+          {userLicenses.map(userLicense => (
+            <table className={styles.avnLicenseTable} key={userLicense.licenseId}>
+              <tbody>
+                <tr><td>License ID</td><td>#{userLicense.licenseId}</td></tr>
+                {userLicense.organization && <tr><td>Organization</td><td>{userLicense.organization.name}</td></tr>}
+                <tr><td>Expires</td><td>{userLicense.expires.toLocaleDateString(undefined, { dateStyle: 'medium' })}</td></tr>
+              </tbody>
+            </table>))}
+            <p>
+              <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
+                <FormattedMessage id="avn-information-modal.subscription-management-anchor-text" defaultMessage="Manage subscriptions" />
+              </a>
+            </p>
+          </>  
+        )
+        : <>
+          <p>
+            <FormattedMessage id="avn-account-content.no-licenses" defaultMessage="You have no licenses available" />
+          </p>
+          <p>
+            <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
+              <FormattedMessage id="avn-information-modal.subscription-call-to-action-anchor-text" defaultMessage="Subscribe today" />
+            </a>
+          </p>
+        </> 
+        }  
+        
+        </InputField>
+
+        {/* Organizations */}
+        <InputField
           label={<FormattedMessage id="avn-account-content.organizations-label" defaultMessage="Organizations" />}
-          fullWidth={true}
-        >
-      {
-      orgRoles ? (<table><tbody>
-          {orgRoles.map(orgRole => (<tr key={`${orgRole.organization.organizationId}-${orgRole.role.roleId}`}>
-            <td className={styles.avnOrgName}>{orgRole.organization.name}</td>
-            {/* <td className={styles.avnOrgRole}>{orgRole.role.name}</td> */}
-            <td className={styles.avnOrgAction}>
-              { orgRole.organization.enrollmentSecret && (
-                <a href="#" onClick={() => onInviteInvoked(orgRole.organization)}>
-                  <FormattedMessage id="avn-account-content.invite-button" defaultMessage="Invite" />
-                </a>
-              )}
-            </td>
-          </tr>))}  
-          </tbody></table>)
-      : <FormattedMessage id="avn-account-content.no-organizations" defaultMessage="You are not a member of any organizations" />
-      }  
-
-      <form onSubmit={onJoinSubmit.bind(this)}>
-      <TextInputField
-        className={styles.avnJoinSection}
-        fullWidth={true}
-        autoComplete="off"
-        minlength="6"
-        onChange={() => setJoinErrorText(undefined) }
-        ref={joinInputEl}      
-        placeholder="Enter an organization join code"
-        afterInput={
-          <Button preset="accept" type="submit">
-            <FormattedMessage id="avn-account-content.join-button" defaultMessage="Join" />
-          </Button>
+          fullWidth={true}>
+        { 
+        orgRoles?.length ? (<table><tbody>
+            {orgRoles.map(orgRole => (<tr key={`${orgRole.organization.organizationId}-${orgRole.role.roleId}`}>
+              <td className={styles.avnOrgName}>{orgRole.organization.name}</td>
+              {/* <td className={styles.avnOrgRole}>{orgRole.role.name}</td> */}
+              <td className={styles.avnOrgAction}>
+                { orgRole.organization.enrollmentSecret && (
+                  <a href="#" onClick={() => onInviteInvoked(orgRole.organization)}>
+                    <FormattedMessage id="avn-account-content.invite-button" defaultMessage="Invite" />
+                  </a>
+                )}
+              </td>
+            </tr>))}  
+            </tbody></table>)
+        : <p>
+            <FormattedMessage id="avn-account-content.no-organizations" defaultMessage="You are not a member of any organizations" />
+          </p>
         }
-      />
-      </form>
-      
-      { joinErrorText && <p className={styles.avnJoinError}>{joinErrorText}</p> }
+        </InputField>
 
-      </InputField>
-      )}
+        <form onSubmit={onJoinSubmit.bind(this)}>
+        <TextInputField
+          className={styles.avnJoinSection}
+          fullWidth={true}
+          autoComplete="off"
+          onChange={() => setJoinErrorText(undefined) }
+          ref={joinInputEl}      
+          placeholder="Enter an organization join code"
+          afterInput={
+            <Button preset="accept" type="submit">
+              <FormattedMessage id="avn-account-content.join-button" defaultMessage="Join" />
+            </Button>
+          }
+        />
+        </form>
+        
+        { joinErrorText && <p className={styles.avnJoinError}>{joinErrorText}</p> }
+
+      </>)}
 
       {/* <h3>Licenses?</h3> */}
 

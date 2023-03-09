@@ -5,6 +5,10 @@
   padding: 24px;
   padding-top: 10px;
   text-align: left;
+
+  p {
+    margin-bottom: 0.5em;
+  }
 }
 
 :local(.wide-input) {
@@ -48,11 +52,17 @@
   vertical-align: top;
 }
 
-:local(.avn-join-section) {
-  margin-top:8px;
-}
-
 :local(.avn-join-error) {
   margin-top:8px;
   color: red;
+}
+
+:local(.avn-license-table) {
+  margin-bottom: 10px;
+  td {
+    text-align: left;
+  }
+  td:first-child {
+    width: 8em;
+  }
 }

@@ -54,7 +54,7 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
           </p>
           <p>
             <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
-              <FormattedMessage id="avn-information-modal.subscription-anchor-text" defaultMessage="Subscribe today" />
+              <FormattedMessage id="avn-information-modal.subscription-call-to-action-anchor-text" defaultMessage="Subscribe today" />
             </a>
           </p>
 

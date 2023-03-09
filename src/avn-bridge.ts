@@ -309,6 +309,29 @@ class AVNBridge {
         }
     }
 
+    public async getUserLicenses(): Promise<{licenseId: string, organization: Organization | undefined, expires: Date}[]> {
+        const result = new Array<{licenseId: string, expires: Date, organization: Organization | undefined}>()
+        const credentials = this._dimensionConnection?.credentials
+        const userId = this._dimensionConnection?.user?.userId
+        if(credentials && userId) {
+            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            const userLicenses = await this.Connect.Licenses.getUserLicenses({auth})
+            for(let userLicense of userLicenses.licenses) {
+                if(userLicense.licenseId && userLicense.expires) {
+                    if(userLicense.source.case === "organizationId") {
+                        const organization = await this.getOrganization(userLicense.source.value)
+                        result.push({licenseId: userLicense.licenseId, organization, expires: userLicense.expires.toDate() })
+                    } else if(userLicense.source.case === "userId") {
+                        result.push({licenseId: userLicense.licenseId, expires: userLicense.expires.toDate(), organization: undefined })
+                    }
+                }
+            }
+        } else {
+            console.warn("Failed to call getUserOrganizationMembership", credentials, userId)
+        }
+        return result
+    }
+
 
     // Controls the dimension stream and indicates that a stream is active
     private _streamAbortController: AbortController | null
