@@ -17,7 +17,9 @@ import configs from "./utils/configs"
 import { Pass } from "connect-sdk/dist/gen/avn/connect/v1/passes_pb"
 import { ConnectionInstance } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
 import { RoomInfo } from "connect-sdk/dist/gen/avn/connect/v1/rooms_pb"
+import { Role } from "connect-sdk/dist/gen/avn/connect/v1/roles_pb"
 import { DimensionStatus } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
+import { OrganizationMembership } from "connect-sdk/dist/gen/avn/connect/v1/organization_membership_pb"
 
 // Markdown utility class
 import markdownit from "markdown-it"
@@ -29,6 +31,7 @@ import markdownitsub from "markdown-it-sub"
 import markdownitsup from "markdown-it-sup"
 // @ts-ignore no type def
 import markdownitbracketedspans from "markdown-it-bracketed-spans"
+import { Organization } from "connect-sdk/dist/gen/avn/connect/v1/organization_pb"
   
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
@@ -246,6 +249,66 @@ class AVNBridge {
         }
         return false
     }
+
+    async getUserOrganizationMembership(): Promise<OrganizationMembership[]> {
+        const credentials = this._dimensionConnection?.credentials
+        const userId = this._dimensionConnection?.user?.userId
+        if(credentials && userId) {
+            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            const result = await this.Connect.Users.getOrganizationMembership({ auth, userId })
+            return result.memberships
+        } else {
+            console.warn("Failed to call getUserOrganizationMembership", credentials, userId)
+        }
+        return []
+    }
+
+    async getOrganization(organizationId: number): Promise<Organization> {
+        const credentials = this._dimensionConnection?.credentials
+        const userId = this._dimensionConnection?.user?.userId
+        if(credentials && userId) {
+            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            return await this.Connect.Organizations.getOrganization({ auth, organizationId })
+        } else {
+            throw new Error(`Not authenticated to get organization`)
+        }
+    }
+
+    public async getUserOrganizations(): Promise<{organization: Organization, role: Role}[]> {
+        const result = new Array<{organization: Organization, role: Role}>()
+        const userOrgRoles = await this.getUserOrganizationMembership()
+        for(let userOrgRole of userOrgRoles) {
+            const role = await this.getRole(userOrgRole.roleId)
+            const organization = await this.getOrganization(userOrgRole.organizationId)
+            result.push({organization, role})
+        }
+        return result
+    }
+
+    // Roles are expect to remain fixed
+    private _roleMap: Map<number, Role> | undefined
+    async getRole(roleId: number): Promise<Role> {
+        if(!this._roleMap) {
+            const result = await this.Connect.Roles.getRoles({})            
+            this._roleMap = new Map<number, Role>()
+            for(let role of result.roles) {
+                this._roleMap.set(role.roleId, role)
+            }
+        }
+        return this._roleMap.get(roleId)!
+    }
+
+    async joinOrganization(joinCode: string): Promise<void> {
+        const credentials = this._dimensionConnection?.credentials
+        const userId = this._dimensionConnection?.user?.userId
+        if(credentials && userId) {
+            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            await this.Connect.Organizations.joinOrganization({ auth, joinCode })
+        } else {
+            throw new Error(`Not authenticated to join organization`)
+        }
+    }
+
 
     // Controls the dimension stream and indicates that a stream is active
     private _streamAbortController: AbortController | null

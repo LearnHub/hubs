@@ -1,0 +1,58 @@
+@use "../styles/theme.scss";
+
+:local(.content) {
+  align-items: left;
+  padding: 24px;
+  padding-top: 10px;
+  text-align: left;
+}
+
+:local(.wide-input) {
+  max-width: none;
+}
+
+
+:local(.avatar-preview-container) {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+
+  /* TODO: This styling into AvatarPreview */
+  & > :first-child {
+    /*
+    We need to set dimensions explicitly here, since AvatarPreview
+    resizes itself to its container's dimensions.
+    */
+    width: 100%;
+    height: 250px;
+    border-radius: 8px;
+    background-color: theme.$tile-bg-color;
+  }
+
+  button {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 8px;
+  }
+}
+
+:local(.avn-org-name) {
+  text-align: left;
+  vertical-align: top;
+  padding-bottom: 8px;
+}
+
+:local(.avn-org-action) {
+  text-align: right;
+  vertical-align: top;
+}
+
+:local(.avn-join-section) {
+  margin-top:8px;
+}
+
+:local(.avn-join-error) {
+  margin-top:8px;
+  color: red;
+}

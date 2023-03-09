@@ -93,8 +93,8 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
         <p>
           <FormattedMessage
             id="exited-room-screen.avn-contact-us"
-            defaultMessage="Any quesions? {contactEmail}."
-            values={{ contactEmail: <a href={`mailto:${contactEmail}`}>{contactEmail}</a> }}
+            defaultMessage="Any questions? {supportUrl}"
+            values={{ supportUrl: <a href={`https://support.avantiseducation.com`}>https://support.avantiseducation.com</a> }}
           />
         </p>
         {showSourceLink && (

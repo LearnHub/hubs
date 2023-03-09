@@ -7,12 +7,20 @@ import { Column } from "../layout/Column";
 import { Button } from "../input/Button";
 import { ReactComponent as EnterIcon } from "../icons/Enter.svg";
 
-// Expects informationType of "subscribe" or "signin"
+// Expects informationType of "subscribe", "signin", or "invite"
 
 export function AvnInformationModal({ closeable, onClose, onClick, informationType, ...rest }) {
+
+  let title = "Information";
+  switch(informationType) {
+    case "subscribe": title = "Subscription required"; break;
+    case "signin": title = "Account required"; break;
+    case "org-invite": title = "Organization invitiation"; break;
+  }
+
   return (
     <Modal
-      title={<FormattedMessage id="avn-information-modal.title" defaultMessage="Information" />}
+      title={title}
       beforeTitle={closeable && <CloseButton onClick={onClose} />}
       {...rest}
     >
@@ -50,6 +58,22 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
             </a>
           </p>
 
+        </Column>
+      )}
+
+      {informationType === "org-invite" && (
+        <Column center padding>
+          <p>
+            <FormattedMessage id="avn-information-modal.organization-invite-code" defaultMessage="An invitation has been copied to your clipboard." />
+          </p>
+          <p>
+            <FormattedMessage id="avn-information-modal.organization-invite-send" defaultMessage="Share this with your colleagues to let them join your Eduverse organization." />
+          </p>
+          <p>
+            <a href="https://support.avantiseducation.com/" target="_blank" rel="noopener noreferrer">
+              <FormattedMessage id="avn-information-modal.support-anchor-text" defaultMessage="Find out more about invitations" />
+            </a>
+          </p>
         </Column>
       )}
 

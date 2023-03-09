@@ -26,7 +26,7 @@ export function LoadingScreen({ message, errorMessage, infoMessages }) {
         <Fragment>
             <SupportIcon className={fadeClass}/>
             <a className={fadeClass} href="https://status.eduverse.com" target="_blank">Check Eduverse service status</a>
-            <a className={fadeClass} href="https://support.avantiseducation.com/" target="_blank">Search Eduverse support</a>
+            <a className={fadeClass} href="https://support.avantiseducation.com/" target="_blank">Browse Eduverse support</a>
             <Button className={fadeClass} preset="basic" onClick={() => SaveConsoleLog()}>
               <FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />
             </Button> 

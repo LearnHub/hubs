@@ -14,7 +14,7 @@ export function AvatarSettingsContent({
   avatarPreview,
   displayNamePattern,
   onChangeAvatar,
-  onBlockAnon,
+  avnShowInformationDialog,
   ...rest
 }) {
   return (
@@ -42,7 +42,7 @@ export function AvatarSettingsContent({
         {avatarPreview || <div />}
         <Button type="button" preset="basic" onClick={e => {
             if(global?.AVNGlobal?.isAuthenticated === false) {
-              onBlockAnon();
+              avnShowInformationDialog("signin");
             } else {
               onChangeAvatar(e);
             }
@@ -64,6 +64,6 @@ AvatarSettingsContent.propTypes = {
   displayNamePattern: PropTypes.string,
   onChangeDisplayName: PropTypes.func,
   avatarPreview: PropTypes.node,
-  onBlockAnon: PropTypes.func,
+  avnShowInformationDialog: PropTypes.func,
   onChangeAvatar: PropTypes.func
 };

@@ -72,6 +72,7 @@ function PeopleListContainer({ hubChannel, people, onSelectPerson, onClose, avnD
       canVoiceChat={canVoiceChat}
       voiceChatEnabled={voiceChatEnabled}
       isMod={isMod}
+      avnDimensionConnection={avnDimensionConnection}
     />
   );
 }
@@ -95,7 +96,7 @@ export function PeopleSidebarContainer({
   onCloseDialog,
   showNonHistoriedDialog,
   onClose,
-  onBlockAnon,
+  avnShowInformationDialog,
   avnDimensionConnection,
 }) {
   const people = usePeopleList(presences, mySessionId);
@@ -120,7 +121,8 @@ export function PeopleSidebarContainer({
           history={history}
           showBackButton
           onBack={() => setSelectedPersonId(null)}
-          onBlockAnon={onBlockAnon}
+          avnShowInformationDialog={avnShowInformationDialog}
+          avnDimensionConnection={avnDimensionConnection}
         />
       );
     } else {
@@ -154,7 +156,7 @@ PeopleSidebarContainer.propTypes = {
   presences: PropTypes.object.isRequired,
   performConditionalSignIn: PropTypes.func.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
-  onBlockAnon: PropTypes.func.isRequired,
+  avnShowInformationDialog: PropTypes.func.isRequired,
   showNonHistoriedDialog: PropTypes.func.isRequired,
   avnDimensionConnection: PropTypes.object,
 };

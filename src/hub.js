@@ -869,27 +869,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       break;
     case OperationState.CLOSED:
       console.error(`AVN: dimension closed`)
-      scene.emit("errorLoadingRoom", `Session is closed`);
+      scene.emit("errorLoadingRoom", `Session is closed.`);
       return
     case OperationState.NOT_FOUND:
       console.error(`AVN: dimension not found`)
-      scene.emit("errorLoadingRoom", `Session not found`);
+      scene.emit("errorLoadingRoom", `Session not found.`);
       return
     case OperationState.EXPIRED:
       console.error(`AVN: dimension expired`)
-      scene.emit("errorLoadingRoom", `Session has expired`);
+      scene.emit("errorLoadingRoom", `Session has expired.`);
       return
     case OperationState.FORBIDDEN:
       console.error(`AVN: dimension forbidden`)
-      scene.emit("errorLoadingRoom", `Session is forbidden`);
+      scene.emit("errorLoadingRoom", `Session is forbidden.`);
       return
     case OperationState.ERROR:
       console.error(`AVN: dimension join error`)
-      scene.emit("errorLoadingRoom", `Session is not available because a server error occurred`);
+      scene.emit("errorLoadingRoom", `Session is not available because a server error occurred.`);
       return        
     default:
       console.error(`AVN: dimension join error`)
-      scene.emit("errorLoadingRoom", `Session is not available, but the reason is unknown`);
+      scene.emit("errorLoadingRoom", `Session is not available, but the reason why is not known.`);
       return        
   }
   remountUI({ 

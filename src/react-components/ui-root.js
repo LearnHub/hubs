@@ -1189,10 +1189,11 @@ class UIRoot extends Component {
                 store={this.props.store}
                 mediaSearchStore={this.props.mediaSearchStore}
                 avatarId={props.location.state.detail && props.location.state.detail.avatarId}
-                onBlockAnon={() => 
+                avnDimensionConnection={this.props.avnDimensionConnection}
+                avnShowInformationDialog={informationType => 
                   this.showNonHistoriedDialog(AvnInformationModal, {
                     closeable: true,
-                    informationType: "signin",
+                    informationType,
                     onClick: this.avnShowContextualSignInDialog,
                     onClose: this.closeDialog,
                   })}
@@ -1277,7 +1278,7 @@ class UIRoot extends Component {
           this.props.avnDimensionConnection?.features?.showAccountInfo && {
             id: "user-profile",
             // AVN: Profile sidebar is more generic
-            label: <FormattedMessage id="more-menu.my-account" defaultMessage="My Account" />,
+            label: <FormattedMessage id="more-menu.my-account" defaultMessage="Account" />,
             icon: AvatarIcon,
             onClick: () => this.setSidebar("profile")
           },
@@ -1690,10 +1691,10 @@ class UIRoot extends Component {
                           onCloseDialog={() => this.closeDialog()}
                           showNonHistoriedDialog={this.showNonHistoriedDialog}
                           performConditionalSignIn={this.props.performConditionalSignIn}
-                          onBlockAnon={() => 
+                          avnShowInformationDialog={informationType => 
                             this.showNonHistoriedDialog(AvnInformationModal, {
                               closeable: true,
-                              informationType: "signin",
+                              informationType,
                               onClick: this.avnShowContextualSignInDialog,
                               onClose: this.closeDialog,
                             })}
@@ -1721,14 +1722,15 @@ class UIRoot extends Component {
                           onClose={() => this.setSidebar(null)}
                           store={this.props.store}
                           mediaSearchStore={this.props.mediaSearchStore}
-                          onBlockAnon={() => 
+                          avnShowInformationDialog={informationType => 
                             this.showNonHistoriedDialog(AvnInformationModal, {
                               closeable: true,
-                              informationType: "signin",
+                              informationType,
                               onClick: this.avnShowContextualSignInDialog,
                               onClose: this.closeDialog,
                             })}
-                          />
+                          avnDimensionConnection={this.props.avnDimensionConnection}
+                        />
                       )}
                       {this.state.sidebarId === "user" && (
                         <UserProfileSidebarContainer

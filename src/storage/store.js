@@ -446,7 +446,7 @@ export default class Store extends EventTarget {
     const finalState = merge({ ...this.state, preferences: this._preferences }, newState, mergeOpts);
 
     const defaultAvatarId = fetchDefaultAvatarId();
-    if(!this.state.credentials.token) {
+    if(!this.state.credentials?.token) {
       // AVN: Non-authenticated users can only use the default hand-less avatar
       if(finalState.profile && finalState.profile.avatarId !== defaultAvatarId) {
         finalState.profile.avatarId = defaultAvatarId;
