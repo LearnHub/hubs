@@ -126,7 +126,8 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
       <>
         <b>{intl.formatMessage(messages[reason])}</b>
 
-        {reason === ExitReason.connectError && (
+        {/* AVN: Advice not appropriate for this cloud */}
+        {false && reason === ExitReason.connectError && (
           <p>
             <FormattedMessage
               id="exited-room-screen.connect-tcp"

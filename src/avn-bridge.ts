@@ -574,14 +574,14 @@ class AVNBridge {
 
     async fetchRoomData(assetId: string) {
         try {
-            const findRoomResult = await this.Connect.Rooms.findRoom({ dimensionId: this.dimensionId, assetId })
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this.dimensionId, assetId })
             return {
-                hubid: findRoomResult?.roomInfo?.roomId,
-                name: findRoomResult?.roomInfo?.name,
-                icon: findRoomResult?.roomInfo?.iconUrl,
+                hubid: openRoomResult?.roomInfo?.roomId,
+                name: openRoomResult?.roomInfo?.name,
+                icon: openRoomResult?.roomInfo?.iconUrl,
             }
         } catch (error: unknown) {
-            console.error(`Error fetching room '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
+            console.error(`Error open room '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
         }
         return null
     }
