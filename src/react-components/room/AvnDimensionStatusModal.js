@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Modal } from "../modal/Modal";
 import { CancelButton } from "../input/Button";
 import { Column } from "../layout/Column";
+import { Button } from "../input/Button";
 
 export function AvnDimensionStatusModal({ onCancel, detail }) {
   const intl = useIntl();
@@ -14,16 +15,13 @@ export function AvnDimensionStatusModal({ onCancel, detail }) {
       <p>
           <FormattedMessage
             id="avn-dimension-status-modal.closed-message"
-            defaultMessage="This Eduverse session has been closed and so this room will also soon close."
-          />
-        </p>
-        <p>
-          <FormattedMessage
-            id="avn-dimension-status-modal.reopen-message"
-            defaultMessage="This session may be reopened if the session owner rejoins."
+            defaultMessage="This Eduverse session has stopped and this room may soon close. The session may be reopened if the session owner rejoins."
           />
         </p>
         <p>{detail}</p>
+        <Button preset="accept" onClick={() => AVNGlobal.startNewSession()}>
+          <FormattedMessage id="avn-dimension-status-modal.start-new-session" defaultMessage="Start a new session" />
+        </Button> 
       </Column>
     </Modal>
   );
