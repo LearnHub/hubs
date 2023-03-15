@@ -63,7 +63,19 @@ export class AVNHomePage extends React.Component {
           console.log(`New dimension '${AVN.dimensionId}' is open`)
           this.setState({ message: "Finding a room..." })
           const assetId = searchParams.get("assetid") || AVN.assetId
-          const openRoomResult = await AVN.Connect.Rooms.openRoom({ dimensionId: AVN.dimensionId, assetId })
+          let openRoomResult
+          // Try the request assetid first, but it might be premium or unavailable in some other way
+          try {
+            openRoomResult = await AVN.Connect.Rooms.openRoom({ dimensionId: AVN.dimensionId, assetId })
+          } catch(error) {
+            console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
+            const errorMessage = `The requested scene '${assetId}' could not be found so a new session will be created with the default scene `;
+            for(let n = 10; n > 0; --n) {
+              this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n}s`})
+              await sleep(1000);
+            }
+            openRoomResult = await AVN.Connect.Rooms.openRoom({ dimensionId: AVN.dimensionId, assetId: "homeroom" })
+          }
           const room = openRoomResult.roomInfo;
           console.log(`Found room ${room.domain} ${room.roomId}`)
           const roomUrl = isLocalClient() ? `/hub.html?hub_id=${room.roomId}` : `https://${room.domain}/${room.roomId}/${assetId}`
