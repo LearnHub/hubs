@@ -51,7 +51,7 @@ export class AVNHomePage extends React.Component {
             console.error(`AVN: Failed to connect to find hall pass '${passId}'`)            
             const errorMessage = "The hall pass provided could not be found so a new session will be created with default settings in ";
             for(let n = 10; n > 0; --n) {
-              this.setState({ message: "Hall pass not found", errorMessage: errorMessage + ` ${n}s`})
+              this.setState({ message: "Hall pass not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
               await sleep(1000);
             }
             this.setState({ message: null, errorMessage: null })
@@ -69,9 +69,9 @@ export class AVNHomePage extends React.Component {
             openRoomResult = await AVN.Connect.Rooms.openRoom({ dimensionId: AVN.dimensionId, assetId })
           } catch(error) {
             console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
-            const errorMessage = `The requested scene '${assetId}' could not be found so a new session will be created with the default scene `;
+            const errorMessage = `The requested scene '${assetId}' could not be found so a new session will be created with the default scene in `;
             for(let n = 10; n > 0; --n) {
-              this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n}s`})
+              this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
               await sleep(1000);
             }
             openRoomResult = await AVN.Connect.Rooms.openRoom({ dimensionId: AVN.dimensionId, assetId: "homeroom" })
