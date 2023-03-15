@@ -235,6 +235,7 @@ class AVNBridge {
             auth,
             preferredDomain: PreferredDomain,
             passId,
+            referrer: document.location.hostname,
         })
         this._dimensionId = createDimensionResult.dimensionId
         return true
