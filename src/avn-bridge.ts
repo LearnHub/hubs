@@ -32,6 +32,7 @@ import markdownitsup from "markdown-it-sup"
 // @ts-ignore no type def
 import markdownitbracketedspans from "markdown-it-bracketed-spans"
 import { Organization } from "connect-sdk/dist/gen/avn/connect/v1/organization_pb"
+import { ClientCredentials } from "connect-sdk/dist/gen/avn/connect/v1/clients_pb"
   
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
@@ -228,9 +229,10 @@ class AVNBridge {
     }
 
     public async createNewDimension(passId: string | undefined): Promise<boolean> {
+        const auth = this._accessToken ? new Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
         const createDimensionResult = await this.Connect.Dimensions.createDimension({
-            clientId: store.state.profile.clientId,
-            userJwt: this._accessToken,
+            client: new ClientCredentials({ clientId: store.state.profile.clientId }),
+            auth,
             preferredDomain: PreferredDomain,
             passId,
         })
@@ -455,11 +457,11 @@ class AVNBridge {
             }
             await this.abortStreamIfActive()
             const abortController = new AbortController()
-            const dimensionStream = this.Connect.Dimensions.joinDimension(
-                {
+            const auth = this._accessToken ? new Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
+            const dimensionStream = this.Connect.Dimensions.joinDimension({
+                    client: new ClientCredentials({ clientId: store.state.profile.clientId }),
+                    auth,
                     dimensionId: this.dimensionId,
-                    clientId: store.state.profile.clientId,
-                    userJwt: this._accessToken,
                 },
                 { signal: abortController.signal }
             )
@@ -517,7 +519,7 @@ class AVNBridge {
                 position
             }
         })
-        console.log("AVN: setting lesson context", this._teachLessonContext)
+        console.log("AVN: setting lesson context", newContext)
         const result = await this.Connect.Dimensions.setLessonContext({
             credentials: this._dimensionConnection?.credentials,
             dimensionId: this._dimensionId,
