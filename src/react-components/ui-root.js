@@ -1144,10 +1144,10 @@ class UIRoot extends Component {
       !hide &&
       this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no;
 
-      // AVN Report dimension closure
-      const dimensionClosedDialog = this.props.avnDimensionStatus?.state === OperationState.CLOSED 
-        ? <AvnDimensionStatusModal detail={this.props.avnDimensionStatus?.detail} /> 
-        : undefined
+    // AVN Report dimension closure
+    const dimensionClosedDialog = this.props.avnDimensionStatus?.state !== OperationState.OPEN
+      ? <AvnDimensionStatusModal detail={this.props.avnDimensionStatus?.detail} /> 
+      : undefined
 
     const entryDialog =
       this.props.availableVREntryTypes &&

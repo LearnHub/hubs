@@ -416,9 +416,11 @@ class AVNBridge {
             this._learnLessonContext = undefined
             this._dimensionConnection = undefined
             this._dimensionInfo = undefined
+            this._lastDimensionStatus = undefined
             global.dispatchEvent(new Event("avn-dimension-info-changed"))
             global.dispatchEvent(new Event("avn-dimension-connection-changed"))            
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
+            global.dispatchEvent(new Event("avn-dimension-status-changed"))
             this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), this._dimensionRejoinTimeout)
         }
     }
