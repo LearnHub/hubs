@@ -491,10 +491,6 @@ export function fetchDefaultAvatarId() {
 }
 
 export async function fetchRandomDefaultAvatarId() {
-  // AVN: Non-authenticated users can only use the default hand-less avatar
-  if(!global.AVNGlobal.isAuthenticated) {
-    return new URL(defaultAvatar, location.href).href;
-  }
   const defaultAvatarEndpoint = "/api/v1/media/search?filter=default&source=avatar_listings";
   const defaultAvatars = (await fetchReticulumAuthenticated(defaultAvatarEndpoint)).entries || [];
   if (defaultAvatars.length === 0) {
