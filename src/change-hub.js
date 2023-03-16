@@ -50,6 +50,10 @@ export async function changeHub(nextState, addToHistory = true) {
   }
   isChanging = true;
   try {
+  if (!APP.hub) {
+    console.warn("AVN: changeHub called before hub has been initialized");
+    return;
+  }
   if (nextState.hubId === APP.hub.hub_id) {
     console.log("Change hub called with the current hub id. This is a noop.");
     return;

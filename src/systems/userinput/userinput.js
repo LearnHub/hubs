@@ -408,9 +408,13 @@ AFRAME.registerSystem("userinput", {
 
     window.addEventListener("gamepadconnected", gamepadConnected, false);
     window.addEventListener("gamepaddisconnected", gamepadDisconnected, false);
-    for (const gamepad of navigator.getGamepads()) {
-      gamepad && gamepadConnected({ gamepad });
-    }
+    try {
+      for (const gamepad of navigator.getGamepads()) {
+        gamepad && gamepadConnected({ gamepad });
+      }
+    } catch(e) {
+      console.warn("Failed to get gamepad info");
+    } 
 
     const retrieveXRGamepads = ({ added, removed }) => {
       for (const inputSource of removed) {
