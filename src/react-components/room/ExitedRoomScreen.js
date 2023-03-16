@@ -153,7 +153,8 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
           </p>
         )}
 
-        <Button as="a" preset="accept" href={window.location.href}>
+        {/* AVN: Anchor was being intercepted by popstate event handler */}
+        <Button preset="accept" onClick={() => document.location.reload()}>
           <FormattedMessage id="exited-room-screen.refresh-page-button" defaultMessage="Refresh Page" />
         </Button>
       </>
