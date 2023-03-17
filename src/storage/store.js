@@ -362,9 +362,7 @@ export default class Store extends EventTarget {
   };
 
   resetToRandomDefaultAvatar = async () => {
-    this.update({
-      profile: { ...(this.state.profile || {}), avatarId: await fetchRandomDefaultAvatarId() }
-    });
+    this.update({ profile: { avatarId: await fetchRandomDefaultAvatarId() } });
   };
 
   resetToRandomName = async () => {
