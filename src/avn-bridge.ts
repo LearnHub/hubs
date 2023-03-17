@@ -3,8 +3,6 @@ import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_p
 import { DimensionEvent, DimensionInfo } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 import { Channel } from "connect-sdk/dist/gen/avn/connect/v1/channels_pb"
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
-import { store } from "./utils/store-instance"
-import { v4 as uuidv4 } from 'uuid'
 import { isLocalClient } from "./utils/phoenix-utils"
 import { LessonContext } from "connect-sdk/dist/gen/avn/connect/v1/lesson_context_pb"
 import { changeHub, changeHubAvn } from "./change-hub"
@@ -42,12 +40,6 @@ const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
 
 const LocalDevMode = isLocalClient()
 
-// Create unique client ID if not already done
-if (!store.state.profile.clientId) {
-    store.update({ profile: { clientId: uuidv4() } });
-    console.info(`AVN: Created new client ID '${store.state.profile.clientId}'`)
-}
-
 class AVNBridge {
 
     private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
@@ -58,6 +50,10 @@ class AVNBridge {
     private _dimensionInfo: DimensionInfo | undefined
     private _dimensionConnection: ConnectionInstance | undefined
     private _dimensionId: string = ""
+
+    private Connect = new AVNConnect(LocalDevMode
+        ? "http://127.0.0.1:8282"
+        : `https://gweb${ChannelPostfix}.avncloud.com`)
 
     // Markdown utility renderer
     public MD : markdownit
@@ -87,10 +83,29 @@ class AVNBridge {
         }
     }
 
-    public Connect = new AVNConnect(LocalDevMode
-        ? "http://127.0.0.1:8282"
-        : `https://gweb${ChannelPostfix}.avncloud.com`)
-
+    async getClientId(): Promise<string> {
+        let clientId = localStorage.getItem("AVN::ClientId")
+        try {
+            if (clientId) { 
+                console.info(`AVN: Using client ID '${clientId}'`)
+            } else {
+                // Request new credentials from Connect
+                const result = await this.Connect.Clients.createClientCredentials({})
+                clientId = result.clientCredentials?.clientId || null
+                if(clientId) {
+                    console.info(`AVN: Got new client ID '${clientId}'`)
+                    localStorage.setItem("AVN::ClientId", clientId)
+                }
+            }
+        } catch (error: unknown) {
+            console.warn(`AVN: error getting client ID: ${error instanceof Error ? error.message : "Unknown error"}`)
+        }
+        if(clientId) {
+            return clientId
+        } else {
+            throw new Error("Failed to get new client ID from Connect")
+        }
+    }
 
     get dimensionId(): string {
         return this._dimensionId
@@ -231,7 +246,7 @@ class AVNBridge {
     public async createNewDimension(passId: string | undefined): Promise<boolean> {
         const auth = this._accessToken ? new Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
         const createDimensionResult = await this.Connect.Dimensions.createDimension({
-            client: new ClientCredentials({ clientId: store.state.profile.clientId }),
+            client: new ClientCredentials({ clientId: await this.getClientId() }),
             auth,
             preferredDomain: PreferredDomain,
             passId,
@@ -462,7 +477,7 @@ class AVNBridge {
             const abortController = new AbortController()
             const auth = this._accessToken ? new Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
             const dimensionStream = this.Connect.Dimensions.joinDimension({
-                    client: new ClientCredentials({ clientId: store.state.profile.clientId }),
+                    client: new ClientCredentials({ clientId: await this.getClientId() }),
                     auth,
                     dimensionId: this.dimensionId,
                 },
@@ -583,6 +598,7 @@ class AVNBridge {
             return {
                 hubid: openRoomResult?.roomInfo?.roomId,
                 name: openRoomResult?.roomInfo?.name,
+                domain: openRoomResult?.roomInfo?.domain,
                 icon: openRoomResult?.roomInfo?.iconUrl,
             }
         } catch (error: unknown) {

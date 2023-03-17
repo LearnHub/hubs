@@ -885,7 +885,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return
     case OperationState.ERROR:
       console.error(`AVN: dimension join error`)
-      scene.emit("errorLoadingRoom", `Session is not available because a server error occurred.`);
+      scene.emit("errorLoadingRoom", `Session is not available because an error occurred.`);
       return        
     default:
       console.error(`AVN: dimension join error`)
