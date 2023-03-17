@@ -69,6 +69,9 @@ export class AVNHomePage extends React.Component {
             roomInfo = await AVN.fetchRoomInfoForScene(assetId)
           } catch(error) {
             console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
+          }
+          // If that operation failed (because no license for that asset for instance), try the "homeroom"
+          if(!roomInfo) {
             const errorMessage = `The requested scene '${assetId}' could not be found so a new session will be created with the default scene in `;
             for(let n = 10; n > 0; --n) {
               this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
@@ -76,10 +79,15 @@ export class AVNHomePage extends React.Component {
             }
             roomInfo = await AVN.fetchRoomInfoForScene("homeroom")
           }
-          console.log(`Found room ${roomInfo.domain} ${roomInfo.roomId}`)
-          const roomUrl = isLocalClient() ? `/hub.html?hub_id=${roomInfo.roomId}` : `https://${roomInfo.domain}/${roomInfo.roomId}/${assetId}`
-          this.setState({ message: `Joining ${roomInfo.name}...` })
-          document.location.replace(roomUrl)
+          if(roomInfo) {
+            console.log(`Found room ${roomInfo.domain} ${roomInfo.roomId}`)
+            const roomUrl = isLocalClient() ? `/hub.html?hub_id=${roomInfo.roomId}` : `https://${roomInfo.domain}/${roomInfo.roomId}/${assetId}`
+            this.setState({ message: `Joining ${roomInfo.name}...` })
+            document.location.replace(roomUrl)
+          } else {
+            console.error("AVN: Failed to open a room")
+            this.setState({ message: "Session failure", errorMessage: "Unable to create rooms within a session. Try refreshing the page or following the links below for more information." })  
+          }
         } else {
           console.error("AVN: Failed to create a new dimension")
           this.setState({ message: "Session failure", errorMessage: "Unable to create a new session. Try refreshing the page or following the links below for more information." })
