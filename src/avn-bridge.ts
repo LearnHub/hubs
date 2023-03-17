@@ -50,6 +50,7 @@ class AVNBridge {
     private _dimensionInfo: DimensionInfo | undefined
     private _dimensionConnection: ConnectionInstance | undefined
     private _dimensionId: string = ""
+    private _cachedClientId: string | undefined
 
     private Connect = new AVNConnect(LocalDevMode
         ? "http://127.0.0.1:8282"
@@ -83,25 +84,29 @@ class AVNBridge {
         }
     }
 
+
     async getClientId(): Promise<string> {
-        let clientId = localStorage.getItem("AVN::ClientId")
+        if(this._cachedClientId) {
+            return this._cachedClientId
+        }
+        this._cachedClientId = localStorage.getItem("AVN::ClientId") || undefined
         try {
-            if (clientId) { 
-                console.info(`AVN: Using client ID '${clientId}'`)
+            if (this._cachedClientId) { 
+                console.info(`AVN: Using client ID '${this._cachedClientId}'`)
             } else {
                 // Request new credentials from Connect
                 const result = await this.Connect.Clients.createClientCredentials({})
-                clientId = result.clientCredentials?.clientId || null
-                if(clientId) {
-                    console.info(`AVN: Got new client ID '${clientId}'`)
-                    localStorage.setItem("AVN::ClientId", clientId)
+                this._cachedClientId = result.clientCredentials?.clientId
+                if(this._cachedClientId) {
+                    console.info(`AVN: Got new client ID '${this._cachedClientId}'`)
+                    localStorage.setItem("AVN::ClientId", this._cachedClientId)
                 }
             }
         } catch (error: unknown) {
             console.warn(`AVN: error getting client ID: ${error instanceof Error ? error.message : "Unknown error"}`)
         }
-        if(clientId) {
-            return clientId
+        if(this._cachedClientId) {
+            return this._cachedClientId
         } else {
             throw new Error("Failed to get new client ID from Connect")
         }
@@ -695,6 +700,15 @@ class AVNBridge {
                 }
             }
         }
+    }
+
+    async recordAction(actionId: string, sourceId: string) : Promise<void> {
+        try {
+            const client = new ClientCredentials({ clientId: await this.getClientId() })
+            await this.Connect.Clients.recordAction({ client, actionId, sourceId })
+        } catch (error: unknown) {
+            throw new Error(`Error recording action '${actionId}' from '${sourceId}'`)
+        }        
     }
 }
 

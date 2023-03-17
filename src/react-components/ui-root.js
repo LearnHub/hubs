@@ -1559,6 +1559,7 @@ class UIRoot extends Component {
                                 onClose: this.closeDialog,
                               })  
                             }
+                            AVN.recordAction("toggle_people_sidebar", "toolbar_button");
                           }}
                           presencecount={this.state.presenceCount}
                         />
@@ -1572,7 +1573,10 @@ class UIRoot extends Component {
                         {this.props.avnDimensionConnection?.features?.showStudentNotes && this.props.avnDimensionConnection?.permissions?.allowStudentNotes && (
                         <EduverseStudentMenuButton
                           active={this.state.sidebarId === "eduverse-student"}
-                          onClick={() => this.toggleSidebar("eduverse-student")}
+                          onClick={() => { 
+                            this.toggleSidebar("eduverse-student");
+                            AVN.recordAction("toggle_student_sidebar", "toolbar_button");
+                          }}
                         />)}
                         {this.props.avnDimensionConnection?.features?.showTeacherNotes && (
                         <EduverseTeacherMenuButton
@@ -1587,6 +1591,7 @@ class UIRoot extends Component {
                                 onClose: this.closeDialog,
                               });
                             }    
+                            AVN.recordAction("toggle_teach_sidebar", "toolbar_button");
                           }}
                         />)}
                         {showECSObjectsMenuButton && (
@@ -1806,6 +1811,7 @@ class UIRoot extends Component {
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Explore" />}
                       onClick={() => {
                         this.props.avnMediaSearchStore.active = true;
+                        AVN.recordAction("open_explore_panel", "toolbar_button");
                       }}
                     />
                     }
@@ -1817,14 +1823,15 @@ class UIRoot extends Component {
                       : <ToolbarButton
                         label={<FormattedMessage id="avn-hall-pass-popover.button-label" defaultMessage="Hall Pass" />}
                         icon={<PassIcon />}
-                        onClick={() => 
+                        onClick={() => {
                           this.showNonHistoriedDialog(AvnInformationModal, {
                             closeable: true,
                             informationType: "signin",
                             onClick: this.avnShowContextualSignInDialog,
                             onClose: this.closeDialog,
-                          })}
-                        />
+                          })
+                          AVN.recordAction("toggle_pass_panel", "toolbar_button");
+                        }}/>
                       )
                     }
                   </>
@@ -1899,7 +1906,10 @@ class UIRoot extends Component {
                     {
                       // AVN: Chat is not currently enabled
                       this.props.avnDimensionConnection?.permissions?.allowText &&
-                      <ChatToolbarButtonContainer onClick={() => this.toggleSidebar("chat")} />
+                      <ChatToolbarButtonContainer onClick={() => { 
+                        this.toggleSidebar("chat");
+                        AVN.recordAction("open_chat_sidebar", "toolbar_button");
+                      }}/>
                     }
                     { // AVN: Photo / screenshot button 
                       this.props.avnDimensionConnection?.features?.showPhoto && 
@@ -1908,6 +1918,7 @@ class UIRoot extends Component {
                       label={<FormattedMessage id="toolbar.photo-button" defaultMessage="Photo" />}
                       onClick={() => {
                         saveScreenshot(this.props.scene, "jpeg");
+                        AVN.recordAction("take_photo", "toolbar_button");
                       }}
                     />
                     }
@@ -1938,7 +1949,6 @@ class UIRoot extends Component {
                             await AVN.setLessonFocus(position)
                           }
                           this.forceUpdate();
-  
                         } else {
                           this.showNonHistoriedDialog(AvnInformationModal, {
                             closeable: true,
@@ -1946,6 +1956,7 @@ class UIRoot extends Component {
                             onClose: this.closeDialog,
                           });
                         }
+                        AVN.recordAction("toggle_gather", "toolbar_button");
                       }}
                     />)}
                     {
@@ -1961,14 +1972,15 @@ class UIRoot extends Component {
                       : <ToolbarButton
                         label={<FormattedMessage id="invite-popover.title" defaultMessage="Invite" />}
                         icon={<InviteIcon />}
-                        onClick={() => 
+                        onClick={() => {
                           this.showNonHistoriedDialog(AvnInformationModal, {
                             closeable: true,
                             informationType: "signin",
                             onClick: this.avnShowContextualSignInDialog,
                             onClose: this.closeDialog,
-                          })}
-                        />
+                          })
+                          AVN.recordAction("toggle_invite_panel", "toolbar_button");
+                        }}/>
                       )
                     }
                     { // AVN: Device invitation QR code

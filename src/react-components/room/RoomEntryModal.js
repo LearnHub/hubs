@@ -56,7 +56,10 @@ export function RoomEntryModal({
         </div>
         <Column center className={styles.buttons}>
         {showJoinRoom && (
-            <Button preset="accept" onClick={onJoinRoom}>
+            <Button preset="accept" onClick={() => {
+              onJoinRoom();
+              AVNGlobal.recordAction("join_room", "dialog_button");
+            }}>
               <EnterIcon />
               <span>
                 <FormattedMessage id="room-entry-modal.join-room-button" defaultMessage="Join Room" />
@@ -68,7 +71,10 @@ export function RoomEntryModal({
             <span><FormattedMessage id="room-entry-modal.avn-room-is-full" defaultMessage="This room is currently full" /></span>
           )}
           {showEnterOnDevice && (
-            <Button preset="accent5" onClick={onEnterOnDevice}>
+            <Button preset="accent5" onClick={() => {
+              onEnterOnDevice();
+              AVNGlobal.recordAction("open_enter_on_device", "dialog_button");
+            }}>
               <PhoneIcon />
               <span>
                 <FormattedMessage id="room-entry-modal.enter-on-device-button" defaultMessage="Move To Another Device" />
