@@ -695,6 +695,7 @@ class AVNBridge {
                 } else {
                     // Change to the right room if not already started
                     if (!this._pendingSceneChange) {
+                        console.log(`Trying to change scene because focus room '${this._learnLessonContext.focus?.roomId}' is not equal to current room '${this._roomInfo?.roomId}'`)
                         this.tryChangeScene(this._learnLessonContext.focus.assetId)
                     }
                 }
