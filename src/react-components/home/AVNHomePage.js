@@ -66,7 +66,7 @@ export class AVNHomePage extends React.Component {
           let roomInfo
           // Try the request assetid first, but it might be premium or unavailable in some other way
           try {
-            roomInfo = await AVN.fetchRoomData(assetId)
+            roomInfo = await AVN.fetchRoomInfoForScene(assetId)
           } catch(error) {
             console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
             const errorMessage = `The requested scene '${assetId}' could not be found so a new session will be created with the default scene in `;
@@ -74,10 +74,10 @@ export class AVNHomePage extends React.Component {
               this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
               await sleep(1000);
             }
-            roomInfo = await AVN.fetchRoomData("homeroom")
+            roomInfo = await AVN.fetchRoomInfoForScene("homeroom")
           }
-          console.log(`Found room ${roomInfo.domain} ${roomInfo.hubid}`)
-          const roomUrl = isLocalClient() ? `/hub.html?hub_id=${roomInfo.hubid}` : `https://${roomInfo.domain}/${roomInfo.hubid}/${assetId}`
+          console.log(`Found room ${roomInfo.domain} ${roomInfo.roomId}`)
+          const roomUrl = isLocalClient() ? `/hub.html?hub_id=${roomInfo.roomId}` : `https://${roomInfo.domain}/${roomInfo.roomId}/${assetId}`
           this.setState({ message: `Joining ${roomInfo.name}...` })
           document.location.replace(roomUrl)
         } else {

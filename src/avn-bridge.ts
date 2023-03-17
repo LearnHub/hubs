@@ -597,19 +597,14 @@ class AVNBridge {
         return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._roomInfo?.assetId
     }
 
-    async fetchRoomData(assetId: string) {
+    async fetchRoomInfoForScene(assetId: string) : Promise<RoomInfo | undefined> {
         try {
-            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this.dimensionId, assetId })
-            return {
-                hubid: openRoomResult?.roomInfo?.roomId,
-                name: openRoomResult?.roomInfo?.name,
-                domain: openRoomResult?.roomInfo?.domain,
-                icon: openRoomResult?.roomInfo?.iconUrl,
-            }
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, assetId })
+            return openRoomResult.roomInfo
         } catch (error: unknown) {
-            console.error(`Error open room '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
+            console.error(`Error open room for asset ID '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
         }
-        return null
+        return undefined
     }
 
     // Media
@@ -637,28 +632,54 @@ class AVNBridge {
     }
 
     // Best-effort scene change
-    public tryChangeScene(newAssetId: string) {
+    private _pendingSceneChange: Promise<void> | undefined = undefined
+    public tryChangeScene(assetId: string) {
         if (!this._pendingSceneChange) {
-            this._pendingSceneChange = this.asyncChangeScene(newAssetId)
+            this._pendingSceneChange = this.asyncChangeScene(assetId)
         }
     }
-
-    private _pendingSceneChange: Promise<void> | undefined = undefined
-    private async asyncChangeScene(newAssetId: string): Promise<void> {
+    private async asyncChangeScene(assetId: string): Promise<void> {
         try {
-            const roomData = await AVN.fetchRoomData(newAssetId);
-            if (roomData) {
-                console.log(`AVN: responding to focus by changing scene to '${newAssetId}'`)
-                const nextState = { hubId: roomData.hubid, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomData.name, icon: roomData.icon };
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, assetId })
+            const roomInfo = openRoomResult.roomInfo
+            if (roomInfo) {
+                console.log(`AVN: responding to request by changing scene to '${assetId}'`)
+                const nextState = { hubId: roomInfo.roomId, newAssetId: assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };
                 await changeHub(nextState, true);
             } else {
-                console.error("Failed to change hub room");
+                console.error("AVN: Failed to change hub scene");
             }
 
         } catch (error: unknown) {
-            throw new Error(`Unexpected error changing scene: ${error instanceof Error ? error.message : "Unknown Error"}`)
+            throw new Error(`AVN: Error changing scene: ${error instanceof Error ? error.message : "Unknown Error"}`)
         } finally {
             this._pendingSceneChange = undefined
+        }
+    }
+
+    // Best effort room change
+    private _pendingRoomChange: Promise<void> | undefined = undefined
+    public tryChangeRoom(roomId: string) {
+        if (!this._pendingRoomChange) {
+            this._pendingRoomChange = this.asyncChangeRoom(roomId)
+        }
+    }
+    private async asyncChangeRoom(roomId: string): Promise<void> {
+        try {
+            const getRoomResult = await this.Connect.Rooms.getRoom({ roomId })
+            const roomInfo = getRoomResult.roomInfo
+            if (roomInfo) {
+                console.log(`AVN: responding to request by changing room to '${roomId}'`)
+                const nextState = { hubId: roomInfo.roomId, newAssetId: roomInfo.assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };
+                await changeHub(nextState, true);
+            } else {
+                console.error("AVN: Failed to change hub room");
+            }
+
+        } catch (error: unknown) {
+            throw new Error(`AVN: Error changing room: ${error instanceof Error ? error.message : "Unknown Error"}`)
+        } finally {
+            this._pendingRoomChange = undefined
         }
     }
 
@@ -694,9 +715,9 @@ class AVNBridge {
                     //characterController.tether(this._learnLessonContext?.focus?.position)
                 } else {
                     // Change to the right room if not already started
-                    if (!this._pendingSceneChange) {
-                        console.log(`Trying to change scene because focus room '${this._learnLessonContext.focus?.roomId}' is not equal to current room '${this._roomInfo?.roomId}'`)
-                        this.tryChangeScene(this._learnLessonContext.focus.assetId)
+                    if (!this._pendingRoomChange) {
+                        console.log(`Trying to change room because focus room '${this._learnLessonContext.focus?.roomId}' is not equal to current room '${this._roomInfo?.roomId}'`)
+                        this.tryChangeRoom(this._learnLessonContext.focus.roomId)
                     }
                 }
             }
