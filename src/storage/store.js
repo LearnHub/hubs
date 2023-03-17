@@ -455,6 +455,8 @@ export default class Store extends EventTarget {
     } else {
       // AVN: Conversely Authenticated users should not have the default avatar
       if(finalState.profile && finalState.profile.avatarId === defaultAvatarId) {
+        // Use a safe intermediate avatar while a random one is fetched to avoid loops
+        finalState.profile.avatarId = AVNGlobal.getFallbackAvatarUrl();        
         this.resetToRandomDefaultAvatar();
         console.warn("AVN: Enforced non-default avatar for authenticated user")
       }

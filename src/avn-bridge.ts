@@ -710,6 +710,11 @@ class AVNBridge {
             throw new Error(`Error recording action '${actionId}' from '${sourceId}'`)
         }        
     }
+
+    getFallbackAvatarUrl() : string {
+        return "https://data.avncloud.com/activities/796203/files/FallbackAvatar.glb"
+    }
+
 }
 
 export const AVN = new AVNBridge()
