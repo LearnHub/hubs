@@ -72,7 +72,7 @@ export class AVNHomePage extends React.Component {
           }
           // If that operation failed (because no license for that asset for instance), try the "homeroom"
           if(!roomInfo) {
-            const errorMessage = `The requested scene '${assetId}' could not be found so a new session will be created with the default scene in `;
+            const errorMessage = `The requested scene '${assetId}' could not be found so the default scene will be used instead in `;
             for(let n = 10; n > 0; --n) {
               this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
               await sleep(1000);
