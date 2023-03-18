@@ -380,21 +380,23 @@ class AVNBridge {
                 }
                 switch (value.message.case) {
                     case "status":
-                        // CLOSE is the only expected status change after the initial OPEN
-                        if (value.message.value.state == OperationState.CLOSED) {
+                        if(this._lastDimensionStatus !== value.message.value) {
+                            this._lastDimensionStatus = value.message.value
+                            global.dispatchEvent(new Event("avn-dimension-status-changed"))
+                        }
+                        // CLOSE or OPEN is the only expected status after the initial OPEN
+                        if (value.message.value.state === OperationState.CLOSED) {
                             console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
-                        } else {
+                            // The fake close might be cancelled if the session reopens
+                            clearInterval(this._closeSceneTimeout)
+                            this._closeSceneTimeout = setTimeout(() => {
+                                // Fake the hubs closing until the API supports room closure
+                                // @ts-ignore
+                                document.querySelector("a-scene")?.emit("hub_closed")
+                            }, 15000)
+                        } else if(value.message.value.state !== OperationState.OPEN) {
                             console.warn(`Unexpected dimension state change '${value.message.value.state}'`)
                         }
-                        this._lastDimensionStatus = value.message.value
-                        global.dispatchEvent(new Event("avn-dimension-status-changed"))
-                        // The fake close might be cancelled if the session reopens
-                        clearInterval(this._closeSceneTimeout)
-                        this._closeSceneTimeout = setTimeout(() => {
-                            // Fake the hubs closing until the API supports room closure
-                            // @ts-ignore
-                            document.querySelector("a-scene")?.emit("hub_closed")
-                        }, 15000)
                         break
                     case "connection":
                         this._dimensionConnection = value.message.value
