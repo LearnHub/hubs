@@ -739,6 +739,11 @@ class AVNBridge {
         return "https://data.avncloud.com/activities/796203/files/FallbackAvatar.glb"
     }
 
+    applySessionPermissionOverrides(permissions: { voice_chat: boolean, text_chat: boolean }) {
+        permissions["voice_chat"] = permissions["voice_chat"] && this._dimensionConnection?.permissions?.allowVoip || false
+        permissions["text_chat"] = permissions["text_chat"] && this._dimensionConnection?.permissions?.allowText || false
+    }
+
 }
 
 export const AVN = new AVNBridge()

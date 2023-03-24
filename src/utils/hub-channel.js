@@ -154,6 +154,8 @@ export default class HubChannel extends EventTarget {
     // Note: token is not verified.
     this.token = token;
     this._permissions = jwtDecode(token);
+    // AVN: Override from session permissions
+    AVNGlobal.applySessionPermissionOverrides(this._permissions)
     configs.setIsAdmin(this._permissions.postgrest_role === "ret_admin");
     this.dispatchEvent(new CustomEvent("permissions_updated"));
 
