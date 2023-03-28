@@ -27,14 +27,14 @@ export class HoldableButtonSystem {
       isTagged(this.prevHeldLeft, "holdableButton") &&
         this.prevHeldLeft.object3D.dispatchEvent({
           type: "holdable-button-up",
-          object3D: interaction.options.leftRemote.entity.object3D
+          object3D: interaction.options.leftRemote.entity?.object3D
         });
     }
     if (heldLeft && this.prevHeldLeft !== heldLeft) {
       isTagged(this.heldLeft, "holdableButton") &&
         heldLeft.object3D.dispatchEvent({
           type: "holdable-button-down",
-          object3D: interaction.options.leftRemote.entity.object3D
+          object3D: interaction.options.leftRemote.entity?.object3D
         });
     }
 

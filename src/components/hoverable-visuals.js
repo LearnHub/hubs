@@ -46,14 +46,14 @@ AFRAME.registerComponent("hoverable-visuals", {
       !interaction.state.leftRemote.held &&
       !toggling.leftToggledOff
     ) {
-      interactorOne = interaction.options.leftRemote.entity.object3D;
+      interactorOne = interaction.options.leftRemote.entity?.object3D;
     }
     if (
       interaction.state.rightRemote.hovered === this.el &&
       !interaction.state.rightRemote.held &&
       !toggling.rightToggledOff
     ) {
-      interactorTwo = interaction.options.rightRemote.entity.object3D;
+      interactorTwo = interaction.options.rightRemote.entity?.object3D;
     }
     if (interaction.state.rightHand.hovered === this.el && !interaction.state.rightHand.held) {
       interactorTwo = interaction.options.rightHand.entity.object3D;

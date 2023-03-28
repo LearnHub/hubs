@@ -49,17 +49,21 @@ function singleActionButtonSystem(world) {
   }
 
   const interactorSettings = AFRAME.scenes[0].systems.interaction.options;
-  interact(
-    world,
-    leftRemoteQuery(world),
-    paths.actions.cursor.left.grab,
-    interactorSettings.leftRemote.entity.object3D
-  );
+  const leftRemoteObject = interactorSettings.leftRemote.entity?.object3D
+  if(leftRemoteObject) {
+    interact(
+      world,
+      leftRemoteQuery(world),
+      paths.actions.cursor.left.grab,
+      leftRemoteObject
+    );
+  }
+  const rightRemoteObject = interactorSettings.rightRemote.entity?.object3D
   interact(
     world,
     rightRemoteQuery(world),
     paths.actions.cursor.right.grab,
-    interactorSettings.rightRemote.entity.object3D
+    rightRemoteObject
   );
 }
 

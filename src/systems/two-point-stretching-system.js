@@ -31,11 +31,11 @@ export class TwoPointStretchingSystem {
     let leftStretcher, rightStretcher;
     if (stretching) {
       leftStretcher = leftHand.held
-        ? interaction.options.leftHand.entity.object3D
-        : interaction.options.leftRemote.entity.object3D;
+        ? interaction.options.leftHand.entity?.object3D
+        : interaction.options.leftRemote.entity?.object3D;
       rightStretcher = rightHand.held
-        ? interaction.options.rightHand.entity.object3D
-        : interaction.options.rightRemote.entity.object3D;
+        ? interaction.options.rightHand.entity?.object3D
+        : interaction.options.rightRemote.entity?.object3D;
       if (
         leftStretcher !== this.previousLeftStretcher ||
         rightStretcher !== this.previousRightStretcher ||
