@@ -11,28 +11,39 @@ export function SaveConsoleLog() {
   }
 }
 
+// Monkey patch for serializing BigInt https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
+BigInt.prototype.toJSON = function() { return this.toString() }
+
 // Circular references can crash JSON.stringify
 // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-function getSerializationTransform() {
+function getSerializationTransform(depthLimit) {
   const seen = new WeakSet();
   return (key, value) => {
-    const valueType = typeof value;
-    if (value != null) {
-      if (valueType === "object") {
-        // Check for circular references
-        if (seen.has(value)) {
-          return "∞";
+    try {
+      --depthLimit;
+      const valueType = typeof value;
+      if (value != null) {
+        if (valueType === "object") {
+          // Check for circular references
+          if (seen.has(value)) {
+            return "∞";
+          }
+          seen.add(value);
+          // Allow recursion into arrays
+          if (Array.isArray(value)) {
+            return value;
+          }
+          if(depthLimit > 0) {
+            return value;
+          } else {
+            return "[snip]";
+          }
         }
-        seen.add(value);
-        // Allow recursion into arrays
-        if (Array.isArray(value)) {
-          return value;
-        }
-        // Prevent futher recursion for brevity
-        return "[snip]";
       }
+      return value;
+    } finally {
+      ++depthLimit;
     }
-    return value;
   };
 };
 
@@ -49,7 +60,8 @@ if (true && 'URLSearchParams' in window && (new URLSearchParams(window.location.
       let argJson = "[]";
       // Large objects can throw RangeError: Invalid string length
       try {
-        argJson = JSON.stringify(argArray, getSerializationTransform());
+        // Prevent excessive recursion for brevity
+        argJson = JSON.stringify(argArray, getSerializationTransform(2));
       } catch (e) {
         // Replace problematic args and report the error at least
         const newArgArray = ["record-log-serialization-error-args", e];
