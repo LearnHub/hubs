@@ -129,7 +129,7 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   const hubsSystems = aframeSystems["hubs-systems"];
 
   // TODO does anything actually ever pause the scene?
-  if (!sceneEl.isPlaying && !hubsSystems.DOMContentDidLoad) return;
+  if (!sceneEl.isPlaying || !hubsSystems.DOMContentDidLoad) return;
 
   timeSystem(world);
   const t = world.time.elapsed;
