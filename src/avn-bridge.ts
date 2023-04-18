@@ -5,19 +5,23 @@ import { Channel } from "connect-sdk/dist/gen/avn/connect/v1/channels_pb"
 import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
 import { isLocalClient } from "./utils/phoenix-utils"
 import { LessonContext } from "connect-sdk/dist/gen/avn/connect/v1/lesson_context_pb"
-import { changeHub, changeHubAvn } from "./change-hub"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
 import { Authorization } from "connect-sdk/dist/gen/avn/connect/v1/authorization_pb"
 import { Profile } from "connect-sdk/dist/gen/avn/connect/v1/profiles_pb"
 import { Category } from "connect-sdk/dist/gen/avn/connect/v1/categories_pb"
 import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
-import configs from "./utils/configs"
 import { Pass } from "connect-sdk/dist/gen/avn/connect/v1/passes_pb"
 import { ConnectionInstance } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
 import { RoomInfo } from "connect-sdk/dist/gen/avn/connect/v1/rooms_pb"
 import { Role } from "connect-sdk/dist/gen/avn/connect/v1/roles_pb"
 import { DimensionStatus } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 import { OrganizationMembership } from "connect-sdk/dist/gen/avn/connect/v1/organization_membership_pb"
+import { Organization } from "connect-sdk/dist/gen/avn/connect/v1/organization_pb"
+import { ClientCredentials } from "connect-sdk/dist/gen/avn/connect/v1/clients_pb"
+
+import configs from "./utils/configs"
+// Including this file pulls in unnessary additional support files, which can cause errors
+//import { changeHub } from "./change-hub"
 
 // Markdown utility class
 import markdownit from "markdown-it"
@@ -29,8 +33,6 @@ import markdownitsub from "markdown-it-sub"
 import markdownitsup from "markdown-it-sup"
 // @ts-ignore no type def
 import markdownitbracketedspans from "markdown-it-bracketed-spans"
-import { Organization } from "connect-sdk/dist/gen/avn/connect/v1/organization_pb"
-import { ClientCredentials } from "connect-sdk/dist/gen/avn/connect/v1/clients_pb"
   
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
@@ -646,8 +648,9 @@ class AVNBridge {
             const roomInfo = openRoomResult.roomInfo
             if (roomInfo) {
                 console.log(`AVN: responding to request by changing scene to '${assetId}'`)
-                const nextState = { hubId: roomInfo.roomId, newAssetId: assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };
-                await changeHub(nextState, true);
+                const nextState = { hubId: roomInfo.roomId, newAssetId: assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl }
+                // @ts-ignore
+                await changeHub(nextState, true)
             } else {
                 console.error("AVN: Failed to change hub scene");
             }
@@ -673,6 +676,7 @@ class AVNBridge {
             if (roomInfo) {
                 console.log(`AVN: responding to request by changing room to '${roomId}'`)
                 const nextState = { hubId: roomInfo.roomId, newAssetId: roomInfo.assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };
+                // @ts-ignore
                 await changeHub(nextState, true);
             } else {
                 console.error("AVN: Failed to change hub room");

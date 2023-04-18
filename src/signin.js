@@ -11,6 +11,7 @@ import "./assets/stylesheets/globals.scss";
 import { Center } from "./react-components/layout/Center";
 import { ThemeProvider } from "./react-components/styles/theme";
 import { store } from "./utils/store-instance";
+import "./avn-bridge";
 
 registerTelemetry("/signin", "Hubs Sign In Page");
 
