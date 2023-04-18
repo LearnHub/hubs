@@ -104,7 +104,7 @@ export function SubmitEmail({ onSubmitEmail, initialEmail, privacyUrl, termsUrl,
         {message ? (
           intl.formatMessage(message)
         ) : (
-          <FormattedMessage id="sign-in-modal.prompt" defaultMessage="Please Sign In" />
+          <FormattedMessage id="avn-sign-in-modal.prompt" defaultMessage="Please sign in or register" />
         )}
       </p>
       <TextInputField
@@ -154,7 +154,7 @@ export function SubmitOIDC({ onSubmitOIDC, privacyUrl, termsUrl, message }) {
         {message ? (
           intl.formatMessage(message)
         ) : (
-          <FormattedMessage id="sign-in-modal.prompt" defaultMessage="Please Sign In" />
+          <FormattedMessage id="avn-sign-in-modal.prompt" defaultMessage="Please sign in or register" />
         )}
       </p>
       <p>
