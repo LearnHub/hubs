@@ -94,7 +94,7 @@ export function ExitedRoomScreen({ reason, showTerms, termsUrl, showSourceLink }
           <FormattedMessage
             id="exited-room-screen.avn-contact-us"
             defaultMessage="Any questions? {supportUrl}"
-            values={{ supportUrl: <a href={`https://support.avantiseducation.com`}>https://support.avantiseducation.com</a> }}
+            values={{ supportUrl: <a href={global?.AVNGlobal?.supportLink}>{global?.AVNGlobal?.supportLink}</a> }}
           />
         </p>
         {showSourceLink && (

@@ -6,6 +6,7 @@ import { FormattedMessage, useIntl, defineMessages } from "react-intl";
 import { Column } from "../layout/Column";
 import { Button } from "../input/Button";
 import { ReactComponent as EnterIcon } from "../icons/Enter.svg";
+import { AVN } from "../../avn-bridge";
 
 // Expects informationType of "subscribe", "signin", or "invite"
 
@@ -53,7 +54,7 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
             <FormattedMessage id="avn-information-modal.function-requires-subscription" defaultMessage="A subcription is required to access premium content, teacher notes, and teacher controls" />
           </p>
           <p>
-            <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
+            <a href={AVN.newSubscriptionLink} target="_blank" rel="noopener noreferrer">
               <FormattedMessage id="avn-information-modal.subscription-call-to-action-anchor-text" defaultMessage="Subscribe today" />
             </a>
           </p>
@@ -70,7 +71,7 @@ export function AvnInformationModal({ closeable, onClose, onClick, informationTy
             <FormattedMessage id="avn-information-modal.organization-invite-send" defaultMessage="Share this with your colleagues to let them join your Eduverse organization." />
           </p>
           <p>
-            <a href="https://support.avantiseducation.com/" target="_blank" rel="noopener noreferrer">
+            <a href={AVN.supportLink} target="_blank" rel="noopener noreferrer">
               <FormattedMessage id="avn-information-modal.support-anchor-text" defaultMessage="Find out more about invitations" />
             </a>
           </p>

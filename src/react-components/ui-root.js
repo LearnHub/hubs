@@ -1409,7 +1409,7 @@ class UIRoot extends Component {
             label: <FormattedMessage id="more-menu.help" defaultMessage="Help" />,
             icon: SupportIcon,
             // AVN: Alt help link
-            href: configs.link("docs", "https://support.avantiseducation.com")
+            href: configs.link("docs", AVN.supportLink)
           },
           // AVN: Expose log saving support feature
           {

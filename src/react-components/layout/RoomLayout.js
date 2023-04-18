@@ -51,7 +51,7 @@ export function RoomLayout({
             <ToolbarButton
             icon={<SupportIcon/>}
             label={<FormattedMessage id="more-menu.help" defaultMessage="Help" />}
-            onClick={() => { window.open("https://support.avantiseducation.com"); }}
+            onClick={() => { window.open(global?.AVNGlobal?.supportLink); }}
           />}
         />
       }

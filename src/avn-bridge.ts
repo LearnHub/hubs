@@ -334,8 +334,12 @@ class AVNBridge {
         }
     }
 
-    public async getUserLicenses(): Promise<{licenseId: string, organization: Organization | undefined, expires: Date}[]> {
-        const result = new Array<{licenseId: string, expires: Date, organization: Organization | undefined}>()
+    private filterOutInternalPlanCodes(planCode:string) {
+        return !["EVR-SAP-1YR"].includes(planCode)
+    }
+
+    public async getUserLicenses(): Promise<{licenseId: string, organization: Organization | undefined, expires: Date, planCodes: string[]}[]> {
+        const result = new Array<{licenseId: string, expires: Date, organization: Organization | undefined, planCodes: string[]}>()
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
@@ -343,11 +347,12 @@ class AVNBridge {
             const userLicenses = await this.Connect.Licenses.getUserLicenses({auth})
             for(let userLicense of userLicenses.licenses) {
                 if(userLicense.licenseId && userLicense.expires) {
+                    const planCodes = userLicense.planCodes.filter(this.filterOutInternalPlanCodes).sort()
                     if(userLicense.source.case === "organizationId") {
                         const organization = await this.getOrganization(userLicense.source.value)
-                        result.push({licenseId: userLicense.licenseId, organization, expires: userLicense.expires.toDate() })
+                        result.push({licenseId: userLicense.licenseId, organization, expires: userLicense.expires.toDate(), planCodes })
                     } else if(userLicense.source.case === "userId") {
-                        result.push({licenseId: userLicense.licenseId, expires: userLicense.expires.toDate(), organization: undefined })
+                        result.push({licenseId: userLicense.licenseId, expires: userLicense.expires.toDate(), organization: undefined, planCodes })
                     }
                 }
             }
@@ -594,6 +599,25 @@ class AVNBridge {
         return ["https://data.avncloud.com"];
     }
 
+    get newSubscriptionLink() {
+        const url = new URL("https://staging.subscriptions.eduverse.com/checkout")
+        url.searchParams.set("product_sku", "EVR-SAP-1YR")
+        if(this._accessToken) {
+            url.searchParams.set("eduverse_token", this._accessToken)
+        } else {
+            console.warn("Unexpected blank access token when creating subscription link")
+        }
+        return url.toString()
+    }
+    
+    get manageSubscriptionsLink() {
+        return "https://eduverse.com"
+    }
+    
+    get supportLink() {
+        return "https://support.avantiseducation.com"
+    }
+    
     // Rooms
 
     // Used to add dimension to URLs for the legacy media browser to be resolved by the REST server

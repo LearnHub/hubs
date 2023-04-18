@@ -6,6 +6,7 @@ import { TextInputField } from "../input/TextInputField";
 import { Column } from "../layout/Column";
 import { FormattedMessage } from "react-intl";
 import { InputField } from "../input/InputField";
+import { AVN } from "../../avn-bridge";
 
 export function AvnAccountContent({
   displayName,
@@ -51,7 +52,7 @@ export function AvnAccountContent({
   const isAuthenticated = global?.AVNGlobal?.isAuthenticated === true
 
   const onInviteInvoked = (org)  => {
-    const inviteText = `You are invited to join '${org.name}' in Eduverse with this join code ${org.enrollmentSecret} \n\nTo find out more, please see these instructions: https://support.avantiseducation.com`;
+    const inviteText = `You are invited to join '${org.name}' in Eduverse with this join code ${org.enrollmentSecret} \n\nTo find out more, please see these instructions: ${global?.AVNGlobal?.supportLink}`;
     navigator.clipboard.writeText(inviteText);
     avnShowInformationDialog("org-invite");
   };
@@ -119,10 +120,11 @@ export function AvnAccountContent({
                 <tr><td>License ID</td><td>#{userLicense.licenseId}</td></tr>
                 {userLicense.organization && <tr><td>Organization</td><td>{userLicense.organization.name}</td></tr>}
                 <tr><td>Expires</td><td>{userLicense.expires.toLocaleDateString(undefined, { dateStyle: 'medium' })}</td></tr>
+                {userLicense.planCodes?.length && <tr><td>Plan Codes</td><td>{userLicense.planCodes.join("\n")}</td></tr>}
               </tbody>
             </table>))}
             <p>
-              <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
+              <a href={AVN.manageSubscriptionsLink} target="_blank" rel="noopener noreferrer">
                 <FormattedMessage id="avn-information-modal.subscription-management-anchor-text" defaultMessage="Manage subscriptions" />
               </a>
             </p>
@@ -133,7 +135,7 @@ export function AvnAccountContent({
             <FormattedMessage id="avn-account-content.no-licenses" defaultMessage="You have no licenses available" />
           </p>
           <p>
-            <a href="https://eduverse.com" target="_blank" rel="noopener noreferrer">
+            <a href={AVN.newSubscriptionLink} target="_blank" rel="noopener noreferrer">
               <FormattedMessage id="avn-information-modal.subscription-call-to-action-anchor-text" defaultMessage="Subscribe today" />
             </a>
           </p>
