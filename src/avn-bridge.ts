@@ -335,7 +335,7 @@ class AVNBridge {
     }
 
     private filterOutInternalPlanCodes(planCode:string) {
-        return !["EVR-SAP-1YR"].includes(planCode)
+        return true//![""].includes(planCode)
     }
 
     public async getUserLicenses(): Promise<{licenseId: string, organization: Organization | undefined, expires: Date, planCodes: string[]}[]> {

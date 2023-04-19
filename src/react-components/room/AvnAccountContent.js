@@ -120,7 +120,7 @@ export function AvnAccountContent({
                 <tr><td>License ID</td><td>#{userLicense.licenseId}</td></tr>
                 {userLicense.organization && <tr><td>Organization</td><td>{userLicense.organization.name}</td></tr>}
                 <tr><td>Expires</td><td>{userLicense.expires.toLocaleDateString(undefined, { dateStyle: 'medium' })}</td></tr>
-                {userLicense.planCodes?.length && <tr><td>Plan Codes</td><td>{userLicense.planCodes.join("\n")}</td></tr>}
+                {userLicense.planCodes && userLicense.planCodes.length > 0 && <tr><td>Plan Codes</td><td>{userLicense.planCodes.join("\n")}</td></tr>}
               </tbody>
             </table>))}
             <p>
