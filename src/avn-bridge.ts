@@ -609,10 +609,6 @@ class AVNBridge {
         return url.toString()
     }
     
-    get manageSubscriptionsLink() {
-        return "https://eduverse.com"
-    }
-    
     get supportLink() {
         return "https://support.avantiseducation.com"
     }

@@ -123,11 +123,13 @@ export function AvnAccountContent({
                 {userLicense.planCodes && userLicense.planCodes.length > 0 && <tr><td>Plan Codes</td><td>{userLicense.planCodes.join("\n")}</td></tr>}
               </tbody>
             </table>))}
+            {
             <p>
-              <a href={AVN.manageSubscriptionsLink} target="_blank" rel="noopener noreferrer">
-                <FormattedMessage id="avn-information-modal.subscription-management-anchor-text" defaultMessage="Manage subscriptions" />
+              <a href={AVN.newSubscriptionLink} target="_blank" rel="noopener noreferrer">
+                <FormattedMessage id="avn-information-modal.subscription-management-anchor-text" defaultMessage="Renew subscription" />
               </a>
             </p>
+            }
           </>  
         )
         : <>
