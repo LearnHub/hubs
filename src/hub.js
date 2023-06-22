@@ -850,7 +850,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(`AVN: health check failed`)
     scene.emit("errorLoadingRoom", `Eduverse is not currently available`);
     return
-}
+  }
   scene.emit("didConnectToEduverse");
   
   // Lookup dimension for this room
@@ -858,7 +858,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(`AVN: failed to match dimension`)
     scene.emit("errorLoadingRoom", `No session could be found for this room`);
     return
-}
+  }
 
   // Join dimension
   const joinResult = await AVN.joinDimension()
