@@ -52,7 +52,7 @@ export function AvnAccountContent({
   const isAuthenticated = global?.AVNGlobal?.isAuthenticated === true
 
   const onInviteInvoked = (org)  => {
-    const inviteText = `You are invited to join '${org.name}' in Eduverse with this join code ${org.enrollmentSecret} \n\nTo find out more, please see these instructions: ${global?.AVNGlobal?.supportLink}`;
+    const inviteText = `You are invited to join '${org.name}' in Eduverse with this join code: ${org.enrollmentSecret} \n\nTo find out more, please see these instructions: ${global?.AVNGlobal?.supportLink}`;
     navigator.clipboard.writeText(inviteText);
     avnShowInformationDialog("org-invite");
   };
