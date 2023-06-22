@@ -600,8 +600,7 @@ class AVNBridge {
     }
 
     get newSubscriptionLink() {
-        const url = new URL("https://subscriptions.eduverse.com/checkout")
-        url.searchParams.set("product_sku", "EVR-SAP-1YR")
+        const url = new URL("https://subscriptions.eduverse.com")
         if(this._accessToken) {
             url.searchParams.set("eduverse_token", this._accessToken)
         } else {
