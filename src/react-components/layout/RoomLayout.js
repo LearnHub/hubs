@@ -6,6 +6,8 @@ import { Toolbar } from "./Toolbar";
 import { ToolbarButton } from "../input/ToolbarButton";
 import { FormattedMessage } from "react-intl";
 import { ReactComponent as SupportIcon } from "../icons/Support.svg";
+import { ReactComponent as SaveIcon } from "../icons/Save.svg";
+import { SaveConsoleLog } from "../../utils/record-log.js";
 
 export function RoomLayout({
   className,
@@ -46,13 +48,22 @@ export function RoomLayout({
               label={<FormattedMessage id="avn-room-layout.connection-message" defaultMessage="Reconnecting..." />}
               iconContainerClassName={styles.avnButton}              
               onClick={() => { AVNGlobal.requestRejoin() }}
-              />}
+              />
+          }
           right={
+            <>
+            <ToolbarButton
+            icon={<SaveIcon/>}
+            label={<FormattedMessage id="more-menu.save-console-logs" defaultMessage="Save Logs" />}
+            onClick={() => { SaveConsoleLog(); }}
+            />
             <ToolbarButton
             icon={<SupportIcon/>}
             label={<FormattedMessage id="more-menu.help" defaultMessage="Help" />}
             onClick={() => { window.open(global?.AVNGlobal?.supportLink); }}
-          />}
+            />
+            </>
+          }
         />
       }
       <div
