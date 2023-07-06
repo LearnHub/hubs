@@ -563,6 +563,11 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data)
   const hub = data.hubs[0];
 
   console.log(`Dialog host: ${hub.host}:${hub.port}`);
+  
+  // AVN: Hubs uses port 8443 in some configurations, which is not very firewall friendly
+  if(hub.port != 443) {
+    console.error(`Dialog port should be 443!`);
+  }
 
   remountUI({
     messageDispatch: messageDispatch,
