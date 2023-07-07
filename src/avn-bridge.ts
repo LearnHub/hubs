@@ -595,7 +595,7 @@ class AVNBridge {
 
     // AVN data servers don't need CORS proxying
     get dataServerDomains() {
-        return ["https://data.avncloud.com"];
+        return ["https://data.avncloud.com", "https://avnfs.com"];
     }
 
     get newSubscriptionLink() {

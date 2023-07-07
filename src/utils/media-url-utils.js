@@ -7,8 +7,9 @@ if (configs.CORS_PROXY_SERVER) {
 }
 nonCorsProxyDomains.push(document.location.hostname);
 
-// AVN: data domain doesn't require CORS
+// AVN: data domains don't require CORS
 nonCorsProxyDomains.push("data.avncloud.com");
+nonCorsProxyDomains.push("avnfs.com");
 // AVN: running as localhost fails to fetch objects.gltf because it tries to invoke the proxy
 nonCorsProxyDomains.push("me.eduverse.com");
 nonCorsProxyDomains.push("me-eduverse-assets.me-hub.link");
