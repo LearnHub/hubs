@@ -36,7 +36,7 @@ import markdownitbracketedspans from "markdown-it-bracketed-spans"
   
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
-const ConnectToAlphaBackend = PreferredDomain === "ap.eduverse.com"
+const ConnectToAlphaBackend = PreferredDomain === "me.eduverse.com"
 const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
 const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
 
