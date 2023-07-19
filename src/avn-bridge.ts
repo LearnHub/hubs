@@ -1,4 +1,4 @@
-import { AVNConnect } from "connect-sdk"
+import { AVNConnect, Utils } from "connect-sdk"
 import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_pb"
 import { DimensionEvent, DimensionInfo } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
 import { Channel } from "connect-sdk/dist/gen/avn/connect/v1/channels_pb"
@@ -636,21 +636,30 @@ class AVNBridge {
 
     // Media
 
-    // TODO: LEGACY
     isAvnUrl(url: string) {
-        return url.startsWith(this.dynamicAssetPrefix);
+        return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(Utils.AvnfsUrlPrefix)
     }
 
     async fetchMediaData(mediaUrl: string) {
         try {
-            const assetId = mediaUrl.split("/").pop()
-            const resolveMediaResult = await this.Connect.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
-            return {
-                "origin": resolveMediaResult.assetUrl,
-                "meta": {
-                    "tags": resolveMediaResult.tagIds,
-                    "thumbnail": resolveMediaResult.thumbnailUrl,
-                    "expected_content_type": resolveMediaResult.mimeType,
+            if(mediaUrl.startsWith(Utils.AvnfsUrlPrefix)) {
+                const { mediaType } = Utils.avnfsDecodeUrl(new URL(mediaUrl))
+                return {
+                    "origin": mediaUrl,
+                    "meta": {
+                        "expected_content_type": mediaType,
+                    }
+                }
+            } else {
+                const assetId = mediaUrl.split("/").pop()
+                const resolveMediaResult = await this.Connect.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
+                return {
+                    "origin": resolveMediaResult.assetUrl,
+                    "meta": {
+                        "tags": resolveMediaResult.tagIds,
+                        "thumbnail": resolveMediaResult.thumbnailUrl,
+                        "expected_content_type": resolveMediaResult.mimeType,
+                    }
                 }
             }
         } catch (error: unknown) {
