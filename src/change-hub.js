@@ -31,7 +31,7 @@ function loadRoomObjects(hubId) {
 export async function changeHubAvn(hubUrl) {
   console.log("Fast switching to room " + hubUrl);
   const newAssetId = new URL(hubUrl).pathname.split("/").pop();
-  const roomInfo = await AVN.fetchRoomInfoForScene(newAssetId);
+  const roomInfo = await AVN.fetchRoomInfoForAssetId(newAssetId);
   if(roomInfo) {
     console.log("Resolved Hub room from AVN server");
     const nextState = { hubId: roomInfo.roomId, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };

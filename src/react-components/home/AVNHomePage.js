@@ -62,22 +62,28 @@ export class AVNHomePage extends React.Component {
         if (await AVN.createNewDimension(passId)) {
           console.log(`New dimension '${AVN.dimensionId}' is open`)
           this.setState({ message: "Finding a room..." })
-          const assetId = searchParams.get("assetid") || AVN.assetId
           let roomInfo
-          // Try the request assetid first, but it might be premium or unavailable in some other way
-          try {
-            roomInfo = await AVN.fetchRoomInfoForScene(assetId)
-          } catch(error) {
-            console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
-          }
-          // If that operation failed (because no license for that asset for instance), try the "homeroom"
-          if(!roomInfo) {
-            const errorMessage = `The requested scene '${assetId}' could not be found so the default scene will be used instead in `;
-            for(let n = 10; n > 0; --n) {
-              this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
-              await sleep(1000);
+          // Scene test path (direct URL)
+          const sceneUrl = searchParams.get("sceneurl")
+          if(sceneUrl) {
+            roomInfo = await AVN.fetchRoomInfoForSceneUrl(sceneUrl)
+          } else {
+            const assetId = searchParams.get("assetid") || AVN.assetId
+            // Try the requested assetid first, but it might be premium or unavailable in some other way
+            try {
+              roomInfo = await AVN.fetchRoomInfoForAssetId(assetId)
+            } catch(error) {
+              console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
             }
-            roomInfo = await AVN.fetchRoomInfoForScene("homeroom")
+            // If that operation failed (because no license for that asset for instance), try the "homeroom"
+            if(!roomInfo) {
+              const errorMessage = `The requested scene '${assetId}' could not be found so the default scene will be used instead in `;
+              for(let n = 10; n > 0; --n) {
+                this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
+                await sleep(1000);
+              }
+              roomInfo = await AVN.fetchRoomInfoForAssetId("homeroom")
+            }
           }
           if(roomInfo) {
             console.log(`Found room ${roomInfo.domain} ${roomInfo.roomId}`)

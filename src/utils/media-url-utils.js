@@ -161,8 +161,6 @@ export const getCustomGLTFParserURLResolver = gltfUrl => url => {
 const dataUrlRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
 
 export const guessContentType = url => {
-  // AVN: Exploring when content type guessing is employed
-  console.info(`Guessing content type '${url}'`)
   if (!url) return;
   if (url.startsWith("hubs://") && url.endsWith("/video")) return "video/vnd.hubs-webrtc";
   if (url.startsWith("data:")) {
@@ -171,6 +169,13 @@ export const guessContentType = url => {
       matches[1];
     }
   }
+  // AVN: Short circuit for AVNFS URLs
+  const avnfsUrl = new URL(url) 
+  const avnfsType = avnfsUrl.searchParams.get("type")
+  if(avnfsType) { 
+    return avnfsType
+  }
+
   const extension = new URL(url, window.location).pathname.split(".").pop();
   return commonKnownContentTypes[extension];
 };

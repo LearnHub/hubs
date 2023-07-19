@@ -619,7 +619,7 @@ class AVNBridge {
         return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._roomInfo?.assetId
     }
 
-    async fetchRoomInfoForScene(assetId: string) : Promise<RoomInfo | undefined> {
+    async fetchRoomInfoForAssetId(assetId: string) : Promise<RoomInfo | undefined> {
         try {
             const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, assetId })
             return openRoomResult.roomInfo
@@ -627,6 +627,11 @@ class AVNBridge {
             console.error(`Error open room for asset ID '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
         }
         return undefined
+    }
+
+    async fetchRoomInfoForSceneUrl(sceneUrl: string) : Promise<RoomInfo | undefined> {
+        const openRoomResult = await this.Connect.Rooms.openRoomFromUrl({ dimensionId: this._dimensionId, sceneUrl })
+        return openRoomResult.roomInfo
     }
 
     // Media
