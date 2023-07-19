@@ -63,12 +63,14 @@ export class AVNHomePage extends React.Component {
           console.log(`New dimension '${AVN.dimensionId}' is open`)
           this.setState({ message: "Finding a room..." })
           let roomInfo
+          let assetId
           // Scene test path (direct URL)
           const sceneUrl = searchParams.get("sceneurl")
           if(sceneUrl) {
             roomInfo = await AVN.fetchRoomInfoForSceneUrl(sceneUrl)
+            assetId = "sceneurl"
           } else {
-            const assetId = searchParams.get("assetid") || AVN.assetId
+            assetId = searchParams.get("assetid") || AVN.assetId
             // Try the requested assetid first, but it might be premium or unavailable in some other way
             try {
               roomInfo = await AVN.fetchRoomInfoForAssetId(assetId)
