@@ -101,7 +101,7 @@ if (true && 'URLSearchParams' in window && (new URLSearchParams(window.location.
 
   }
 
-  consoleHistory = new ConsoleHistory(1000);
+  consoleHistory = new ConsoleHistory(10000);
 
   // Intercept the built-in console methods
 
