@@ -106,7 +106,6 @@ import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip, RecordModeTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
-import { changeHubAvn } from "../change-hub";
 import { MediaDevicesEvents } from "../utils/media-devices-utils";
 import { TERMS, PRIVACY } from "../constants";
 import { ECSDebugSidebarContainer } from "./debug-panel/ECSSidebar";
@@ -115,7 +114,7 @@ import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
 import { AvnInformationModal } from "./room/AvnInformationModal";
-import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_pb";
+import * as ConnectSDK from "../connect/connect-sdk";
 import { AvnDimensionStatusModal } from "./room/AvnDimensionStatusModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
@@ -1145,7 +1144,7 @@ class UIRoot extends Component {
       this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no;
 
     // AVN Report dimension closure
-    const dimensionClosedDialog = this.props.avnDimensionStatus?.state !== OperationState.OPEN
+    const dimensionClosedDialog = this.props.avnDimensionStatus?.state !== ConnectSDK.OperationState.OPEN
       ? <AvnDimensionStatusModal detail={this.props.avnDimensionStatus?.detail} /> 
       : undefined
 
@@ -1518,7 +1517,7 @@ class UIRoot extends Component {
                 onActivitySelected={activity => {
                   const assetId = activity?.assetId
                   if(assetId) {
-                    AVN.tryChangeScene(assetId);
+                    AVN.tryChangeScene(`https://scene.link/${assetId}`);
                   } else {
                     console.error(`Unexpected blank asset ID for selected activity ${activity}`)
                   }

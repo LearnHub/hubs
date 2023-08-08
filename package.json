@@ -81,7 +81,6 @@
     "buffered-interpolation": "github:Infinitelee/buffered-interpolation",
     "classnames": "^2.2.5",
     "color": "^3.1.2",
-    "connect-sdk": "file:../../../AVNCloud/connect-sdk",
     "copy-to-clipboard": "^3.0.8",
     "core-js": "^3.24.1",
     "dashjs": "^3.1.0",

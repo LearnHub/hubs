@@ -254,7 +254,7 @@ import { swapActiveScene } from "./bit-systems/scene-loading";
 import { setLocalClientID } from "./bit-systems/networking";
 import { listenForNetworkMessages } from "./utils/listen-for-network-messages";
 import { AVN } from "./avn-bridge";
-import { OperationState } from 'connect-sdk/dist/gen/avn/connect/v1/operations_pb';
+import * as ConnectSDK from "./connect/connect-sdk";
 
 const PHOENIX_RELIABLE_NAF = "phx-reliable";
 NAF.options.firstSyncSource = PHOENIX_RELIABLE_NAF;
@@ -373,6 +373,7 @@ export function remountUI(props) {
   mountUI(uiProps);
 }
 
+// TODO: GLTF_SCENE_HACK
 export async function getSceneUrlForHub(hub) {
   let sceneUrl;
   let isLegacyBundle; // Deprecated
@@ -868,27 +869,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Join dimension
   const joinResult = await AVN.joinDimension()
   switch (joinResult) {
-    case OperationState.OPEN:
+    case ConnectSDK.OperationState.OPEN:
       console.info(`AVN: dimension open`);
       scene.emit("didJoinDimension");
       break;
-    case OperationState.CLOSED:
+    case ConnectSDK.OperationState.CLOSED:
       console.error(`AVN: dimension closed`)
       scene.emit("errorLoadingRoom", `Session is closed.`);
       return
-    case OperationState.NOT_FOUND:
+    case ConnectSDK.OperationState.NOT_FOUND:
       console.error(`AVN: dimension not found`)
       scene.emit("errorLoadingRoom", `Session not found.`);
       return
-    case OperationState.EXPIRED:
+    case ConnectSDK.OperationState.EXPIRED:
       console.error(`AVN: dimension expired`)
       scene.emit("errorLoadingRoom", `Session has expired.`);
       return
-    case OperationState.FORBIDDEN:
+    case ConnectSDK.OperationState.FORBIDDEN:
       console.error(`AVN: dimension forbidden`)
       scene.emit("errorLoadingRoom", `Session is forbidden.`);
       return
-    case OperationState.ERROR:
+    case ConnectSDK.OperationState.ERROR:
       console.error(`AVN: dimension join error`)
       scene.emit("errorLoadingRoom", `Session is not available because an error occurred.`);
       return        

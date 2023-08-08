@@ -1,0 +1,19 @@
+import { AVNConnect } from "./AVNConnect.js";
+import { Authorization } from "../../gen/avn/connect/v1/authorization_pb.js";
+export declare const Hostname = "avnfs.com";
+export declare const UrlPrefix: string;
+export declare const TypeQueryParam = "type";
+export declare const SizeQueryParam = "size";
+export declare const NameQueryParam = "name";
+export declare type FileSpec = {
+    base64url: string;
+    sizeBytes: number;
+    mediaType: string;
+    fileName?: string;
+};
+export declare function isValidUrl(url: URL): boolean;
+export declare function decodeUrl(url: URL): FileSpec;
+export declare function stripFilename(url: URL): URL;
+export declare function uploadArrayBuffer(buffer: ArrayBuffer, Connect: AVNConnect, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
+export declare function uploadFilePath(path: string, Connect: AVNConnect, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
+export declare function uploadFile(file: File, Connect: AVNConnect, auth: Authorization, mediaType: string | undefined, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;

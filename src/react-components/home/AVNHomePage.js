@@ -4,7 +4,6 @@ import { sleep } from "../../utils/async-utils";
 import { isLocalClient } from "../../utils/phoenix-utils";
 import { store } from "../../utils/store-instance";
 import { LoadingScreen } from "../room/LoadingScreen";
-
 export class AVNHomePage extends React.Component {
 
   state = {
@@ -64,11 +63,11 @@ export class AVNHomePage extends React.Component {
           this.setState({ message: "Finding a room..." })
           let roomInfo
           let assetId
-          // Scene test path (direct URL)
-          const sceneUrl = searchParams.get("sceneurl")
-          if(sceneUrl) {
-            roomInfo = await AVN.fetchRoomInfoForSceneUrl(sceneUrl)
-            assetId = "sceneurl"
+          // Direct URL to media
+          const mediaUrl = searchParams.get("mediaurl")
+          if(mediaUrl) {
+            roomInfo = await AVN.fetchRoomInfoForAssetId(mediaUrl)
+            assetId = roomInfo.assetId
           } else {
             assetId = searchParams.get("assetid") || AVN.assetId
             // Try the requested assetid first, but it might be premium or unavailable in some other way
@@ -84,7 +83,7 @@ export class AVNHomePage extends React.Component {
                 this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
                 await sleep(1000);
               }
-              roomInfo = await AVN.fetchRoomInfoForAssetId("homeroom")
+              roomInfo = await AVN.fetchRoomInfoForAssetId(`https://scene.link/homeroom`)
             }
           }
           if(roomInfo) {

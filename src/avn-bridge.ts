@@ -1,23 +1,6 @@
-import { AVNConnect, Utils } from "connect-sdk"
-import { OperationState } from "connect-sdk/dist/gen/avn/connect/v1/operations_pb"
-import { DimensionEvent, DimensionInfo } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
-import { Channel } from "connect-sdk/dist/gen/avn/connect/v1/channels_pb"
-import { HealthCheckResponse_ServingStatus } from "connect-sdk/dist/gen/grpc/health/v1/healthcheck_pb"
+import * as ConnectSDK from "./connect/connect-sdk.js"
 import { isLocalClient } from "./utils/phoenix-utils"
-import { LessonContext } from "connect-sdk/dist/gen/avn/connect/v1/lesson_context_pb"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
-import { Authorization } from "connect-sdk/dist/gen/avn/connect/v1/authorization_pb"
-import { Profile } from "connect-sdk/dist/gen/avn/connect/v1/profiles_pb"
-import { Category } from "connect-sdk/dist/gen/avn/connect/v1/categories_pb"
-import { Activity } from "connect-sdk/dist/gen/avn/connect/v1/activities_pb"
-import { Pass } from "connect-sdk/dist/gen/avn/connect/v1/passes_pb"
-import { ConnectionInstance } from "connect-sdk/dist/gen/avn/connect/v1/connections_pb"
-import { RoomInfo } from "connect-sdk/dist/gen/avn/connect/v1/rooms_pb"
-import { Role } from "connect-sdk/dist/gen/avn/connect/v1/roles_pb"
-import { DimensionStatus } from "connect-sdk/dist/gen/avn/connect/v1/dimensions_pb"
-import { OrganizationMembership } from "connect-sdk/dist/gen/avn/connect/v1/organization_membership_pb"
-import { Organization } from "connect-sdk/dist/gen/avn/connect/v1/organization_pb"
-import { ClientCredentials } from "connect-sdk/dist/gen/avn/connect/v1/clients_pb"
 
 import configs from "./utils/configs"
 // Including this file pulls in unnessary additional support files, which can cause errors
@@ -46,15 +29,15 @@ class AVNBridge {
 
     private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
     private _accessToken: string | undefined
-    private _roomInfo: RoomInfo | undefined
-    private _teachLessonContext: LessonContext | undefined
-    private _learnLessonContext: LessonContext | undefined
-    private _dimensionInfo: DimensionInfo | undefined
-    private _dimensionConnection: ConnectionInstance | undefined
+    private _roomInfo: ConnectSDK.RoomInfo | undefined
+    private _teachLessonContext: ConnectSDK.LessonContext | undefined
+    private _learnLessonContext: ConnectSDK.LessonContext | undefined
+    private _dimensionInfo: ConnectSDK.DimensionInfo | undefined
+    private _dimensionConnection: ConnectSDK.ConnectionInstance | undefined
     private _dimensionId: string = ""
     private _cachedClientId: string | undefined
 
-    private Connect = new AVNConnect(LocalDevMode
+    private Connect = new ConnectSDK.AVNConnect(LocalDevMode
         ? "http://127.0.0.1:8282"
         : `https://gweb${ChannelPostfix}.avncloud.com`)
 
@@ -134,8 +117,8 @@ class AVNBridge {
     }
 
     // Mutations trigger event `avn-dimension-status-changed`
-    private _lastDimensionStatus: DimensionStatus | undefined
-    get dimensionStatus() : DimensionStatus | undefined {
+    private _lastDimensionStatus: ConnectSDK.DimensionStatus | undefined
+    get dimensionStatus() : ConnectSDK.DimensionStatus | undefined {
         return this._lastDimensionStatus
     }
 
@@ -203,44 +186,44 @@ class AVNBridge {
         try {
             const healthCheckResult = await this.Connect.Health.check({})
             console.debug(`AVN: health check result: ${healthCheckResult.status}`)
-            return healthCheckResult.status === HealthCheckResponse_ServingStatus.SERVING
+            return healthCheckResult.status === ConnectSDK.HealthCheckResponse_ServingStatus.SERVING
         } catch (error: unknown) {
             console.error(`AVN: health check exception`, error)
         }
         return false
     }
 
-    public async getBrowsableChannels(): Promise<Channel[]> {
-        const result = await this.Connect.Channels.getBrowsableChannels({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }) })
+    public async getBrowsableChannels(): Promise<ConnectSDK.Channel[]> {
+        const result = await this.Connect.Channels.getBrowsableChannels({ auth: new ConnectSDK.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }) })
         return result.results
     }
 
-    public async getProfilesForChannel(channelId: number): Promise<Profile[]> {
-        const result = await this.Connect.Channels.getProfiles({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), channelId })
+    public async getProfilesForChannel(channelId: number): Promise<ConnectSDK.Profile[]> {
+        const result = await this.Connect.Channels.getProfiles({ auth: new ConnectSDK.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), channelId })
         return result.results
     }
 
-    public async getCategoriesForProfile(profileId: number): Promise<Category[]> {
-        const result = await this.Connect.Profiles.getCategories({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), profileId })
+    public async getCategoriesForProfile(profileId: number): Promise<ConnectSDK.Category[]> {
+        const result = await this.Connect.Profiles.getCategories({ auth: new ConnectSDK.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), profileId })
         return result.results
     }
 
-    public async getActivitiesForProfile(profileId: number): Promise<Activity[]> {
-        const result = await this.Connect.Profiles.getActivities({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), profileId })
+    public async getActivitiesForProfile(profileId: number): Promise<ConnectSDK.Activity[]> {
+        const result = await this.Connect.Profiles.getActivities({ auth: new ConnectSDK.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), profileId })
         return result.results
     }
 
-    public async getActivitiesForCategory(categoryId: number): Promise<Activity[]> {
-        const result = await this.Connect.Categories.getActivities({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), categoryId })
+    public async getActivitiesForCategory(categoryId: number): Promise<ConnectSDK.Activity[]> {
+        const result = await this.Connect.Categories.getActivities({ auth: new ConnectSDK.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), categoryId })
         return result.results
     }
 
-    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Activity[]> {
-        const result = await this.Connect.Activities.searchActivities({ auth: new Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), channelId, searchText })
+    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<ConnectSDK.Activity[]> {
+        const result = await this.Connect.Activities.searchActivities({ auth: new ConnectSDK.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), channelId, searchText })
         return result.results
     }
 
-    public async getPass(passId: string): Promise<Pass | undefined> {
+    public async getPass(passId: string): Promise<ConnectSDK.Pass | undefined> {
         try {
             const getPassResult = await this.Connect.Passes.getPass({ passId })
             return getPassResult.result
@@ -251,9 +234,9 @@ class AVNBridge {
     }
 
     public async createNewDimension(passId: string | undefined): Promise<boolean> {
-        const auth = this._accessToken ? new Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
+        const auth = this._accessToken ? new ConnectSDK.Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
         const createDimensionResult = await this.Connect.Dimensions.createDimension({
-            client: new ClientCredentials({ clientId: await this.getClientId() }),
+            client: new ConnectSDK.ClientCredentials({ clientId: await this.getClientId() }),
             auth,
             preferredDomain: PreferredDomain,
             passId,
@@ -274,11 +257,11 @@ class AVNBridge {
         return false
     }
 
-    async getUserOrganizationMembership(): Promise<OrganizationMembership[]> {
+    async getUserOrganizationMembership(): Promise<ConnectSDK.OrganizationMembership[]> {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new ConnectSDK.Authorization({ method: { case: "credentials", value: credentials } })
             const result = await this.Connect.Users.getOrganizationMembership({ auth, userId })
             return result.memberships
         } else {
@@ -287,19 +270,19 @@ class AVNBridge {
         return []
     }
 
-    async getOrganization(organizationId: number): Promise<Organization> {
+    async getOrganization(organizationId: number): Promise<ConnectSDK.Organization> {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new ConnectSDK.Authorization({ method: { case: "credentials", value: credentials } })
             return await this.Connect.Organizations.getOrganization({ auth, organizationId })
         } else {
             throw new Error(`Not authenticated to get organization`)
         }
     }
 
-    public async getUserOrganizations(): Promise<{organization: Organization, role: Role}[]> {
-        const result = new Array<{organization: Organization, role: Role}>()
+    public async getUserOrganizations(): Promise<{organization: ConnectSDK.Organization, role: ConnectSDK.Role}[]> {
+        const result = new Array<{organization: ConnectSDK.Organization, role: ConnectSDK.Role}>()
         const userOrgRoles = await this.getUserOrganizationMembership()
         for(let userOrgRole of userOrgRoles) {
             const role = await this.getRole(userOrgRole.roleId)
@@ -310,11 +293,11 @@ class AVNBridge {
     }
 
     // Roles are expect to remain fixed
-    private _roleMap: Map<number, Role> | undefined
-    async getRole(roleId: number): Promise<Role> {
+    private _roleMap: Map<number, ConnectSDK.Role> | undefined
+    async getRole(roleId: number): Promise<ConnectSDK.Role> {
         if(!this._roleMap) {
             const result = await this.Connect.Roles.getRoles({})            
-            this._roleMap = new Map<number, Role>()
+            this._roleMap = new Map<number, ConnectSDK.Role>()
             for(let role of result.roles) {
                 this._roleMap.set(role.roleId, role)
             }
@@ -326,7 +309,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new ConnectSDK.Authorization({ method: { case: "credentials", value: credentials } })
             await this.Connect.Organizations.joinOrganization({ auth, joinCode })
         } else {
             throw new Error(`Not authenticated to join organization`)
@@ -337,12 +320,12 @@ class AVNBridge {
         return true//![""].includes(planCode)
     }
 
-    public async getUserLicenses(): Promise<{licenseId: string, organization: Organization | undefined, expires: Date, planCodes: string[]}[]> {
-        const result = new Array<{licenseId: string, expires: Date, organization: Organization | undefined, planCodes: string[]}>()
+    public async getUserLicenses(): Promise<{licenseId: string, organization: ConnectSDK.Organization | undefined, expires: Date, planCodes: string[]}[]> {
+        const result = new Array<{licenseId: string, expires: Date, organization: ConnectSDK.Organization | undefined, planCodes: string[]}>()
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new ConnectSDK.Authorization({ method: { case: "credentials", value: credentials } })
             const userLicenses = await this.Connect.Licenses.getUserLicenses({auth})
             for(let userLicense of userLicenses.licenses) {
                 if(userLicense.licenseId && userLicense.expires) {
@@ -374,7 +357,7 @@ class AVNBridge {
 
     public async streamMessageHandler(
         abortController: AbortController,
-        dimensionStreamIterator: AsyncIterator<DimensionEvent, DimensionEvent>
+        dimensionStreamIterator: AsyncIterator<ConnectSDK.DimensionEvent, ConnectSDK.DimensionEvent>
     ): Promise<void> {
         try {
             console.debug("AVN: message streaming handler begin")
@@ -391,7 +374,7 @@ class AVNBridge {
                             global.dispatchEvent(new Event("avn-dimension-status-changed"))
                         }
                         // CLOSE or OPEN is the only expected status after the initial OPEN
-                        if (value.message.value.state === OperationState.CLOSED) {
+                        if (value.message.value.state === ConnectSDK.OperationState.CLOSED) {
                             console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
                             // The fake close might be cancelled if the session reopens
                             clearInterval(this._closeSceneTimeout)
@@ -400,7 +383,7 @@ class AVNBridge {
                                 // @ts-ignore
                                 document.querySelector("a-scene")?.emit("hub_closed")
                             }, 15000)
-                        } else if(value.message.value.state !== OperationState.OPEN) {
+                        } else if(value.message.value.state !== ConnectSDK.OperationState.OPEN) {
                             console.warn(`Unexpected dimension state change '${value.message.value.state}'`)
                         }
                         break
@@ -462,7 +445,7 @@ class AVNBridge {
     async rejoinDimension(): Promise<void> {
         console.log("AVN: rejoining dimension...")
         const result = await this.joinDimension()
-        if (result === OperationState.OPEN) {
+        if (result === ConnectSDK.OperationState.OPEN) {
             this._dimensionRejoinTimeout = 1000
         } else {
             // Try again with an exponential backoff
@@ -480,34 +463,34 @@ class AVNBridge {
         }
     }
 
-    public async joinDimension(): Promise<OperationState> {
+    public async joinDimension(): Promise<ConnectSDK.OperationState> {
         try {
             if (!this.dimensionId) {
                 console.error("No dimension ID has been set")
-                return OperationState.UNSPECIFIED
+                return ConnectSDK.OperationState.UNSPECIFIED
             }
             await this.abortStreamIfActive()
             const abortController = new AbortController()
-            const auth = this._accessToken ? new Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
+            const auth = this._accessToken ? new ConnectSDK.Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
             const dimensionStream = this.Connect.Dimensions.joinDimension({
-                    client: new ClientCredentials({ clientId: await this.getClientId() }),
+                    client: new ConnectSDK.ClientCredentials({ clientId: await this.getClientId() }),
                     auth,
                     dimensionId: this.dimensionId,
                 },
                 { signal: abortController.signal }
             )
-            const dimensionStreamIterator: AsyncIterator<DimensionEvent, DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
+            const dimensionStreamIterator: AsyncIterator<ConnectSDK.DimensionEvent, ConnectSDK.DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
             const { done, value } = await dimensionStreamIterator.next()
             if (done) {
                 console.error(`AVN: dimension stream unexpectedly terminated`)
                 abortController.abort("STREAM_OPEN_FAILED")
-                return OperationState.UNSPECIFIED
+                return ConnectSDK.OperationState.UNSPECIFIED
             }
             // First message must say that the dimension is OPEN
-            if (value.message.case !== "status" || value.message.value.state !== OperationState.OPEN) {
+            if (value.message.case !== "status" || value.message.value.state !== ConnectSDK.OperationState.OPEN) {
                 console.error(`AVN: failed to join dimension '${this.dimensionId}'`, value.message)
                 abortController.abort("STREAM_STATE_UNEXPECTED")
-                return value.message.case === "status" ? value.message.value.state : OperationState.UNSPECIFIED
+                return value.message.case === "status" ? value.message.value.state : ConnectSDK.OperationState.UNSPECIFIED
             }
             this._lastDimensionStatus = value.message.value
             global.dispatchEvent(new Event("avn-dimension-status-changed"))
@@ -519,11 +502,11 @@ class AVNBridge {
             // Start message loop
             this._streamMessageHandlerPromise = this.streamMessageHandler(abortController, dimensionStreamIterator)
 
-            return OperationState.OPEN
+            return ConnectSDK.OperationState.OPEN
         } catch (error: unknown) {
             console.warn(`AVN: exception joining dimension: ${error instanceof Error ? error.message : "Unknown error"}`)
         }
-        return OperationState.UNSPECIFIED
+        return ConnectSDK.OperationState.UNSPECIFIED
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
@@ -537,13 +520,13 @@ class AVNBridge {
     }
 
     public goHome() {
-        this.tryChangeScene("homeroom")
+        this.tryChangeScene("https://scene.link/homeroom")
     }
 
     // Guiding
 
     public async setLessonFocus(position: THREE.Vector3 | undefined): Promise<boolean> {
-        const newContext = new LessonContext({
+        const newContext = new ConnectSDK.LessonContext({
             focus: {
                 roomId: this._roomInfo?.roomId,
                 assetId: this._roomInfo?.assetId,
@@ -556,7 +539,7 @@ class AVNBridge {
             dimensionId: this._dimensionId,
             context: newContext,
         })
-        if (result.state == OperationState.SUCCESS) {
+        if (result.state == ConnectSDK.OperationState.SUCCESS) {
             this._teachLessonContext = newContext
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
@@ -571,7 +554,7 @@ class AVNBridge {
             credentials: this._dimensionConnection?.credentials,
             dimensionId: this._dimensionId
         })
-        if (result.state == OperationState.SUCCESS) {
+        if (result.state == ConnectSDK.OperationState.SUCCESS) {
             this._teachLessonContext = undefined
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
@@ -619,9 +602,11 @@ class AVNBridge {
         return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._roomInfo?.assetId
     }
 
-    async fetchRoomInfoForAssetId(assetId: string) : Promise<RoomInfo | undefined> {
+    // MERGE THESE TWO FUNCTIONS
+
+    async fetchRoomInfoForAssetId(assetId: string) : Promise<ConnectSDK.RoomInfo | undefined> {
         try {
-            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, assetId })
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url: assetId })
             return openRoomResult.roomInfo
         } catch (error: unknown) {
             console.error(`Error open room for asset ID '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
@@ -629,21 +614,16 @@ class AVNBridge {
         return undefined
     }
 
-    async fetchRoomInfoForSceneUrl(sceneUrl: string) : Promise<RoomInfo | undefined> {
-        const openRoomResult = await this.Connect.Rooms.openRoomFromUrl({ dimensionId: this._dimensionId, sceneUrl })
-        return openRoomResult.roomInfo
-    }
-
     // Media
 
     isAvnUrl(url: string) {
-        return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(Utils.AvnfsUrlPrefix)
+        return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(ConnectSDK.AvnfsUtils.UrlPrefix)
     }
 
     async fetchMediaData(mediaUrl: string) {
         try {
-            if(mediaUrl.startsWith(Utils.AvnfsUrlPrefix)) {
-                const { mediaType } = Utils.avnfsDecodeUrl(new URL(mediaUrl))
+            if(mediaUrl.startsWith(ConnectSDK.AvnfsUtils.UrlPrefix)) {
+                const { mediaType } = ConnectSDK.AvnfsUtils.decodeUrl(new URL(mediaUrl))
                 return {
                     "origin": mediaUrl,
                     "meta": {
@@ -651,6 +631,7 @@ class AVNBridge {
                     }
                 }
             } else {
+                console.warn(`Unexpected URL type in fetchMediaData for '${mediaUrl}'`)
                 const assetId = mediaUrl.split("/").pop()
                 const resolveMediaResult = await this.Connect.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
                 return {
@@ -669,18 +650,18 @@ class AVNBridge {
 
     // Best-effort scene change
     private _pendingSceneChange: Promise<void> | undefined = undefined
-    public tryChangeScene(assetId: string) {
+    public tryChangeScene(url: string) {
         if (!this._pendingSceneChange) {
-            this._pendingSceneChange = this.asyncChangeScene(assetId)
+            this._pendingSceneChange = this.asyncChangeScene(url)
         }
     }
-    private async asyncChangeScene(assetId: string): Promise<void> {
+    private async asyncChangeScene(url: string): Promise<void> {
         try {
-            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, assetId })
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url})
             const roomInfo = openRoomResult.roomInfo
             if (roomInfo) {
-                console.log(`AVN: responding to request by changing scene to '${assetId}'`)
-                const nextState = { hubId: roomInfo.roomId, newAssetId: assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl }
+                console.log(`AVN: responding to request by changing scene to '${url}'`)
+                const nextState = { hubId: roomInfo.roomId, newAssetId: url, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl }
                 // @ts-ignore
                 await changeHub(nextState, true)
             } else {
@@ -764,7 +745,7 @@ class AVNBridge {
 
     async recordAction(actionId: string, sourceId: string) : Promise<void> {
         try {
-            const client = new ClientCredentials({ clientId: await this.getClientId() })
+            const client = new ConnectSDK.ClientCredentials({ clientId: await this.getClientId() })
             await this.Connect.Clients.recordAction({ client, actionId, sourceId })
         } catch (error: unknown) {
             throw new Error(`Error recording action '${actionId}' from '${sourceId}'`)

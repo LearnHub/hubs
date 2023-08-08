@@ -30,11 +30,10 @@ function loadRoomObjects(hubId) {
 // AVN: Scene links need a level of redirection before resolving to a hub ID
 export async function changeHubAvn(hubUrl) {
   console.log("Fast switching to room " + hubUrl);
-  const newAssetId = new URL(hubUrl).pathname.split("/").pop();
-  const roomInfo = await AVN.fetchRoomInfoForAssetId(newAssetId);
+  const roomInfo = await AVN.fetchRoomInfoForAssetId(hubUrl);
   if(roomInfo) {
     console.log("Resolved Hub room from AVN server");
-    const nextState = { hubId: roomInfo.roomId, newAssetId: newAssetId, oldAssetId: AVN.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };
+    const nextState = { hubId: roomInfo.roomId, newAssetId: roomInfo.assetId, oldAssetId: AVN.assetId, name: roomInfo.name, icon: roomInfo.iconUrl };
     await changeHub(nextState, true);
   } else {
     console.error("Failed to change hub room");

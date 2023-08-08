@@ -1,0 +1,38 @@
+import { PromiseClient } from "@bufbuild/connect-web";
+import { ActivityService } from "../../gen/avn/connect/v1/activities_connectweb.js";
+import { CategoryService } from "../../gen/avn/connect/v1/categories_connectweb.js";
+import { ChannelService } from "../../gen/avn/connect/v1/channels_connectweb.js";
+import { ClientService } from "../../gen/avn/connect/v1/clients_connectweb.js";
+import { DimensionService } from "../../gen/avn/connect/v1/dimensions_connectweb.js";
+import { Health } from "../../gen/grpc/health/v1/healthcheck_connectweb.js";
+import { LicenseService } from "../../gen/avn/connect/v1/licenses_connectweb.js";
+import { OrganizationService } from "../../gen/avn/connect/v1/organizations_connectweb.js";
+import { PassService } from "../../gen/avn/connect/v1/passes_connectweb.js";
+import { ProfileService } from "../../gen/avn/connect/v1/profiles_connectweb.js";
+import { RoleService } from "../../gen/avn/connect/v1/roles_connectweb.js";
+import { RoomService } from "../../gen/avn/connect/v1/rooms_connectweb.js";
+import { UserService } from "../../gen/avn/connect/v1/users_connectweb.js";
+import { AvnfsService } from "../../gen/avn/connect/v1/avnfs_connectweb.js";
+import { KtxService } from "../../gen/avn/connect/v1/ktx_connectweb.js";
+export declare const GwebUrl = "https://gweb.avncloud.com";
+export declare const GwebAlphaUrl = "https://gweb-alpha.avncloud.com";
+export declare class AVNConnect {
+    readonly gwebUrl: string;
+    constructor(gwebUrl?: string);
+    private transport;
+    Activities: PromiseClient<typeof ActivityService>;
+    Avnfs: PromiseClient<typeof AvnfsService>;
+    Categories: PromiseClient<typeof CategoryService>;
+    Channels: PromiseClient<typeof ChannelService>;
+    Clients: PromiseClient<typeof ClientService>;
+    Dimensions: PromiseClient<typeof DimensionService>;
+    Health: PromiseClient<typeof Health>;
+    Ktx: PromiseClient<typeof KtxService>;
+    Licenses: PromiseClient<typeof LicenseService>;
+    Organizations: PromiseClient<typeof OrganizationService>;
+    Passes: PromiseClient<typeof PassService>;
+    Profiles: PromiseClient<typeof ProfileService>;
+    Roles: PromiseClient<typeof RoleService>;
+    Rooms: PromiseClient<typeof RoomService>;
+    Users: PromiseClient<typeof UserService>;
+}

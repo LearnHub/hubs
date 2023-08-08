@@ -313,7 +313,8 @@ module.exports = async (env, argv) => {
         Buffer: false,
         fs: false,
         stream: require.resolve("stream-browserify"),
-        path: require.resolve("path-browserify")
+        path: require.resolve("path-browserify"),
+        crypto: false,
       },
       extensions: [".ts", ".tsx", ".js", ".jsx"]
     },
