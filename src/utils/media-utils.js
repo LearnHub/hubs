@@ -54,11 +54,13 @@ export const getDefaultResolveQuality = (is360 = false) => {
 };
 
 export const resolveUrl = async (url, quality = null, version = 1, bustCache) => {
+  // AVN: There should be no need to resolve URLs as all metadata is available from context or from AVNFS
+  console.warn(`Unexpected call to resolveUrl with URL '${url}'`)
   const key = `${url}_${version}`;
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
   // AVN: Authenticated queries are accessed through an alternative API
-  const resultPromise = global.AVNGlobal.isAvnUrl(url) ? global.AVNGlobal.fetchMediaData(url) : 
+  const resultPromise = global.AVNGlobal.isAvnUrl(url) ? global.AVNGlobal.fetchLegacyMediaData(url) : 
   fetch(mediaAPIEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -606,6 +608,8 @@ export function hasAudioTracks(el) {
 }
 
 export function fetchContentType(url) {
+  // AVN: Content type fetchs should never be necessary as the types are in AVNFS
+  console.warn(`Unexpected call to fetchContentType for URL '${url}'`)
   return fetch(url, { method: "HEAD" }).then(r => r.headers.get("content-type"));
 }
 

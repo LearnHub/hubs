@@ -1,5 +1,5 @@
 const colliderWorldPositionVec = new THREE.Vector3();
-import { SOUND_CHAT_MESSAGE, SOUND_MEDIA_LOADED, SOUND_FREEZE } from "../systems/sound-effects-system";
+import { SOUND_CHAT_MESSAGE, SOUND_MEDIA_LOADED, SOUND_FREEZE, SOUND_HOVER_OR_GRAB } from "../systems/sound-effects-system";
 import { changeHubAvn } from "../change-hub";
 import { AVN } from "../avn-bridge";
 
@@ -7,7 +7,6 @@ AFRAME.registerComponent("action-trigger-volume", {
   schema: {
     colliders: { type: "selectorAll" },
     src: { type: "string" },
-    isSceneLink:  { type: "boolean" },
     isAvatarLink: { type: "boolean" },
   },
   init() {
@@ -48,16 +47,9 @@ AFRAME.registerComponent("action-trigger-volume", {
           }
         } else {
           if(AVN.allowNavigation) {
-            if(this.data.isSceneLink) {
-              console.log("AVN: Navigating to scene link", this.data.src);
-              changeHubAvn(this.data.src);
-            } else {
-              console.log("AVN: Navigating to generic link", this.data.src);
-              // Mark the exit point in case the user returns with the back button
-              const sceneId = new URL(this.data.src).pathname.split("/").pop();
-              document.location.hash = sceneId;
-              document.location = this.data.src;
-            }
+            console.log("AVN: Navigating to scene link", this.data.src);
+            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_HOVER_OR_GRAB);
+            changeHubAvn(this.data.src);
           } else {
             this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
             console.log(`AVN: Navigation denied because room is not explorable`);

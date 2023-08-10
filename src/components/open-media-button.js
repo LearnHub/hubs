@@ -15,10 +15,14 @@ AFRAME.registerComponent("open-media-button", {
       if (!this.targetEl.parentNode) return; // If removed
       const mediaLoader = this.targetEl.components["media-loader"].data;
       const src = (this.src = (mediaLoader.mediaOptions && mediaLoader.mediaOptions.href) || mediaLoader.src);
-      const visible = src && guessContentType(src) !== "video/vnd.hubs-webrtc";
+      // AVN: Irrelevant content type test
+      const visible = src //&& guessContentType(src) !== "video/vnd.hubs-webrtc";
       const mayChangeScene = this.el.sceneEl.systems.permissions.canOrWillIfCreator("update_hub");
 
       this.el.object3D.visible = !!visible;
+
+      // AVN: Force all links to be direct window opens
+      this.data.onlyOpenLink = true;
 
       if (visible) {
         let label = "open link";

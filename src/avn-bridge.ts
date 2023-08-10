@@ -602,8 +602,6 @@ class AVNBridge {
         return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._roomInfo?.assetId
     }
 
-    // MERGE THESE TWO FUNCTIONS
-
     async fetchRoomInfoForAssetId(assetId: string) : Promise<ConnectSDK.RoomInfo | undefined> {
         try {
             const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url: assetId })
@@ -616,11 +614,11 @@ class AVNBridge {
 
     // Media
 
-    isAvnUrl(url: string) {
+    isAvnUrl(url: string) {        
         return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(ConnectSDK.AvnfsUtils.UrlPrefix)
     }
 
-    async fetchMediaData(mediaUrl: string) {
+    async fetchLegacyMediaData(mediaUrl: string) {
         try {
             if(mediaUrl.startsWith(ConnectSDK.AvnfsUtils.UrlPrefix)) {
                 const { mediaType } = ConnectSDK.AvnfsUtils.decodeUrl(new URL(mediaUrl))
@@ -631,7 +629,7 @@ class AVNBridge {
                     }
                 }
             } else {
-                console.warn(`Unexpected URL type in fetchMediaData for '${mediaUrl}'`)
+                console.warn(`Unexpected URL type in fetchLegacyMediaData for '${mediaUrl}'`)
                 const assetId = mediaUrl.split("/").pop()
                 const resolveMediaResult = await this.Connect.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
                 return {

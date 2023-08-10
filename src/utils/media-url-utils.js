@@ -7,15 +7,6 @@ if (configs.CORS_PROXY_SERVER) {
 }
 nonCorsProxyDomains.push(document.location.hostname);
 
-// AVN: data domains don't require CORS
-nonCorsProxyDomains.push("data.avncloud.com");
-nonCorsProxyDomains.push("avnfs.com");
-// AVN: scene links don't need to be proxied
-nonCorsProxyDomains.push("scene.link");
-// AVN: running as localhost fails to fetch objects.gltf because it tries to invoke the proxy for domains like me.eduverse.com or me-eduverse-assets.me-hub.link
-nonCorsProxyDomains.push("eduverse.com");
-nonCorsProxyDomains.push("-hub.link");
-
 const commonKnownContentTypes = {
   gltf: "model/gltf",
   glb: "model/gltf-binary",
@@ -80,13 +71,16 @@ export const scaledThumbnailUrlFor = (url, width, height) => {
 };
 
 export const isNonCorsProxyDomain = hostname => {
-  // AVN: CORS proxying is not expected in Eduverse
+  // AVN_NO_PROXY: Proxied content is not supported for simplicity, security, and reduced server load
+  return true
   const result = nonCorsProxyDomains.find(domain => hostname.endsWith(domain));
-  if(!result) console.warn(`Unexpected CORS proxy for hostname '${hostname}'`)
   return result;
 };
 
 export const proxiedUrlFor = url => {
+  // AVN_NO_PROXY: Proxied content is not supported for simplicity, security, and reduced server load
+  return url;
+
   if (!(url.startsWith("http:") || url.startsWith("https:"))) return url;
 
   // Skip known domains that do not require CORS proxying.
@@ -175,7 +169,8 @@ export const guessContentType = url => {
   if(avnfsType) { 
     return avnfsType
   }
-
+  // AVN: There should be no URLs with unknown content types
+  console.warn(`Unexpected case in guessContentType for URL '${url}'`)
   const extension = new URL(url, window.location).pathname.split(".").pop();
   return commonKnownContentTypes[extension];
 };

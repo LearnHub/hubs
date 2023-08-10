@@ -30,6 +30,7 @@ import { MediaLoading } from "../bit-components";
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
 import { AvnTags } from "../avn-tags";
+import * as ConnectSDK from "../connect/connect-sdk.js"
 
 let loadingObject;
 
@@ -356,6 +357,7 @@ AFRAME.registerComponent("media-loader", {
     try {
       // Short circuit for external web links (don't bother with fetching content types and thumbnails)
       if(this.data.contentType === "text/html" && !AVN.isAvnUrl(src)) {
+        console.log(`Showing simple link for URL '${src}'`)
         // Change image to be a 1x1 transparent PNG (image mesh provides the hover target)
         this.el.setAttribute("media-image", { 
           src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=", 
@@ -379,61 +381,41 @@ AFRAME.registerComponent("media-loader", {
         src = this.data.src = `${window.location.origin}${window.location.pathname}${window.location.search}${src}`;
       }
 
-      let canonicalUrl = src;
       let canonicalAudioUrl = null; // set non-null only if audio track is separated from video track (eg. 360 video)
-      let accessibleUrl = src;
       let contentType = this.data.contentType;
-      let thumbnail;
-
-      let isSceneLink = false;
-      let absoluteAvatarUrl;
-
       const parsedUrl = new URL(src);
-
-      // We want to resolve and proxy some hubs urls, like rooms and scene links,
-      // but want to avoid proxying assets in order for this to work in dev environments
-      const isLocalModelAsset =
-        isNonCorsProxyDomain(parsedUrl.hostname) && (guessContentType(src) || "").startsWith("model/gltf");
-
-      if (this.data.resolve && !src.startsWith("data:") && !src.startsWith("hubs:") && !isLocalModelAsset) {
-        const is360 = !!(this.data.mediaOptions.projection && this.data.mediaOptions.projection.startsWith("360"));
-        const quality = getDefaultResolveQuality(is360);
-        const result = await resolveUrl(src, quality, version, forceLocalRefresh);
-        canonicalUrl = result.origin;
-
-        // handle protocol relative urls
-        if (canonicalUrl.startsWith("//")) {
-          canonicalUrl = location.protocol + canonicalUrl;
-        }
-
-        canonicalAudioUrl = result.origin_audio;
-        if (canonicalAudioUrl && canonicalAudioUrl.startsWith("//")) {
-          canonicalAudioUrl = location.protocol + canonicalAudioUrl;
-        }
-
-        // AVN: All link elements should be inflated as links
-        if(contentType !== "text/html") {
-          contentType = (result.meta && result.meta.expected_content_type) || contentType;
-        }
-        thumbnail = result.meta && result.meta.thumbnail && proxiedUrlFor(result.meta.thumbnail);
-        // AVN: Record tags from ClassConnect
-        const tags = result.meta && result.meta.tags;
-        if(tags && tags.includes(AvnTags.Avatar)) {
-          absoluteAvatarUrl = canonicalUrl;
-        }
-        isSceneLink = tags && tags.includes(AvnTags.Scene);
+      let isAvatar = false;
+      // AVN: Link elements should remain as is for proper inflation
+      if(contentType === "text/html") {
+        console.log(`No metadata resolution required for URL '${src}'`)
+      } else {
+        if(ConnectSDK.AvnfsUtils.isValidUrl(parsedUrl)) {
+          const { mediaType } = ConnectSDK.AvnfsUtils.decodeUrl(parsedUrl)
+          contentType = mediaType;
+          //TODO: BETTER TEST FOR AVATARS
+          isAvatar = mediaType.includes("avatar");
+        } else {
+          if(parsedUrl.hostname == "scene.link") {
+            // Legacy media resolution
+            console.warn(`Legacy media link '${src}'`);
+            const result = await global.AVNGlobal.fetchLegacyMediaData(src);
+            src = result.origin;          
+            contentType = (result.meta && result.meta.expected_content_type) || contentType;
+            const tags = result.meta && result.meta.tags;
+            isAvatar = tags && tags.includes(AvnTags.Avatar);
+          } else {
+            console.warn(`Unexpected URL to resolve '${src}'`)
+          }
+        }        
       }
-
-      // todo: we don't need to proxy for many things if the canonical URL has permissive CORS headers
-      accessibleUrl = proxiedUrlFor(canonicalUrl);
 
       // if the component creator didn't know the content type, we didn't get it from reticulum, and
       // we don't think we can infer it from the extension, we need to make a HEAD request to find it out
-      contentType = contentType || guessContentType(canonicalUrl) || (await fetchContentType(accessibleUrl));
+      contentType = contentType || guessContentType(src) || (await fetchContentType(src));
 
       // TODO we should probably just never return "application/octet-stream" as expectedContentType, since its not really useful
       if (contentType === "application/octet-stream") {
-        contentType = guessContentType(canonicalUrl) || contentType;
+        contentType = guessContentType(src) || contentType;
       }
 
       // Some servers treat m3u8 playlists as "audio/x-mpegurl", we always want to treat them as HLS videos
@@ -443,16 +425,16 @@ AFRAME.registerComponent("media-loader", {
 
       // We don't want to emit media_resolved for index updates.
       if (forceLocalRefresh || srcChanged) {
-        this.el.emit("media_resolved", { src, raw: accessibleUrl, contentType });
+        this.el.emit("media_resolved", { src, raw: src, contentType });
       } else {
-        this.el.emit("media_refreshed", { src, raw: accessibleUrl, contentType });
+        this.el.emit("media_refreshed", { src, raw: src, contentType });
       }
 
       if (
         contentType.startsWith("video/") ||
         contentType.startsWith("audio/") ||
         contentType.startsWith("application/dash") ||
-        AFRAME.utils.material.isHLS(canonicalUrl, contentType)
+        AFRAME.utils.material.isHLS(src, contentType)
       ) {
         let linkedVideoTexture, linkedAudioSource, linkedMediaElementAudioSource;
         if (this.data.linkedEl) {
@@ -480,7 +462,7 @@ AFRAME.registerComponent("media-loader", {
         this.el.setAttribute(
           "media-video",
           Object.assign({}, this.data.mediaOptions, {
-            src: accessibleUrl,
+            src: src,
             audioSrc: canonicalAudioUrl ? proxiedUrlFor(canonicalAudioUrl) : null,
             time: startTime,
             contentType,
@@ -522,7 +504,7 @@ AFRAME.registerComponent("media-loader", {
         this.el.setAttribute(
           "media-image",
           Object.assign({}, this.data.mediaOptions, {
-            src: accessibleUrl,
+            src: src,
             version,
             contentType
           })
@@ -542,7 +524,7 @@ AFRAME.registerComponent("media-loader", {
         this.el.setAttribute(
           "media-pdf",
           Object.assign({}, this.data.mediaOptions, {
-            src: accessibleUrl,
+            src: src,
             contentType
           })
         );
@@ -564,7 +546,7 @@ AFRAME.registerComponent("media-loader", {
           this.el.setAttribute("position-at-border__freeze-unprivileged", { isFlat: true });
         }
       } else if (
-        absoluteAvatarUrl == undefined && (
+        !isAvatar && (
           contentType.includes("application/octet-stream") ||
           contentType.includes("x-zip-compressed") ||
           contentType.startsWith("model/gltf")
@@ -592,13 +574,13 @@ AFRAME.registerComponent("media-loader", {
         this.el.setAttribute(
           "gltf-model-plus",
           Object.assign({}, this.data.mediaOptions, {
-            src: accessibleUrl,
+            src: src,
             contentType: contentType,
             inflate: true,
             modelToWorldScale: this.data.fitToBox ? 0.0001 : 1.0
           })
         );
-      } else if (absoluteAvatarUrl !== undefined || contentType.startsWith("text/html")) {
+      } else if (isAvatar || contentType.startsWith("text/html")) {
 
         this.el.removeAttribute("gltf-model-plus");
         this.el.removeAttribute("media-video");
@@ -615,9 +597,8 @@ AFRAME.registerComponent("media-loader", {
         this.el.setAttribute("action-trigger-volume", {
           colliders: "#avatar-pov-node",
           // Either it's an avatar file or it's an actual scene link
-          src: absoluteAvatarUrl || src,
-          isSceneLink: isSceneLink,
-          isAvatarLink: !!absoluteAvatarUrl,
+          src: src,
+          isAvatarLink: isAvatar,
         });
 
         this.onMediaLoaded(null);
