@@ -72,7 +72,7 @@ export class AVNHomePage extends React.Component {
             assetId = searchParams.get("assetid") || AVN.assetId
             // Try the requested assetid first, but it might be premium or unavailable in some other way
             try {
-              roomInfo = await AVN.fetchRoomInfoForAssetId(assetId)
+              roomInfo = await AVN.fetchRoomInfoForAssetId(`https://scene.link/${assetId}`)
             } catch(error) {
               console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
             }
