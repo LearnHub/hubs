@@ -387,10 +387,7 @@ function runMigration(version, json) {
 }
 
 const convertStandardMaterialsIfNeeded = (object, gltf) => {
-  // AVN: Force low quality on legacy scenes exported directly from Blender (heuristic)
-  const materialQuality = gltf?.asset?.generator && gltf.asset.generator.startsWith("Khronos glTF Blender")
-    ? "low"
-    : window.APP.store.state.preferences.materialQualitySetting
+  const materialQuality = window.APP.store.state.preferences.materialQualitySetting
   updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
   return object;
 };
