@@ -60,7 +60,7 @@ export const resolveUrl = async (url, quality = null, version = 1, bustCache) =>
   if (!bustCache && resolveUrlCache.has(key)) return resolveUrlCache.get(key);
 
   // AVN: Authenticated queries are accessed through an alternative API
-  const resultPromise = global.AVNGlobal.isAvnUrl(url) ? global.AVNGlobal.fetchLegacyMediaData(url) : 
+  const resultPromise = global.AVNGlobal.isAvnUrl(url) ? global.AVNGlobal.fetchMediaData(url) : 
   fetch(mediaAPIEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

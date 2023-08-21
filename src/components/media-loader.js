@@ -383,31 +383,31 @@ AFRAME.registerComponent("media-loader", {
 
       let canonicalAudioUrl = null; // set non-null only if audio track is separated from video track (eg. 360 video)
       let contentType = this.data.contentType;
+      // AVN: Link elements should remain as is for proper inflation
+      const isLinkElement = contentType === "text/html"
       const parsedUrl = new URL(src);
       let isAvatar = false;
-      // AVN: Link elements should remain as is for proper inflation
-      if(contentType === "text/html") {
-        console.log(`No metadata resolution required for URL '${src}'`)
-      } else {
-        if(ConnectSDK.AvnfsUtils.isValidUrl(parsedUrl)) {
-          const { mediaType } = ConnectSDK.AvnfsUtils.decodeUrl(parsedUrl)
+      if(ConnectSDK.AvnfsUtils.isValidUrl(parsedUrl)) {
+        const { mediaType } = ConnectSDK.AvnfsUtils.decodeUrl(parsedUrl)
+        if(!isLinkElement) {
           contentType = mediaType;
-          //TODO: BETTER TEST FOR AVATARS
-          isAvatar = mediaType.includes("avatar");
-        } else {
-          if(parsedUrl.hostname == "scene.link") {
-            // Legacy media resolution
-            console.warn(`Legacy media link '${src}'`);
-            const result = await global.AVNGlobal.fetchLegacyMediaData(src);
-            src = result.origin;          
+        }
+        //TODO: BETTER TEST FOR AVATARS
+        isAvatar = mediaType.includes("avatar");
+      } else {
+        if(parsedUrl.hostname == "scene.link") {
+          // Indirect media resolution
+          const result = await global.AVNGlobal.fetchMediaData(src);
+          src = result.origin;          
+          if(!isLinkElement) {
             contentType = (result.meta && result.meta.expected_content_type) || contentType;
-            const tags = result.meta && result.meta.tags;
-            isAvatar = tags && tags.includes(AvnTags.Avatar);
-          } else {
-            console.warn(`Unexpected URL to resolve '${src}'`)
           }
-        }        
-      }
+          const tags = result.meta && result.meta.tags;
+          isAvatar = tags && tags.includes(AvnTags.Avatar);
+        } else {
+          console.warn(`Unexpected URL to resolve '${src}'`)
+        }
+      }        
 
       // if the component creator didn't know the content type, we didn't get it from reticulum, and
       // we don't think we can infer it from the extension, we need to make a HEAD request to find it out

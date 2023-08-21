@@ -647,7 +647,7 @@ class AVNBridge {
         return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(ConnectSDK.AvnfsUtils.UrlPrefix)
     }
 
-    async fetchLegacyMediaData(mediaUrl: string) {
+    async fetchMediaData(mediaUrl: string) {
         try {
             if(mediaUrl.startsWith(ConnectSDK.AvnfsUtils.UrlPrefix)) {
                 const { mediaType } = ConnectSDK.AvnfsUtils.decodeUrl(new URL(mediaUrl))
@@ -658,7 +658,7 @@ class AVNBridge {
                     }
                 }
             } else {
-                console.warn(`Unexpected URL type in fetchLegacyMediaData for '${mediaUrl}'`)
+                console.info(`Resolving '${mediaUrl}' through server`)
                 const assetId = mediaUrl.split("/").pop()
                 const resolveMediaResult = await this.Connect.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
                 return {
