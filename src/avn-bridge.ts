@@ -122,12 +122,28 @@ class AVNBridge {
         return this._lastDimensionStatus
     }
 
+    // Mutations trigger event `avn-allow-back-changed`
+    get allowBack() {
+        // Global permission
+        return this._dimensionConnection?.permissions?.allowBack 
+            // Focus sessesion permissions (teacher can always go back)
+            && (!!this._teachLessonContext || !this._learnLessonContext?.focus?.backLock)
+    }
+
+    // Mutations trigger event `avn-allow-explore-changed`
+    get allowExplore() {
+        // Global permission
+        return this._dimensionConnection?.permissions?.allowExplore 
+            // Focus sessesion permissions (teacher can always explore)
+            && (!!this._teachLessonContext || !this._learnLessonContext?.focus?.exploreLock)
+    }
+
     // Mutations trigger event `avn-allow-navigation-changed`
     get allowNavigation() {
-        // Global navigation permission
+        // Global permission
         return this._dimensionConnection?.permissions?.allowNavigation 
             // Focus sessesion permissions (teacher can always navigate)
-            && (!!this._teachLessonContext || !this._learnLessonContext?.focus)
+            && (!!this._teachLessonContext || !this._learnLessonContext?.focus?.navigationLock)
     }
 
     // Helper accessors
@@ -391,6 +407,8 @@ class AVNBridge {
                         this._dimensionConnection = value.message.value
                         console.info(`AVN: update dimension connection`, value.message.value)
                         global.dispatchEvent(new Event("avn-dimension-connection-changed"))
+                        global.dispatchEvent(new Event("avn-allow-back-changed"))
+                        global.dispatchEvent(new Event("avn-allow-explore-changed"))
                         global.dispatchEvent(new Event("avn-allow-navigation-changed"))
                         break
                     case "info":
@@ -406,11 +424,13 @@ class AVNBridge {
                         break
                     case "lesson":
                         this._learnLessonContext = value.message.value
+                        global.dispatchEvent(new Event("avn-allow-back-changed"))
+                        global.dispatchEvent(new Event("avn-allow-explore-changed"))
                         global.dispatchEvent(new Event("avn-allow-navigation-changed"))
                         if (value.message.value) {
-                            console.debug(`AVN: lesson context set`, value.message.value)
+                            console.debug(`AVN: student lesson context set`, value.message.value)
                         } else {
-                            console.debug(`AVN: lesson context reset`)
+                            console.debug(`AVN: student lesson context reset`)
                         }
                         break
                     default:
@@ -431,6 +451,8 @@ class AVNBridge {
             this._lastDimensionStatus = undefined
             global.dispatchEvent(new Event("avn-dimension-info-changed"))
             global.dispatchEvent(new Event("avn-dimension-connection-changed"))            
+            global.dispatchEvent(new Event("avn-allow-back-changed"))
+            global.dispatchEvent(new Event("avn-allow-explore-changed"))
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             global.dispatchEvent(new Event("avn-dimension-status-changed"))
             this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), this._dimensionRejoinTimeout)
@@ -530,7 +552,10 @@ class AVNBridge {
             focus: {
                 roomId: this._roomInfo?.roomId,
                 assetId: this._roomInfo?.assetId,
-                position
+                position,
+                backLock: false,
+                exploreLock: true,
+                roomLock: false,
             }
         })
         console.log("AVN: setting lesson context", newContext)
@@ -541,6 +566,8 @@ class AVNBridge {
         })
         if (result.state == ConnectSDK.OperationState.SUCCESS) {
             this._teachLessonContext = newContext
+            global.dispatchEvent(new Event("avn-allow-back-changed"))
+            global.dispatchEvent(new Event("avn-allow-explore-changed"))
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
         }
@@ -556,6 +583,8 @@ class AVNBridge {
         })
         if (result.state == ConnectSDK.OperationState.SUCCESS) {
             this._teachLessonContext = undefined
+            global.dispatchEvent(new Event("avn-allow-back-changed"))
+            global.dispatchEvent(new Event("avn-allow-explore-changed"))
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             return true
         }
@@ -673,13 +702,6 @@ class AVNBridge {
         }
     }
 
-    // Best effort room change
-    private _pendingRoomChange: Promise<void> | undefined = undefined
-    public tryChangeRoom(roomId: string) {
-        if (!this._pendingRoomChange) {
-            this._pendingRoomChange = this.asyncChangeRoom(roomId)
-        }
-    }
     private async asyncChangeRoom(roomId: string): Promise<void> {
         try {
             const getRoomResult = await this.Connect.Rooms.getRoom({ roomId })
@@ -695,8 +717,6 @@ class AVNBridge {
 
         } catch (error: unknown) {
             throw new Error(`AVN: Error changing room: ${error instanceof Error ? error.message : "Unknown Error"}`)
-        } finally {
-            this._pendingRoomChange = undefined
         }
     }
 
@@ -711,6 +731,9 @@ class AVNBridge {
         }
     }
 
+    // Record the last focus instruction that was processed to avoid repeat counting or reverting to previous rooms
+    private _lastProcessedFocus : ConnectSDK.LessonFocus | undefined
+
     // Process AVN events that should happen in system space    
     public tick(characterController: CharacterControllerSystem) {
         if (this._teachLessonContext) {
@@ -724,19 +747,30 @@ class AVNBridge {
         } else {
             // Default to no tethering
             characterController.tether(null)
-            // Has a focus been mandated?
-            if (this._learnLessonContext?.focus) {
-                // Are we in the right room?
-                if (this._learnLessonContext.focus?.roomId === this._roomInfo?.roomId) {
-                    // Tether to the focus position
-                    //characterController.tether(this._learnLessonContext?.focus?.position)
-                } else {
-                    // Change to the right room if not already started
-                    if (!this._pendingRoomChange) {
-                        console.log(`Trying to change room because focus room '${this._learnLessonContext.focus?.roomId}' is not equal to current room '${this._roomInfo?.roomId}'`)
-                        this.tryChangeRoom(this._learnLessonContext.focus.roomId)
+            // Has the first room loaded at least? (avoids conflicting instructions)
+            if(this._roomInfo) {
+                // Are there pending focus instructions?
+                const focus = this._learnLessonContext?.focus
+                if (focus != this._lastProcessedFocus) {
+                    this._lastProcessedFocus = focus
+                    // Has a focus been mandated?
+                    if(focus) {
+                        console.log(`Processing new focus to room '${focus.roomId}' with asset ID '${focus.assetId}'`)
+                        // Are we in the right room already?
+                        if (focus.roomId === this._roomInfo?.roomId) {
+                            console.log(`New focus does not require a room change`)
+                            // Tether to the focus position
+                            //characterController.tether(this._learnLessonContext?.focus?.position)
+                        } else {
+                            console.log(`Changing room because focus room '${focus.roomId}' is not equal to current room '${this._roomInfo?.roomId}'`)
+                            this.asyncChangeRoom(focus.roomId)
+                        }
+                    } else {
+                        console.log(`Processing new focus reset`)
                     }
                 }
+            } else {
+                //console.log(`Waiting to enter room before checking focus...`)
             }
         }
     }

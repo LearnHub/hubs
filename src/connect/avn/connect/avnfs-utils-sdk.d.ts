@@ -13,7 +13,8 @@ export declare type FileSpec = {
 };
 export declare function isValidUrl(url: URL): boolean;
 export declare function decodeUrl(url: URL): FileSpec;
-export declare function stripFilename(url: URL): URL;
+export declare function encodeUrl(spec: FileSpec): URL;
+export declare function updateFilename(url: URL, name: string | undefined): URL;
 export declare function uploadArrayBuffer(buffer: ArrayBuffer, Connect: AVNConnect, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
 export declare function uploadFilePath(path: string, Connect: AVNConnect, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
 export declare function uploadFile(file: File, Connect: AVNConnect, auth: Authorization, mediaType: string | undefined, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;

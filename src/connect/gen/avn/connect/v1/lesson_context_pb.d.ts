@@ -40,6 +40,24 @@ export declare class LessonFocus extends Message<LessonFocus> {
      * @generated from field: optional avn.connect.v1.Quaternion orientation = 4;
      */
     orientation?: Quaternion;
+    /**
+     * Should the user be allowed to go back?
+     *
+     * @generated from field: bool back_lock = 5;
+     */
+    backLock: boolean;
+    /**
+     * Should the user be allowed to use the general scene selector?
+     *
+     * @generated from field: bool explore_lock = 6;
+     */
+    exploreLock: boolean;
+    /**
+     * Should the user be focused exclusively on this scene or be allowed to navigate to linked scenes?
+     *
+     * @generated from field: bool navigation_lock = 7;
+     */
+    navigationLock: boolean;
     constructor(data?: PartialMessage<LessonFocus>);
     static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
     static readonly typeName = "avn.connect.v1.LessonFocus";

@@ -59,9 +59,9 @@ export declare class GetFileUrlResponse extends Message<GetFileUrlResponse> {
     static equals(a: GetFileUrlResponse | PlainMessage<GetFileUrlResponse> | undefined, b: GetFileUrlResponse | PlainMessage<GetFileUrlResponse> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.GetPostManifestRequest
+ * @generated from message avn.connect.v1.GetManifestRequest
  */
-export declare class GetPostManifestRequest extends Message<GetPostManifestRequest> {
+export declare class GetManifestRequest extends Message<GetManifestRequest> {
     /**
      * @generated from field: avn.connect.v1.Authorization auth = 1;
      */
@@ -90,43 +90,43 @@ export declare class GetPostManifestRequest extends Message<GetPostManifestReque
      * @generated from field: optional string fileName = 5;
      */
     fileName?: string;
-    constructor(data?: PartialMessage<GetPostManifestRequest>);
+    constructor(data?: PartialMessage<GetManifestRequest>);
     static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
-    static readonly typeName = "avn.connect.v1.GetPostManifestRequest";
+    static readonly typeName = "avn.connect.v1.GetManifestRequest";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetPostManifestRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetPostManifestRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetPostManifestRequest;
-    static equals(a: GetPostManifestRequest | PlainMessage<GetPostManifestRequest> | undefined, b: GetPostManifestRequest | PlainMessage<GetPostManifestRequest> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetManifestRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetManifestRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetManifestRequest;
+    static equals(a: GetManifestRequest | PlainMessage<GetManifestRequest> | undefined, b: GetManifestRequest | PlainMessage<GetManifestRequest> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.PostManifest
+ * @generated from message avn.connect.v1.UploadManifest
  */
-export declare class PostManifest extends Message<PostManifest> {
+export declare class UploadManifest extends Message<UploadManifest> {
     /**
-     * URL to POST to
+     * URL to upload to
      *
      * @generated from field: string uploadUrl = 1;
      */
     uploadUrl: string;
     /**
-     * Additional fields to add to the POST
-     *
-     * @generated from field: repeated avn.connect.v1.HeaderField headerFields = 2;
-     */
-    headerFields: HeaderField[];
-    /**
      * Eventual download URL
      *
-     * @generated from field: string downloadUrl = 3;
+     * @generated from field: string downloadUrl = 2;
      */
     downloadUrl: string;
-    constructor(data?: PartialMessage<PostManifest>);
+    /**
+     * Additional fields to add to a POST
+     *
+     * @generated from field: repeated avn.connect.v1.HeaderField headerFields = 3;
+     */
+    headerFields: HeaderField[];
+    constructor(data?: PartialMessage<UploadManifest>);
     static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
-    static readonly typeName = "avn.connect.v1.PostManifest";
+    static readonly typeName = "avn.connect.v1.UploadManifest";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PostManifest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PostManifest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PostManifest;
-    static equals(a: PostManifest | PlainMessage<PostManifest> | undefined, b: PostManifest | PlainMessage<PostManifest> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UploadManifest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UploadManifest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UploadManifest;
+    static equals(a: UploadManifest | PlainMessage<UploadManifest> | undefined, b: UploadManifest | PlainMessage<UploadManifest> | undefined): boolean;
 }

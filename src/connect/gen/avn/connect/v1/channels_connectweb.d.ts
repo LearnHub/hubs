@@ -1,4 +1,4 @@
-import { Channel, GetBrowsableChannelsRequest, GetBrowsableChannelsResponse, GetChannelRequest, GetProfilesRequest, GetProfilesResponse } from "./channels_pb.js";
+import { Channel, GetActivitiesRequest, GetActivitiesResponse, GetBrowsableChannelsRequest, GetBrowsableChannelsResponse, GetChannelRequest, GetProfilesRequest, GetProfilesResponse } from "./channels_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ChannelService
@@ -37,6 +37,17 @@ export declare const ChannelService: {
             readonly name: "GetProfiles";
             readonly I: typeof GetProfilesRequest;
             readonly O: typeof GetProfilesResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Get all published activities in the given channel
+         *
+         * @generated from rpc avn.connect.v1.ChannelService.GetActivities
+         */
+        readonly getActivities: {
+            readonly name: "GetActivities";
+            readonly I: typeof GetActivitiesRequest;
+            readonly O: typeof GetActivitiesResponse;
             readonly kind: MethodKind.Unary;
         };
     };

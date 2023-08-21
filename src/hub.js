@@ -903,8 +903,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     avnDimensionInfo: AVN.dimensionInfo, 
     avnDimensionConnection: AVN.dimensionConnection, 
     avnDimensionStatus: AVN.dimensionStatus, 
+    avnAllowBack: AVN.allowBack,
+    avnAllowExplore: AVN.allowExplore,
     avnAllowNavigation: AVN.allowNavigation,
   });
+  global.addEventListener("avn-allow-back-changed", () => { remountUI({ avnAllowBack: AVN.allowBack }) })
+  global.addEventListener("avn-allow-explore-changed", () => { remountUI({ avnAllowExplore: AVN.allowExplore }) })
   global.addEventListener("avn-allow-navigation-changed", () => { remountUI({ avnAllowNavigation: AVN.allowNavigation }) })
   global.addEventListener("avn-room-info-changed", () => { remountUI({ avnRoomInfo: AVN.roomInfo }) })
   global.addEventListener("avn-dimension-info-changed", () => { remountUI({ avnDimensionInfo: AVN.dimensionInfo }) })

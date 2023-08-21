@@ -122,7 +122,11 @@ class AvnMediaBrowserContainer extends Component {
   };
 
   selectEntry = entry => {
-    this.props.onActivitySelected(entry);
+    if(AVNGlobal.allowExplore) {
+      this.props.onActivitySelected(entry);
+    } else {
+      console.warn("Explore mode is currently disabled")
+    }
     this.close();
   };
 

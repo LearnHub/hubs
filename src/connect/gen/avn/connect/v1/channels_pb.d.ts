@@ -2,6 +2,7 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { Profile } from "./profiles_pb.js";
+import { Activity } from "./activities_pb.js";
 /**
  * @generated from message avn.connect.v1.Channel
  */
@@ -167,4 +168,58 @@ export declare class GetProfilesResponse extends Message<GetProfilesResponse> {
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProfilesResponse;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProfilesResponse;
     static equals(a: GetProfilesResponse | PlainMessage<GetProfilesResponse> | undefined, b: GetProfilesResponse | PlainMessage<GetProfilesResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetActivitiesRequest
+ */
+export declare class GetActivitiesRequest extends Message<GetActivitiesRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: int32 channel_id = 2;
+     */
+    channelId: number;
+    /**
+     * @generated from field: optional string target_language_id = 3;
+     */
+    targetLanguageId?: string;
+    /**
+     * @generated from field: optional int32 page_size = 4;
+     */
+    pageSize?: number;
+    /**
+     * @generated from field: optional string page_token = 5;
+     */
+    pageToken?: string;
+    constructor(data?: PartialMessage<GetActivitiesRequest>);
+    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly typeName = "avn.connect.v1.GetActivitiesRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetActivitiesRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetActivitiesRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetActivitiesRequest;
+    static equals(a: GetActivitiesRequest | PlainMessage<GetActivitiesRequest> | undefined, b: GetActivitiesRequest | PlainMessage<GetActivitiesRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetActivitiesResponse
+ */
+export declare class GetActivitiesResponse extends Message<GetActivitiesResponse> {
+    /**
+     * @generated from field: repeated avn.connect.v1.Activity results = 1;
+     */
+    results: Activity[];
+    /**
+     * @generated from field: string next_page_token = 2;
+     */
+    nextPageToken: string;
+    constructor(data?: PartialMessage<GetActivitiesResponse>);
+    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly typeName = "avn.connect.v1.GetActivitiesResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetActivitiesResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetActivitiesResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetActivitiesResponse;
+    static equals(a: GetActivitiesResponse | PlainMessage<GetActivitiesResponse> | undefined, b: GetActivitiesResponse | PlainMessage<GetActivitiesResponse> | undefined): boolean;
 }

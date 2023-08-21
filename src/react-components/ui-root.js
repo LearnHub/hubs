@@ -191,6 +191,8 @@ class UIRoot extends Component {
     avnDimensionInfo: PropTypes.object,
     avnDimensionConnection: PropTypes.object,
     avnDimensionStatus: PropTypes.object,
+    avnAllowBack: PropTypes.bool,
+    avnAllowExplore: PropTypes.bool,
     avnAllowNavigation: PropTypes.bool,
     canVoiceChat: PropTypes.bool
   };
@@ -1792,8 +1794,8 @@ class UIRoot extends Component {
                     { // AVN: Back button (useful for mobile fullscreen)
                     this.props.avnDimensionConnection?.permissions?.allowBack &&
                     <ToolbarButton
-                      disabled={!entered || !this.props.avnAllowNavigation}
-                      title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
+                      disabled={!entered || !this.props.avnAllowBack}
+                      title={this.props.avnAllowBack ? "" : "The teacher has control" }
                       icon={<ArrowBackIcon />}
                       label={<FormattedMessage id="toolbar.back-button" defaultMessage="Back" />}
                       onClick={() => {
@@ -1804,8 +1806,8 @@ class UIRoot extends Component {
                     { // AVN: Scene selection
                     this.props.avnDimensionConnection?.permissions?.allowExplore &&
                     <ToolbarButton
-                      disabled={!this.props.avnAllowNavigation}
-                      title={this.props.avnAllowNavigation ? "" : "The teacher has control" }
+                      disabled={!this.props.avnAllowExplore}
+                      title={this.props.avnAllowExplore ? "" : "The teacher has control" }
                       icon={<ExploreIcon />}
                       label={<FormattedMessage id="toolbar.home-button" defaultMessage="Explore" />}
                       onClick={() => {
