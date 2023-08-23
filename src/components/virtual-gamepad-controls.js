@@ -33,13 +33,15 @@ AFRAME.registerComponent("virtual-gamepad-controls", {
     this.leftMockSmall = document.createElement("div");
     this.leftMockSmall.classList.add(styles.mockJoystick, styles.inner);
     this.leftMock.appendChild(this.leftMockSmall);
-    this.mockJoystickContainer.appendChild(this.leftMock);
+    // AVN: Purpose of mock joystick is unclear and creates a double view
+    //this.mockJoystickContainer.appendChild(this.leftMock);
     this.rightMock = document.createElement("div");
     this.rightMock.classList.add(styles.mockJoystick);
     this.rightMockSmall = document.createElement("div");
     this.rightMockSmall.classList.add(styles.mockJoystick, styles.inner);
     this.rightMock.appendChild(this.rightMockSmall);
-    this.mockJoystickContainer.appendChild(this.rightMock);
+    // AVN: Purpose of mock joystick is unclear and creates a double view
+    //this.mockJoystickContainer.appendChild(this.rightMock);
 
     this.enableLeft = window.APP.store.state.preferences.enableOnScreenJoystickLeft;
     this.enableRight = window.APP.store.state.preferences.enableOnScreenJoystickRight;
