@@ -29,16 +29,31 @@ export declare class ToKtxRequest extends Message<ToKtxRequest> {
  */
 export declare class ToKtxParameters extends Message<ToKtxParameters> {
     /**
-     * @generated from field: string url = 1;
+     * Input files
+     *
+     * @generated from field: repeated string urls = 1;
      */
-    url: string;
+    urls: string[];
+    /**
+     * --cubemap    KTX file is for a cubemap. At least 6 <infile>s must be provided,
+     *              more if --mipmap is also specified. Provide the images in the
+     *              order +X, -X, +Y, -Y, +Z, -Z where the arrangement is a
+     *              left-handed coordinate system with +Y up. So if you're facing +Z,
+     *              -X will be on your left and +X on your right. If --layers > 1
+     *              is specified, provide the faces for layer 0 first then for
+     *              layer 1, etc. Images must have an upper left origin so
+     *              --lower_left_maps_to_s0t0 is ignored with this option.
+     *
+     * @generated from field: optional bool cubemap = 2;
+     */
+    cubemap?: boolean;
     /**
      * --genmipmap  Causes mipmaps to be generated for each input file. This option
      *              is mutually exclusive with --automipmap and --mipmap. When set
      *              the following mipmap-generation related options become valid,
      *              otherwise they are ignored.
      *
-     * @generated from field: optional bool genmipmap = 2;
+     * @generated from field: optional bool genmipmap = 3;
      */
     genmipmap?: boolean;
     /**
@@ -49,13 +64,13 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              no mapping from the input will be set to 0 or, if the alpha
      *              component, 1.0.
      *
-     * @generated from field: optional string target_type = 3;
+     * @generated from field: optional string target_type = 4;
      */
     targetType?: string;
     /**
      * --t2         Output in KTX2 format. Default is KTX.
      *
-     * @generated from field: optional bool t2 = 4;
+     * @generated from field: optional bool t2 = 5;
      */
     t2?: boolean;
     /**
@@ -65,7 +80,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              compressed texture. When set, the following BasisLZ-related
      *              options become valid, otherwise they are ignored.
      *
-     * @generated from field: optional bool bcmp = 5;
+     * @generated from field: optional bool bcmp = 6;
      */
     bcmp?: boolean;
     /**
@@ -74,7 +89,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              tradeoff. Range is [0,5], default is 1. Higher values are slower,
      *              but give higher quality.
      *
-     * @generated from field: optional int32 clevel = 6;
+     * @generated from field: optional int32 clevel = 7;
      */
     clevel?: number;
     /**
@@ -96,7 +111,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              --endpoint_rdo_threshold and --selector_rdo_threshold when
      *              its value exceeds 128, otherwise their defaults will be used.
      *
-     * @generated from field: optional int32 qlevel = 7;
+     * @generated from field: optional int32 qlevel = 8;
      */
     qlevel?: number;
     /**
@@ -104,7 +119,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              Tunes codec parameters for better quality on normal maps (no
      *              selector RDO, no endpoint RDO). Only valid for linear textures.
      *
-     * @generated from field: optional bool normal_map = 8;
+     * @generated from field: optional bool normal_map = 9;
      */
     normalMap?: boolean;
     /**
@@ -126,7 +141,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              be made more effective by conditioning the UASTC texture data
      *              using the Rate Distortion Optimization (RDO) post-process stage.
      *
-     * @generated from field: optional int32 uastc = 9;
+     * @generated from field: optional int32 uastc = 10;
      */
     uastc?: number;
     /**
@@ -138,7 +153,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              Lower values=faster but give less compression. Values above 20
      *              should be used with caution as they require more memory.
      *
-     * @generated from field: optional int32 zcmp = 10;
+     * @generated from field: optional int32 zcmp = 11;
      */
     zcmp?: number;
     /**
@@ -149,7 +164,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              transformation will be performed. USE WITH CAUTION preferably
      *              only when you know the file format information is wrong.
      *
-     * @generated from field: optional string assign_oetf = 11;
+     * @generated from field: optional string assign_oetf = 12;
      */
     assignOetf?: string;
     /**
@@ -160,7 +175,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              transformation will be performed. USE WITH CAUTION preferably
      *              only when you know the file format information is wrong.
      *
-     * @generated from field: optional string assign_primaries = 12;
+     * @generated from field: optional string assign_primaries = 13;
      */
     assignPrimaries?: string;
     /**
@@ -171,7 +186,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      *              the assigned transfer function to the transfer function specified
      *              by this option, if different.
      *
-     * @generated from field: optional string convert_oetf = 13;
+     * @generated from field: optional string convert_oetf = 14;
      */
     convertOetf?: string;
     constructor(data?: PartialMessage<ToKtxParameters>);

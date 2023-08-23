@@ -16,15 +16,9 @@ export declare const AvnfsService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * @generated from rpc avn.connect.v1.AvnfsService.GetPutManifest
-         */
-        readonly getPutManifest: {
-            readonly name: "GetPutManifest";
-            readonly I: typeof GetManifestRequest;
-            readonly O: typeof UploadManifest;
-            readonly kind: MethodKind.Unary;
-        };
-        /**
+         * DISABLED UNTIL METADATA ISSUES CAN BE RESOLVED S3_PUT_INSECURE
+         * rpc GetPutManifest(GetManifestRequest) returns (UploadManifest);
+         *
          * @generated from rpc avn.connect.v1.AvnfsService.GetPostManifest
          */
         readonly getPostManifest: {
