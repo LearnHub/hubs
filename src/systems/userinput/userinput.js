@@ -248,12 +248,12 @@ AFRAME.registerSystem("userinput", {
       this.activeDevices.add(new MouseDevice());
       this.activeDevices.add(new AppAwareMouseDevice());
       this.activeDevices.add(new KeyboardDevice());
-      console.log(`Primary input is mouse and keyboard`)
+      console.log(`Primary input is mouse and keyboard`);
     } else if (!isMobileVR || forceEnableTouchscreen) {
       this.activeDevices.add(new AppAwareTouchscreenDevice());
       this.activeDevices.add(new KeyboardDevice());
       this.activeDevices.add(new GyroDevice());
-      console.log(`Primary input is touchscreen`)
+      console.log(`Primary input is touchscreen`);
     } else {
       // AVN: Unclear what this state implies
       console.warn(`Unexpected user input state`)
