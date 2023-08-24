@@ -1,3 +1,8 @@
+// AVN
+export function isMultiTouch() {
+  return navigator.maxTouchPoints > 1;
+}
+
 // from https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
 function detectTouchScreen() {
   let hasTouchScreen = false;

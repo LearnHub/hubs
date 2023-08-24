@@ -56,6 +56,8 @@ const isMobile = (function () {
     if (isMobileVR()) {
       _isMobile = false;
     }
+    // AVN
+    console.log(`Heuristic isMobile = ${_isMobile}`)
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
   return function () {

@@ -42,7 +42,7 @@ import { resolveActionSets } from "./resolve-action-sets";
 import { GamepadDevice } from "./devices/gamepad";
 import { gamepadBindings } from "./bindings/generic-gamepad";
 import { getAvailableVREntryTypes, VR_DEVICE_AVAILABILITY } from "../../utils/vr-caps-detect";
-import { hackyMobileSafariTest } from "../../utils/detect-touchscreen";
+import { hackyMobileSafariTest, isMultiTouch } from "../../utils/detect-touchscreen";
 import { ArrayBackedSet } from "./array-backed-set";
 
 function arrayContentsDiffer(a, b) {
@@ -242,16 +242,21 @@ AFRAME.registerSystem("userinput", {
 
     const isMobile = AFRAME.utils.device.isMobile();
     const isMobileVR = AFRAME.utils.device.isMobileVR();
-    const forceEnableTouchscreen = hackyMobileSafariTest();
+    const forceEnableTouchscreen = hackyMobileSafariTest() || isMultiTouch();
 
     if (!(isMobile || isMobileVR || forceEnableTouchscreen)) {
       this.activeDevices.add(new MouseDevice());
       this.activeDevices.add(new AppAwareMouseDevice());
       this.activeDevices.add(new KeyboardDevice());
+      console.log(`Primary input is mouse and keyboard`)
     } else if (!isMobileVR || forceEnableTouchscreen) {
       this.activeDevices.add(new AppAwareTouchscreenDevice());
       this.activeDevices.add(new KeyboardDevice());
       this.activeDevices.add(new GyroDevice());
+      console.log(`Primary input is touchscreen`)
+    } else {
+      // AVN: Unclear what this state implies
+      console.warn(`Unexpected user input state`)
     }
 
     this.isMobile = isMobile;
@@ -303,7 +308,7 @@ AFRAME.registerSystem("userinput", {
     const updateBindingsForVRMode = () => {
       const inVRMode = this.el.sceneEl.is("vr-mode");
       const isMobile = AFRAME.utils.device.isMobile();
-      const forceEnableTouchscreen = hackyMobileSafariTest();
+      const forceEnableTouchscreen = hackyMobileSafariTest() || isMultiTouch();
 
       if (inVRMode) {
         console.log("Using VR bindings.");

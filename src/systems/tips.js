@@ -1,3 +1,4 @@
+import { isMultiTouch } from "../utils/detect-touchscreen";
 import { paths } from "./userinput/paths";
 
 // The output of this system is activeTip. There are named tips (eg locomotion) that each have validators.
@@ -47,7 +48,7 @@ function markTipFinished(tip) {
 const VALIDATORS = {
   look: function (userinput) {
     const cameraDelta = userinput.get(
-      isMobile ? paths.device.touchscreen.touchCameraDelta : paths.device.smartMouse.cameraDelta
+      isMobile || isMultiTouch() ? paths.device.touchscreen.touchCameraDelta : paths.device.smartMouse.cameraDelta
     );
     return cameraDelta ? FINISH : VALID;
   },
