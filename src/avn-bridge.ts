@@ -631,12 +631,12 @@ class AVNBridge {
         return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._roomInfo?.assetId
     }
 
-    async fetchRoomInfoForAssetId(assetId: string) : Promise<ConnectSDK.RoomInfo | undefined> {
+    async fetchRoomInfoForUrl(url: string) : Promise<ConnectSDK.RoomInfo | undefined> {
         try {
-            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url: assetId })
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url })
             return openRoomResult.roomInfo
         } catch (error: unknown) {
-            console.error(`Error open room for asset ID '${assetId}' ${error instanceof Error ? error.message : "Unknown error"}`)
+            console.error(`Error open room for URL '${url}' ${error instanceof Error ? error.message : "Unknown error"}`)
         }
         return undefined
     }

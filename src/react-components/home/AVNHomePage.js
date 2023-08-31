@@ -66,13 +66,13 @@ export class AVNHomePage extends React.Component {
           // Direct URL to media
           const mediaUrl = searchParams.get("mediaurl")
           if(mediaUrl) {
-            roomInfo = await AVN.fetchRoomInfoForAssetId(mediaUrl)
+            roomInfo = await AVN.fetchRoomInfoForUrl(mediaUrl)
             assetId = roomInfo.assetId
           } else {
             assetId = searchParams.get("assetid") || AVN.assetId
             // Try the requested assetid first, but it might be premium or unavailable in some other way
             try {
-              roomInfo = await AVN.fetchRoomInfoForAssetId(`https://scene.link/${assetId}`)
+              roomInfo = await AVN.fetchRoomInfoForUrl(`https://scene.link/${assetId}`)
             } catch(error) {
               console.warn(`AVN: Failed to open a room with assetid '${assetId}' so will try default instead`)
             }
@@ -83,7 +83,7 @@ export class AVNHomePage extends React.Component {
                 this.setState({ message: "Scene not found", errorMessage: errorMessage + ` ${n} second${n > 1 ? "s" : ""}`})
                 await sleep(1000);
               }
-              roomInfo = await AVN.fetchRoomInfoForAssetId(`https://scene.link/homeroom`)
+              roomInfo = await AVN.fetchRoomInfoForUrl(`https://scene.link/homeroom`)
             }
           }
           if(roomInfo) {
