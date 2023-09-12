@@ -684,11 +684,11 @@ class AVNBridge {
     }
     private async asyncChangeScene(url: string): Promise<void> {
         try {
-            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url})
+            const openRoomResult = await this.Connect.Rooms.openRoom({ dimensionId: this._dimensionId, url })
             const roomInfo = openRoomResult.roomInfo
             if (roomInfo) {
                 console.log(`AVN: responding to request by changing scene to '${url}'`)
-                const nextState = { hubId: roomInfo.roomId, newAssetId: url, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl }
+                const nextState = { hubId: roomInfo.roomId, newAssetId: roomInfo.assetId, oldAssetId: this.assetId, name: roomInfo.name, icon: roomInfo.iconUrl }
                 // @ts-ignore
                 await changeHub(nextState, true)
             } else {
