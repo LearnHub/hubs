@@ -16,6 +16,8 @@ export declare const ClientService: {
             readonly kind: MethodKind.Unary;
         };
         /**
+         * Record arbitrary actions that might not be captured in other data flows
+         *
          * TODO
          * rpc RecordPlatform(RecordPlatformRequest) returns (RecordPlatformResponse);
          * rpc RecordStatistic(RecordStatisticRequest) returns (RecordStatisticResponse);

@@ -114,7 +114,7 @@ import { usePermissions } from "./room/usePermissions";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
 import { AvnInformationModal } from "./room/AvnInformationModal";
-import * as ConnectSDK from "../connect/connect-sdk";
+import * as ConnectClient from "../connect/connect-client";
 import { AvnDimensionStatusModal } from "./room/AvnDimensionStatusModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
@@ -1146,7 +1146,7 @@ class UIRoot extends Component {
       this.props.availableVREntryTypes.generic !== VR_DEVICE_AVAILABILITY.no;
 
     // AVN Report dimension closure
-    const dimensionClosedDialog = this.props.avnDimensionStatus?.state !== ConnectSDK.OperationState.OPEN
+    const dimensionClosedDialog = this.props.avnDimensionStatus?.state !== ConnectClient.OperationState.OPEN
       ? <AvnDimensionStatusModal detail={this.props.avnDimensionStatus?.detail} /> 
       : undefined
 

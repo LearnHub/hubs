@@ -1,4 +1,4 @@
-import { GetFileUrlRequest, GetFileUrlResponse, GetManifestRequest, UploadManifest } from "./avnfs_pb.js";
+import { GetAltServersRequest, GetAltServersResponse, GetFileUrlRequest, GetFileUrlResponse, GetManifestRequest, UploadManifest } from "./avnfs_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.AvnfsService
@@ -25,6 +25,15 @@ export declare const AvnfsService: {
             readonly name: "GetPostManifest";
             readonly I: typeof GetManifestRequest;
             readonly O: typeof UploadManifest;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.AvnfsService.GetAltServers
+         */
+        readonly getAltServers: {
+            readonly name: "GetAltServers";
+            readonly I: typeof GetAltServersRequest;
+            readonly O: typeof GetAltServersResponse;
             readonly kind: MethodKind.Unary;
         };
     };

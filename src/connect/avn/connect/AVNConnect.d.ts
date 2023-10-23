@@ -14,6 +14,7 @@ import { RoomService } from "../../gen/avn/connect/v1/rooms_connectweb.js";
 import { UserService } from "../../gen/avn/connect/v1/users_connectweb.js";
 import { AvnfsService } from "../../gen/avn/connect/v1/avnfs_connectweb.js";
 import { KtxService } from "../../gen/avn/connect/v1/ktx_connectweb.js";
+import { NeighborService } from "../../gen/avn/connect/v1/neighbors_connectweb.js";
 export declare const GwebUrl = "https://gweb.avncloud.com";
 export declare const GwebAlphaUrl = "https://gweb-alpha.avncloud.com";
 export declare class AVNConnect {
@@ -35,4 +36,5 @@ export declare class AVNConnect {
     Roles: PromiseClient<typeof RoleService>;
     Rooms: PromiseClient<typeof RoomService>;
     Users: PromiseClient<typeof UserService>;
+    Neighbors: PromiseClient<typeof NeighborService>;
 }

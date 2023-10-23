@@ -3,6 +3,27 @@ import { Message } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { HeaderField } from "./http_pb.js";
 /**
+ * @generated from enum avn.connect.v1.AltServerType
+ */
+export declare enum AltServerType {
+    /**
+     * @generated from enum value: ALT_SERVER_UNSPECIFIED = 0;
+     */
+    ALT_SERVER_UNSPECIFIED = 0,
+    /**
+     * @generated from enum value: ALT_SERVER_LAN = 1;
+     */
+    ALT_SERVER_LAN = 1,
+    /**
+     * @generated from enum value: ALT_SERVER_WAN = 2;
+     */
+    ALT_SERVER_WAN = 2,
+    /**
+     * @generated from enum value: ALT_SERVER_REGIONAL = 3;
+     */
+    ALT_SERVER_REGIONAL = 3
+}
+/**
  * @generated from message avn.connect.v1.GetFileUrlRequest
  */
 export declare class GetFileUrlRequest extends Message<GetFileUrlRequest> {
@@ -129,4 +150,55 @@ export declare class UploadManifest extends Message<UploadManifest> {
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UploadManifest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UploadManifest;
     static equals(a: UploadManifest | PlainMessage<UploadManifest> | undefined, b: UploadManifest | PlainMessage<UploadManifest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.AltServer
+ */
+export declare class AltServer extends Message<AltServer> {
+    /**
+     * @generated from field: avn.connect.v1.AltServerType type = 1;
+     */
+    type: AltServerType;
+    /**
+     * @generated from field: string host = 2;
+     */
+    host: string;
+    constructor(data?: PartialMessage<AltServer>);
+    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly typeName = "avn.connect.v1.AltServer";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AltServer;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AltServer;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AltServer;
+    static equals(a: AltServer | PlainMessage<AltServer> | undefined, b: AltServer | PlainMessage<AltServer> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetAltServersRequest
+ */
+export declare class GetAltServersRequest extends Message<GetAltServersRequest> {
+    constructor(data?: PartialMessage<GetAltServersRequest>);
+    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly typeName = "avn.connect.v1.GetAltServersRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAltServersRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAltServersRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAltServersRequest;
+    static equals(a: GetAltServersRequest | PlainMessage<GetAltServersRequest> | undefined, b: GetAltServersRequest | PlainMessage<GetAltServersRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetAltServersResponse
+ */
+export declare class GetAltServersResponse extends Message<GetAltServersResponse> {
+    /**
+     * @generated from field: repeated avn.connect.v1.AltServer servers = 1;
+     */
+    servers: AltServer[];
+    constructor(data?: PartialMessage<GetAltServersResponse>);
+    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly typeName = "avn.connect.v1.GetAltServersResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAltServersResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAltServersResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAltServersResponse;
+    static equals(a: GetAltServersResponse | PlainMessage<GetAltServersResponse> | undefined, b: GetAltServersResponse | PlainMessage<GetAltServersResponse> | undefined): boolean;
 }

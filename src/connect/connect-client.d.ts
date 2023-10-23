@@ -1,7 +1,8 @@
 export * from "./avn/connect/AVNConnect.js";
-export * as AvnfsUtils from "./avn/connect/avnfs-utils-sdk.js";
-export * as MediaUtils from "./avn/connect/media-utils-sdk.js";
-export * as CryptoUtils from "./avn/connect/crypto-utils-sdk.js";
+export * as AvnfsUtils from "./avn/connect/avnfs-utils-client.js";
+export * as MediaUtils from "./avn/connect/media-utils-client.js";
+export * as CryptoUtils from "./avn/connect/crypto-utils-client.js";
+export * from "@bufbuild/protobuf";
 export * from "./gen/grpc/health/v1/healthcheck_pb.js";
 export * from "./gen/avn/connect/v1/activities_connectweb.js";
 export * from "./gen/avn/connect/v1/activities_pb.js";
@@ -50,3 +51,5 @@ export * from "./gen/avn/connect/v1/thinglink_pb.js";
 export * from "./gen/avn/connect/v1/user_pb.js";
 export * from "./gen/avn/connect/v1/users_connectweb.js";
 export * from "./gen/avn/connect/v1/users_pb.js";
+export * from "./gen/avn/connect/v1/neighbors_connectweb.js";
+export * from "./gen/avn/connect/v1/neighbors_pb.js";

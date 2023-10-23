@@ -254,7 +254,7 @@ import { swapActiveScene } from "./bit-systems/scene-loading";
 import { setLocalClientID } from "./bit-systems/networking";
 import { listenForNetworkMessages } from "./utils/listen-for-network-messages";
 import { AVN } from "./avn-bridge";
-import * as ConnectSDK from "./connect/connect-sdk";
+import * as ConnectClient from "./connect/connect-client";
 
 const PHOENIX_RELIABLE_NAF = "phx-reliable";
 NAF.options.firstSyncSource = PHOENIX_RELIABLE_NAF;
@@ -869,27 +869,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Join dimension
   const joinResult = await AVN.joinDimension()
   switch (joinResult) {
-    case ConnectSDK.OperationState.OPEN:
+    case ConnectClient.OperationState.OPEN:
       console.info(`AVN: dimension open`);
       scene.emit("didJoinDimension");
       break;
-    case ConnectSDK.OperationState.CLOSED:
+    case ConnectClient.OperationState.CLOSED:
       console.error(`AVN: dimension closed`)
       scene.emit("errorLoadingRoom", `Session is closed.`);
       return
-    case ConnectSDK.OperationState.NOT_FOUND:
+    case ConnectClient.OperationState.NOT_FOUND:
       console.error(`AVN: dimension not found`)
       scene.emit("errorLoadingRoom", `Session not found.`);
       return
-    case ConnectSDK.OperationState.EXPIRED:
+    case ConnectClient.OperationState.EXPIRED:
       console.error(`AVN: dimension expired`)
       scene.emit("errorLoadingRoom", `Session has expired.`);
       return
-    case ConnectSDK.OperationState.FORBIDDEN:
+    case ConnectClient.OperationState.FORBIDDEN:
       console.error(`AVN: dimension forbidden`)
       scene.emit("errorLoadingRoom", `Session is forbidden.`);
       return
-    case ConnectSDK.OperationState.ERROR:
+    case ConnectClient.OperationState.ERROR:
       console.error(`AVN: dimension join error`)
       scene.emit("errorLoadingRoom", `Session is not available because an error occurred.`);
       return        

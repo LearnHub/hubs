@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, Struct } from "@bufbuild/protobuf";
 /**
  * @generated from message avn.connect.v1.ClientCredentials
  */
@@ -38,12 +38,15 @@ export declare class RecordActionRequest extends Message<RecordActionRequest> {
     /**
      * The source of the action: button, anchor, etc...
      *
-     * Any extra data associated with the action (not currently used and fiddly to hook up on the client side: https://stackoverflow.com/a/66989401/671393)
-     * google.protobuf.Struct data = 4;
-     *
      * @generated from field: string source_id = 3;
      */
     sourceId: string;
+    /**
+     * Optional extra data associated with the action
+     *
+     * @generated from field: optional google.protobuf.Struct data = 4;
+     */
+    data?: Struct;
     constructor(data?: PartialMessage<RecordActionRequest>);
     static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
     static readonly typeName = "avn.connect.v1.RecordActionRequest";
