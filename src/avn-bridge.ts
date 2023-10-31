@@ -93,7 +93,7 @@ class AVNBridge {
                         if(fetchResult.ok) {
                             return fetchResult
                         } else {
-                            console.warn(`Error using AVNFS alt server '${altServer}'`, fetchResult.statusText)
+                            console.warn(`Error using AVNFS alt server '${altServer}'`, fetchResult.status, fetchResult.statusText)
                         }
                     } catch(e: unknown) {
                         console.warn(`Exception using AVNFS alt server '${altServer}'`, e)
