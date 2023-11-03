@@ -262,7 +262,8 @@ AFRAME.registerSystem("userinput", {
     this.isMobile = isMobile;
     this.isMobileVR = isMobileVR;
 
-    this.registeredMappings = new Set([keyboardDebuggingBindings]);
+    // AVN: Debug bindings not required
+    this.registeredMappings = new Set(/*[keyboardDebuggingBindings]*/);
     this.registeredMappingsChanged = true;
 
     const vrGamepadMappings = new Map();
@@ -312,9 +313,10 @@ AFRAME.registerSystem("userinput", {
 
       if (inVRMode) {
         console.log("Using VR bindings.");
-        this.registeredMappings.delete(
-          isMobile || forceEnableTouchscreen ? touchscreenUserBindings : keyboardMouseUserBindings
-        );
+        this.registeredMappings.delete(keyboardMouseUserBindings);
+        if(isMobile || forceEnableTouchscreen) {
+          this.registeredMappings.delete(touchscreenUserBindings);
+        }
         // add mappings for all active VR input devices
         for (let i = 0; i < this.activeDevices.items.length; i++) {
           const activeDevice = this.activeDevices.items[i];
@@ -340,9 +342,10 @@ AFRAME.registerSystem("userinput", {
           deleteExtraMappings(activeDevice);
           this.registeredMappings.delete(vrGamepadMappings.get(activeDevice.constructor));
         }
-        this.registeredMappings.add(
-          isMobile || forceEnableTouchscreen ? touchscreenUserBindings : keyboardMouseUserBindings
-        );
+        this.registeredMappings.add(keyboardMouseUserBindings);
+        if(isMobile || forceEnableTouchscreen) {
+          this.registeredMappings.add(touchscreenUserBindings);
+        }
       }
 
       for (let i = 0; i < this.activeDevices.items.length; i++) {

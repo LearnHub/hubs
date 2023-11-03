@@ -41,7 +41,7 @@ export const touchscreenUserBindings = addSetsToBindings({
     {
       src: { x: zero, y: forward },
       dest: { value: paths.actions.characterAcceleration },
-      xform: xforms.compose_vec2
+      xform: xforms.normalize_vec2
     },
     {
       src: { value: paths.device.touchscreen.cursorPose },
