@@ -171,7 +171,7 @@ export const xforms = {
   normalize_vec2: function (frame, src, dest) {
     const vec2 = frame.get(src.value);
     if (vec2) {
-      if (vec2[0] === 0 && vec2[0] === 0) {
+      if (vec2[0] === 0 && vec2[1] === 0) {
         frame.setVector2(dest.value, vec2[0], vec2[1]);
       } else {
         const l = Math.sqrt(vec2[0] * vec2[0] + vec2[1] * vec2[1]);
