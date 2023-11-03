@@ -115,11 +115,13 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      */
     qlevel?: number;
     /**
+     * DEPRECATED: https://github.com/KhronosGroup/KTX-Software/discussions/601
      *     --normal_map
      *              Tunes codec parameters for better quality on normal maps (no
      *              selector RDO, no endpoint RDO). Only valid for linear textures.
      *
-     * @generated from field: optional bool normal_map = 9;
+     * @generated from field: optional bool normal_map = 9 [deprecated = true];
+     * @deprecated
      */
     normalMap?: boolean;
     /**
@@ -189,6 +191,22 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      * @generated from field: optional string convert_oetf = 14;
      */
     convertOetf?: string;
+    /**
+     *   You can prevent conversion of the normal map to two components
+     *   by specifying '--input_swizzle rgb1'.
+     *
+     * @generated from field: optional bool normal_mode = 15;
+     */
+    normalMode?: boolean;
+    /**
+     * --input_swizzle <swizzle>
+     *              Swizzle the input components according to swizzle which is an
+     *              alhpanumeric sequence matching the regular expression
+     *              ^[rgba01]{4}$.
+     *
+     * @generated from field: optional string input_swizzle = 16;
+     */
+    inputSwizzle?: string;
     constructor(data?: PartialMessage<ToKtxParameters>);
     static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
     static readonly typeName = "avn.connect.v1.ToKtxParameters";
