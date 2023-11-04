@@ -244,14 +244,13 @@ AFRAME.registerSystem("userinput", {
     const isMobileVR = AFRAME.utils.device.isMobileVR();
     const forceEnableTouchscreen = hackyMobileSafariTest() || isMultiTouch();
 
+    this.activeDevices.add(new MouseDevice());
+    this.activeDevices.add(new AppAwareMouseDevice());
+    this.activeDevices.add(new KeyboardDevice());
     if (!(isMobile || isMobileVR || forceEnableTouchscreen)) {
-      this.activeDevices.add(new MouseDevice());
-      this.activeDevices.add(new AppAwareMouseDevice());
-      this.activeDevices.add(new KeyboardDevice());
       console.log(`Primary input is mouse and keyboard`);
     } else if (!isMobileVR || forceEnableTouchscreen) {
       this.activeDevices.add(new AppAwareTouchscreenDevice());
-      this.activeDevices.add(new KeyboardDevice());
       this.activeDevices.add(new GyroDevice());
       console.log(`Primary input is touchscreen`);
     } else {
