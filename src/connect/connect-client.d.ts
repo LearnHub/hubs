@@ -53,3 +53,5 @@ export * from "./gen/avn/connect/v1/users_connectweb.js";
 export * from "./gen/avn/connect/v1/users_pb.js";
 export * from "./gen/avn/connect/v1/neighbors_connectweb.js";
 export * from "./gen/avn/connect/v1/neighbors_pb.js";
+export * from "./gen/avn/connect/v1/certificates_connectweb.js";
+export * from "./gen/avn/connect/v1/certificates_pb.js";
