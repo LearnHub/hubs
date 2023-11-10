@@ -349,7 +349,8 @@ export class AppAwareTouchscreenDevice {
     } else if (this.lastPose) {
       // TODO We want to be able to "hover" on things with the touchscreen so we keep the cursor at its last know position
       // This is not ideal but its also unclear what the "right" interaction for this should be on a touchscreen.
-      frame.setPose(path.cursorPose, this.lastPose);
+      // AVN: This overwrites the cursor pose from keyboard-mouse-user and effectively disables the mouse
+      //frame.setPose(path.cursorPose, this.lastPose);
     }
 
     frame.setValueType(path.isTouchingGrabbable, false);

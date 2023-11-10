@@ -200,7 +200,7 @@ export const keyboardMouseUserBindings = addSetsToBindings({
     {
       src: { value: paths.device.smartMouse.cursorPose },
       dest: { value: paths.actions.cursor.right.pose },
-      xform: xforms.copy
+      xform: xforms.copyIfDefined
     },
     {
       src: { value: paths.device.mouse.coords },

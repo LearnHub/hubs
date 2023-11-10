@@ -46,6 +46,12 @@ export const xforms = {
   negate: function (frame, src, dest) {
     frame.setValueType(dest.value, -frame.get(src.value));
   },
+  copyIfDefined: function (frame, src, dest) {
+    const v = frame.get(src.value);
+    if(v !== undefined) {
+      frame.setValueType(dest.value, v);
+    }
+  },
   copyIfFalse: function (frame, src, dest) {
     frame.setValueType(dest.value, frame.get(src.bool) ? undefined : frame.get(src.value));
   },
@@ -65,7 +71,7 @@ export const xforms = {
     frame.setValueType(dest.value, true);
   },
   rising: function rising(frame, src, dest, prevState) {
-    frame.setValueType(dest.value, frame.get(src.value) && prevState === false);
+    frame.setValueType(dest.value, frame.get(dest.value) || frame.get(src.value) && prevState === false);
     return !!frame.get(src.value);
   },
   clickAndHold: function (grabDelayMs = 160) {
@@ -104,7 +110,7 @@ export const xforms = {
     };
   },
   falling: function falling(frame, src, dest, prevState) {
-    frame.setValueType(dest.value, !frame.get(src.value) && prevState);
+    frame.setValueType(dest.value, frame.get(dest.value) || !frame.get(src.value) && prevState);
     return !!frame.get(src.value);
   },
   vec2Zero: function (frame, _, dest) {

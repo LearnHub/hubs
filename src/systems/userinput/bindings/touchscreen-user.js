@@ -46,7 +46,7 @@ export const touchscreenUserBindings = addSetsToBindings({
     {
       src: { value: paths.device.touchscreen.cursorPose },
       dest: { value: paths.actions.cursor.right.pose },
-      xform: xforms.copy
+      xform: xforms.copyIfDefined
     },
     {
       src: { value: paths.device.touchscreen.touchCameraDelta },
