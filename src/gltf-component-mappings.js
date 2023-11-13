@@ -611,6 +611,9 @@ AFRAME.GLTFModelPlus.registerComponent("moveable", "moveable", (el, componentNam
         // and if this is not true it will be generated at an offset to the actual geometry
         el.setAttribute("shape-helper", { type: SHAPE.HULL, minHalfExtent: 0.04 });
 
+        // Hack because bit-media-frames expects a cached contentBounds property
+        el.setAttribute("moveable", { contentBounds: box.getSize(new THREE.Vector3()) });
+
         // Configure hover effect
         const hoverableVisuals = el.components["hoverable-visuals"];
         if (hoverableVisuals) {

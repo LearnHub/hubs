@@ -15,7 +15,8 @@ import qsTruthy from "../utils/qs_truthy";
 import { cloneObject3D } from "../utils/three-utils";
 import SketchfabZipWorker from "../workers/sketchfab-zip.worker.js";
 
-THREE.Mesh.prototype.raycast = acceleratedRaycast;
+//AVN: DISABLED_ACCELERATED_RAYCASTING BECAUSE FAILING ON COMPLEX MOVEABLE SCENES (CHESS BOARD)
+//THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
 class GLTFCache {
   cache = new Map();
@@ -958,7 +959,8 @@ AFRAME.registerComponent("gltf-model-plus", {
         this.el.setAttribute("animation-mixer", {});
         this.el.components["animation-mixer"].initMixer(gltf.animations);
       } else {
-        generateMeshBVH(this.model);
+        //AVN: DISABLED_ACCELERATED_RAYCASTING
+        //generateMeshBVH(this.model);
       }
 
       const indexToEntityMap = {};

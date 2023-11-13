@@ -30,6 +30,8 @@ function mediaTypeMaskFor(world, eid) {
 
   const el = world.eid2obj.get(eid).el;
   let mediaTypeMask = 0;
+  // AVN: Support for moveable elements
+  mediaTypeMask |= el.components["moveable"] && MediaType.MODEL;
   mediaTypeMask |= el.components["gltf-model-plus"] && MediaType.MODEL;
   mediaTypeMask |= el.components["media-video"] && MediaType.VIDEO;
   mediaTypeMask |= el.components["media-image"] && MediaType.IMAGE;
@@ -106,7 +108,12 @@ const snapToFrame = (() => {
     frameObj.matrixWorld.decompose(framePos, frameQuat, frameScale);
 
     // TODO we only allow capturing media-loader so rely on its bounds calculations for now
-    const contentBounds = targetObj.el.components["media-loader"].contentBounds;
+    let contentBounds = undefined;
+    if(targetObj.el.components["media-loader"]) {
+      contentBounds = targetObj.el.components["media-loader"].contentBounds;
+    } else {
+      contentBounds = targetObj.el.components["moveable"].data.contentBounds;
+    }
 
     setMatrixWorld(
       targetObj,
