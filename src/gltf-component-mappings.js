@@ -582,7 +582,7 @@ AFRAME.GLTFModelPlus.registerComponent("moveable", "moveable", (el, componentNam
         // Move the target such that the center of its bounding box is in the same position as the parent matrix position
         const target = el.object3D;
         target.updateMatrices();
-        const box = getBox(el, target);
+        const box = getBox(target, target);
         const { min, max } = box;
         const center = new THREE.Vector3();
         center.addVectors(min, max).multiplyScalar(0.5);
