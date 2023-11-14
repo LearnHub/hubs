@@ -10,7 +10,7 @@ import { COLLISION_LAYERS } from "./constants";
 import { AudioType, DistanceModelType, SourceType } from "./components/audio-params";
 import { updateAudioSettings } from "./update-audio-settings";
 import { commonInflators, renderAsEntity } from "./utils/jsx-entity";
-import { Networked } from "./bit-components";
+import { Networked, MediaContentBounds } from "./bit-components";
 import { addComponent } from "bitecs";
 
 import { Object3D } from "three";
@@ -602,7 +602,8 @@ AFRAME.GLTFModelPlus.registerComponent("moveable", "moveable", (el, componentNam
         el.setAttribute("shape-helper", { type: SHAPE.HULL, minHalfExtent: 0.04 });
 
         // Hack because bit-media-frames expects a cached contentBounds property
-        el.setAttribute("moveable", { contentBounds: box.getSize(new THREE.Vector3()) });
+        const contentBounds = box.getSize(new THREE.Vector3());
+        MediaContentBounds.bounds[el.eid].set(contentBounds.toArray());
 
         // Configure hover effect
         const hoverableVisuals = el.components["hoverable-visuals"];

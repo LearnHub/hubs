@@ -49,9 +49,9 @@ import {
   Vector3
 } from "three";
 
-const EMPTY_COLOR = 0x6fc0fd;
-const HOVER_COLOR = 0x2f80ed;
-const FULL_COLOR = 0x808080;
+const EMPTY_COLOR = 0x88EE88;
+const HOVER_COLOR = 0x8888EE;
+const FULL_COLOR = 0xEE8888;
 
 const mediaFramesQuery = defineQuery([MediaFrame]);
 const enteredMediaFramesQuery = enterQuery(mediaFramesQuery);
@@ -156,11 +156,6 @@ const snapToFrame = (() => {
     frameObj.matrixWorld.decompose(framePos, frameQuat, frameScale);
 
     contentBounds.fromArray(MediaContentBounds.bounds[target]);
-
-    // AVN: Content bounds hack
-    if(targetObj.el.components["media-loader"]) {
-      contentBounds = targetObj.el.components["media-loader"].contentBounds;
-    }
 
     setMatrixWorld(
       targetObj,
