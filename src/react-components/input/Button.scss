@@ -9,7 +9,7 @@
   font-size: 12px;
   border-radius: 8px;
   /* AVN: Match border size for themed buttons to avoid jitter */
-  border: 2px solid transparent;
+  border: theme.$border-width-buttons solid transparent;
   transition: background-color 0.1s ease-in-out;
   white-space: nowrap;
   padding: 0 24px;
@@ -24,7 +24,7 @@
 }
 
 :local(.basic) {
-  border: 2px solid theme.$basic-border-color;
+  border: theme.$border-width-buttons solid theme.$basic-border-color;
   background-color: theme.$basic-color;
 }
 
@@ -36,7 +36,7 @@
 :local(.basic),
 :local(.transparent) {
   color: theme.$text2-color;
-  border: 2px solid theme.$basic-border-color;
+  border: theme.$border-width-buttons solid theme.$basic-border-color;
   background-color: theme.$basic-color;
 
   svg {
@@ -76,7 +76,7 @@
 :local(.accept) {
   color: theme.$text5-color;
   background-color: theme.$accept-color;
-  border: 2px solid theme.$accept-border-color;
+  border: theme.$border-width-buttons solid theme.$accept-border-color;
 
   svg {
     color: theme.$text5-color;
@@ -96,7 +96,7 @@
 :local(.cancel) {
   color: theme.$text5-color;
   background-color: theme.$cancel-color;
-  border: 2px solid theme.$cancel-color;
+  border: theme.$border-width-buttons solid theme.$cancel-color;
 
   svg {
     color: theme.$text5-color;
@@ -116,7 +116,7 @@
 :local(.accent1) {
   color: theme.$text5-color;
   background-color: theme.$accent1-color;
-  border: 2px solid theme.$accent1-border-color;
+  border: theme.$border-width-buttons solid theme.$accent1-border-color;
 
   svg {
     color: theme.$text5-color;
@@ -136,7 +136,7 @@
 :local(.accent2) {
   color: theme.$text5-color;
   background-color: theme.$accent2-color;
-  border: 2px solid theme.$accent2-border-color;
+  border: theme.$border-width-buttons solid theme.$accent2-border-color;
 
   svg {
     color: theme.$text5-color;
@@ -156,7 +156,7 @@
 :local(.accent3) {
   color: theme.$text5-color;
   background-color: theme.$accent3-color;
-  border: 2px solid theme.$accent3-border-color;
+  border: theme.$border-width-buttons solid theme.$accent3-border-color;
 
   svg {
     color: theme.$text5-color;
@@ -176,7 +176,7 @@
 :local(.accent4) {
   color: theme.$text5-color;
   background-color: theme.$accent4-color;
-  border: 2px solid theme.$accent4-border-color;
+  border: theme.$border-width-buttons solid theme.$accent4-border-color;
 
   svg {
     color: theme.$text5-color;
@@ -196,7 +196,7 @@
 :local(.accent5) {
   color: theme.$text5-color;
   background-color: theme.$accent5-color;
-  border: 2px solid theme.$accent5-border-color;
+  border: theme.$border-width-buttons solid theme.$accent5-border-color;
 
   svg {
     color: theme.$text5-color;
@@ -216,7 +216,7 @@
 :local(.accent6) {
   color: theme.$text5-color;
   background-color: theme.$accent6-color;
-  border: 2px solid theme.$accent6-color;
+  border: theme.$border-width-buttons solid theme.$accent6-color;
 
   svg {
     color: theme.$text5-color;
@@ -280,7 +280,7 @@
 }
 
 :local(.signin) {
-  border: 2px solid #007ab8;
+  border: theme.$border-width-buttons solid #007ab8;
   background-color: transparent;
   color: #007ab8;
   box-sizing: border-box;
@@ -288,7 +288,7 @@
 }
 
 :local(.landing) {
-  border: 2px solid #007ab8;
+  border: theme.$border-width-buttons solid #007ab8;
   background-color: #007ab8;
   color: theme.$text5-color;
   box-sizing: border-box;
