@@ -335,8 +335,6 @@ AFRAME.registerComponent("media-loader", {
   },
 
   async update(oldData, forceLocalRefresh) {
-
-
     const { version, contentSubtype } = this.data;
     let src = this.data.src;
     if (!src) return;
