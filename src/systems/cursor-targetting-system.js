@@ -50,7 +50,7 @@ export class CursorTargettingSystem {
       this.aframeTargets.length = 0;
       const els = AFRAME.scenes[0].querySelectorAll(
         // AVN Add 'moveable' items to interaction list
-        ".collidable, .interactable, .moveable, .interactable-link-hover-menu, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider"
+        ".collidable, .interactable, .ui, .drawing, .occupiable-waypoint-icon, .teleport-waypoint-icon, .avatar-inspect-collider, .moveable"
       );
       for (let i = 0; i < els.length; i++) {
         if (els[i].object3D) {
