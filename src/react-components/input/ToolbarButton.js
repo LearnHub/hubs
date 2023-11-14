@@ -35,6 +35,7 @@ export const ToolbarButton = forwardRef(
       statusColor,
       type,
       disabled,
+      onClick,
       ...rest
     },
     ref
@@ -51,6 +52,7 @@ export const ToolbarButton = forwardRef(
         )}
         disabled={disabled}
         title={title}
+        onClick={onClick}
         {...rest}
       >
         <div
@@ -80,7 +82,8 @@ ToolbarButton.propTypes = {
   type: PropTypes.oneOf(types),
   large: PropTypes.bool,
   disabled: PropTypes.bool,
-  title: PropTypes.node
+  title: PropTypes.node,
+  onClick: PropTypes.func
 };
 
 ToolbarButton.defaultProps = {

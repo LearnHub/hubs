@@ -13,7 +13,11 @@ import {
   proxiedUrlFor,
   isHubsRoomUrl,
   isLocalHubsSceneUrl,
-  isLocalHubsAvatarUrl
+  isLocalHubsAvatarUrl,
+  isHubsDestinationUrl,
+  isHubsAvatarUrl,
+  hubsRoomRegex,
+  localHubsRoomRegex
 } from "../utils/media-url-utils";
 import { addAnimationComponents } from "../utils/animation";
 
@@ -25,7 +29,7 @@ import { waitForDOMContentLoaded } from "../utils/async-utils";
 
 import { SHAPE } from "three-ammo/constants";
 import { addComponent, entityExists, removeComponent } from "bitecs";
-import { MediaLoading } from "../bit-components";
+import { MediaContentBounds, MediaLoading } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
@@ -113,9 +117,9 @@ AFRAME.registerComponent("media-loader", {
         setMatrixWorld(mesh, originalMeshMatrix);
       } else {
         // Move the mesh such that the center of its bounding box is in the same position as the parent matrix position
-        const box = getBox(this.el, mesh);
-        // Target a bounding box of 1m so models are more consistent with other media types
-        const scaleCoefficient = fitToBox ? getScaleCoefficient(1.0, box) : 1;
+        const box = getBox(this.el.object3D, mesh);
+        // AVN: Target a bounding box of 1m so models are more consistent with other media types
+        const scaleCoefficient = fitToBox ? getScaleCoefficient(0.5, box) : 1;
         const { min, max } = box;
         center.addVectors(min, max).multiplyScalar(0.5 * scaleCoefficient);
         mesh.scale.multiplyScalar(scaleCoefficient);
@@ -290,8 +294,12 @@ AFRAME.registerComponent("media-loader", {
 
       // AVN: Not all media has a mesh and hence bounds
       if(this.el.getObject3D("mesh")) {
-        // TODO this does duplicate work in some cases, but finish() is the only consistent place to do it
-        this.contentBounds = getBox(this.el, this.el.getObject3D("mesh")).getSize(new THREE.Vector3());
+
+      // TODO this does duplicate work in some cases, but finish() is the only consistent place to do it
+      const contentBounds = getBox(this.el.object3D, this.el.getObject3D("mesh")).getSize(new THREE.Vector3());
+      addComponent(APP.world, MediaContentBounds, el.eid);
+      MediaContentBounds.bounds[el.eid].set(contentBounds.toArray());
+
       }
 
       el.emit("media-loaded");

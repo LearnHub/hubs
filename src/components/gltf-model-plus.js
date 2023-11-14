@@ -12,8 +12,9 @@ import { getCustomGLTFParserURLResolver } from "../utils/media-url-utils";
 import nextTick from "../utils/next-tick";
 import { promisifyWorker } from "../utils/promisify-worker.js";
 import qsTruthy from "../utils/qs_truthy";
-import { cloneObject3D } from "../utils/three-utils";
+import { cloneObject3D, disposeMaterial } from "../utils/three-utils";
 import SketchfabZipWorker from "../workers/sketchfab-zip.worker.js";
+import { shouldUseNewLoader } from "../utils/bit-utils";
 
 //AVN: DISABLED_ACCELERATED_RAYCASTING BECAUSE FAILING ON COMPLEX MOVEABLE SCENES (CHESS BOARD)
 //THREE.Mesh.prototype.raycast = acceleratedRaycast;
@@ -400,6 +401,26 @@ const convertStandardMaterialsIfNeeded = (object, gltf) => {
 let ktxLoader;
 let dracoLoader;
 
+const OBJECT3D_EXT = new Set([
+  "ambient-light",
+  "audio",
+  "directional-light",
+  "hemisphere-light",
+  "image",
+  "link",
+  "model",
+  "particle-emitter",
+  "pdf",
+  "point-light",
+  "reflection-probe",
+  "simple-water",
+  "skybox",
+  "spot-light",
+  "text",
+  "video",
+  "waypoint"
+]);
+
 class GLTFHubsPlugin {
   constructor(parser, jsonPreprocessor) {
     this.parser = parser;
@@ -454,6 +475,42 @@ class GLTFHubsPlugin {
         }
 
         node.extras.gltfIndex = i;
+
+        if (shouldUseNewLoader()) {
+          /**
+           * This guarantees that components that add Object3Ds (ie. through addObject3DComponent) are not attached to non-Object3D
+           * entities as it's not supported in the BitECS loader.
+           * This was supported by the AFrame loader so this extension ensures backwards compatibility with all the existing scenes.
+           * For more context about this see: https://github.com/mozilla/hubs/pull/6121
+           */
+          if (
+            node.mesh !== undefined ||
+            node.camera !== undefined ||
+            (node.extensions && node.extensions["KHR_lights_punctual"]?.light !== undefined)
+          ) {
+            const exts = node.extensions?.MOZ_hubs_components;
+            if (exts) {
+              const children = [];
+              for (const [key, value] of Object.entries(exts)) {
+                if (OBJECT3D_EXT.has(key)) {
+                  const newNode = {
+                    name: `${node.name}_${key}`,
+                    extensions: {
+                      MOZ_hubs_components: { [key]: value }
+                    }
+                  };
+                  delete exts[key];
+                  children.push(newNode);
+                }
+              }
+              node.children = node.children || [];
+              children.forEach(child => {
+                const idx = nodes.push(child) - 1;
+                node.children.push(idx);
+              });
+            }
+          }
+        }
       }
     }
   }
@@ -510,13 +567,43 @@ class GLTFHubsComponentsExtension {
       for (const componentName in ext) {
         const props = ext[componentName];
         for (const propName in props) {
+          // These components had a variant before mhc_link_type existed that just directly pointed at the node index, fix them
+          if (
+            ((componentName === "video-texture-target" && propName === "srcNode") ||
+              (componentName === "audio-target" && propName === "srcNode")) &&
+            typeof props[propName] === "number"
+          ) {
+            console.warn(
+              `Found an outdated ${componentName} 'srcNode' property, fixing. Make sure you are using the latest exporter.`
+            );
+            props[propName] = {
+              __mhc_link_type: "node",
+              index: props[propName]
+            };
+          }
+
+          // It seems to be a pretty common use case to add a link to a media to show a link when hovering.
+          // That was supported in the previous loader but in the new loader it loads as two different entities.
+          // This hack adds support for linked media using the new loader.
+          // Note: For some reason this was not supported for PDFs. Not sure if it's random or if there is a reason.
+          if (shouldUseNewLoader()) {
+            if (Object.prototype.hasOwnProperty.call(ext, "link")) {
+              if (["image", "video", "model"].includes(componentName)) {
+                ext["media-link"] = {
+                  src: ext.link.href
+                };
+                delete ext.link;
+              }
+            }
+          }
+
           const value = props[propName];
           const type = value?.__mhc_link_type;
           if (type && value.index !== undefined) {
             deps.push(
               parser.getDependency(type, value.index).then(loadedDep => {
                 // TODO similar to above, this logic being spread out in multiple places is not great...
-                // Node refences are assumed to always be in the scene graph. These referneces are late-resolved in inflateComponents
+                // Node references are assumed to always be in the scene graph. These references are late-resolved in inflateComponents
                 // otherwise they will need to be updated when cloning (which happens as part of caching).
                 if (type === "node") return;
 
@@ -673,6 +760,122 @@ class GLTFMozTextureRGBE {
   }
 }
 
+// Mozilla Hubs loop-animation component has a problem in the spec.
+// The loop-animation component can refer to glTF.animations with
+// animation names but the glTF specification allows non-unique names
+// in glTF.animations so if there are multiple glTF.animations that
+// have the same name no one can know what glTF.animations a
+// loop-component using that names refers to.
+// This plugin converts animation names in the component to
+// animation indices to avoid the problem.
+// The old loop-animation component handler (without bitECS) seems
+// to assume that multiple glTF.animations that have the same name
+// have the same animation data and loop-component refers to the
+// first glTF.animation of the ones having the same name. This
+// plugin follows the assumption for the compatibility.
+// Refer to https://github.com/mozilla/hubs/pull/6153 for details.
+// TODO: Deprecate the loop-animation animation reference with name
+class GLTFHubsLoopAnimationComponent {
+  constructor(parser) {
+    this.parser = parser;
+    this.name = "MOZ_hubs_components.loop-animation";
+  }
+
+  beforeRoot() {
+    const json = this.parser.json;
+
+    if (json.animations === undefined) {
+      return;
+    }
+
+    // TODO: Optimize if needed
+    const findAnimation = name => {
+      for (let animationIndex = 0; animationIndex < json.animations.length; animationIndex++) {
+        const animationDef = json.animations[animationIndex];
+        if (animationDef.name === name) {
+          return animationIndex;
+        }
+      }
+      return null;
+    };
+
+    // TODO: Optimize if needed
+    const collectNodeIndices = (nodeIndex, nodeIndices) => {
+      nodeIndices.add(nodeIndex);
+      const nodeDef = json.nodes[nodeIndex];
+
+      if (nodeDef.children !== undefined) {
+        for (const child of nodeDef.children) {
+          collectNodeIndices(child, nodeIndices);
+        }
+      }
+
+      return nodeIndices;
+    };
+
+    const clonedAnimations = [];
+
+    for (let nodeIndex = 0; nodeIndex < json.nodes.length; nodeIndex++) {
+      const nodeDef = json.nodes[nodeIndex];
+
+      if (nodeDef.extensions?.MOZ_hubs_components?.["loop-animation"] !== undefined) {
+        const extensionDef = nodeDef.extensions.MOZ_hubs_components["loop-animation"];
+
+        if (extensionDef.clip === undefined || extensionDef.clip === "") {
+          continue;
+        }
+
+        // Converts .clip (name based) to .activeClipIndices (index based).
+        // Assumes that .activeClipIndices is undefined
+        // if .clip is defined
+
+        const clipNames = extensionDef.clip.split(",");
+        const activeClipIndices = [];
+        const nodeIndices = collectNodeIndices(nodeIndex, new Set());
+
+        for (const clipName of clipNames) {
+          const animationIndex = findAnimation(clipName);
+
+          if (animationIndex === null) {
+            continue;
+          }
+
+          const clonedAnimation = structuredClone(json.animations[animationIndex]);
+          let updated = false;
+
+          for (const channel of clonedAnimation.channels) {
+            if (channel.target.node !== undefined && !nodeIndices.has(channel.target.node)) {
+              // The old loop-animation handler (without bitECS) seems to retarget
+              // the loop-animation component root node if traget node is unfound
+              // under the loop-animation component root node.
+              // Here follows it for the compatibility, not sure if it's the best approach.
+              // Another approach may be to find a glTF.animation that is likely for
+              // this node. It may be guessed with target node.
+              channel.target.node = nodeIndex;
+              updated = true;
+            }
+          }
+
+          if (updated) {
+            // Retargetted so need to add a new glTF.animation.
+            activeClipIndices.push(json.animations.length + clonedAnimations.length);
+            clonedAnimations.push(clonedAnimation);
+          } else {
+            activeClipIndices.push(animationIndex);
+          }
+        }
+
+        extensionDef.activeClipIndices = activeClipIndices;
+        delete extensionDef.clip;
+      }
+    }
+
+    for (const animation of clonedAnimations) {
+      json.animations.push(animation);
+    }
+  }
+}
+
 export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
   let gltfUrl = src;
   let fileMap;
@@ -692,6 +895,7 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     .register(parser => new GLTFHubsLightMapExtension(parser))
     .register(parser => new GLTFHubsTextureBasisExtension(parser))
     .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
+    .register(parser => new GLTFHubsLoopAnimationComponent(parser))
     .register(
       parser =>
         new GLTFLodExtension(parser, {
@@ -777,18 +981,9 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
             disposables.add(obj.geometry);
           }
 
-          if (obj.material) {
-            if (obj.material.map) disposables.add(obj.material.map);
-            if (obj.material.lightMap) disposables.add(obj.material.lightMap);
-            if (obj.material.bumpMap) disposables.add(obj.material.bumpMap);
-            if (obj.material.normalMap) disposables.add(obj.material.normalMap);
-            if (obj.material.specularMap) disposables.add(obj.material.specularMap);
-            if (obj.material.envMap) disposables.add(obj.material.envMap);
-            if (obj.material.aoMap) disposables.add(obj.material.aoMap);
-            if (obj.material.metalnessMap) disposables.add(obj.material.metalnessMap);
-            if (obj.material.roughnessMap) disposables.add(obj.material.roughnessMap);
-            if (obj.material.emissiveMap) disposables.add(obj.material.emissiveMap);
-          }
+          mapMaterials(obj, function (m) {
+            disposables.add(m);
+          });
 
           const mozHubsComponents = obj.userData.gltfExtensions?.MOZ_hubs_components;
           if (mozHubsComponents) {
@@ -804,9 +999,14 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
           }
         });
 
+        scene.associations = gltf.parser.associations;
         scene.dispose = function dispose() {
           disposables.forEach(disposable => {
-            disposable.dispose();
+            if (disposable.isMaterial) {
+              disposeMaterial(disposable);
+            } else {
+              disposable.dispose();
+            }
           });
         };
       });
@@ -836,6 +1036,12 @@ export function cloneModelFromCache(src) {
   }
 }
 
+/**
+ * @param {string} src
+ * @param {string|null} [contentType]
+ * @param {boolean} [useCache]
+ * @param {null|(json:any)=>any} [jsonPreprocessor]
+ */
 export async function loadModel(src, contentType = null, useCache = false, jsonPreprocessor = null) {
   console.log(`Loading model %c${src}`, "font-style:italic");
   const startTime = performance.now();

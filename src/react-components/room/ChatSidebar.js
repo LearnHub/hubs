@@ -5,12 +5,10 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
 import { ReactComponent as WandIcon } from "../icons/Wand.svg";
 import { ReactComponent as AttachIcon } from "../icons/Attach.svg";
-import { ReactComponent as ChatIcon } from "../icons/Chat.svg";
 import { ReactComponent as SendIcon } from "../icons/Send.svg";
 import { ReactComponent as ReactionIcon } from "../icons/Reaction.svg";
 import { IconButton } from "../input/IconButton";
 import { TextAreaInput } from "../input/TextAreaInput";
-import { ToolbarButton } from "../input/ToolbarButton";
 import { Popover } from "../popover/Popover";
 import { EmojiPicker } from "./EmojiPicker";
 import styles from "./ChatSidebar.scss";
@@ -61,11 +59,13 @@ export const EmojiPickerPopoverButton = React.memo(({ onSelectEmoji, disabled })
   return (
     <Popover
       title=""
+      popoverClass={styles.emojiPopover}
+      showHeader={false}
       content={({ closePopover }) => (
         <EmojiPicker
-          onSelect={emoji => {
+          onEmojiClick={emoji => {
             const keepPickerOpen = shiftKeyDown.current;
-            onSelectEmoji({ emoji, pickerRemainedOpen: keepPickerOpen });
+            onSelectEmoji({ emoji: emoji.emoji, pickerRemainedOpen: keepPickerOpen });
             // Keep the picker open if the Shift key was held down to allow
             // for multiple emoji selections.
             if (!keepPickerOpen) closePopover();
@@ -493,14 +493,3 @@ ChatSidebar.propTypes = {
   children: PropTypes.node,
   listRef: PropTypes.func
 };
-
-export function ChatToolbarButton(props) {
-  return (
-    <ToolbarButton
-      {...props}
-      icon={<ChatIcon />}
-      preset="accent4"
-      label={<FormattedMessage id="chat-toolbar-button" defaultMessage="Chat" />}
-    />
-  );
-}

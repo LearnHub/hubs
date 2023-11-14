@@ -10,7 +10,7 @@ and polyfilling.
 
 import "./utils/record-log"; // included to capture earliest log entries
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import copy from "copy-to-clipboard";
 import { detectOS } from "detect-browser";
 import "./react-components/styles/global.scss";
@@ -142,5 +142,7 @@ class Support extends React.Component {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(<Support />, document.getElementById("support-root"));
+  const container = document.getElementById("support-root");
+  const root = createRoot(container);
+  root.render(<Support />);
 });

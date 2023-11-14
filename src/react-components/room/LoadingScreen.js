@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { LoadingScreenLayout } from "../layout/LoadingScreenLayout";
 import { Spinner } from "../misc/Spinner";
-import { useRandomMessageTransition } from "./useRandomMessageTransition";
 import { SaveConsoleLog } from "../../utils/record-log.js";
 import { Button } from "../input/Button";
 import styles from "../layout/LoadingScreenLayout.scss";

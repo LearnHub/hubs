@@ -6,6 +6,7 @@ import { FormattedMessage } from "react-intl";
 import screenfull from "screenfull";
 
 import configs from "../utils/configs";
+import { isLockedDownDemoRoom } from "../utils/hub-utils";
 import { VR_DEVICE_AVAILABILITY } from "../utils/vr-caps-detect";
 import { canShare } from "../utils/share";
 import styles from "../assets/stylesheets/ui-root.scss";
@@ -53,7 +54,7 @@ import { InvitePopoverContainer } from "./room/InvitePopoverContainer";
 import { AvnDeviceInvitePopoverContainer } from "./room/AvnDeviceInvitePopoverContainer";
 import { AvnHallPassPopoverContainer } from "./room/AvnHallPassPopoverContainer";
 import { MoreMenuPopoverButton, CompactMoreMenuButton, MoreMenuContextProvider } from "./room/MoreMenuPopover";
-import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
+//import { ChatSidebarContainer, ChatContextProvider, ChatToolbarButtonContainer } from "./room/ChatSidebarContainer";
 import { ContentMenu, PeopleMenuButton, ObjectsMenuButton, ECSDebugMenuButton, EduverseTeacherMenuButton, EduverseStudentMenuButton } from "./room/ContentMenu";
 import { ReactComponent as FullScreenIcon } from "./icons/FullScreen.svg";
 import { ReactComponent as ArrowBackIcon } from "./icons/ArrowBack.svg";
@@ -80,8 +81,9 @@ import { ReactComponent as SceneIcon } from "./icons/Scene.svg";
 import { ReactComponent as ExploreIcon } from "./icons/Explore.svg";
 import { ReactComponent as PassIcon } from "./icons/Pass.svg";
 import { ReactComponent as GatherIcon } from "./icons/Gather.svg";
+import hubsLogo from "../assets/images/hubs-logo.png";
 import { PeopleSidebarContainer, userFromPresence } from "./room/PeopleSidebarContainer";
-import { ObjectListProvider } from "./room/useObjectList";
+import { ObjectListProvider } from "./room/hooks/useObjectList";
 import { ObjectsSidebarContainer } from "./room/ObjectsSidebarContainer";
 import { ObjectMenuContainer } from "./room/ObjectMenuContainer";
 import { EduverseTeacherSidebarContainer } from "./room/EduverseTeacherSidebarContainer";
@@ -89,7 +91,7 @@ import { EduverseStudentSidebarContainer } from "./room/EduverseStudentSidebarCo
 import { useCssBreakpoints } from "react-use-css-breakpoints";
 import { PlacePopoverContainer } from "./room/PlacePopoverContainer";
 import { SharePopoverContainer } from "./room/SharePopoverContainer";
-import { AudioPopoverContainer } from "./room/AudioPopoverContainer";
+import { AudioPopoverButtonContainer } from "./room/AudioPopoverButtonContainer";
 import { ReactionPopoverContainer } from "./room/ReactionPopoverContainer";
 import { SafariMicModal } from "./room/SafariMicModal";
 import { RoomSignInModalContainer } from "./auth/RoomSignInModalContainer";
@@ -110,7 +112,10 @@ import { MediaDevicesEvents } from "../utils/media-devices-utils";
 import { TERMS, PRIVACY } from "../constants";
 import { ECSDebugSidebarContainer } from "./debug-panel/ECSSidebar";
 import { NotificationsContainer } from "./room/NotificationsContainer";
-import { usePermissions } from "./room/usePermissions";
+import { usePermissions } from "./room/hooks/usePermissions";
+import { ChatContextProvider } from "./room/contexts/ChatContext";
+import ChatToolbarButton from "./room/components/ChatToolbarButton/ChatToolbarButton";
+import SeePlansCTA from "./room/components/SeePlansCTA/SeePlansCTA";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
 import { AvnInformationModal } from "./room/AvnInformationModal";
@@ -132,7 +137,6 @@ async function grantedMicLabels() {
   return mediaDevices.filter(d => d.label && d.kind === "audioinput").map(d => d.label);
 }
 
-const isSmallScreen = window.innerWidth < 450;
 const isMobile = AFRAME.utils.device.isMobile();
 const isMobileVR = AFRAME.utils.device.isMobileVR();
 const AUTO_EXIT_TIMER_SECONDS = 10;
@@ -201,6 +205,7 @@ class UIRoot extends Component {
     enterInVR: false,
     entered: false,
     entering: false,
+    leaving: false,
     dialog: null,
     showShareDialog: false,
     avnShowMediaBrowser: false,
@@ -232,7 +237,8 @@ class UIRoot extends Component {
     objectSrc: "",
     sidebarId: null,
     presenceCount: 0,
-    chatInputEffect: () => {}
+    chatPrefix: "",
+    chatAutofocus: false
   };
 
   constructor(props) {
@@ -850,7 +856,7 @@ class UIRoot extends Component {
       console.debug("AVN: Chat is disabled");
       return;  
     }
-    this.setState({ sidebarId, chatInputEffect: () => {}, selectedUserId: null, ...otherState });
+    this.setState({ sidebarId, chatPrefix: "", chatAutofocus: false, selectedUserId: null, ...(otherState || {}) });
   }
 
   toggleSidebar(sidebarId, otherState) {
@@ -874,12 +880,15 @@ class UIRoot extends Component {
       console.debug("AVN: Chat is disabled");
       return;
     }
-    this.setSidebar("chat", {
-      chatInputEffect: input => {
-        input.focus();
-        input.value = e.detail.prefix;
-      }
-    });
+    // Close chat sidebar when hotkey is pressed whilst chat input is not in focus
+    if (this.state.sidebarId === "chat") {
+      this.setSidebar(null);
+    } else {
+      this.setSidebar("chat", {
+        chatPrefix: e.detail.prefix,
+        chatAutofocus: true
+      });
+    }
   };
 
   renderInterstitialPrompt = () => {
@@ -908,8 +917,9 @@ class UIRoot extends Component {
   };
 
   renderEntryStartPanel = () => {
-    const { hasAcceptedProfile, hasChangedName } = this.props.store.state.activity;
-    const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedName;
+    const { hasAcceptedProfile, hasChangedNameOrPronouns } = this.props.store.state.activity;
+    const isLockedDownDemo = isLockedDownDemoRoom();
+    const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedNameOrPronouns;
 
     // TODO: What does onEnteringCanceled do?
     return (
@@ -923,10 +933,16 @@ class UIRoot extends Component {
             // AVN: Skip avatar setting and audio dialog (all users are muted by default)
             this.performDirectEntryFlow(false);
             return;
+            if (isLockedDownDemo) {
+              if (this.props.forcedVREntryType?.startsWith("vr")) {
+                this.setState({ enterInVR: true }, this.onAudioReadyButton);
+                return;
+              }
+              return this.onAudioReadyButton();
+            }
             if (promptForNameAndAvatarBeforeEntry || !this.props.forcedVREntryType) {
               this.setState({ entering: true });
               this.props.hubChannel.sendEnteringEvent();
-
               if (promptForNameAndAvatarBeforeEntry) {
                 this.pushHistoryState("entry_step", "profile");
               } else {
@@ -941,8 +957,8 @@ class UIRoot extends Component {
           onEnterOnDevice={() => this.attemptLink()}
           showSpectate={!this.state.waitingOnAudio}
           onSpectate={() => this.setState({ watching: true })}
-          showOptions={false && this.props.hubChannel.canOrWillIfCreator("update_hub") /* AVN: Temporary disabled */}
-          onOptions={() => {
+          showRoomSettings={/* AVN: Disabled */ false && this.props.hubChannel.canOrWillIfCreator("update_hub")}
+          onRoomSettings={() => {
             this.props.performConditionalSignIn(
               () => this.props.hubChannel.can("update_hub"),
               () => this.setSidebar("room-settings"),
@@ -1218,6 +1234,8 @@ class UIRoot extends Component {
 
     const streaming = this.state.isStreaming;
 
+    const isLockedDownDemo = isLockedDownDemoRoom();
+
     const showObjectList = enteredOrWatching && this.props.avnDimensionConnection?.features?.showObjectList;
     const showECSObjectsMenuButton = qsTruthy("ecsDebug");
 
@@ -1304,7 +1322,14 @@ class UIRoot extends Component {
             label: <FormattedMessage id="more-menu.preferences" defaultMessage="Preferences" />,
             icon: SettingsIcon,
             onClick: () => this.setState({ showPrefs: true })
-          }
+          },
+          (this.props.breakpoint === "sm" || this.props.breakpoint === "md") &&
+            isLockedDownDemo && {
+              id: "see-plans",
+              label: <FormattedMessage id="more-menu.see-plans-cta" defaultMessage="See Plans" />,
+              icon: { src: hubsLogo, alt: "Logo" },
+              href: "https://hubs.mozilla.com/#subscribe"
+            }
         ].filter(item => item)
       },
       // AVN: Features are incompatible with eduverse
@@ -1619,7 +1644,7 @@ class UIRoot extends Component {
                     {this.state.sidebarId !== "chat" && this.props.hub && (
                       <PresenceLog
                         preset={"InRoom"}
-                        exclude={isSmallScreen ? [] : ["permission"]}
+                        exclude={isMobile ? [] : ["permission"]}
                         presences={this.props.presences}
                         entries={presenceLogEntries}
                         hubId={this.props.hub.hub_id}
@@ -1628,18 +1653,19 @@ class UIRoot extends Component {
                       />
                     )}
                     <NotificationsContainer>
-                      <TipContainer
-                        hide={this.props.activeObject}
-                        inLobby={watching}
-                        inRoom={entered}
-                        isEmbedded={this.props.embed}
-                        isStreaming={streaming}
-                        hubId={this.props.hub.hub_id}
-                        presences={this.props.presences}
-                        scene={this.props.scene}
-                        store={this.props.store}
-                      />
-                      {!isSmallScreen && (
+                      {(this.state.hide || this.state.hideUITip || !this.props.activeObject) && (
+                        <TipContainer
+                          inLobby={watching}
+                          inRoom={entered}
+                          isEmbedded={this.props.embed}
+                          isStreaming={streaming}
+                          hubId={this.props.hub.hub_id}
+                          presences={this.props.presences}
+                          scene={this.props.scene}
+                          store={this.props.store}
+                        />
+                      )}
+                      {!isMobile && !this.state.hide && (
                         <PresenceLog
                           preset={"Notifications"}
                           include={["permission"]}
@@ -1674,7 +1700,8 @@ class UIRoot extends Component {
                           canSpawnMessages={entered && this.props.hubChannel.can("spawn_and_move_media")}
                           scene={this.props.scene}
                           onClose={() => this.setSidebar(null)}
-                          inputEffect={this.state.chatInputEffect}
+                          autoFocus={this.state.chatAutofocus}
+                          initialValue={this.state.chatPrefix}
                         />
                       )}
                       {/* AVN: Object menu is disabled */}
@@ -1863,7 +1890,7 @@ class UIRoot extends Component {
                       <>
                         { 
                         this.props.avnDimensionConnection?.features?.showVoip && 
-                        <AudioPopoverContainer scene={this.props.scene} />
+                        <AudioPopoverButtonContainer scene={this.props.scene} />
                         }
                         { 
                         this.props.avnDimensionConnection?.permissions?.allowShareScreen && 
@@ -2009,10 +2036,16 @@ class UIRoot extends Component {
                         icon={<LeaveIcon />}
                         label={<FormattedMessage id="toolbar.leave-room-button" defaultMessage="Leave" />}
                         preset="cancel"
+                        selected={!!this.state.leaving}
                         onClick={() => {
+                          this.setState({ leaving: true });
                           this.showNonHistoriedDialog(LeaveRoomModal, {
                             destinationUrl: "/",
-                            reason: LeaveReason.leaveRoom
+                            reason: LeaveReason.leaveRoom,
+                            onClose: () => {
+                              this.setState({ leaving: false });
+                              this.closeDialog();
+                            }
                           });
                         }}
                       />
@@ -2036,21 +2069,23 @@ function UIRootHooksWrapper(props) {
 
   useEffect(() => {
     const el = document.getElementById("preload-overlay");
-    el.classList.add("loaded");
+    if (el) {
+      el.classList.add("loaded");
 
-    const sceneEl = props.scene;
+      const sceneEl = props.scene;
 
-    sceneEl.classList.add(roomLayoutStyles.scene);
+      sceneEl.classList.add(roomLayoutStyles.scene);
 
-    // Remove the preload overlay after the animation has finished.
-    const timeout = setTimeout(() => {
-      el.remove();
-    }, 500);
+      // Remove the preload overlay after the animation has finished.
+      const timeout = setTimeout(() => {
+        el.remove();
+      }, 500);
 
-    return () => {
-      clearTimeout(timeout);
-      sceneEl.classList.remove(roomLayoutStyles.scene);
-    };
+      return () => {
+        clearTimeout(timeout);
+        sceneEl.classList.remove(roomLayoutStyles.scene);
+      };
+    }
   }, [props.scene]);
 
   return (

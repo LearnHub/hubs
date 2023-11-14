@@ -12,7 +12,7 @@ const validator = new Validator();
 import { EventTarget } from "event-target-shim";
 import { fetchRandomDefaultAvatarId, generateRandomName, fetchDefaultAvatarId } from "../utils/identity.js";
 import { NO_DEVICE_ID } from "../utils/media-devices-utils.js";
-import { AAModes } from "../effects";
+import { AAModes } from "../constants";
 import { isMultiTouch } from "../utils/detect-touchscreen.js";
 
 const defaultMaterialQuality = (function () {
@@ -67,6 +67,7 @@ export const SCHEMA = {
       properties: {
         displayName: { type: "string", pattern: "^.{1,32}$" }, // AVN: No more than 32 characters of any type
         avatarId: { type: "string" },
+        pronouns: { type: "string", pattern: "^([a-zA-Z]{1,32}\\/){0,4}[a-zA-Z]{1,32}$" },
         // personalAvatarId is obsolete, but we need it here for backwards compatibility.
         personalAvatarId: { type: "string" },
         clientId: { type: "string" },
@@ -88,7 +89,7 @@ export const SCHEMA = {
       additionalProperties: false,
       properties: {
         hasFoundFreeze: { type: "boolean" },
-        hasChangedName: { type: "boolean" },
+        hasChangedNameOrPronouns: { type: "boolean" },
         hasAcceptedProfile: { type: "boolean" },
         lastEnteredAt: { type: "string" },
         hasPinned: { type: "boolean" },
@@ -333,6 +334,7 @@ export default class Store extends EventTarget {
           this.dispatchEvent(new CustomEvent("themechanged", { detail: { current, previous } }));
         }
         previous = current;
+        console.log("Theme updated to: ", current);
       };
     })();
     this.addEventListener("statechanged", maybeDispatchThemeChanged);
@@ -357,7 +359,7 @@ export default class Store extends EventTarget {
     }
 
     // Regenerate name to encourage users to change it.
-    if (!this.state.activity.hasChangedName) {
+    if (!this.state.activity.hasChangedNameOrPronouns) {
       this.update({ profile: { displayName: generateRandomName() } });
     }
   };

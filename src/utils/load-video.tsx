@@ -1,13 +1,33 @@
 /** @jsx createElementEntity */
 import { createElementEntity } from "../utils/jsx-entity";
 import { ProjectionMode } from "./projection-mode";
-import { VideoTexture } from "three";
 import { renderAsEntity } from "../utils/jsx-entity";
 import { loadVideoTexture } from "../utils/load-video-texture";
 import { HubsWorld } from "../app";
+import { HubsVideoTexture } from "../textures/HubsVideoTexture";
+import { EntityID } from "./networking-types";
+import { ObjectMenuTarget } from "../bit-components";
+import { ObjectMenuTargetFlags } from "../inflators/object-menu-target";
+type Params = {
+  loop?: boolean;
+  autoPlay?: boolean;
+  controls?: boolean;
+  projection?: ProjectionMode;
+};
 
-export function* loadVideo(world: HubsWorld, url: string) {
-  const { texture, ratio }: { texture: VideoTexture; ratio: number } = yield loadVideoTexture(url);
+const DEFAULTS: Required<Params> = {
+  loop: true,
+  autoPlay: true,
+  controls: true,
+  projection: ProjectionMode.FLAT
+};
+
+export function* loadVideo(world: HubsWorld, eid: EntityID, url: string, contentType: string, params: Params) {
+  const { loop, autoPlay, controls, projection } = Object.assign({}, DEFAULTS, params);
+  const { texture, ratio, video }: { texture: HubsVideoTexture; ratio: number; video: HTMLVideoElement } =
+    yield loadVideoTexture(url, contentType, loop, autoPlay);
+
+  ObjectMenuTarget.flags[eid] |= ObjectMenuTargetFlags.Flat;
 
   return renderAsEntity(
     world,
@@ -16,11 +36,13 @@ export function* loadVideo(world: HubsWorld, url: string) {
       networked
       networkedVideo
       grabbable={{ cursor: true, hand: false }}
+      objectMenuTarget={{ isFlat: true }}
       video={{
         texture,
         ratio,
-        autoPlay: true,
-        projection: ProjectionMode.FLAT
+        projection,
+        video,
+        controls
       }}
     ></entity>
   );

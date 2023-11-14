@@ -3,6 +3,11 @@ import { updateEnvironmentForHub, getSceneUrlForHub, updateUIForHub, remountUI }
 import { SOUND_MEDIA_LOADED } from "./systems/sound-effects-system";
 
 import { AVN } from "./avn-bridge";
+import { loadLegacyRoomObjects } from "./utils/load-legacy-room-objects";
+import { loadSavedEntityStates } from "./utils/entity-state-utils";
+import { localClientID, pendingMessages, pendingParts } from "./bit-systems/networking";
+import { storedUpdates } from "./bit-systems/network-receive-system";
+import { shouldUseNewLoader } from "./utils/bit-utils";
 
 function unloadRoomObjects() {
   document.querySelectorAll("[pinnable]").forEach(el => {
@@ -43,7 +48,7 @@ export async function changeHubAvn(hubUrl) {
 // AVN: Psudeo-mutex to prevent overlapping calls to changeHub
 var isChanging = false
 
-export async function changeHub(nextState, addToHistory = true) {
+export async function changeHub(nextState, addToHistory = true, waypoint = "") {
   while(isChanging) {
     await new Promise(r => setTimeout(r, 100));
   }
@@ -57,6 +62,7 @@ export async function changeHub(nextState, addToHistory = true) {
     console.log(`Change hub called with '${nextState.hubId}' when the current hub id is '${APP.hub.hub_id}'. This is a noop.`);
     return;
   }
+
   // Suppress on-screen join and leave messages until we receive a sync.
   APP.hideHubPresenceEvents = true;
   const scene = AFRAME.scenes[0];
@@ -64,8 +70,20 @@ export async function changeHub(nextState, addToHistory = true) {
   // AVN: navigation sound
   scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
 
+  // Generate leave events for everyone in the room.
+  Object.keys(APP.hubChannel.presence.state).forEach(key => {
+    const clientId = APP.getSid(key);
+    if (clientId !== localClientID) {
+      pendingParts.push(clientId);
+    }
+  });
+  // Reticulum "leaving" causes pinned objects to get cleaned up.
+  pendingParts.push(APP.getSid("reticulum"));
+
   let data;
   try {
+    // TODO Migrating to a new hub in one step makes state cleanup suspicious.
+    //      Would prefer to disconnect, cleanup state, then connect to the new hub.
     data = await APP.hubChannel.migrateToHub(nextState.hubId);
   } catch (e) {
     console.warn(`Failed to join hub ${nextState.hubId}: ${e.reason}|${e.message}`);
@@ -103,16 +121,29 @@ export async function changeHub(nextState, addToHistory = true) {
 
   NAF.entities.removeRemoteEntities();
   await NAF.connection.adapter.disconnect();
-  await APP.dialog.disconnect();
-  unloadRoomObjects();
+  APP.dialog.disconnect();
+  if (!shouldUseNewLoader()) {
+    unloadRoomObjects();
+  }
   NAF.connection.connectedClients = {};
   NAF.connection.activeDataChannels = {};
+  if (pendingMessages.length || storedUpdates.size) {
+    console.log(
+      `Deleting ${pendingMessages.length + storedUpdates.size} unapplied network messages from previous hub.`
+    );
+    pendingMessages.length = 0;
+    storedUpdates.clear();
+  }
 
   NAF.room = hub.hub_id;
 
   if (
+    // TODO: With newLoader (and new net code), we need to clear any network state
+    // that we applied to scene-owned entities before transitioning to the new room.
+    // For now, just unload scene even if the room we're going to has the same scene.
+    shouldUseNewLoader() ||
     document.querySelector("#environment-scene").childNodes[0].components["gltf-model-plus"].data.src !==
-    (await getSceneUrlForHub(hub))
+      (await getSceneUrlForHub(hub))
   ) {
     const fader = document.getElementById("viewing-camera").components["fader"];
     fader.fadeOut().then(() => {
@@ -141,7 +172,12 @@ export async function changeHub(nextState, addToHistory = true) {
     NAF.connection.adapter.connect()
   ]);
 
-  loadRoomObjects(nextState.hubId);
+  if (shouldUseNewLoader()) {
+    loadSavedEntityStates(APP.hubChannel);
+    loadLegacyRoomObjects(nextState.hubId);
+  } else {
+    loadRoomObjects(nextState.hubId);
+  }
 
   APP.hubChannel.sendEnteredEvent();
 

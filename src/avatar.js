@@ -1,12 +1,11 @@
 // We should technically be able to just include three here, but our dependancies are tangled such that not having aframe is a bit difficult
 import "./utils/theme";
 console.log(`Hubs version: ${process.env.BUILD_VERSION || "?"}`);
-
 import "aframe";
 import "./utils/logging";
 
-import ReactDOM from "react-dom";
 import React from "react";
+import { createRoot } from "react-dom/client";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { FormattedMessage } from "react-intl";
@@ -16,8 +15,6 @@ import configs from "./utils/configs";
 
 import { disableiOSZoom } from "./utils/disable-ios-zoom";
 disableiOSZoom();
-
-import { App } from "./app";
 
 import AvatarPreview from "./react-components/avatar-preview";
 
@@ -29,9 +26,10 @@ import styles from "./assets/stylesheets/avatar.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClone } from "@fortawesome/free-solid-svg-icons/faClone";
 import { ThemeProvider } from "./react-components/styles/theme";
+import Store from "./storage/store";
 
 const qs = new URLSearchParams(location.search);
-window.APP = new App();
+window.APP = { store: new Store() };
 
 class AvatarPage extends React.Component {
   static propTypes = {
@@ -148,12 +146,15 @@ class AvatarPage extends React.Component {
 document.addEventListener("DOMContentLoaded", () => {
   const avatarId = qs.get("avatar_id") || document.location.pathname.substring(1).split("/")[1];
   console.log(`Avatar ID: ${avatarId}`);
-  ReactDOM.render(
+
+  const container = document.getElementById("ui-root");
+
+  const root = createRoot(container);
+  root.render(
     <WrappedIntlProvider>
       <ThemeProvider store={window.APP.store}>
         <AvatarPage avatarId={avatarId} store={window.APP.store} />
       </ThemeProvider>
-    </WrappedIntlProvider>,
-    document.getElementById("ui-root")
+    </WrappedIntlProvider>
   );
 });

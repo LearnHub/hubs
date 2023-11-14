@@ -2,6 +2,8 @@ import { AmmoWorker, WorkerHelpers, CONSTANTS } from "three-ammo";
 import { AmmoDebugConstants, DefaultBufferSize } from "ammo-debug-drawer";
 import configs from "../utils/configs";
 import ammoWasmUrl from "ammo.js/builds/ammo.wasm.wasm";
+import { Rigidbody } from "../bit-components";
+import { updateRigiBodyParams } from "../inflators/rigid-body";
 
 const MESSAGE_TYPES = CONSTANTS.MESSAGE_TYPES,
   TYPE = CONSTANTS.TYPE,
@@ -20,6 +22,7 @@ export class PhysicsSystem {
     this.workerHelpers = new WorkerHelpers(this.ammoWorker);
 
     this.bodyUuids = [];
+    this.bodiesToRemove = [];
     this.indexToUuid = {};
     this.bodyUuidToData = new Map();
 
@@ -144,7 +147,7 @@ export class PhysicsSystem {
          * 17     Angular Velocity (float)
          * 18-25  first 8 Collisions (ints)
          */
-
+        this.bodiesToRemove.length = 0;
         if (this.objectMatricesFloatArray.buffer.byteLength !== 0) {
           for (let i = 0; i < this.bodyUuids.length; i++) {
             const uuid = this.bodyUuids[i];
@@ -153,8 +156,8 @@ export class PhysicsSystem {
             const type = body.options.type ? body.options.type : TYPE.DYNAMIC;
             const object3D = body.object3D;
             if (!object3D.parent) {
-              // TODO: Fix me
-              console.error("Physics body exists but object3D has no parent.");
+              console.warn("Physics body exists but object3D had no parent; removing the body.");
+              this.bodiesToRemove.push(uuid);
               continue;
             }
             if (type === TYPE.DYNAMIC) {
@@ -206,6 +209,10 @@ export class PhysicsSystem {
           );
         }
 
+        for (let i = this.bodiesToRemove.length - 1; i >= 0; i--) {
+          this.removeBody(this.bodiesToRemove[i]);
+        }
+
         /* DEBUG RENDERING */
         if (this.debugEnabled) {
           const index = window.Atomics.load(this.debugIndex, 0);
@@ -241,17 +248,20 @@ export class PhysicsSystem {
     return bodyId;
   }
 
-  updateBody(uuid, options) {
-    if (this.bodyUuidToData.has(uuid)) {
-      this.bodyUuidToData.get(uuid).options = options;
-      this.workerHelpers.updateBody(uuid, options);
+  updateRigidBody(eid, options) {
+    const bodyId = Rigidbody.bodyId[eid];
+    updateRigiBodyParams(eid, options);
+    if (this.bodyUuidToData.has(bodyId)) {
+      this.bodyUuidToData.get(bodyId).options = options;
+      this.workerHelpers.updateBody(bodyId, options);
     } else {
-      console.warn(`updateBody called for uuid: ${uuid} but body missing.`);
+      console.warn(`updateBody called for uuid: ${bodyId} but body missing.`);
     }
   }
 
-  // TODO inline updateBody
-  updateBodyOptions(bodyId, options) {
+  updateRigidBodyOptions(eid, options) {
+    const bodyId = Rigidbody.bodyId[eid];
+    updateRigiBodyParams(eid, options);
     const bodyData = this.bodyUuidToData.get(bodyId);
     if (!bodyData) {
       // TODO: Fix me.

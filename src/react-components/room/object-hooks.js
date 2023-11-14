@@ -1,27 +1,37 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { removeNetworkedObject } from "../../utils/removeNetworkedObject";
+import { shouldUseNewLoader } from "../../utils/bit-utils";
 import { rotateInPlaceAroundWorldUp, affixToWorldUp } from "../../utils/three-utils";
 import { getPromotionTokenForFile } from "../../utils/media-utils";
 import { hasComponent } from "bitecs";
-import { Pinnable, Pinned, Static } from "../../bit-components";
-
-function getPinnedState(el) {
-  return !!(hasComponent(APP.world, Pinnable, el.eid) && hasComponent(APP.world, Pinned, el.eid));
-}
+import { isPinned as getPinnedState } from "../../bit-systems/networking";
+import { AEntity, MediaInfo, Static } from "../../bit-components";
+import { deleteTheDeletableAncestor } from "../../bit-systems/delete-entity-system";
+import { isAEntityPinned } from "../../systems/hold-system";
 
 export function isMe(object) {
-  return object.el.id === "avatar-rig";
+  return object.id === "avatar-rig";
 }
 
 export function isPlayer(object) {
-  return !!object.el.components["networked-avatar"];
+  if (shouldUseNewLoader()) {
+    // TODO Add when networked avatar is migrated
+    return false;
+  } else {
+    return !!object.el.components["networked-avatar"];
+  }
 }
 
 export function getObjectUrl(object) {
-  const mediaLoader = object.el.components["media-loader"];
-
-  const url =
-    mediaLoader && ((mediaLoader.data.mediaOptions && mediaLoader.data.mediaOptions.href) || mediaLoader.data.src);
+  let url;
+  if (shouldUseNewLoader()) {
+    const urlSid = MediaInfo.accessibleUrl[object.eid];
+    url = APP.getString(urlSid);
+  } else {
+    const mediaLoader = object.el.components["media-loader"];
+    url =
+      mediaLoader && ((mediaLoader.data.mediaOptions && mediaLoader.data.mediaOptions.href) || mediaLoader.data.src);
+  }
 
   if (url && !url.startsWith("hubs://")) {
     return url;
@@ -30,8 +40,16 @@ export function getObjectUrl(object) {
   return null;
 }
 
+function isObjectPinned(world, eid) {
+  if (hasComponent(world, AEntity, eid)) {
+    return isAEntityPinned(APP.world, eid);
+  } else {
+    return getPinnedState(eid);
+  }
+}
+
 export function usePinObject(hubChannel, scene, object) {
-  const [isPinned, setIsPinned] = useState(getPinnedState(object.el));
+  const [isPinned, setIsPinned] = useState(isObjectPinned(APP.world, object.eid));
 
   const pinObject = useCallback(() => {
     const el = object.el;
@@ -54,19 +72,29 @@ export function usePinObject(hubChannel, scene, object) {
   }, [isPinned, pinObject, unpinObject]);
 
   useEffect(() => {
+    // TODO Add when pinning is migrated
+    if (shouldUseNewLoader()) {
+      return;
+    }
+
     const el = object.el;
 
     function onPinStateChanged() {
-      setIsPinned(getPinnedState(el));
+      setIsPinned(isObjectPinned(APP.world, object.eid));
     }
     el.addEventListener("pinned", onPinStateChanged);
     el.addEventListener("unpinned", onPinStateChanged);
-    setIsPinned(getPinnedState(el));
+    setIsPinned(isObjectPinned(APP.world, object.eid));
     return () => {
       el.removeEventListener("pinned", onPinStateChanged);
       el.removeEventListener("unpinned", onPinStateChanged);
     };
   }, [object]);
+
+  if (shouldUseNewLoader()) {
+    // TODO Add when pinning is migrated
+    return false;
+  }
 
   const el = object.el;
 
@@ -117,16 +145,20 @@ export function useGoToSelectedObject(scene, object) {
 
 export function useRemoveObject(hubChannel, scene, object) {
   const removeObject = useCallback(() => {
-    removeNetworkedObject(scene, object.el);
+    if (shouldUseNewLoader()) {
+      deleteTheDeletableAncestor(APP.world, object.eid);
+    } else {
+      removeNetworkedObject(scene, object.el);
+    }
   }, [scene, object]);
 
-  const el = object.el;
+  const eid = object.eid;
 
   const canRemoveObject = !!(
     scene.is("entered") &&
     !isPlayer(object) &&
-    !getPinnedState(el) &&
-    !hasComponent(APP.world, Static, el.eid) &&
+    !isObjectPinned(APP.world, object.eid) &&
+    !hasComponent(APP.world, Static, eid) &&
     hubChannel.can("spawn_and_move_media")
   );
 

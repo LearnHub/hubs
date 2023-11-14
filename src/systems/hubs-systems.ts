@@ -34,6 +34,7 @@ import { NameTagVisibilitySystem } from "./name-tag-visibility-system";
 // new world
 import { networkReceiveSystem } from "../bit-systems/network-receive-system";
 import { networkSendSystem } from "../bit-systems/network-send-system";
+import { entityPersistenceSystem } from "../bit-systems/entity-persistence-system";
 import { onOwnershipLost } from "./on-ownership-lost";
 import { interactionSystem } from "./bit-interaction-system";
 import { floatyObjectSystem } from "./floaty-object-system";
@@ -50,12 +51,36 @@ import { mediaLoadingSystem } from "../bit-systems/media-loading";
 import { physicsCompatSystem } from "./bit-physics";
 import { destroyAtExtremeDistanceSystem } from "./bit-destroy-at-extreme-distances";
 import { videoMenuSystem } from "../bit-systems/video-menu-system";
+import { objectMenuSystem } from "../bit-systems/object-menu";
+import { pdfMenuSystem } from "../bit-systems/pdf-menu-system";
+import { linkHoverMenuSystem } from "../bit-systems/link-hover-menu";
 import { deleteEntitySystem } from "../bit-systems/delete-entity-system";
 import type { HubsSystems } from "aframe";
 import { Camera, Scene, WebGLRenderer } from "three";
 import { HubsWorld } from "../app";
-import { EffectComposer } from "postprocessing";
 import { sceneLoadingSystem } from "../bit-systems/scene-loading";
+import { networkDebugSystem } from "../bit-systems/network-debug";
+import qsTruthy from "../utils/qs_truthy";
+import { waypointSystem } from "../bit-systems/waypoint";
+import { objectSpawnerSystem } from "../bit-systems/object-spawner";
+import { billboardSystem } from "../bit-systems/billboard";
+import { videoTextureSystem } from "../bit-systems/video-texture";
+import { uvScrollSystem } from "../bit-systems/uv-scroll";
+import { simpleWaterSystem } from "../bit-systems/simple-water";
+import { pdfSystem } from "../bit-systems/pdf-system";
+import { particleEmitterSystem } from "../bit-systems/particle-emitter";
+import { audioEmitterSystem } from "../bit-systems/audio-emitter-system";
+import { audioZoneSystem } from "../bit-systems/audio-zone-system";
+import { audioDebugSystem } from "../bit-systems/audio-debug-system";
+import { textSystem } from "../bit-systems/text";
+import { audioTargetSystem } from "../bit-systems/audio-target-system";
+import { scenePreviewCameraSystem } from "../bit-systems/scene-preview-camera-system";
+import { linearTransformSystem } from "../bit-systems/linear-transform";
+import { quackSystem } from "../bit-systems/quack";
+import { mixerAnimatableSystem } from "../bit-systems/mixer-animatable";
+import { loopAnimationSystem } from "../bit-systems/loop-animation";
+import { linkSystem } from "../bit-systems/link-system";
+import { objectMenuTransformSystem } from "../bit-systems/object-menu-transform-system";
 
 // AVN
 import { AVN } from "../avn-bridge"
@@ -73,6 +98,8 @@ const timeSystem = (world: HubsWorld) => {
   time.elapsed = now;
   time.tick++;
 };
+
+const enableNetworkDebug = qsTruthy("networkDebug");
 
 // NOTE keeping this around since many things index into it to get a reference to a system. This will
 // naturally burn down as we migrate things, so it is not worth going through and changing all of them.
@@ -164,10 +191,8 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
 
   networkReceiveSystem(world);
   onOwnershipLost(world);
-  sceneLoadingSystem(world, hubsSystems.environmentSystem);
+  sceneLoadingSystem(world, hubsSystems.environmentSystem, hubsSystems.characterController);
   mediaLoadingSystem(world);
-
-  physicsCompatSystem(world);
 
   networkedTransformSystem(world);
 
@@ -176,11 +201,18 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   interactionSystem(world, hubsSystems.cursorTargettingSystem, t, aframeSystems);
 
   buttonSystems(world);
+
+  physicsCompatSystem(world, hubsSystems.physicsSystem);
+  hubsSystems.physicsSystem.tick(dt);
   constraintsSystem(world, hubsSystems.physicsSystem);
+  floatyObjectSystem(world);
 
   // We run this earlier in the frame so things have a chance to override properties run by animations
   hubsSystems.animationMixerSystem.tick(dt);
 
+  billboardSystem(world, hubsSystems.cameraSystem.viewingCamera);
+  particleEmitterSystem(world);
+  waypointSystem(world, hubsSystems.characterController, sceneEl.is("frozen"));
   hubsSystems.characterController.tick(t, dt);
   hubsSystems.cursorTogglingSystem.tick(aframeSystems.interaction, aframeSystems.userinput, hubsSystems.el);
   hubsSystems.interactionSfxSystem.tick(
@@ -189,14 +221,13 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
     hubsSystems.soundEffectsSystem
   );
   hubsSystems.superSpawnerSystem.tick();
-  //AVN: Emoji system is disabled
+  objectSpawnerSystem(world);
+  // AVN: Emoji system is disabled
   //hubsSystems.emojiSystem.tick(t, aframeSystems.userinput);
   hubsSystems.cursorPoseTrackingSystem.tick();
   hubsSystems.hoverMenuSystem.tick();
   hubsSystems.positionAtBorderSystem.tick();
   hubsSystems.twoPointStretchingSystem.tick();
-
-  floatyObjectSystem(world);
 
   hubsSystems.holdableButtonSystem.tick();
   hubsSystems.hoverButtonSystem.tick();
@@ -211,7 +242,7 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   );
   hubsSystems.soundEffectsSystem.tick();
   hubsSystems.scenePreviewCameraSystem.tick();
-  hubsSystems.physicsSystem.tick(dt);
+  scenePreviewCameraSystem(world, hubsSystems.cameraSystem);
   hubsSystems.inspectYourselfSystem.tick(hubsSystems.el, aframeSystems.userinput, hubsSystems.cameraSystem);
   hubsSystems.cameraSystem.tick(hubsSystems.el, dt);
   cameraToolSystem(world);
@@ -219,13 +250,36 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   hubsSystems.menuAnimationSystem.tick(t);
   hubsSystems.spriteSystem.tick(t, dt);
   hubsSystems.uvScrollSystem.tick(dt);
+  uvScrollSystem(world);
   hubsSystems.shadowSystem.tick();
-  videoMenuSystem(world, aframeSystems.userinput);
+  objectMenuSystem(world, sceneEl.is("frozen"), APP.hubChannel!);
+  videoMenuSystem(world, aframeSystems.userinput, sceneEl.is("frozen"));
   videoSystem(world, hubsSystems.audioSystem);
-  mediaFramesSystem(world);
+  pdfMenuSystem(world, sceneEl.is("frozen"));
+  linkSystem(world);
+  linkHoverMenuSystem(world, sceneEl.is("frozen"));
+  pdfSystem(world);
+  mediaFramesSystem(world, hubsSystems.physicsSystem);
   hubsSystems.audioZonesSystem.tick(hubsSystems.el);
+  audioZoneSystem(world);
+  audioEmitterSystem(world, hubsSystems.audioSystem);
+  audioTargetSystem(world, hubsSystems.audioSystem);
   hubsSystems.gainSystem.tick();
   hubsSystems.nameTagSystem.tick();
+  simpleWaterSystem(world);
+  linearTransformSystem(world);
+  quackSystem(world);
+
+  objectMenuTransformSystem(world);
+
+  mixerAnimatableSystem(world);
+  loopAnimationSystem(world);
+
+  // All systems that update text properties should run before this
+  textSystem(world);
+
+  videoTextureSystem(world);
+  audioDebugSystem(world);
 
   AVN.tick(hubsSystems.characterController);
 
@@ -237,7 +291,12 @@ export function mainTick(xrFrame: XRFrame, renderer: WebGLRenderer, scene: Scene
   // We run this late in the frame so that its the last thing to have an opinion about the scale of an object
   hubsSystems.boneVisibilitySystem.tick();
 
+  entityPersistenceSystem(world, APP.hubChannel!);
   networkSendSystem(world);
+
+  if (enableNetworkDebug) {
+    networkDebugSystem(world, scene);
+  }
 
   scene.updateMatrixWorld();
 

@@ -7,19 +7,24 @@ import { IconButton } from "../input/IconButton";
 import { FormattedMessage } from "react-intl";
 
 import * as bitComponents from "../../bit-components";
-import { defineQuery, getEntityComponents } from "bitecs";
+import { defineQuery, getEntityComponents, removeEntity } from "bitecs";
 
 const bitComponentNames = new Map();
 for (const [name, Component] of Object.entries(bitComponents)) {
   bitComponentNames.set(Component, name);
 }
 
+export function formatObjectName(obj) {
+  const name =
+    obj.name ||
+    (obj.el ? (obj.el?.id && `#${obj.el.id}`) || `.${obj.el?.className?.replaceAll(" ", ".") || "a-entity"}` : "");
+  return name ? `${name}(${obj.constructor.name})` : `${obj.constructor.name}`;
+}
+
 function Object3DItem(props) {
   const { obj, toggleObjExpand, setSelectedObj, expanded, expandedIds } = props;
 
-  const name =
-    obj.name || (obj.el?.id && `#${obj.el.id}`) || `.${obj.el?.className?.replaceAll(" ", ".") || "a-entity"}`;
-  const displayName = name ? `${name}(${obj.constructor.name})` : `${obj.constructor.name}`;
+  const displayName = formatObjectName(obj);
 
   return (
     <div className="obj-item">
@@ -46,7 +51,26 @@ function Object3DItem(props) {
   );
 }
 
-function formatComponentProps(eid, component) {
+function MaterialItem(props) {
+  const { mat, setSelectedObj } = props;
+  const displayName = formatObjectName(mat);
+  return (
+    <div className="obj-item">
+      <div
+        className="obj-label"
+        onContextMenu={e => {
+          e.preventDefault();
+          setSelectedObj(mat);
+        }}
+      >
+        {displayName}
+        {` [${mat.eid}]`}
+      </div>
+    </div>
+  );
+}
+
+export function formatComponentProps(eid, component) {
   const formatted = Object.keys(component).reduce((str, k, i, arr) => {
     const val = component[k][eid];
     const isStr = component[k][bitComponents.$isStringType];
@@ -54,7 +78,12 @@ function formatComponentProps(eid, component) {
     if (ArrayBuffer.isView(val)) {
       str += JSON.stringify(Array.from(val));
     } else if (isStr) {
-      str += `${val} "${APP.getString(val)}"`;
+      const strVal = APP.getString(val);
+      if (strVal === NAF.clientId) {
+        str += `${val} *You* "${strVal}"`;
+      } else {
+        str += `${val} "${strVal}"`;
+      }
     } else {
       str += val;
     }
@@ -98,6 +127,9 @@ function ObjectProperties({ obj }) {
         <button onClick={() => console.log(obj)}>
           <FormattedMessage id="ecs-sidebar.log-button" defaultMessage="log" />
         </button>
+        <button onClick={() => removeEntity(APP.world, obj.eid)}>
+          <FormattedMessage id="ecs-sidebar.remove-button" defaultMessage="remove" />
+        </button>
       </div>
       <div className="content">{obj.eid && <EntityInfo eid={obj.eid} />}</div>
     </div>
@@ -113,6 +145,7 @@ function RefreshButton({ onClick }) {
 }
 
 const object3dQuery = defineQuery([bitComponents.Object3DTag]);
+const materialQuery = defineQuery([bitComponents.MaterialTag]);
 function ECSDebugSidebar({
   onClose,
   toggleObjExpand,
@@ -125,6 +158,7 @@ function ECSDebugSidebar({
   const orphaned = object3dQuery(APP.world)
     .map(eid => APP.world.eid2obj.get(eid))
     .filter(o => !o.parent);
+  const materials = materialQuery(APP.world).map(eid => APP.world.eid2mat.get(eid));
   return (
     <Sidebar
       title="ECS Debug"
@@ -134,23 +168,32 @@ function ECSDebugSidebar({
     >
       <div className="content">
         <div className="object-list">
-          <Object3DItem
-            obj={rootObj}
-            toggleObjExpand={toggleObjExpand}
-            expanded={expandedIds.has(rootObj.uuid)}
-            expandedIds={expandedIds}
-            setSelectedObj={setSelectedObj}
-          />
-          {orphaned.map(o => (
+          <section>
             <Object3DItem
-              obj={o}
-              key={o.eid}
+              obj={rootObj}
               toggleObjExpand={toggleObjExpand}
-              expanded={expandedIds.has(o.uuid)}
+              expanded={expandedIds.has(rootObj.uuid)}
               expandedIds={expandedIds}
               setSelectedObj={setSelectedObj}
             />
-          ))}
+          </section>
+          <section>
+            {orphaned.map(o => (
+              <Object3DItem
+                obj={o}
+                key={o.eid}
+                toggleObjExpand={toggleObjExpand}
+                expanded={expandedIds.has(o.uuid)}
+                expandedIds={expandedIds}
+                setSelectedObj={setSelectedObj}
+              />
+            ))}
+          </section>
+          <section>
+            {materials.map(m => (
+              <MaterialItem mat={m} key={m.eid} setSelectedObj={setSelectedObj} />
+            ))}
+          </section>
         </div>
         <div className="object-properties">{selectedObj && <ObjectProperties obj={selectedObj} />}</div>
       </div>
