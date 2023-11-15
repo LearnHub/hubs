@@ -373,7 +373,7 @@ export function mediaFramesSystem(world, physicsSystem) {
       takeOwnership(world, frame);
       NetworkedMediaFrame.capturedNid[frame] = 0;
       NetworkedMediaFrame.scale[frame].set(zero);
-      // TODO BUG: If an entity I do not own is capturedEid by the media frame,
+      // TODO BUG: If an entity I do not own is captured by the media frame,
       //           and then I take ownership of the entity (by grabbing it),
       //           the physics system does not immediately notice the entity isCapturedColliding with the frame,
       //           so I immediately think the frame should be emptied.
