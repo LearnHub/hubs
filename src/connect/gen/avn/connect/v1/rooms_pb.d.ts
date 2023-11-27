@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { ConnectionCredentials } from "./connections_pb.js";
 /**
  * @generated from message avn.connect.v1.RoomInfo
@@ -52,7 +52,7 @@ export declare class RoomInfo extends Message<RoomInfo> {
      */
     instructions?: string;
     constructor(data?: PartialMessage<RoomInfo>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RoomInfo";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RoomInfo;
@@ -69,7 +69,7 @@ export declare class GetRoomRequest extends Message<GetRoomRequest> {
      */
     roomId: string;
     constructor(data?: PartialMessage<GetRoomRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetRoomRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomRequest;
@@ -86,7 +86,7 @@ export declare class GetRoomResponse extends Message<GetRoomResponse> {
      */
     roomInfo?: RoomInfo;
     constructor(data?: PartialMessage<GetRoomResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetRoomResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomResponse;
@@ -107,7 +107,7 @@ export declare class OpenRoomRequest extends Message<OpenRoomRequest> {
      */
     url: string;
     constructor(data?: PartialMessage<OpenRoomRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.OpenRoomRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OpenRoomRequest;
@@ -124,7 +124,7 @@ export declare class OpenRoomResponse extends Message<OpenRoomResponse> {
      */
     roomInfo?: RoomInfo;
     constructor(data?: PartialMessage<OpenRoomResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.OpenRoomResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OpenRoomResponse;
@@ -149,7 +149,7 @@ export declare class EnterRoomRequest extends Message<EnterRoomRequest> {
      */
     sessionId: string;
     constructor(data?: PartialMessage<EnterRoomRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.EnterRoomRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EnterRoomRequest;
@@ -166,7 +166,7 @@ export declare class EnterRoomResponse extends Message<EnterRoomResponse> {
      */
     roomInfo?: RoomInfo;
     constructor(data?: PartialMessage<EnterRoomResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.EnterRoomResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EnterRoomResponse;
@@ -183,7 +183,7 @@ export declare class GetRoomDimensionRequest extends Message<GetRoomDimensionReq
      */
     roomId: string;
     constructor(data?: PartialMessage<GetRoomDimensionRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetRoomDimensionRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomDimensionRequest;
@@ -200,7 +200,7 @@ export declare class GetRoomDimensionResponse extends Message<GetRoomDimensionRe
      */
     dimensionId: string;
     constructor(data?: PartialMessage<GetRoomDimensionResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetRoomDimensionResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomDimensionResponse;
@@ -221,7 +221,7 @@ export declare class ResolveMediaRequest extends Message<ResolveMediaRequest> {
      */
     assetId: string;
     constructor(data?: PartialMessage<ResolveMediaRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ResolveMediaRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ResolveMediaRequest;
@@ -250,7 +250,7 @@ export declare class ResolveMediaResponse extends Message<ResolveMediaResponse> 
      */
     tagIds: number[];
     constructor(data?: PartialMessage<ResolveMediaResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ResolveMediaResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ResolveMediaResponse;

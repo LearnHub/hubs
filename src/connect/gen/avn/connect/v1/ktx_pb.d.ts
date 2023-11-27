@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 /**
  * Supports a subset of the useful parameters for toktx
@@ -16,7 +16,7 @@ export declare class ToKtxRequest extends Message<ToKtxRequest> {
      */
     params?: ToKtxParameters;
     constructor(data?: PartialMessage<ToKtxRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ToKtxRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ToKtxRequest;
@@ -208,7 +208,7 @@ export declare class ToKtxParameters extends Message<ToKtxParameters> {
      */
     inputSwizzle?: string;
     constructor(data?: PartialMessage<ToKtxParameters>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ToKtxParameters";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ToKtxParameters;
@@ -225,7 +225,7 @@ export declare class ToKtxResponse extends Message<ToKtxResponse> {
      */
     url: string;
     constructor(data?: PartialMessage<ToKtxResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ToKtxResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ToKtxResponse;

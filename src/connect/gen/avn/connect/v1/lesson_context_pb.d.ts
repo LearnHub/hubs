@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { Quaternion, Vector3 } from "./geometry_pb.js";
 /**
  * @generated from message avn.connect.v1.LessonContext
@@ -12,7 +12,7 @@ export declare class LessonContext extends Message<LessonContext> {
      */
     focus?: LessonFocus;
     constructor(data?: PartialMessage<LessonContext>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.LessonContext";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): LessonContext;
@@ -59,7 +59,7 @@ export declare class LessonFocus extends Message<LessonFocus> {
      */
     navigationLock: boolean;
     constructor(data?: PartialMessage<LessonFocus>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.LessonFocus";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): LessonFocus;

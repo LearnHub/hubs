@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { Activity } from "./activities_pb.js";
 /**
@@ -31,7 +31,7 @@ export declare class Category extends Message<Category> {
      */
     tags: number[];
     constructor(data?: PartialMessage<Category>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Category";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Category;
@@ -64,7 +64,7 @@ export declare class GetCategoryActivitiesRequest extends Message<GetCategoryAct
      */
     pageToken?: string;
     constructor(data?: PartialMessage<GetCategoryActivitiesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetCategoryActivitiesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCategoryActivitiesRequest;
@@ -85,7 +85,7 @@ export declare class GetCategoryActivitiesResponse extends Message<GetCategoryAc
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<GetCategoryActivitiesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetCategoryActivitiesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCategoryActivitiesResponse;

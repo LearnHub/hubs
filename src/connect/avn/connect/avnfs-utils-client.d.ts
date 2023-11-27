@@ -1,11 +1,11 @@
 import { AVNConnect } from "./AVNConnect.js";
 import { Authorization } from "../../gen/avn/connect/v1/authorization_pb.js";
 export declare const Hostname = "avnfs.com";
-export declare const UrlPrefix: string;
+export declare const UrlPrefix = "https://avnfs.com";
 export declare const TypeQueryParam = "type";
 export declare const SizeQueryParam = "size";
 export declare const NameQueryParam = "name";
-export declare type FileSpec = {
+export type FileSpec = {
     base64url: string;
     sizeBytes: number;
     mediaType: string;

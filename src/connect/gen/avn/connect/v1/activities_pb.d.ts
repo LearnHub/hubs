@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from message avn.connect.v1.Activity
@@ -54,7 +54,7 @@ export declare class Activity extends Message<Activity> {
      */
     organizationId: number;
     constructor(data?: PartialMessage<Activity>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Activity";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Activity;
@@ -75,7 +75,7 @@ export declare class GetActivityRequest extends Message<GetActivityRequest> {
      */
     activityId: number;
     constructor(data?: PartialMessage<GetActivityRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetActivityRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetActivityRequest;
@@ -100,7 +100,7 @@ export declare class AddFilesRequest extends Message<AddFilesRequest> {
      */
     fileUrls: string[];
     constructor(data?: PartialMessage<AddFilesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.AddFilesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AddFilesRequest;
@@ -125,7 +125,7 @@ export declare class RemoveFilesRequest extends Message<RemoveFilesRequest> {
      */
     fileUrls: string[];
     constructor(data?: PartialMessage<RemoveFilesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RemoveFilesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveFilesRequest;
@@ -146,7 +146,7 @@ export declare class RemoveAllFilesRequest extends Message<RemoveAllFilesRequest
      */
     activityId: number;
     constructor(data?: PartialMessage<RemoveAllFilesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RemoveAllFilesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveAllFilesRequest;
@@ -183,7 +183,7 @@ export declare class SearchActivitiesRequest extends Message<SearchActivitiesReq
      */
     pageToken?: string;
     constructor(data?: PartialMessage<SearchActivitiesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchActivitiesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SearchActivitiesRequest;
@@ -204,7 +204,7 @@ export declare class SearchActivitiesResponse extends Message<SearchActivitiesRe
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<SearchActivitiesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchActivitiesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SearchActivitiesResponse;

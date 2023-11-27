@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { Organization, OrganizationSpec } from "./organization_pb.js";
 /**
@@ -15,7 +15,7 @@ export declare class GetOrganizationRequest extends Message<GetOrganizationReque
      */
     organizationId: number;
     constructor(data?: PartialMessage<GetOrganizationRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetOrganizationRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetOrganizationRequest;
@@ -36,7 +36,7 @@ export declare class JoinOrganizationRequest extends Message<JoinOrganizationReq
      */
     joinCode: string;
     constructor(data?: PartialMessage<JoinOrganizationRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.JoinOrganizationRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): JoinOrganizationRequest;
@@ -49,7 +49,7 @@ export declare class JoinOrganizationRequest extends Message<JoinOrganizationReq
  */
 export declare class JoinOrganizationResponse extends Message<JoinOrganizationResponse> {
     constructor(data?: PartialMessage<JoinOrganizationResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.JoinOrganizationResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): JoinOrganizationResponse;
@@ -70,7 +70,7 @@ export declare class CreateNewUserOrganizationRequest extends Message<CreateNewU
      */
     organizationSpec?: OrganizationSpec;
     constructor(data?: PartialMessage<CreateNewUserOrganizationRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateNewUserOrganizationRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateNewUserOrganizationRequest;
@@ -87,7 +87,7 @@ export declare class CreateNewUserOrganizationResponse extends Message<CreateNew
      */
     organization?: Organization;
     constructor(data?: PartialMessage<CreateNewUserOrganizationResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateNewUserOrganizationResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateNewUserOrganizationResponse;

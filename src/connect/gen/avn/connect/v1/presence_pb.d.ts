@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 /**
  * @generated from enum avn.connect.v1.PresenceState
  */
@@ -34,7 +34,7 @@ export declare class PresenceUpdate extends Message<PresenceUpdate> {
      */
     info?: PresenceInfo;
     constructor(data?: PartialMessage<PresenceUpdate>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.PresenceUpdate";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PresenceUpdate;
@@ -63,7 +63,7 @@ export declare class PresenceInfo extends Message<PresenceInfo> {
      */
     assetId?: string;
     constructor(data?: PartialMessage<PresenceInfo>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.PresenceInfo";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PresenceInfo;

@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { ClientCredentials } from "./clients_pb.js";
 /**
  * @generated from message avn.connect.v1.NeighborServer
@@ -26,7 +26,7 @@ export declare class NeighborServer extends Message<NeighborServer> {
      */
     lanHostname: string;
     constructor(data?: PartialMessage<NeighborServer>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.NeighborServer";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): NeighborServer;
@@ -51,7 +51,7 @@ export declare class RegisterNeighborServerRequest extends Message<RegisterNeigh
      */
     lanPort: number;
     constructor(data?: PartialMessage<RegisterNeighborServerRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RegisterNeighborServerRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterNeighborServerRequest;
@@ -68,7 +68,7 @@ export declare class RegisterNeighborServerResponse extends Message<RegisterNeig
      */
     server?: NeighborServer;
     constructor(data?: PartialMessage<RegisterNeighborServerResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RegisterNeighborServerResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterNeighborServerResponse;

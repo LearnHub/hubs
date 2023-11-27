@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Struct } from "@bufbuild/protobuf";
+import { Message, proto3, Struct } from "@bufbuild/protobuf";
 /**
  * @generated from message avn.connect.v1.ClientCredentials
  */
@@ -13,7 +13,7 @@ export declare class ClientCredentials extends Message<ClientCredentials> {
      */
     clientSecret?: string;
     constructor(data?: PartialMessage<ClientCredentials>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ClientCredentials";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ClientCredentials;
@@ -48,7 +48,7 @@ export declare class RecordActionRequest extends Message<RecordActionRequest> {
      */
     data?: Struct;
     constructor(data?: PartialMessage<RecordActionRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RecordActionRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RecordActionRequest;
@@ -61,7 +61,7 @@ export declare class RecordActionRequest extends Message<RecordActionRequest> {
  */
 export declare class RecordActionResponse extends Message<RecordActionResponse> {
     constructor(data?: PartialMessage<RecordActionResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RecordActionResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RecordActionResponse;
@@ -74,7 +74,7 @@ export declare class RecordActionResponse extends Message<RecordActionResponse> 
  */
 export declare class CreateClientCredentialsRequest extends Message<CreateClientCredentialsRequest> {
     constructor(data?: PartialMessage<CreateClientCredentialsRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateClientCredentialsRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateClientCredentialsRequest;
@@ -91,7 +91,7 @@ export declare class CreateClientCredentialsResponse extends Message<CreateClien
      */
     clientCredentials?: ClientCredentials;
     constructor(data?: PartialMessage<CreateClientCredentialsResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateClientCredentialsResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateClientCredentialsResponse;

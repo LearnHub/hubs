@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 /**
  * @generated from message avn.connect.v1.Role
  */
@@ -17,7 +17,7 @@ export declare class Role extends Message<Role> {
      */
     level: number;
     constructor(data?: PartialMessage<Role>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Role";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Role;
@@ -30,7 +30,7 @@ export declare class Role extends Message<Role> {
  */
 export declare class GetRolesRequest extends Message<GetRolesRequest> {
     constructor(data?: PartialMessage<GetRolesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetRolesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRolesRequest;
@@ -47,7 +47,7 @@ export declare class GetRolesResponse extends Message<GetRolesResponse> {
      */
     roles: Role[];
     constructor(data?: PartialMessage<GetRolesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetRolesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRolesResponse;

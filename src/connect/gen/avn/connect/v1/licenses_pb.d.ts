@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { PartnerSession } from "./partners_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
@@ -90,7 +90,7 @@ export declare class LicenseInfo extends Message<LicenseInfo> {
      */
     expires?: Timestamp;
     constructor(data?: PartialMessage<LicenseInfo>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.LicenseInfo";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): LicenseInfo;
@@ -111,7 +111,7 @@ export declare class GetUserLicensesRequest extends Message<GetUserLicensesReque
      */
     userId: number;
     constructor(data?: PartialMessage<GetUserLicensesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetUserLicensesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserLicensesRequest;
@@ -128,7 +128,7 @@ export declare class GetUserLicensesResponse extends Message<GetUserLicensesResp
      */
     licenses: LicenseInfo[];
     constructor(data?: PartialMessage<GetUserLicensesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetUserLicensesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserLicensesResponse;

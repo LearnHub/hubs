@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 /**
  * @generated from message grpc.health.v1.HealthCheckRequest
  */
@@ -9,7 +9,7 @@ export declare class HealthCheckRequest extends Message<HealthCheckRequest> {
      */
     service: string;
     constructor(data?: PartialMessage<HealthCheckRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "grpc.health.v1.HealthCheckRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HealthCheckRequest;
@@ -26,7 +26,7 @@ export declare class HealthCheckResponse extends Message<HealthCheckResponse> {
      */
     status: HealthCheckResponse_ServingStatus;
     constructor(data?: PartialMessage<HealthCheckResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "grpc.health.v1.HealthCheckResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HealthCheckResponse;

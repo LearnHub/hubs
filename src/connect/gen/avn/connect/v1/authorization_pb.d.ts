@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { ConnectionCredentials } from "./connections_pb.js";
 /**
  * @generated from enum avn.connect.v1.IdentityProvider
@@ -78,7 +78,7 @@ export declare class Authorization extends Message<Authorization> {
         value?: undefined;
     };
     constructor(data?: PartialMessage<Authorization>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Authorization";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Authorization;

@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { User } from "./user_pb.js";
 import { AvailableContent } from "./content_pb.js";
 import { InteractionPermissions } from "./interaction_permissions_pb.js";
@@ -64,7 +64,7 @@ export declare class ConnectionInstance extends Message<ConnectionInstance> {
      */
     features?: UserInterfaceFeatures;
     constructor(data?: PartialMessage<ConnectionInstance>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ConnectionInstance";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ConnectionInstance;
@@ -89,7 +89,7 @@ export declare class ConnectionCredentials extends Message<ConnectionCredentials
      */
     dimensionId: string;
     constructor(data?: PartialMessage<ConnectionCredentials>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.ConnectionCredentials";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ConnectionCredentials;

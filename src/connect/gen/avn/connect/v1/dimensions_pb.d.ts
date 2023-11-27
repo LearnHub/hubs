@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { ClientCredentials } from "./clients_pb.js";
 import { Authorization, IdentityProvider } from "./authorization_pb.js";
 import { ConnectionCredentials, ConnectionInstance } from "./connections_pb.js";
@@ -69,7 +69,7 @@ export declare class CreateDimensionRequest extends Message<CreateDimensionReque
      */
     additionalChannels: number[];
     constructor(data?: PartialMessage<CreateDimensionRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateDimensionRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateDimensionRequest;
@@ -86,7 +86,7 @@ export declare class CreateDimensionResponse extends Message<CreateDimensionResp
      */
     dimensionId: string;
     constructor(data?: PartialMessage<CreateDimensionResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateDimensionResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateDimensionResponse;
@@ -111,7 +111,7 @@ export declare class JoinDimensionRequest extends Message<JoinDimensionRequest> 
      */
     dimensionId: string;
     constructor(data?: PartialMessage<JoinDimensionRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.JoinDimensionRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): JoinDimensionRequest;
@@ -179,7 +179,7 @@ export declare class DimensionEvent extends Message<DimensionEvent> {
         value?: undefined;
     };
     constructor(data?: PartialMessage<DimensionEvent>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionEvent";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DimensionEvent;
@@ -200,7 +200,7 @@ export declare class DimensionStatus extends Message<DimensionStatus> {
      */
     detail?: string;
     constructor(data?: PartialMessage<DimensionStatus>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionStatus";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DimensionStatus;
@@ -229,7 +229,7 @@ export declare class DimensionInstance extends Message<DimensionInstance> {
      */
     features?: UserInterfaceFeatures;
     constructor(data?: PartialMessage<DimensionInstance>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionInstance";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DimensionInstance;
@@ -282,7 +282,7 @@ export declare class DimensionInfo extends Message<DimensionInfo> {
      */
     entryMessage?: string;
     constructor(data?: PartialMessage<DimensionInfo>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionInfo";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DimensionInfo;
@@ -307,7 +307,7 @@ export declare class DimensionOrigin extends Message<DimensionOrigin> {
      */
     partnerSession?: PartnerSession;
     constructor(data?: PartialMessage<DimensionOrigin>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionOrigin";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DimensionOrigin;
@@ -328,7 +328,7 @@ export declare class DimensionBroadcast extends Message<DimensionBroadcast> {
      */
     announcerConnectionId?: string;
     constructor(data?: PartialMessage<DimensionBroadcast>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionBroadcast";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DimensionBroadcast;
@@ -357,7 +357,7 @@ export declare class AccessLimits extends Message<AccessLimits> {
      */
     emailWhitelist: string[];
     constructor(data?: PartialMessage<AccessLimits>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.AccessLimits";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AccessLimits;
@@ -382,7 +382,7 @@ export declare class SetLessonContextRequest extends Message<SetLessonContextReq
      */
     context?: LessonContext;
     constructor(data?: PartialMessage<SetLessonContextRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SetLessonContextRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetLessonContextRequest;
@@ -403,7 +403,7 @@ export declare class SetLessonContextResponse extends Message<SetLessonContextRe
      */
     detail?: string;
     constructor(data?: PartialMessage<SetLessonContextResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SetLessonContextResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetLessonContextResponse;

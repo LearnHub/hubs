@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 /**
  * @generated from message avn.connect.v1.Pass
  */
@@ -21,7 +21,7 @@ export declare class Pass extends Message<Pass> {
      */
     expires?: Timestamp;
     constructor(data?: PartialMessage<Pass>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Pass";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Pass;
@@ -38,7 +38,7 @@ export declare class GetPassRequest extends Message<GetPassRequest> {
      */
     passId: string;
     constructor(data?: PartialMessage<GetPassRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetPassRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetPassRequest;
@@ -55,7 +55,7 @@ export declare class GetPassResponse extends Message<GetPassResponse> {
      */
     result?: Pass;
     constructor(data?: PartialMessage<GetPassResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetPassResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetPassResponse;

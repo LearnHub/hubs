@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 /**
  * @generated from message avn.connect.v1.Certificate
  */
@@ -9,7 +9,7 @@ export declare class Certificate extends Message<Certificate> {
      */
     certificateUrl: string;
     constructor(data?: PartialMessage<Certificate>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Certificate";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Certificate;
@@ -26,7 +26,7 @@ export declare class GetHostnameCertificatesRequest extends Message<GetHostnameC
      */
     hostname: string;
     constructor(data?: PartialMessage<GetHostnameCertificatesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetHostnameCertificatesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetHostnameCertificatesRequest;
@@ -43,7 +43,7 @@ export declare class GetHostnameCertificatesResponse extends Message<GetHostname
      */
     certificates: Certificate[];
     constructor(data?: PartialMessage<GetHostnameCertificatesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetHostnameCertificatesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetHostnameCertificatesResponse;

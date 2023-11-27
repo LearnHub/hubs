@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { HeaderField } from "./http_pb.js";
 /**
@@ -52,7 +52,7 @@ export declare class GetFileUrlRequest extends Message<GetFileUrlRequest> {
      */
     fileName?: string;
     constructor(data?: PartialMessage<GetFileUrlRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetFileUrlRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetFileUrlRequest;
@@ -71,7 +71,7 @@ export declare class GetFileUrlResponse extends Message<GetFileUrlResponse> {
      */
     url?: string;
     constructor(data?: PartialMessage<GetFileUrlResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetFileUrlResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetFileUrlResponse;
@@ -112,7 +112,7 @@ export declare class GetManifestRequest extends Message<GetManifestRequest> {
      */
     fileName?: string;
     constructor(data?: PartialMessage<GetManifestRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetManifestRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetManifestRequest;
@@ -143,7 +143,7 @@ export declare class UploadManifest extends Message<UploadManifest> {
      */
     headerFields: HeaderField[];
     constructor(data?: PartialMessage<UploadManifest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.UploadManifest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UploadManifest;
@@ -164,7 +164,7 @@ export declare class AltServer extends Message<AltServer> {
      */
     host: string;
     constructor(data?: PartialMessage<AltServer>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.AltServer";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AltServer;
@@ -177,7 +177,7 @@ export declare class AltServer extends Message<AltServer> {
  */
 export declare class GetAltServersRequest extends Message<GetAltServersRequest> {
     constructor(data?: PartialMessage<GetAltServersRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetAltServersRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAltServersRequest;
@@ -194,7 +194,7 @@ export declare class GetAltServersResponse extends Message<GetAltServersResponse
      */
     servers: AltServer[];
     constructor(data?: PartialMessage<GetAltServersResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetAltServersResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAltServersResponse;

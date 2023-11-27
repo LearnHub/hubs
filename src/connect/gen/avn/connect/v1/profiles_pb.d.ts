@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { Category } from "./categories_pb.js";
 import { Activity } from "./activities_pb.js";
@@ -32,7 +32,7 @@ export declare class Profile extends Message<Profile> {
      */
     tags: number[];
     constructor(data?: PartialMessage<Profile>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Profile";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Profile;
@@ -65,7 +65,7 @@ export declare class GetProfileCategoriesRequest extends Message<GetProfileCateg
      */
     pageToken?: string;
     constructor(data?: PartialMessage<GetProfileCategoriesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfileCategoriesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileCategoriesRequest;
@@ -86,7 +86,7 @@ export declare class GetProfileCategoriesResponse extends Message<GetProfileCate
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<GetProfileCategoriesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfileCategoriesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileCategoriesResponse;
@@ -119,7 +119,7 @@ export declare class GetProfileActivitiesRequest extends Message<GetProfileActiv
      */
     pageToken?: string;
     constructor(data?: PartialMessage<GetProfileActivitiesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfileActivitiesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileActivitiesRequest;
@@ -140,7 +140,7 @@ export declare class GetProfileActivitiesResponse extends Message<GetProfileActi
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<GetProfileActivitiesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfileActivitiesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileActivitiesResponse;

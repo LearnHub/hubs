@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { Profile } from "./profiles_pb.js";
 import { Activity } from "./activities_pb.js";
@@ -32,7 +32,7 @@ export declare class Channel extends Message<Channel> {
      */
     description?: string;
     constructor(data?: PartialMessage<Channel>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Channel";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Channel;
@@ -57,7 +57,7 @@ export declare class GetChannelRequest extends Message<GetChannelRequest> {
      */
     targetLanguageId?: string;
     constructor(data?: PartialMessage<GetChannelRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetChannelRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetChannelRequest;
@@ -86,7 +86,7 @@ export declare class GetBrowsableChannelsRequest extends Message<GetBrowsableCha
      */
     pageToken?: string;
     constructor(data?: PartialMessage<GetBrowsableChannelsRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetBrowsableChannelsRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetBrowsableChannelsRequest;
@@ -107,7 +107,7 @@ export declare class GetBrowsableChannelsResponse extends Message<GetBrowsableCh
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<GetBrowsableChannelsResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetBrowsableChannelsResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetBrowsableChannelsResponse;
@@ -140,7 +140,7 @@ export declare class GetProfilesRequest extends Message<GetProfilesRequest> {
      */
     pageToken?: string;
     constructor(data?: PartialMessage<GetProfilesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfilesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfilesRequest;
@@ -161,7 +161,7 @@ export declare class GetProfilesResponse extends Message<GetProfilesResponse> {
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<GetProfilesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfilesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfilesResponse;
@@ -194,7 +194,7 @@ export declare class GetActivitiesRequest extends Message<GetActivitiesRequest> 
      */
     pageToken?: string;
     constructor(data?: PartialMessage<GetActivitiesRequest>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetActivitiesRequest";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetActivitiesRequest;
@@ -215,7 +215,7 @@ export declare class GetActivitiesResponse extends Message<GetActivitiesResponse
      */
     nextPageToken: string;
     constructor(data?: PartialMessage<GetActivitiesResponse>);
-    static readonly runtime: import("@bufbuild/protobuf/dist/types/private/proto-runtime.js").ProtoRuntime;
+    static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetActivitiesResponse";
     static readonly fields: FieldList;
     static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetActivitiesResponse;
