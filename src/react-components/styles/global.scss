@@ -601,9 +601,9 @@ h5 {
   font-size: theme.$font-size-sm;
 }
 
+// AVN: 'strong' removed from this list to avoid font-size override
 label,
-small,
-strong {
+small {
   font-size: theme.$font-size-xs;
   font-weight: theme.$font-weight-bold;
 }
