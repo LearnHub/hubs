@@ -103,7 +103,8 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
   }
 
   // Page title and icon
-  document.title = nextState.name;
+  const roomName = AVN?.roomActivity?.name || nextState.name;
+  document.title = roomName;
   if(nextState.icon) {
     favicon.setAttribute("href", nextState.icon);
   }
@@ -183,7 +184,7 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
 
   APP.messageDispatch.receive({
     type: "hub_changed",
-    hubName: hub.name,
+    hubName: roomName,
     showLineBreak: true
   });
 

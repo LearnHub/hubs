@@ -6,7 +6,9 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
-export function EduverseTeacherSidebar({ roomInfo, onClose }) {
+export function EduverseTeacherSidebar({ roomActivity, roomInfo, onClose }) {
+  const name = roomActivity?.name || roomInfo.name
+  const text = roomActivity?.description
   return (
     <Sidebar
       title={
@@ -22,10 +24,10 @@ export function EduverseTeacherSidebar({ roomInfo, onClose }) {
       <div className={styles.informationContainer}>
         <h1>
           {roomInfo.iconUrl && (<img src={roomInfo.iconUrl} className={styles.sceneIcon}/>)}
-          <span className={styles.sceneName}>{roomInfo.name}</span>
+          <span className={styles.sceneName}>{name}</span>
         </h1>
-        {roomInfo.description && (
-            <div className={markdownStyles.markdown} dangerouslySetInnerHTML={{ __html: AVNGlobal.MD.render(roomInfo.description) }} />
+        {text && (
+            <div className={markdownStyles.markdown} dangerouslySetInnerHTML={{ __html: AVNGlobal.MD.render(text) }} />
         )}
       </div>
     </Sidebar>
@@ -33,6 +35,7 @@ export function EduverseTeacherSidebar({ roomInfo, onClose }) {
 }
 
 EduverseTeacherSidebar.propTypes = {
+  roomActivity: PropTypes.object,
   roomInfo: PropTypes.object.isRequired,
   onClose: PropTypes.func
 };

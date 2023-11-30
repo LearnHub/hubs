@@ -191,6 +191,7 @@ class UIRoot extends Component {
     selectedObject: PropTypes.object,
     breakpoint: PropTypes.string,
     // AVN Properties
+    avnRoomActivity: PropTypes.object,
     avnRoomInfo: PropTypes.object,
     avnDimensionInfo: PropTypes.object,
     avnDimensionConnection: PropTypes.object,
@@ -926,7 +927,7 @@ class UIRoot extends Component {
       <>
         {/* AVN: Room linking and VR mode have been separated */}
         <RoomEntryModal
-          roomName={this.props.hub.name}
+          roomName={this.props.avnRoomActivity?.name || this.props.hub.name}
           showRoomFull={this.props.entryDisallowed && !this.state.entered}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {
@@ -1736,12 +1737,14 @@ class UIRoot extends Component {
                       )}
                       {this.state.sidebarId === "eduverse-teacher" && (
                         <EduverseTeacherSidebarContainer
+                          roomActivity={this.props.avnRoomActivity}
                           roomInfo={this.props.avnRoomInfo}
                           onClose={() => this.setSidebar(null)}
                         />
                       )}
                       {this.state.sidebarId === "eduverse-student" && (
                         <EduverseStudentSidebarContainer
+                          roomActivity={this.props.avnRoomActivity}
                           roomInfo={this.props.avnRoomInfo}
                           onClose={() => this.setSidebar(null)}
                         />

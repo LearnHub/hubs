@@ -53,6 +53,10 @@ export declare class Activity extends Message<Activity> {
      * @generated from field: int32 organization_id = 12;
      */
     organizationId: number;
+    /**
+     * @generated from field: optional string instructions = 13;
+     */
+    instructions?: string;
     constructor(data?: PartialMessage<Activity>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Activity";

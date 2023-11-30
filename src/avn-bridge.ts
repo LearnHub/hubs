@@ -33,11 +33,14 @@ class AVNBridge {
     private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
     private _accessToken: string | undefined
     private _roomInfo: ConnectClient.RoomInfo | undefined
+    // Activity is only set when the room represents one
+    private _roomActivity: ConnectClient.Activity | undefined
     private _teachLessonContext: ConnectClient.LessonContext | undefined
     private _learnLessonContext: ConnectClient.LessonContext | undefined
     private _dimensionInfo: ConnectClient.DimensionInfo | undefined
     private _dimensionConnection: ConnectClient.ConnectionInstance | undefined
     private _dimensionId: string = ""
+    private _dimensionAuth: ConnectClient.Authorization | undefined = undefined
     private _cachedClientId: string | undefined
 
     private _avnfsAltServers: string[] | undefined
@@ -149,6 +152,11 @@ class AVNBridge {
         return this._roomInfo        
     }
         
+    // Mutations trigger event `avn-room-activity-changed`
+    get roomActivity() {
+        return this._roomActivity
+    }
+        
     // Mutations trigger event `avn-dimension-connection-changed`
     get dimensionConnection() {
         return this._dimensionConnection        
@@ -213,6 +221,7 @@ class AVNBridge {
             console.log("AVN: dimension is solo, so it will be replaced")
             // Don't let this dimension be joined again, which can lead to hanging gRPC-web connections
             this._dimensionId = ""
+            this._dimensionAuth = undefined
             // Give the connections time to unwind gracefully
             setTimeout(this.startNewSession, 1_000, this.passId, this.assetId)
         }
@@ -248,32 +257,32 @@ class AVNBridge {
     }
 
     public async getBrowsableChannels(): Promise<ConnectClient.Channel[]> {
-        const result = await this.Connect.Channels.getBrowsableChannels({ auth: new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }) })
+        const result = await this.Connect.Channels.getBrowsableChannels({ auth: this._dimensionAuth })
         return result.results
     }
 
     public async getProfilesForChannel(channelId: number): Promise<ConnectClient.Profile[]> {
-        const result = await this.Connect.Channels.getProfiles({ auth: new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), channelId })
+        const result = await this.Connect.Channels.getProfiles({ auth: this._dimensionAuth, channelId })
         return result.results
     }
 
     public async getCategoriesForProfile(profileId: number): Promise<ConnectClient.Category[]> {
-        const result = await this.Connect.Profiles.getCategories({ auth: new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), profileId })
+        const result = await this.Connect.Profiles.getCategories({ auth: this._dimensionAuth, profileId })
         return result.results
     }
 
     public async getActivitiesForProfile(profileId: number): Promise<ConnectClient.Activity[]> {
-        const result = await this.Connect.Profiles.getActivities({ auth: new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), profileId })
+        const result = await this.Connect.Profiles.getActivities({ auth: this._dimensionAuth, profileId })
         return result.results
     }
 
     public async getActivitiesForCategory(categoryId: number): Promise<ConnectClient.Activity[]> {
-        const result = await this.Connect.Categories.getActivities({ auth: new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), categoryId })
+        const result = await this.Connect.Categories.getActivities({ auth: this._dimensionAuth, categoryId })
         return result.results
     }
 
     public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<ConnectClient.Activity[]> {
-        const result = await this.Connect.Activities.searchActivities({ auth: new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } }), channelId, searchText })
+        const result = await this.Connect.Activities.searchActivities({ auth: this._dimensionAuth, channelId, searchText })
         return result.results
     }
 
@@ -296,6 +305,7 @@ class AVNBridge {
             passId,
         })
         this._dimensionId = createDimensionResult.dimensionId
+        this._dimensionAuth = new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } })
         return true
     }
 
@@ -303,6 +313,7 @@ class AVNBridge {
         try {
             const getRoomDimensionResult = await this.Connect.Rooms.getRoomDimension({ roomId: roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
+            this._dimensionAuth = new ConnectClient.Authorization({ method: { case: "dimensionId", value: this._dimensionId } })
             console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
             return true
         } catch {
@@ -576,7 +587,14 @@ class AVNBridge {
             sessionId
         })
         this._roomInfo = enterRoomResult.roomInfo
+        const activityId = enterRoomResult.roomInfo.activityId
+        if(activityId) {
+            this._roomActivity = await this.Connect.Activities.getActivity({ auth: this._dimensionAuth, activityId })
+        } else {
+            this._roomActivity = undefined
+        }
         global.dispatchEvent(new Event("avn-room-info-changed"))
+        global.dispatchEvent(new Event("avn-room-activity-changed"))
     }
 
     public goHome() {

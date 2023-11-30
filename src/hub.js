@@ -960,6 +960,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return        
   }
   remountUI({ 
+    avnRoomActivity: AVN.roomActivity, 
     avnRoomInfo: AVN.roomInfo, 
     avnDimensionInfo: AVN.dimensionInfo, 
     avnDimensionConnection: AVN.dimensionConnection, 
@@ -972,6 +973,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   global.addEventListener("avn-allow-explore-changed", () => { remountUI({ avnAllowExplore: AVN.allowExplore }) })
   global.addEventListener("avn-allow-navigation-changed", () => { remountUI({ avnAllowNavigation: AVN.allowNavigation }) })
   global.addEventListener("avn-room-info-changed", () => { remountUI({ avnRoomInfo: AVN.roomInfo }) })
+  global.addEventListener("avn-room-activity-changed", () => { remountUI({ avnRoomActivity: AVN.roomActivity }) })
   global.addEventListener("avn-dimension-info-changed", () => { remountUI({ avnDimensionInfo: AVN.dimensionInfo }) })
   global.addEventListener("avn-dimension-connection-changed", () => { remountUI({ avnDimensionConnection: AVN.dimensionConnection }) })
   global.addEventListener("avn-dimension-status-changed", () => { remountUI({ avnDimensionStatus: AVN.dimensionStatus }) })
@@ -1518,7 +1520,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (stale_fields.includes("name")) {
       const titleParts = document.title.split(" | "); // Assumes title has | trailing site name
-      titleParts[0] = hub.name;
+      titleParts[0] = AVN?.roomActivity?.name || hub.name;
       document.title = titleParts.join(" | ");
 
       // Re-write the slug in the browser history
