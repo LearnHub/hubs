@@ -292,8 +292,10 @@ async function mediaInflator(el, componentName, componentData, components, fitTo
 
 const mediaInflatorNoResize = (el, componentName, componentData, components) =>
   mediaInflator(el, componentName, componentData, components, false);
-
-AFRAME.GLTFModelPlus.registerComponent("model", "model", mediaInflatorNoResize);
+// AVN: Legacy behaviour expects models to be fitted on load
+const mediaInflatorWithResize = (el, componentName, componentData, components) =>
+  mediaInflator(el, componentName, componentData, components, true);
+AFRAME.GLTFModelPlus.registerComponent("model", "model", mediaInflatorWithResize);
 AFRAME.GLTFModelPlus.registerComponent("image", "image", mediaInflatorNoResize);
 AFRAME.GLTFModelPlus.registerComponent("audio", "audio", mediaInflatorNoResize, (name, property, value) => {
   if (property === "paused") {
