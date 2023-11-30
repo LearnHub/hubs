@@ -102,13 +102,6 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
     window.history.pushState   (nextState, null, hubUrl(nextState.hubId, { }, nextState.newAssetId, nextState.oldAssetId));
   }
 
-  // Page title and icon
-  const roomName = AVN?.roomActivity?.name || nextState.name;
-  document.title = roomName;
-  if(nextState.icon) {
-    favicon.setAttribute("href", nextState.icon);
-  }
-
   APP.hub = hub;
   updateUIForHub(hub, APP.hubChannel);
   scene.emit("hub_updated", { hub });
@@ -156,6 +149,13 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
   // AVN: Update Eduverse presence
   await AVN.enterRoom(hub.hub_id, NAF.clientId)
 
+  // AVN: Moved so activity property is updated (translated name)
+  const roomName = AVN.roomActivity?.name || AVN.roomInfo?.name;
+  document.title = roomName;
+  if(nextState.icon) {
+    favicon.setAttribute("href", nextState.icon);
+  }
+  
   APP.retChannel.push("change_hub", { hub_id: hub.hub_id });
 
   await Promise.all([
