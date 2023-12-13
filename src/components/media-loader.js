@@ -361,8 +361,9 @@ AFRAME.registerComponent("media-loader", {
       this.el.removeAttribute("media-image");
     }
     try {
+      const isFragment = src.charAt(0) === "#"
       // Short circuit for external web links (don't bother with fetching content types and thumbnails)
-      if(this.data.contentType === "text/html" && !AVN.isAvnUrl(src)) {
+      if(this.data.contentType === "text/html" && !isFragment && !AVN.isAvnUrl(src)) {
         console.log(`Showing simple link for URL '${src}'`)
         // Change image to be a 1x1 transparent PNG (image mesh provides the hover target)
         this.el.setAttribute("media-image", { 
@@ -383,37 +384,39 @@ AFRAME.registerComponent("media-loader", {
       }
 
       //check if url is an anchor hash e.g. #Spawn_Point_1
-      if (src.charAt(0) === "#") {
-        src = this.data.src = `${window.location.origin}${window.location.pathname}${window.location.search}${src}`;
+      if (isFragment) {
+        //src = this.data.src = `${window.location.origin}${window.location.pathname}${window.location.search}${src}`;
       }
 
       let canonicalAudioUrl = null; // set non-null only if audio track is separated from video track (eg. 360 video)
       let contentType = this.data.contentType;
+      let isAvatar = false;
       // AVN: Link elements should remain as is for proper inflation
       const isLinkElement = contentType === "text/html"
-      const parsedUrl = new URL(src);
-      let isAvatar = false;
-      if(ConnectClient.AvnfsUtils.isValidUrl(parsedUrl)) {
-        const { mediaType } = ConnectClient.AvnfsUtils.decodeUrl(parsedUrl)
-        if(!isLinkElement) {
-          contentType = mediaType;
-        }
-        //TODO: BETTER TEST FOR AVATARS
-        isAvatar = mediaType.includes("avatar");
-      } else {
-        if(parsedUrl.hostname == "scene.link") {
-          // Indirect media resolution
-          const result = await global.AVNGlobal.fetchMediaData(src);
-          src = result.origin;          
+      const parsedUrl = isFragment ? undefined : new URL(src);
+      if(parsedUrl) {
+        if(ConnectClient.AvnfsUtils.isValidUrl(parsedUrl)) {
+          const { mediaType } = ConnectClient.AvnfsUtils.decodeUrl(parsedUrl)
           if(!isLinkElement) {
-            contentType = (result.meta && result.meta.expected_content_type) || contentType;
+            contentType = mediaType;
           }
-          const tags = result.meta && result.meta.tags;
-          isAvatar = tags && tags.includes(AvnTags.Avatar);
+          //TODO: BETTER TEST FOR AVATARS
+          isAvatar = mediaType.includes("avatar");
         } else {
-          console.warn(`Unexpected URL to resolve '${src}'`)
-        }
-      }        
+          if(parsedUrl.hostname == "scene.link") {
+            // Indirect media resolution
+            const result = await global.AVNGlobal.fetchMediaData(src);
+            src = result.origin;          
+            if(!isLinkElement) {
+              contentType = (result.meta && result.meta.expected_content_type) || contentType;
+            }
+            const tags = result.meta && result.meta.tags;
+            isAvatar = tags && tags.includes(AvnTags.Avatar);
+          } else {
+            console.warn(`Unexpected URL to resolve '${src}'`)
+          }
+        }        
+      }
 
       // if the component creator didn't know the content type, we didn't get it from reticulum, and
       // we don't think we can infer it from the extension, we need to make a HEAD request to find it out

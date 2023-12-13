@@ -34,25 +34,31 @@ AFRAME.registerComponent("action-trigger-volume", {
       const collidingLastFrame = this.collidingLastFrame[object3D.id];
 
       if (isColliding && !collidingLastFrame) {
-        if(this.data.isAvatarLink) {
-          if(AVN.isAuthenticated) {
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
-            const avatarId = this.data.src || new URL(this.data.src).pathname.split("/").pop();
-            console.log("AVN: Setting avatar to ", avatarId);
-            window.APP.store.update({ profile: { avatarId } });
-            this.el.sceneEl.emit("avatar_updated");
-          } else {
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
-            console.log(`AVN: Avatar change denied because user is not authenticated`);
-          }
+        // Is this a fragment?
+        if(this.data.src.charAt(0) === "#") {
+          // Just update the URL and the Waypoint system will process the instruction without changing the history
+          window.history.replaceState(null, null, window.location.href.split("#")[0] + this.data.src);
         } else {
-          if(AVN.allowNavigation) {
-            console.log("AVN: Navigating to scene link", this.data.src);
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_HOVER_OR_GRAB);
-            changeHubAvn(this.data.src);
+          if(this.data.isAvatarLink) {
+            if(AVN.isAuthenticated) {
+              this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
+              const avatarId = this.data.src || new URL(this.data.src).pathname.split("/").pop();
+              console.log("AVN: Setting avatar to ", avatarId);
+              window.APP.store.update({ profile: { avatarId } });
+              this.el.sceneEl.emit("avatar_updated");
+            } else {
+              this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
+              console.log(`AVN: Avatar change denied because user is not authenticated`);
+            }
           } else {
-            this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
-            console.log(`AVN: Navigation denied because room is not explorable`);
+            if(AVN.allowNavigation) {
+              console.log("AVN: Navigating to scene link", this.data.src);
+              this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_HOVER_OR_GRAB);
+              changeHubAvn(this.data.src);
+            } else {
+              this.el.sceneEl.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_FREEZE);
+              console.log(`AVN: Navigation denied because room is not explorable`);
+            }
           }
         }
       } else if (!isColliding && collidingLastFrame) {

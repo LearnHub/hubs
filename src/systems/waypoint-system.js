@@ -332,8 +332,7 @@ export class WaypointSystem {
       const waypoint = this.ready.find(c => c.el.object3D.name === waypointName);
       if (waypoint) {
         this.moveToWaypoint(waypoint, this.previousWaypointHash === null);
-        // AVN: Reload behaviour is more consistent if you don't remove the waypoint hash
-        //window.history.replaceState(null, null, window.location.href.split("#")[0]); // Reset so you can re-activate the same waypoint
+        window.history.replaceState(null, null, window.location.href.split("#")[0]); // Reset so you can re-activate the same waypoint
       }
       this.previousWaypointHash = window.location.hash;
     }
