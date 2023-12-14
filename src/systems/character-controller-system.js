@@ -206,10 +206,12 @@ export class CharacterControllerSystem {
                 .setFromMatrixPosition(this.avatarPOV.object3D.matrixWorld)
                 .distanceTo(waypointPosition.setFromMatrixPosition(this.activeWaypoint.transform)) /
                 AVERAGE_WAYPOINT_TRAVEL_SPEED_METERS_PER_SECOND);
+        // AVN: Prevent smooth travel to avoid a number of pathological cases
+        this.waypointTravelTime = 0;
         rotateInPlaceAroundWorldUp(this.avatarPOV.object3D.matrixWorld, Math.PI, startTransform);
         startTransform.multiply(startTranslation.makeTranslation(0, -1 * getCurrentPlayerHeight(), -0.15));
         this.waypointTravelStartTime = t;
-        if (!vrMode && this.waypointTravelTime > 100) {
+        if (!vrMode && !this.activeWaypoint.isInstant /*&& this.waypointTravelTime > 100 AVN: Always play sound for waypoint transitions */) {
           this.sfx.playSoundOneShot(SOUND_WAYPOINT_START);
         }
       }
