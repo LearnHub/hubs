@@ -581,24 +581,9 @@ AFRAME.GLTFModelPlus.registerComponent("moveable", "moveable", (el, componentNam
       
       // shape-helper currently expects there to be an A-Frame mesh directly descendent from the node that shape-helper attaches to
       if(el.object3DMap.mesh) {
-        // Move the target such that the center of its bounding box is in the same position as the parent matrix position
         const target = el.object3D;
         target.updateMatrices();
         const box = getBox(target, target);
-        const { min, max } = box;
-        const center = new THREE.Vector3();
-        center.addVectors(min, max).multiplyScalar(0.5);
-        // The shim object sits between the target and it's children such that the target position will be central
-        const shim = new Object3D();
-        shim.name = `shim-${target.name}`;
-        const children = target.children.slice();
-        target.attach(shim);
-        children.forEach(child => shim.attach(child));
-        // Move the target to the center of the object and the shim opposite to keep the overall position the same
-        target.position.add(center);
-        shim.position.sub(center);
-        target.matrixNeedsUpdate = true;
-        shim.matrixNeedsUpdate = true;
         // Note that the hull building library assumes the object position is at the volumetric center of the shape
         // and if this is not true it will be generated at an offset to the actual geometry
         el.setAttribute("shape-helper", { type: SHAPE.HULL, minHalfExtent: 0.04 });
