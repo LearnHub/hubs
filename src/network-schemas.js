@@ -130,6 +130,25 @@ function registerNetworkSchemas() {
     ]
   });
 
+  // AVN: Moveable extension
+  NAF.schemas.add({
+    template: "#moveable-media",
+    components: [
+      {
+        component: "position",
+        requiresNetworkUpdate: vectorRequiresUpdate(0.001)
+      },
+      {
+        component: "rotation",
+        requiresNetworkUpdate: vectorRequiresUpdate(0.5)
+      },
+      {
+        component: "scale",
+        requiresNetworkUpdate: vectorRequiresUpdate(0.001)
+      },
+    ],
+  });
+
   NAF.schemas.add({
     template: "#interactable-emoji",
     components: [
