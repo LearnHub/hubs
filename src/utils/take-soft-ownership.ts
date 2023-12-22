@@ -1,11 +1,13 @@
-import { addComponent, hasComponent } from "bitecs";
+import { addComponent, hasComponent, getEntityComponents } from "bitecs";
 import { HubsWorld } from "../app";
 import { AEntity, Networked, Owned } from "../bit-components";
 import type { EntityID } from "./networking-types";
 
 export function takeSoftOwnership(world: HubsWorld, eid: EntityID) {
   if (hasComponent(world, AEntity, eid)) {
-    throw new Error("Cannot take soft ownership of AEntities.");
+    // Probably triggered by "moveable" being a hybrid type. Hopefully fixed by "grabbable"
+    console.warn("Cannot take soft ownership of AEntities.", eid)
+    //throw new Error("Cannot take soft ownership of AEntities.");
   }
 
   addComponent(world, Owned, eid);
