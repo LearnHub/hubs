@@ -529,8 +529,10 @@ class AVNBridge {
     async abortStreamIfActive() {
         // Is there an open stream?
         if (this._streamAbortController) {
+            console.log(`Aborting active stream...`)
             this._streamAbortController.abort("STREAM_REPLACEMENT")
             this._streamAbortController = null
+            console.log(`Stream aborted`)
         }
     }
 
@@ -543,6 +545,7 @@ class AVNBridge {
             await this.abortStreamIfActive()
             const abortController = new AbortController()
             const auth = this._accessToken ? new ConnectClient.Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
+            console.info(`Joining dimension '${this.dimensionId}'...`)
             const dimensionStream = this.Connect.Dimensions.joinDimension({
                     client: new ConnectClient.ClientCredentials({ clientId: await this.getClientId() }),
                     auth,
@@ -550,7 +553,10 @@ class AVNBridge {
                 },
                 { signal: abortController.signal }
             )
+            console.info(`Connected to dimension '${this.dimensionId}'`)
+            console.info(`Constructing stream iterator`)
             const dimensionStreamIterator: AsyncIterator<ConnectClient.DimensionEvent, ConnectClient.DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
+            console.info(`Waiting for first message...`)
             const { done, value } = await dimensionStreamIterator.next()
             if (done) {
                 console.error(`AVN: dimension stream unexpectedly terminated`)
