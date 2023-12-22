@@ -274,7 +274,9 @@ module.exports = async (env, argv) => {
   const liveReload = !!process.env.LIVE_RELOAD || false;
 
   const devServerHeaders = {
-    "Access-Control-Allow-Origin": "*"
+    "Access-Control-Allow-Origin": "*",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp"
   };
 
   // Behind and environment var for now pending further testing
