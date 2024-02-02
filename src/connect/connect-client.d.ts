@@ -55,3 +55,5 @@ export * from "./gen/avn/connect/v1/neighbors_connect.js";
 export * from "./gen/avn/connect/v1/neighbors_pb.js";
 export * from "./gen/avn/connect/v1/certificates_connect.js";
 export * from "./gen/avn/connect/v1/certificates_pb.js";
+export * from "./gen/avn/connect/v1/three_sixty_cities_connect.js";
+export * from "./gen/avn/connect/v1/three_sixty_cities_pb.js";

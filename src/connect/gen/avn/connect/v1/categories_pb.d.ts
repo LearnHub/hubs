@@ -52,6 +52,8 @@ export declare class GetCategoryActivitiesRequest extends Message<GetCategoryAct
      */
     categoryId: number;
     /**
+     * I THINK THIS COMES FROM THE EVENT CONTEXT NOW
+     *
      * @generated from field: optional string target_language_id = 3;
      */
     targetLanguageId?: string;
@@ -81,9 +83,9 @@ export declare class GetCategoryActivitiesResponse extends Message<GetCategoryAc
      */
     results: Activity[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<GetCategoryActivitiesResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetCategoryActivitiesResponse";

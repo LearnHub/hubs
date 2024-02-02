@@ -2,6 +2,31 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 /**
+ * @generated from enum avn.connect.v1.ActivityType
+ */
+export declare enum ActivityType {
+    /**
+     * @generated from enum value: ACTIVITY_UNSPECIFIED = 0;
+     */
+    ACTIVITY_UNSPECIFIED = 0,
+    /**
+     * @generated from enum value: ACTIVITY_FILE = 1;
+     */
+    ACTIVITY_FILE = 1,
+    /**
+     * @generated from enum value: ACTIVITY_URL = 2;
+     */
+    ACTIVITY_URL = 2,
+    /**
+     * @generated from enum value: ACTIVITY_APP = 3;
+     */
+    ACTIVITY_APP = 3,
+    /**
+     * @generated from enum value: ACTIVITY_FOLDER = 4;
+     */
+    ACTIVITY_FOLDER = 4
+}
+/**
  * @generated from message avn.connect.v1.Activity
  */
 export declare class Activity extends Message<Activity> {
@@ -57,6 +82,18 @@ export declare class Activity extends Message<Activity> {
      * @generated from field: optional string instructions = 13;
      */
     instructions?: string;
+    /**
+     * @generated from field: optional string credit = 14;
+     */
+    credit?: string;
+    /**
+     * @generated from field: avn.connect.v1.ActivityType type = 15;
+     */
+    type: ActivityType;
+    /**
+     * @generated from field: repeated string screenshot_urls = 16;
+     */
+    screenshotUrls: string[];
     constructor(data?: PartialMessage<Activity>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Activity";
@@ -175,6 +212,8 @@ export declare class SearchActivitiesRequest extends Message<SearchActivitiesReq
      */
     searchText: string;
     /**
+     * I THINK THIS COMES FROM THE EVENT CONTEXT NOW BUT WHAT ABOUT OVERLOADING IN FUTURE?
+     *
      * @generated from field: optional string target_language_id = 4;
      */
     targetLanguageId?: string;
@@ -204,9 +243,9 @@ export declare class SearchActivitiesResponse extends Message<SearchActivitiesRe
      */
     results: Activity[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<SearchActivitiesResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchActivitiesResponse";

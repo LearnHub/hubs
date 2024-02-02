@@ -82,9 +82,9 @@ export declare class GetProfileCategoriesResponse extends Message<GetProfileCate
      */
     results: Category[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<GetProfileCategoriesResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfileCategoriesResponse";
@@ -136,9 +136,9 @@ export declare class GetProfileActivitiesResponse extends Message<GetProfileActi
      */
     results: Activity[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<GetProfileActivitiesResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfileActivitiesResponse";

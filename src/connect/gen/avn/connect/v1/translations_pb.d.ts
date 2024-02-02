@@ -10,6 +10,35 @@ export declare enum TranslationFlags {
     MARKDOWN_SOURCE = 0
 }
 /**
+ * @generated from enum avn.connect.v1.TranslationState
+ */
+export declare enum TranslationState {
+    /**
+     * @generated from enum value: UNKNOWN = 0;
+     */
+    UNKNOWN = 0,
+    /**
+     * @generated from enum value: OK = 1;
+     */
+    OK = 1,
+    /**
+     * @generated from enum value: SAME_LANGUAGE = 2;
+     */
+    SAME_LANGUAGE = 2,
+    /**
+     * @generated from enum value: DIALECT = 4;
+     */
+    DIALECT = 4,
+    /**
+     * @generated from enum value: FAILED = 256;
+     */
+    FAILED = 256,
+    /**
+     * @generated from enum value: NOT_FOUND = 512;
+     */
+    NOT_FOUND = 512
+}
+/**
  * @generated from message avn.connect.v1.TranslationRequest
  */
 export declare class TranslationRequest extends Message<TranslationRequest> {
@@ -71,12 +100,15 @@ export declare class TranslationResponse extends Message<TranslationResponse> {
     /**
      * Language of the translated text
      *
-     * TODO: State of the translation
-     * TranslationState state = 4;
-     *
      * @generated from field: string target_language_id = 3;
      */
     targetLanguageId: string;
+    /**
+     * State of the translation
+     *
+     * @generated from field: avn.connect.v1.TranslationState state = 4;
+     */
+    state: TranslationState;
     constructor(data?: PartialMessage<TranslationResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.TranslationResponse";

@@ -5,14 +5,20 @@ import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
  */
 export declare class Certificate extends Message<Certificate> {
     /**
+     * SHA256 fingerprint
+     *
      * @generated from field: string fingerprint = 1;
      */
     fingerprint: string;
     /**
+     * Hostname that certificate is issued for
+     *
      * @generated from field: string hostname = 2;
      */
     hostname: string;
     /**
+     * Time range certificate is valid for
+     *
      * @generated from field: google.protobuf.Timestamp valid_from = 3;
      */
     validFrom?: Timestamp;
@@ -21,11 +27,21 @@ export declare class Certificate extends Message<Certificate> {
      */
     validTo?: Timestamp;
     /**
+     * The private TLS certificate for servers
+     *
      * @generated from field: string file_url = 5;
      */
     fileUrl: string;
     /**
-     * @generated from field: google.protobuf.Timestamp created = 6;
+     * The legacy certificate file is for use on legacy platforms like Mono
+     *
+     * @generated from field: string legacy_file_url = 6;
+     */
+    legacyFileUrl: string;
+    /**
+     * When the certificate was created
+     *
+     * @generated from field: google.protobuf.Timestamp created = 7;
      */
     created?: Timestamp;
     constructor(data?: PartialMessage<Certificate>);

@@ -120,9 +120,9 @@ export declare class SearchMemberOrganizationsResponse extends Message<SearchMem
      */
     results: MemberOrganization[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<SearchMemberOrganizationsResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchMemberOrganizationsResponse";

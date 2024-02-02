@@ -41,16 +41,6 @@ export declare class RoomInfo extends Message<RoomInfo> {
      * @generated from field: google.protobuf.Timestamp created = 9;
      */
     created?: Timestamp;
-    /**
-     * TEMPORARY FIELDS UNTIL TRANSLATIONS ARE APPLIED
-     *
-     * @generated from field: optional string description = 20;
-     */
-    description?: string;
-    /**
-     * @generated from field: optional string instructions = 21;
-     */
-    instructions?: string;
     constructor(data?: PartialMessage<RoomInfo>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RoomInfo";

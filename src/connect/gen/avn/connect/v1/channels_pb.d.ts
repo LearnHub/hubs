@@ -103,9 +103,9 @@ export declare class GetBrowsableChannelsResponse extends Message<GetBrowsableCh
      */
     results: Channel[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<GetBrowsableChannelsResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetBrowsableChannelsResponse";
@@ -157,9 +157,9 @@ export declare class GetProfilesResponse extends Message<GetProfilesResponse> {
      */
     results: Profile[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<GetProfilesResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetProfilesResponse";
@@ -211,9 +211,9 @@ export declare class GetActivitiesResponse extends Message<GetActivitiesResponse
      */
     results: Activity[];
     /**
-     * @generated from field: string next_page_token = 2;
+     * @generated from field: optional string next_page_token = 2;
      */
-    nextPageToken: string;
+    nextPageToken?: string;
     constructor(data?: PartialMessage<GetActivitiesResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetActivitiesResponse";

@@ -1,5 +1,6 @@
 import { Activity, AddFilesRequest, GetActivityRequest, RemoveAllFilesRequest, RemoveFilesRequest, SearchActivitiesRequest, SearchActivitiesResponse } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
+import { SetPropertyRequest } from "./properties_pb.js";
 /**
  * @generated from service avn.connect.v1.ActivityService
  */
@@ -51,6 +52,15 @@ export declare const ActivityService: {
             readonly name: "SearchActivities";
             readonly I: typeof SearchActivitiesRequest;
             readonly O: typeof SearchActivitiesResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ActivityService.SetProperty
+         */
+        readonly setProperty: {
+            readonly name: "SetProperty";
+            readonly I: typeof SetPropertyRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };

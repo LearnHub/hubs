@@ -163,6 +163,10 @@ export declare class AltServer extends Message<AltServer> {
      * @generated from field: string host = 2;
      */
     host: string;
+    /**
+     * @generated from field: string client_id = 3;
+     */
+    clientId: string;
     constructor(data?: PartialMessage<AltServer>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.AltServer";
