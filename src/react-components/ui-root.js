@@ -922,13 +922,17 @@ class UIRoot extends Component {
     const isLockedDownDemo = isLockedDownDemoRoom();
     const promptForNameAndAvatarBeforeEntry = this.props.hubIsBound ? !hasAcceptedProfile : !hasChangedNameOrPronouns;
 
+    const showRoomFull = this.props.entryDisallowed && !this.state.entered;
+    if(showRoomFull) {
+      console.log(`Room is full: entryDisallowed = ${this.props.entryDisallowed}, entered = ${this.state.entered}`)
+    }
     // TODO: What does onEnteringCanceled do?
     return (
       <>
         {/* AVN: Room linking and VR mode have been separated */}
         <RoomEntryModal
           roomName={this.props.avnRoomActivity?.name || this.props.hub.name}
-          showRoomFull={this.props.entryDisallowed && !this.state.entered}
+          showRoomFull={showRoomFull}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {
             // AVN: Skip avatar setting and audio dialog (all users are muted by default)

@@ -79,16 +79,24 @@ export default class HubChannel extends EventTarget {
   canEnterRoom(hub) {
     if (!hub) return false;
     if (this.canOrWillIfCreator("update_hub")) return true;
-
+    // AVN: DEBUG_ROOM_ENTRY_ISSUE
+    const metaDebug = new Array();
     const roomEntrySlotCount = Object.values(this.presence.state).reduce((acc, { metas }) => {
       const meta = metas[metas.length - 1];
+      // AVN: DEBUG_ROOM_ENTRY_ISSUE
+      metaDebug.push(meta);
       const usingSlot = meta.presence === "room" || (meta.context && meta.context.entering);
       return acc + (usingSlot ? 1 : 0);
     }, 0);
 
     // This now exists in room settings but a default is left here to support old reticulum servers
     const DEFAULT_ROOM_SIZE = 24;
-    return roomEntrySlotCount < (hub.room_size !== undefined ? hub.room_size : DEFAULT_ROOM_SIZE);
+    const result = roomEntrySlotCount < (hub.room_size !== undefined ? hub.room_size : DEFAULT_ROOM_SIZE)
+    // AVN: DEBUG_ROOM_ENTRY_ISSUE
+    if(!result) {
+      console.log(`Room entry is blocked because occupied slots '${roomEntrySlotCount}' >= room size '${hub.room_size}'`, metaDebug);
+    }
+    return result;
   }
 
   // Migrates this hub channel to a new phoenix channel and presence
