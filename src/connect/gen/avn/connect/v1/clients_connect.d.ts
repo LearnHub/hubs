@@ -1,4 +1,4 @@
-import { CreateClientCredentialsRequest, CreateClientCredentialsResponse, RecordActionRequest, RecordActionResponse } from "./clients_pb.js";
+import { CreateClientCredentialsRequest, CreateClientCredentialsResponse, GetLighthouseServersRequest, GetLighthouseServersResponse, RecordActionRequest, RecordActionResponse, RegisterLighthouseServerRequest, RegisterLighthouseServerResponse } from "./clients_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ClientService
@@ -28,6 +28,26 @@ export declare const ClientService: {
             readonly name: "RecordAction";
             readonly I: typeof RecordActionRequest;
             readonly O: typeof RecordActionResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Lighthouse servers provide stateless DNS resolution checking for avnlan.local style addresses
+         *
+         * @generated from rpc avn.connect.v1.ClientService.RegisterLighthouseServer
+         */
+        readonly registerLighthouseServer: {
+            readonly name: "RegisterLighthouseServer";
+            readonly I: typeof RegisterLighthouseServerRequest;
+            readonly O: typeof RegisterLighthouseServerResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ClientService.GetLighthouseServers
+         */
+        readonly getLighthouseServers: {
+            readonly name: "GetLighthouseServers";
+            readonly I: typeof GetLighthouseServersRequest;
+            readonly O: typeof GetLighthouseServersResponse;
             readonly kind: MethodKind.Unary;
         };
     };
