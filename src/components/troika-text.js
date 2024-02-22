@@ -63,7 +63,7 @@ AFRAME.registerComponent("text", {
       type: "string",
       default:
         // AVN: temporary solution until fallback font support is available https://github.com/mozilla/hubs/issues/3934
-        "https://data.avncloud.com/public/hubs/fonts/noto-sans-kr-v27-latin_korean-regular.woff"
+        "https://avnfs.com/BhxgB2dLujtMcd3UMtRVdJWMf8nScGLOzZ6KDT20jbo?size=279544&type=application%2Ffont-woff&name=noto-sans-kr-v27-latin_korean-regular.woff"
      },
     // This default value differs from the Troika default of 0.1, it most closely matches the size of our previous text component.
     fontSize: { type: "number", default: 0.075 },
