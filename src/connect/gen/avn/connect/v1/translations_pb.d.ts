@@ -5,7 +5,7 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export declare enum TranslationFlags {
     /**
-     * @generated from enum value: MARKDOWN_SOURCE = 0;
+     * @generated from enum value: TRANSLATION_FLAGS_MARKDOWN_SOURCE = 0;
      */
     MARKDOWN_SOURCE = 0
 }
@@ -14,27 +14,27 @@ export declare enum TranslationFlags {
  */
 export declare enum TranslationState {
     /**
-     * @generated from enum value: UNKNOWN = 0;
+     * @generated from enum value: TRANSLATION_STATE_UNKNOWN = 0;
      */
     UNKNOWN = 0,
     /**
-     * @generated from enum value: OK = 1;
+     * @generated from enum value: TRANSLATION_STATE_OK = 1;
      */
     OK = 1,
     /**
-     * @generated from enum value: SAME_LANGUAGE = 2;
+     * @generated from enum value: TRANSLATION_STATE_SAME_LANGUAGE = 2;
      */
     SAME_LANGUAGE = 2,
     /**
-     * @generated from enum value: DIALECT = 4;
+     * @generated from enum value: TRANSLATION_STATE_DIALECT = 4;
      */
     DIALECT = 4,
     /**
-     * @generated from enum value: FAILED = 256;
+     * @generated from enum value: TRANSLATION_STATE_FAILED = 256;
      */
     FAILED = 256,
     /**
-     * @generated from enum value: NOT_FOUND = 512;
+     * @generated from enum value: TRANSLATION_STATE_NOT_FOUND = 512;
      */
     NOT_FOUND = 512
 }

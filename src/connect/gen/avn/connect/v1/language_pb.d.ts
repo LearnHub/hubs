@@ -5,11 +5,11 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export declare enum TextDirection {
     /**
-     * @generated from enum value: LTR = 0;
+     * @generated from enum value: TEXT_DIRECTION_LTR = 0;
      */
     LTR = 0,
     /**
-     * @generated from enum value: RTL = 1;
+     * @generated from enum value: TEXT_DIRECTION_RTL = 1;
      */
     RTL = 1
 }

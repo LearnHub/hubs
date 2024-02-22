@@ -1,4 +1,4 @@
-export * from "./avn/connect/AVNConnect.js";
+export * from "./avn/connect/ConnectServices.js";
 export * as AvnfsUtils from "./avn/connect/avnfs-utils-client.js";
 export * as MediaUtils from "./avn/connect/media-utils-client.js";
 export * as CryptoUtils from "./avn/connect/crypto-utils-client.js";
@@ -57,3 +57,5 @@ export * from "./gen/avn/connect/v1/certificates_connect.js";
 export * from "./gen/avn/connect/v1/certificates_pb.js";
 export * from "./gen/avn/connect/v1/three_sixty_cities_connect.js";
 export * from "./gen/avn/connect/v1/three_sixty_cities_pb.js";
+export * from "./gen/avn/connect/v1/cloud_connect.js";
+export * from "./gen/avn/connect/v1/cloud_pb.js";

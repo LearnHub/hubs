@@ -6,25 +6,46 @@ import { Authorization } from "./authorization_pb.js";
  */
 export declare enum ActivityType {
     /**
-     * @generated from enum value: ACTIVITY_UNSPECIFIED = 0;
+     * @generated from enum value: ACTIVITY_TYPE_UNSPECIFIED = 0;
      */
-    ACTIVITY_UNSPECIFIED = 0,
+    UNSPECIFIED = 0,
     /**
-     * @generated from enum value: ACTIVITY_FILE = 1;
+     * @generated from enum value: ACTIVITY_TYPE_FILE = 1;
      */
-    ACTIVITY_FILE = 1,
+    FILE = 1,
     /**
-     * @generated from enum value: ACTIVITY_URL = 2;
+     * @generated from enum value: ACTIVITY_TYPE_URL = 2;
      */
-    ACTIVITY_URL = 2,
+    URL = 2,
     /**
-     * @generated from enum value: ACTIVITY_APP = 3;
+     * @generated from enum value: ACTIVITY_TYPE_APP = 3;
      */
-    ACTIVITY_APP = 3,
+    APP = 3,
     /**
-     * @generated from enum value: ACTIVITY_FOLDER = 4;
+     * @generated from enum value: ACTIVITY_TYPE_FOLDER = 4;
      */
-    ACTIVITY_FOLDER = 4
+    FOLDER = 4
+}
+/**
+ * @generated from enum avn.connect.v1.ActivityFileType
+ */
+export declare enum ActivityFileType {
+    /**
+     * @generated from enum value: ACTIVITY_FILE_TYPE_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from enum value: ACTIVITY_FILE_TYPE_CONTENT = 1;
+     */
+    CONTENT = 1,
+    /**
+     * @generated from enum value: ACTIVITY_FILE_TYPE_SCREENSHOT = 2;
+     */
+    SCREENSHOT = 2,
+    /**
+     * @generated from enum value: ACTIVITY_FILE_TYPE_PACKAGE = 3;
+     */
+    PACKAGE = 3
 }
 /**
  * @generated from message avn.connect.v1.Activity
@@ -125,9 +146,9 @@ export declare class GetActivityRequest extends Message<GetActivityRequest> {
     static equals(a: GetActivityRequest | PlainMessage<GetActivityRequest> | undefined, b: GetActivityRequest | PlainMessage<GetActivityRequest> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.AddFilesRequest
+ * @generated from message avn.connect.v1.AddActivityFilesRequest
  */
-export declare class AddFilesRequest extends Message<AddFilesRequest> {
+export declare class AddActivityFilesRequest extends Message<AddActivityFilesRequest> {
     /**
      * @generated from field: avn.connect.v1.Authorization auth = 1;
      */
@@ -140,19 +161,23 @@ export declare class AddFilesRequest extends Message<AddFilesRequest> {
      * @generated from field: repeated string file_urls = 3;
      */
     fileUrls: string[];
-    constructor(data?: PartialMessage<AddFilesRequest>);
+    /**
+     * @generated from field: avn.connect.v1.ActivityFileType file_type = 4;
+     */
+    fileType: ActivityFileType;
+    constructor(data?: PartialMessage<AddActivityFilesRequest>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.AddFilesRequest";
+    static readonly typeName = "avn.connect.v1.AddActivityFilesRequest";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AddFilesRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AddFilesRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AddFilesRequest;
-    static equals(a: AddFilesRequest | PlainMessage<AddFilesRequest> | undefined, b: AddFilesRequest | PlainMessage<AddFilesRequest> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AddActivityFilesRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AddActivityFilesRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AddActivityFilesRequest;
+    static equals(a: AddActivityFilesRequest | PlainMessage<AddActivityFilesRequest> | undefined, b: AddActivityFilesRequest | PlainMessage<AddActivityFilesRequest> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.RemoveFilesRequest
+ * @generated from message avn.connect.v1.RemoveActivityFilesRequest
  */
-export declare class RemoveFilesRequest extends Message<RemoveFilesRequest> {
+export declare class RemoveActivityFilesRequest extends Message<RemoveActivityFilesRequest> {
     /**
      * @generated from field: avn.connect.v1.Authorization auth = 1;
      */
@@ -165,19 +190,23 @@ export declare class RemoveFilesRequest extends Message<RemoveFilesRequest> {
      * @generated from field: repeated string file_urls = 3;
      */
     fileUrls: string[];
-    constructor(data?: PartialMessage<RemoveFilesRequest>);
+    /**
+     * @generated from field: avn.connect.v1.ActivityFileType file_type = 4;
+     */
+    fileType: ActivityFileType;
+    constructor(data?: PartialMessage<RemoveActivityFilesRequest>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.RemoveFilesRequest";
+    static readonly typeName = "avn.connect.v1.RemoveActivityFilesRequest";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveFilesRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveFilesRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveFilesRequest;
-    static equals(a: RemoveFilesRequest | PlainMessage<RemoveFilesRequest> | undefined, b: RemoveFilesRequest | PlainMessage<RemoveFilesRequest> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveActivityFilesRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveActivityFilesRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveActivityFilesRequest;
+    static equals(a: RemoveActivityFilesRequest | PlainMessage<RemoveActivityFilesRequest> | undefined, b: RemoveActivityFilesRequest | PlainMessage<RemoveActivityFilesRequest> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.RemoveAllFilesRequest
+ * @generated from message avn.connect.v1.RemoveAllActivityFilesRequest
  */
-export declare class RemoveAllFilesRequest extends Message<RemoveAllFilesRequest> {
+export declare class RemoveAllActivityFilesRequest extends Message<RemoveAllActivityFilesRequest> {
     /**
      * @generated from field: avn.connect.v1.Authorization auth = 1;
      */
@@ -186,14 +215,18 @@ export declare class RemoveAllFilesRequest extends Message<RemoveAllFilesRequest
      * @generated from field: int32 activity_id = 2;
      */
     activityId: number;
-    constructor(data?: PartialMessage<RemoveAllFilesRequest>);
+    /**
+     * @generated from field: avn.connect.v1.ActivityFileType file_type = 3;
+     */
+    fileType: ActivityFileType;
+    constructor(data?: PartialMessage<RemoveAllActivityFilesRequest>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.RemoveAllFilesRequest";
+    static readonly typeName = "avn.connect.v1.RemoveAllActivityFilesRequest";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveAllFilesRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveAllFilesRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveAllFilesRequest;
-    static equals(a: RemoveAllFilesRequest | PlainMessage<RemoveAllFilesRequest> | undefined, b: RemoveAllFilesRequest | PlainMessage<RemoveAllFilesRequest> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveAllActivityFilesRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveAllActivityFilesRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveAllActivityFilesRequest;
+    static equals(a: RemoveAllActivityFilesRequest | PlainMessage<RemoveAllActivityFilesRequest> | undefined, b: RemoveAllActivityFilesRequest | PlainMessage<RemoveAllActivityFilesRequest> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.SearchActivitiesRequest

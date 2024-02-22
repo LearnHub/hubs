@@ -1,4 +1,4 @@
-import { AVNConnect } from "./AVNConnect.js";
+import { ConnectServices } from "./ConnectServices.js";
 import { Authorization } from "../../gen/avn/connect/v1/authorization_pb.js";
 export declare const Hostname = "avnfs.com";
 export declare const UrlPrefix = "https://avnfs.com";
@@ -15,6 +15,6 @@ export declare function isValidUrl(url: URL): boolean;
 export declare function decodeUrl(url: URL): FileSpec;
 export declare function encodeUrl(spec: FileSpec): URL;
 export declare function updateFilename(url: URL, name: string | undefined): URL;
-export declare function uploadArrayBuffer(buffer: ArrayBuffer, Connect: AVNConnect, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
-export declare function uploadFilePath(path: string, Connect: AVNConnect, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
-export declare function uploadFile(file: File, Connect: AVNConnect, auth: Authorization, mediaTypeOverride: string | undefined, fileNameOverride: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
+export declare function uploadArrayBuffer(buffer: ArrayBuffer, ConnectServices: ConnectServices, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
+export declare function uploadFilePath(path: string, Connect: ConnectServices, auth: Authorization, mediaType: string, fileName: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;
+export declare function uploadFile(file: File, ConnectServices: ConnectServices, auth: Authorization, mediaTypeOverride: string | undefined, fileNameOverride: string | undefined, progressCallback: ((event: ProgressEvent) => any) | undefined): Promise<URL>;

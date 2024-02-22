@@ -17,9 +17,10 @@ import { KtxService } from "../../gen/avn/connect/v1/ktx_connect.js";
 import { NeighborService } from "../../gen/avn/connect/v1/neighbors_connect.js";
 import { CertificateService } from "../../gen/avn/connect/v1/certificates_connect.js";
 import { ThreeSixtyCitiesService } from "../../gen/avn/connect/v1/three_sixty_cities_connect.js";
+import { CloudService } from "../../gen/avn/connect/v1/cloud_connect.js";
 export declare const GwebUrl = "https://gweb.avncloud.com";
 export declare const GwebAlphaUrl = "https://gweb-alpha.avncloud.com";
-export declare class AVNConnect {
+export declare class ConnectServices {
     readonly gwebUrl: string;
     constructor(gwebUrl?: string);
     private transport;
@@ -41,4 +42,5 @@ export declare class AVNConnect {
     Neighbors: PromiseClient<typeof NeighborService>;
     Certificates: PromiseClient<typeof CertificateService>;
     ThreeSixtyCities: PromiseClient<typeof ThreeSixtyCitiesService>;
+    Cloud: PromiseClient<typeof CloudService>;
 }

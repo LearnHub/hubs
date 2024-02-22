@@ -7,21 +7,21 @@ import { HeaderField } from "./http_pb.js";
  */
 export declare enum AltServerType {
     /**
-     * @generated from enum value: ALT_SERVER_UNSPECIFIED = 0;
+     * @generated from enum value: ALT_SERVER_TYPE_UNSPECIFIED = 0;
      */
-    ALT_SERVER_UNSPECIFIED = 0,
+    UNSPECIFIED = 0,
     /**
-     * @generated from enum value: ALT_SERVER_LAN = 1;
+     * @generated from enum value: ALT_SERVER_TYPE_LAN = 1;
      */
-    ALT_SERVER_LAN = 1,
+    LAN = 1,
     /**
-     * @generated from enum value: ALT_SERVER_WAN = 2;
+     * @generated from enum value: ALT_SERVER_TYPE_WAN = 2;
      */
-    ALT_SERVER_WAN = 2,
+    WAN = 2,
     /**
-     * @generated from enum value: ALT_SERVER_REGIONAL = 3;
+     * @generated from enum value: ALT_SERVER_TYPE_REGIONAL = 3;
      */
-    ALT_SERVER_REGIONAL = 3
+    REGIONAL = 3
 }
 /**
  * @generated from message avn.connect.v1.GetFileUrlRequest
@@ -36,19 +36,19 @@ export declare class GetFileUrlRequest extends Message<GetFileUrlRequest> {
     /**
      * size in bytes
      *
-     * @generated from field: int64 sizeBytes = 2;
+     * @generated from field: int64 size_bytes = 2;
      */
     sizeBytes: bigint;
     /**
      * media type
      *
-     * @generated from field: string mediaType = 3;
+     * @generated from field: string media_type = 3;
      */
     mediaType: string;
     /**
      * filename (optional and only modifies the returned URL)
      *
-     * @generated from field: optional string fileName = 4;
+     * @generated from field: optional string file_name = 4;
      */
     fileName?: string;
     constructor(data?: PartialMessage<GetFileUrlRequest>);
@@ -96,19 +96,19 @@ export declare class GetManifestRequest extends Message<GetManifestRequest> {
     /**
      * size in bytes for checking against allowances
      *
-     * @generated from field: int64 sizeBytes = 3;
+     * @generated from field: int64 size_bytes = 3;
      */
     sizeBytes: bigint;
     /**
      * media types are expected to be overriden in the reference URL, but this might be useful for post-processing actions
      *
-     * @generated from field: string mediaType = 4;
+     * @generated from field: string media_type = 4;
      */
     mediaType: string;
     /**
      * filename (optional and only modifies the returned URL)
      *
-     * @generated from field: optional string fileName = 5;
+     * @generated from field: optional string file_name = 5;
      */
     fileName?: string;
     constructor(data?: PartialMessage<GetManifestRequest>);
@@ -127,19 +127,19 @@ export declare class UploadManifest extends Message<UploadManifest> {
     /**
      * URL to upload to
      *
-     * @generated from field: string uploadUrl = 1;
+     * @generated from field: string upload_url = 1;
      */
     uploadUrl: string;
     /**
      * Eventual download URL
      *
-     * @generated from field: string downloadUrl = 2;
+     * @generated from field: string download_url = 2;
      */
     downloadUrl: string;
     /**
      * Additional fields to add to a POST
      *
-     * @generated from field: repeated avn.connect.v1.HeaderField headerFields = 3;
+     * @generated from field: repeated avn.connect.v1.HeaderField header_fields = 3;
      */
     headerFields: HeaderField[];
     constructor(data?: PartialMessage<UploadManifest>);

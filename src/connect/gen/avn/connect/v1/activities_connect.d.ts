@@ -1,4 +1,4 @@
-import { Activity, AddFilesRequest, GetActivityRequest, RemoveAllFilesRequest, RemoveFilesRequest, SearchActivitiesRequest, SearchActivitiesResponse } from "./activities_pb.js";
+import { Activity, AddActivityFilesRequest, GetActivityRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest, SearchActivitiesRequest, SearchActivitiesResponse } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 import { SetPropertyRequest } from "./properties_pb.js";
 /**
@@ -17,11 +17,13 @@ export declare const ActivityService: {
             readonly kind: MethodKind.Unary;
         };
         /**
+         * Activity file management
+         *
          * @generated from rpc avn.connect.v1.ActivityService.AddFiles
          */
         readonly addFiles: {
             readonly name: "AddFiles";
-            readonly I: typeof AddFilesRequest;
+            readonly I: typeof AddActivityFilesRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
@@ -30,7 +32,7 @@ export declare const ActivityService: {
          */
         readonly removeFiles: {
             readonly name: "RemoveFiles";
-            readonly I: typeof RemoveFilesRequest;
+            readonly I: typeof RemoveActivityFilesRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
@@ -39,7 +41,7 @@ export declare const ActivityService: {
          */
         readonly removeAllFiles: {
             readonly name: "RemoveAllFiles";
-            readonly I: typeof RemoveAllFilesRequest;
+            readonly I: typeof RemoveAllActivityFilesRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };

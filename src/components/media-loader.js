@@ -34,7 +34,7 @@ import { MediaContentBounds, MediaLoading } from "../bit-components";
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
 import { AvnTags } from "../avn-tags";
-import * as ConnectClient from "../connect/connect-client";
+import * as Connect from "../connect";
 
 let loadingObject;
 
@@ -395,8 +395,8 @@ AFRAME.registerComponent("media-loader", {
       const isLinkElement = contentType === "text/html"
       const parsedUrl = isFragment ? undefined : new URL(src);
       if(parsedUrl) {
-        if(ConnectClient.AvnfsUtils.isValidUrl(parsedUrl)) {
-          const { mediaType } = ConnectClient.AvnfsUtils.decodeUrl(parsedUrl)
+        if(Connect.AvnfsUtils.isValidUrl(parsedUrl)) {
+          const { mediaType } = Connect.AvnfsUtils.decodeUrl(parsedUrl)
           if(!isLinkElement) {
             contentType = mediaType;
           }

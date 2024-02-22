@@ -6,33 +6,33 @@ import { ConnectionCredentials } from "./connections_pb.js";
  */
 export declare enum IdentityProvider {
     /**
-     * @generated from enum value: IDENTITY_UNSPECIFIED = 0;
+     * @generated from enum value: IDENTITY_PROVIDER_UNSPECIFIED = 0;
      */
-    IDENTITY_UNSPECIFIED = 0,
+    UNSPECIFIED = 0,
     /**
-     * @generated from enum value: IDENTITY_ANONYMOUS = 1;
+     * @generated from enum value: IDENTITY_PROVIDER_ANONYMOUS = 1;
      */
-    IDENTITY_ANONYMOUS = 1,
+    ANONYMOUS = 1,
     /**
-     * @generated from enum value: IDENTITY_CLASSCONNECT = 2;
+     * @generated from enum value: IDENTITY_PROVIDER_CLASSCONNECT = 2;
      */
-    IDENTITY_CLASSCONNECT = 2,
+    CLASSCONNECT = 2,
     /**
-     * @generated from enum value: IDENTITY_GOOGLE = 3;
+     * @generated from enum value: IDENTITY_PROVIDER_GOOGLE = 3;
      */
-    IDENTITY_GOOGLE = 3,
+    GOOGLE = 3,
     /**
-     * @generated from enum value: IDENTITY_MICROSOFT = 4;
+     * @generated from enum value: IDENTITY_PROVIDER_MICROSOFT = 4;
      */
-    IDENTITY_MICROSOFT = 4,
+    MICROSOFT = 4,
     /**
-     * @generated from enum value: IDENTITY_CLEVER = 5;
+     * @generated from enum value: IDENTITY_PROVIDER_CLEVER = 5;
      */
-    IDENTITY_CLEVER = 5,
+    CLEVER = 5,
     /**
-     * @generated from enum value: IDENTITY_CLASSLINK = 6;
+     * @generated from enum value: IDENTITY_PROVIDER_CLASSLINK = 6;
      */
-    IDENTITY_CLASSLINK = 6
+    CLASSLINK = 6
 }
 /**
  * @generated from message avn.connect.v1.Authorization

@@ -273,7 +273,7 @@ import { swapActiveScene } from "./bit-systems/scene-loading";
 import { localClientID, setLocalClientID } from "./bit-systems/networking";
 import { listenForNetworkMessages } from "./utils/listen-for-network-messages";
 import { AVN } from "./avn-bridge";
-import * as ConnectClient from "./connect/connect-client";
+import * as Connect from "./connect";
 import { exposeBitECSDebugHelpers } from "./bitecs-debug-helpers";
 import { loadLegacyRoomObjects } from "./utils/load-legacy-room-objects";
 import { loadSavedEntityStates } from "./utils/entity-state-utils";
@@ -930,27 +930,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Join dimension
   const joinResult = await AVN.joinDimension()
   switch (joinResult) {
-    case ConnectClient.OperationState.OPEN:
+    case Connect.OperationState.OPEN:
       console.info(`AVN: dimension open`);
       scene.emit("didJoinDimension");
       break;
-    case ConnectClient.OperationState.CLOSED:
+    case Connect.OperationState.CLOSED:
       console.error(`AVN: dimension closed`)
       scene.emit("errorLoadingRoom", `Session is closed.`);
       return
-    case ConnectClient.OperationState.NOT_FOUND:
+    case Connect.OperationState.NOT_FOUND:
       console.error(`AVN: dimension not found`)
       scene.emit("errorLoadingRoom", `Session not found.`);
       return
-    case ConnectClient.OperationState.EXPIRED:
+    case Connect.OperationState.EXPIRED:
       console.error(`AVN: dimension expired`)
       scene.emit("errorLoadingRoom", `Session has expired.`);
       return
-    case ConnectClient.OperationState.FORBIDDEN:
+    case Connect.OperationState.FORBIDDEN:
       console.error(`AVN: dimension forbidden`)
       scene.emit("errorLoadingRoom", `Session is forbidden.`);
       return
-    case ConnectClient.OperationState.ERROR:
+    case Connect.OperationState.ERROR:
       console.error(`AVN: dimension join error`)
       scene.emit("errorLoadingRoom", `Session is not available because an error occurred.`);
       return        
