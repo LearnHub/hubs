@@ -1,6 +1,7 @@
-import { GetOrganizationMembershipRequest, GetOrganizationMembershipResponse, GetUserRequest, SearchMemberOrganizationsRequest, SearchMemberOrganizationsResponse } from "./users_pb.js";
+import { GetEntityRequest } from "./entities_pb.js";
 import { User } from "./user_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
+import { GetOrganizationMembershipRequest, GetOrganizationMembershipResponse, SearchMemberOrganizationsRequest, SearchMemberOrganizationsResponse } from "./users_pb.js";
 /**
  * @generated from service avn.connect.v1.UserService
  */
@@ -12,7 +13,7 @@ export declare const UserService: {
          */
         readonly getUser: {
             readonly name: "GetUser";
-            readonly I: typeof GetUserRequest;
+            readonly I: typeof GetEntityRequest;
             readonly O: typeof User;
             readonly kind: MethodKind.Unary;
         };

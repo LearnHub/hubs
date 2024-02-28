@@ -3,27 +3,6 @@ import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { Organization, OrganizationSpec } from "./organization_pb.js";
 /**
- * @generated from message avn.connect.v1.GetOrganizationRequest
- */
-export declare class GetOrganizationRequest extends Message<GetOrganizationRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: int32 organization_id = 2;
-     */
-    organizationId: number;
-    constructor(data?: PartialMessage<GetOrganizationRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.GetOrganizationRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetOrganizationRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetOrganizationRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetOrganizationRequest;
-    static equals(a: GetOrganizationRequest | PlainMessage<GetOrganizationRequest> | undefined, b: GetOrganizationRequest | PlainMessage<GetOrganizationRequest> | undefined): boolean;
-}
-/**
  * @generated from message avn.connect.v1.JoinOrganizationRequest
  */
 export declare class JoinOrganizationRequest extends Message<JoinOrganizationRequest> {

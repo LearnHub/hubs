@@ -71,8 +71,8 @@ class AvnMediaBrowserContainer extends Component {
     // Select a channel if none is currently active
     if(!newState.selectedChannelId && newState.channelList && newState.channelList.length > 0) {
       const channel = newState.channelList[0];
-      newState.selectedChannelId = channel.channelId;
-      props.avnMediaSearchStore.channelId = channel.channelId;
+      newState.selectedChannelId = channel.entityId;
+      props.avnMediaSearchStore.channelId = channel.entityId;
     }
     newState.profileList = undefined;
     newState.categoryList = undefined;
@@ -247,7 +247,7 @@ class AvnMediaBrowserContainer extends Component {
           {entries.map((entry, idx) => {
             return (
               <AvnMediaTile
-                key={`${entry.id}_${idx}`}
+                key={`${entry.activityId}_${idx}`}
                 entry={entry}
                 onClick={e => this.handleEntryClicked(e, entry)}
               />

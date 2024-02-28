@@ -1,4 +1,5 @@
-import { Channel, GetActivitiesRequest, GetActivitiesResponse, GetBrowsableChannelsRequest, GetBrowsableChannelsResponse, GetChannelRequest, GetProfilesRequest, GetProfilesResponse } from "./channels_pb.js";
+import { EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest } from "./entities_pb.js";
+import { Channel } from "./channels_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ChannelService
@@ -13,7 +14,7 @@ export declare const ChannelService: {
          */
         readonly getChannel: {
             readonly name: "GetChannel";
-            readonly I: typeof GetChannelRequest;
+            readonly I: typeof GetEntityRequest;
             readonly O: typeof Channel;
             readonly kind: MethodKind.Unary;
         };
@@ -24,8 +25,8 @@ export declare const ChannelService: {
          */
         readonly getBrowsableChannels: {
             readonly name: "GetBrowsableChannels";
-            readonly I: typeof GetBrowsableChannelsRequest;
-            readonly O: typeof GetBrowsableChannelsResponse;
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
             readonly kind: MethodKind.Unary;
         };
         /**
@@ -35,8 +36,8 @@ export declare const ChannelService: {
          */
         readonly getProfiles: {
             readonly name: "GetProfiles";
-            readonly I: typeof GetProfilesRequest;
-            readonly O: typeof GetProfilesResponse;
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
             readonly kind: MethodKind.Unary;
         };
         /**
@@ -46,8 +47,8 @@ export declare const ChannelService: {
          */
         readonly getActivities: {
             readonly name: "GetActivities";
-            readonly I: typeof GetActivitiesRequest;
-            readonly O: typeof GetActivitiesResponse;
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
             readonly kind: MethodKind.Unary;
         };
     };

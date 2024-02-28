@@ -1,6 +1,7 @@
-import { GetOrganizationRequest, JoinOrganizationRequest, JoinOrganizationResponse } from "./organizations_pb.js";
+import { GetEntityRequest } from "./entities_pb.js";
 import { Organization } from "./organization_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
+import { JoinOrganizationRequest, JoinOrganizationResponse } from "./organizations_pb.js";
 /**
  * @generated from service avn.connect.v1.OrganizationService
  */
@@ -12,7 +13,7 @@ export declare const OrganizationService: {
          */
         readonly getOrganization: {
             readonly name: "GetOrganization";
-            readonly I: typeof GetOrganizationRequest;
+            readonly I: typeof GetEntityRequest;
             readonly O: typeof Organization;
             readonly kind: MethodKind.Unary;
         };

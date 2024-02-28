@@ -17,6 +17,8 @@ export declare class AvailableContent extends Message<AvailableContent> {
      */
     licensedCategories: number[];
     /**
+     * Future extension for filtering appropriate content for dimensions
+     *
      * @generated from field: repeated int32 tag_whitelist = 10;
      */
     tagWhitelist: number[];

@@ -1,6 +1,6 @@
-import { Activity, AddActivityFilesRequest, GetActivityRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest, SearchActivitiesRequest, SearchActivitiesResponse } from "./activities_pb.js";
+import { GetEntityRequest, SetEntityPropertyRequest } from "./entities_pb.js";
+import { Activity, AddActivityFilesRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest, SearchActivitiesRequest, SearchActivitiesResponse } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
-import { SetPropertyRequest } from "./properties_pb.js";
 /**
  * @generated from service avn.connect.v1.ActivityService
  */
@@ -12,7 +12,7 @@ export declare const ActivityService: {
          */
         readonly getActivity: {
             readonly name: "GetActivity";
-            readonly I: typeof GetActivityRequest;
+            readonly I: typeof GetEntityRequest;
             readonly O: typeof Activity;
             readonly kind: MethodKind.Unary;
         };
@@ -61,7 +61,7 @@ export declare const ActivityService: {
          */
         readonly setProperty: {
             readonly name: "SetProperty";
-            readonly I: typeof SetPropertyRequest;
+            readonly I: typeof SetEntityPropertyRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };

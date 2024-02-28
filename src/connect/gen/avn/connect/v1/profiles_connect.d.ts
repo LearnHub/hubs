@@ -1,5 +1,6 @@
-import { GetProfileActivitiesRequest, GetProfileActivitiesResponse, GetProfileCategoriesRequest, GetProfileCategoriesResponse } from "./profiles_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, SetEntityPropertyRequest } from "./entities_pb.js";
+import { Profile } from "./profiles_pb.js";
+import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ProfileService
  */
@@ -7,14 +8,23 @@ export declare const ProfileService: {
     readonly typeName: "avn.connect.v1.ProfileService";
     readonly methods: {
         /**
+         * @generated from rpc avn.connect.v1.ProfileService.GetProfile
+         */
+        readonly getProfile: {
+            readonly name: "GetProfile";
+            readonly I: typeof GetEntityRequest;
+            readonly O: typeof Profile;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
          * Get all published categories in the given profile
          *
          * @generated from rpc avn.connect.v1.ProfileService.GetCategories
          */
         readonly getCategories: {
             readonly name: "GetCategories";
-            readonly I: typeof GetProfileCategoriesRequest;
-            readonly O: typeof GetProfileCategoriesResponse;
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
             readonly kind: MethodKind.Unary;
         };
         /**
@@ -24,8 +34,17 @@ export declare const ProfileService: {
          */
         readonly getActivities: {
             readonly name: "GetActivities";
-            readonly I: typeof GetProfileActivitiesRequest;
-            readonly O: typeof GetProfileActivitiesResponse;
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ProfileService.SetProperty
+         */
+        readonly setProperty: {
+            readonly name: "SetProperty";
+            readonly I: typeof SetEntityPropertyRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };

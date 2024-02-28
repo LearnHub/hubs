@@ -125,27 +125,6 @@ export declare class Activity extends Message<Activity> {
     static equals(a: Activity | PlainMessage<Activity> | undefined, b: Activity | PlainMessage<Activity> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.GetActivityRequest
- */
-export declare class GetActivityRequest extends Message<GetActivityRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: int32 activity_id = 2;
-     */
-    activityId: number;
-    constructor(data?: PartialMessage<GetActivityRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.GetActivityRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetActivityRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetActivityRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetActivityRequest;
-    static equals(a: GetActivityRequest | PlainMessage<GetActivityRequest> | undefined, b: GetActivityRequest | PlainMessage<GetActivityRequest> | undefined): boolean;
-}
-/**
  * @generated from message avn.connect.v1.AddActivityFilesRequest
  */
 export declare class AddActivityFilesRequest extends Message<AddActivityFilesRequest> {

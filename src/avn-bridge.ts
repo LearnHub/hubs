@@ -262,22 +262,22 @@ class AVNBridge {
     }
 
     public async getProfilesForChannel(channelId: number): Promise<Connect.Profile[]> {
-        const result = await this.ConnectServices.Channels.getProfiles({ auth: this._dimensionAuth, channelId })
+        const result = await this.ConnectServices.Channels.getProfiles({ auth: this._dimensionAuth, entityId: channelId })
         return result.results
     }
 
     public async getCategoriesForProfile(profileId: number): Promise<Connect.Category[]> {
-        const result = await this.ConnectServices.Profiles.getCategories({ auth: this._dimensionAuth, profileId })
+        const result = await this.ConnectServices.Profiles.getCategories({ auth: this._dimensionAuth, entityId: profileId })
         return result.results
     }
 
     public async getActivitiesForProfile(profileId: number): Promise<Connect.Activity[]> {
-        const result = await this.ConnectServices.Profiles.getActivities({ auth: this._dimensionAuth, profileId })
+        const result = await this.ConnectServices.Profiles.getActivities({ auth: this._dimensionAuth, entityId: profileId })
         return result.results
     }
 
     public async getActivitiesForCategory(categoryId: number): Promise<Connect.Activity[]> {
-        const result = await this.ConnectServices.Categories.getActivities({ auth: this._dimensionAuth, categoryId })
+        const result = await this.ConnectServices.Categories.getActivities({ auth: this._dimensionAuth, entityId: categoryId })
         return result.results
     }
 
@@ -311,7 +311,7 @@ class AVNBridge {
 
     public async setDimensionFromRoomId(roomId: string): Promise<boolean> {
         try {
-            const getRoomDimensionResult = await this.ConnectServices.Rooms.getRoomDimension({ roomId: roomId })
+            const getRoomDimensionResult = await this.ConnectServices.Rooms.getRoomDimension({ roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
             this._dimensionAuth = new Connect.Authorization({ method: { case: "dimensionId", value: this._dimensionId } })
             console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
@@ -340,7 +340,7 @@ class AVNBridge {
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
             const auth = new Connect.Authorization({ method: { case: "credentials", value: credentials } })
-            return await this.ConnectServices.Organizations.getOrganization({ auth, organizationId })
+            return await this.ConnectServices.Organizations.getOrganization({ auth, entityId: organizationId })
         } else {
             throw new Error(`Not authenticated to get organization`)
         }
@@ -595,7 +595,7 @@ class AVNBridge {
         this._roomInfo = enterRoomResult.roomInfo
         const activityId = enterRoomResult.roomInfo.activityId
         if(activityId) {
-            this._roomActivity = await this.ConnectServices.Activities.getActivity({ auth: this._dimensionAuth, activityId })
+            this._roomActivity = await this.ConnectServices.Activities.getActivity({ auth: this._dimensionAuth, entityId: activityId })
         } else {
             this._roomActivity = undefined
         }

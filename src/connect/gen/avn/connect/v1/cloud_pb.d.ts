@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { EntityProperty, SortOrder } from "./entities_pb.js";
 /**
  * Cloud files can be owned by users or organizations
  *
@@ -83,9 +84,9 @@ export declare class CloudFile extends Message<CloudFile> {
      */
     fileName?: string;
     /**
-     * @generated from field: optional string content_type = 15;
+     * @generated from field: optional string media_type = 15;
      */
-    contentType?: string;
+    mediaType?: string;
     /**
      * @generated from field: optional int64 size_bytes = 16;
      */
@@ -243,19 +244,37 @@ export declare class SearchCloudFilesRequest extends Message<SearchCloudFilesReq
      */
     searchText?: string;
     /**
-     * @generated from field: optional google.protobuf.Timestamp after = 5;
+     * Not implemented yet
+     *
+     * @generated from field: repeated int32 filter_tags = 5;
+     */
+    filterTags: number[];
+    /**
+     * @generated from field: repeated string filter_media_types = 6;
+     */
+    filterMediaTypes: string[];
+    /**
+     * @generated from field: optional google.protobuf.Timestamp after = 7;
      */
     after?: Timestamp;
     /**
-     * @generated from field: optional google.protobuf.Timestamp before = 6;
+     * @generated from field: optional google.protobuf.Timestamp before = 8;
      */
     before?: Timestamp;
     /**
-     * @generated from field: optional int32 page_size = 7;
+     * @generated from field: optional avn.connect.v1.EntityProperty order_by = 9;
+     */
+    orderBy?: EntityProperty;
+    /**
+     * @generated from field: optional avn.connect.v1.SortOrder sort_order = 10;
+     */
+    sortOrder?: SortOrder;
+    /**
+     * @generated from field: optional int32 page_size = 11;
      */
     pageSize?: number;
     /**
-     * @generated from field: optional string page_token = 8;
+     * @generated from field: optional string page_token = 12;
      */
     pageToken?: string;
     constructor(data?: PartialMessage<SearchCloudFilesRequest>);

@@ -80,9 +80,9 @@ export function AvnMediaBrowser({
         {channelList?.map(channel => (
           <Button
             sm
-            key={channel.channelId}
-            preset={selectedChannelId === channel.channelId ? "primary" : "transparent"}
-            onClick={() => onSelectChannel(channel.channelId)}
+            key={channel.entityId}
+            preset={selectedChannelId === channel.entityId ? "primary" : "transparent"}
+            onClick={() => onSelectChannel(channel.entityId)}
           >
             {channel.name}
           </Button>
@@ -93,9 +93,9 @@ export function AvnMediaBrowser({
         {profileList?.map((profile, i) => (
           <Button
             sm
-            key={profile.profileId}
-            preset={selectedProfileId === profile.profileId ? "primary" : "transparent"}
-            onClick={() => onSelectProfile(profile.profileId)}
+            key={profile.entityId}
+            preset={selectedProfileId === profile.entityId ? "primary" : "transparent"}
+            onClick={() => onSelectProfile(profile.entityId)}
           >
             {profile.name}
           </Button>
@@ -106,9 +106,9 @@ export function AvnMediaBrowser({
         {categoryList?.map((category, i) => (
           <Button
             sm
-            key={category.categoryId}
-            preset={selectedCategoryId === category.categoryId ? "primary" : "transparent"}
-            onClick={() => onSelectCategory(category.categoryId)}
+            key={category.entityId}
+            preset={selectedCategoryId === category.entityId ? "primary" : "transparent"}
+            onClick={() => onSelectCategory(category.entityId)}
           >
             {category.name}
           </Button>
