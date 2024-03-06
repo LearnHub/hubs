@@ -724,7 +724,7 @@ class AVNBridge {
                     }
                 }
             } else {
-throw new Error("!!!")
+//throw new Error("!!!")
                 console.info(`Resolving '${mediaUrl}' through server`)
                 const assetId = mediaUrl.split("/").pop()
                 const resolveMediaResult = await this.ConnectServices.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
