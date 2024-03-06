@@ -12,9 +12,13 @@ import { AVN } from "../../avn-bridge";
 function AvnHallPassPopoverContent({}) {
   const hallPassUrl = AVN.passId 
     ? AVN.assetId === "homeroom"
-      ? `${AVN.shortDomain}/${AVN.passId}` 
-      : `${AVN.shortDomain}/${AVN.passId}/${AVN.assetId}` 
-    : "";
+      ? new URL(`${AVN.shortDomain}/${AVN.passId}`)
+      : new URL(`${AVN.shortDomain}/${AVN.passId}/${AVN.assetId}`)
+    : new URL(`${AVN.shortDomain}`)
+  // Add any asset parameters (for AVNFS)
+  for (const key in AVN.assetParameters) {
+    hallPassUrl.searchParams.set(key, AVN.assetParameters[key])
+  }
   return (
     <Column center padding grow gap="lg" className={styles.hallPassPopover}>
       <>
@@ -25,7 +29,7 @@ function AvnHallPassPopoverContent({}) {
         <CopyableTextInputField
           label={<FormattedMessage id="avn-hall-pass-popover.share-link" defaultMessage="Hall Pass" />}
           disabled={!AVN.passId}
-          value={hallPassUrl}
+          value={hallPassUrl.toString()}
           buttonPreset="accent3"
         />
       </>

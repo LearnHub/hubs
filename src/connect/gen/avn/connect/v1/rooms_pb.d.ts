@@ -34,6 +34,12 @@ export declare class RoomInfo extends Message<RoomInfo> {
      */
     assetId: string;
     /**
+     * @generated from field: map<string, string> asset_parameters = 10;
+     */
+    assetParameters: {
+        [key: string]: string;
+    };
+    /**
      * @generated from field: int32 activity_id = 8;
      */
     activityId: number;

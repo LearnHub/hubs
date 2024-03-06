@@ -198,6 +198,10 @@ class AVNBridge {
         return this._roomInfo?.assetId || "homeroom"
     }
 
+    get assetParameters(): { [key: string]: string } | undefined {
+        return this._roomInfo?.assetParameters
+    }
+
     get assetName() {
         return this._roomInfo?.name
     }
