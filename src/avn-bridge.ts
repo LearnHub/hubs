@@ -53,6 +53,7 @@ class AVNBridge {
     public MD : markdownit
 
     constructor() {
+        // Sidebar markdown
         this.MD = markdownit()
             .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
             .use(markdownitbracketedspans)
@@ -64,17 +65,22 @@ class AVNBridge {
             return self.renderToken(tokens, idx, options)
         }
         this.MD.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-            const aIndex = tokens[idx].attrIndex('target')
-            if (aIndex < 0) {
-                tokens[idx].attrPush(['target', '_blank'])
-            } else {
-                const attrs = tokens[idx].attrs
-                if(attrs) {
+            const attrs = tokens[idx].attrs
+            let isLegacySceneLink = false
+            if(attrs) {
+                const aIndex = tokens[idx].attrIndex('target')
+                if (aIndex < 0) {
+                    tokens[idx].attrPush(['target', '_blank'])
+                } else {
                     attrs[aIndex][1] = '_blank'
                 }
+            } else {
+                console.warn(`Expected anchor to have attributes`)
             }
             return defaultRender(tokens, idx, options, env, self)
         }
+
+        // AVNFS fetch override
         window.fetch = this.fetchOverride.bind(this)
     }
 
@@ -724,8 +730,8 @@ class AVNBridge {
                     }
                 }
             } else {
-//throw new Error("!!!")
-                console.info(`Resolving '${mediaUrl}' through server`)
+                // LEGACY_MEDIA_LINKS
+                console.info(`Resolving legacy '${mediaUrl}' through server`)
                 const assetId = mediaUrl.split("/").pop()
                 const resolveMediaResult = await this.ConnectServices.Rooms.resolveMedia({ dimensionId: this.dimensionId, assetId })
                 return {
