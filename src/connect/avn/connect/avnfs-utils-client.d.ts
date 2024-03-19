@@ -7,7 +7,7 @@ export declare const TypeQueryParam = "type";
 export declare const SizeQueryParam = "size";
 export declare const NameQueryParam = "name";
 export type FileSpec = {
-    base64url: string;
+    hash: string;
     sizeBytes: number;
     mediaType: string;
     fileName?: string;

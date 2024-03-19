@@ -30,9 +30,9 @@ export declare class GetFileUrlRequest extends Message<GetFileUrlRequest> {
     /**
      * base64url encoded SHA256 hash of the file contents
      *
-     * @generated from field: string base64url = 1;
+     * @generated from field: string hash = 1;
      */
-    base64url: string;
+    hash: string;
     /**
      * size in bytes
      *
@@ -90,9 +90,9 @@ export declare class GetManifestRequest extends Message<GetManifestRequest> {
     /**
      * base64url encoded SHA256 hash of the file contents
      *
-     * @generated from field: string base64url = 2;
+     * @generated from field: string hash = 2;
      */
-    base64url: string;
+    hash: string;
     /**
      * size in bytes for checking against allowances
      *
