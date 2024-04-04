@@ -1,54 +1,129 @@
-self.addEventListener("install", function (e) {
-  return e.waitUntil(self.skipWaiting());
-});
+// Duplicated as avnsw.js and hubs.service.js
 
-self.addEventListener("activate", function (e) {
-  return e.waitUntil(self.clients.claim());
-});
+var altServers = undefined
+var nextCheckTimestamp = undefined
 
-self.addEventListener("fetch", function () {});
+const avnfsStats = {
+    hosts: [ "avnfs.com" ],
+    fetchCount: 0,
+}
+const info = {
+    scope: "",
+    activated: new Date(),
+    servers: {
+        "AVNFS": avnfsStats
+    }
+}
 
-// Reticulum will inject an overrided app name.
-// eslint-disable-next-line prefer-const
-let appFullName = "";
+async function checkAltServers() {
+    const now = Date.now()
+    if (!nextCheckTimestamp || now > nextCheckTimestamp ) {
+        // Don't check more often than every 60 minutes
+        nextCheckTimestamp = now + 60 * 60_000
+        // ALT_SERVER_TESTING once every 30 seconds for stress testing
+        nextCheckTimestamp = now + 30_000   
+        try {
+            console.log("AVNSW downloading altservers...")
+            // ALT_SERVER_TESTING restore production URL
+            const response = await fetch("https://rest-alpha.avncloud.com/v1/avnfs/altservers") // http://localhost:8181/v1/avnfs/altservers
+            if (response.ok) {
+                const newAltServers = await response.json()
+                console.log("AVNSW new altservers downloaded", newAltServers)
+                altServers = newAltServers
+                // Report info statistics to all clients
+                const allClients = await self.clients.matchAll()
+                for(let client of allClients) {
+                    client.postMessage({ info })                    
+                }
+            } else {
+                console.error(`AVNSW error getting altservers: '${response.statusText} (${response.status})`)
+            }
+        } catch (e) {
+            console.error(`AVNSW exception getting altservers`, e)
+        }
+    }
+}
 
-// DO NOT REMOVE/EDIT THIS COMMENT - META_TAGS
+self.addEventListener("fetch", (event) => {
+    // Intercept only AVNFS GET methods
+    if (!event.request.url.startsWith("https://avnfs.com") || event.request.method !== "GET") {
+        return
+    }
+    // Best effort download is asynchronous to avoid blocking
+    checkAltServers()
+    if (!altServers) {
+        return
+    }
+    // Override the response
+    event.respondWith(
+        (async () => {
+            // For every alt server
+            for (let altServer of altServers) {
+                // Check there is a statistic record for this client
+                let altServerStats = info.servers[altServer.clientId]
+                if(!altServerStats) {
+                    altServerStats = {
+                        hosts: altServer.hosts,
+                        serverType: altServer.type,
+                        fetchCount: 0,
+                        latencyTotal: 0,
+                        errorCount: 0,
+                        // errorTime: null,
+                        // errorMessage: null,
+                        // errorUrl: null,
+                    }
+                    info.servers[altServer.clientId] = altServerStats
+                }
+                // For every host on the alt server
+                for (let host of altServer.hosts) {
+                    let altServerFailed = false
+                    const altUrl = event.request.url.replace("avnfs.com", host)
+                    try {
+                        const start = Date.now()
+                        const altResponse = await fetch(altUrl, { signal: event.request.signal, keepalive: event.request.keepalive } )
+                        if (altResponse.ok) {
+                            // console.debug(`AVNSW AltServer cache hit for ${altUrl}`)
+                            altServerStats.fetchCount++
+                            altServerStats.latencyTotal += Date.now() - start
+                            return altResponse
+                        } else {
+                            console.error(`AVNSW error getting cache for '${altUrl}': '${altResponse.statusText}' (${altResponse.status})`)
+                            altServerStats.errorCount++
+                            altServerStats.errorMessage = `${altResponse.statusText} (${altResponse.status})`
+                            altServerStats.errorUrl = event.request.url
+                            altServerStats.errorTime = new Date()
+                            altServerFailed = true
+                        }
+                    } catch (e) {
+                        console.error(`AVNSW exception getting cache for '${altUrl}'`, e)
+                        ++altServerStats.errorCount
+                        altServerStats.errorMessage = e.toString()
+                        altServerStats.errorUrl = event.request.url
+                        altServerStats.errorTime = new Date()
+                        altServerFailed = true
+                    }
+                    // Don't try that host again (TODO: this could be smarter)
+                    if(altServerFailed) {
+                        // Update the hosts list for future calls
+                        altServer.hosts = altServer.hosts.filter(it => it != host)
+                    }
+                }
+            }
+            avnfsStats.fetchCount++
+            // Revert to the default behaviour
+            return fetch(event.request)
+        })(),
+    )
+})
 
-self.addEventListener("push", function (e) {
-  const payload = JSON.parse(e.data.text());
+self.addEventListener("install", (event) => {
+    console.log("AVNSW installed", event)
+    self.skipWaiting()
+})
 
-  return e.waitUntil(
-    self.clients.matchAll({ type: "window" }).then(function (clientList) {
-      for (let i = 0; i < clientList.length; i++) {
-        const client = clientList[i];
-        if (client.url.indexOf(e.notification.data.hub_id) >= 0) return;
-      }
-
-      return self.registration.showNotification(appFullName, {
-        body: "Someone has joined " + payload.hub_name,
-        image: payload.image,
-        icon: "/favicon.ico",
-        badge: "/favicon.ico",
-        tag: payload.hub_id,
-        data: { hub_url: payload.hub_url }
-      });
-    })
-  );
-});
-
-self.addEventListener("notificationclick", function (e) {
-  e.notification.close();
-
-  e.waitUntil(
-    self.clients.matchAll({ type: "window" }).then(function (clientList) {
-      for (let i = 0; i < clientList.length; i++) {
-        const client = clientList[i];
-        if (client.url.indexOf(e.notification.data.hub_url) >= 0 && "focus" in client) return client.focus();
-      }
-
-      if (self.clients.openWindow) {
-        return self.clients.openWindow(e.notification.data.hub_url);
-      }
-    })
-  );
-});
+self.addEventListener("activate", (event) => {
+    console.log("AVNSW activated")
+    event.waitUntil(clients.claim())
+    info.scope = self.registration.scope
+    info.activated = new Date()
+})

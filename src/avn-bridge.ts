@@ -25,9 +25,6 @@ const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
 
 const LocalDevMode = isLocalClient()
 
-// Record the original fetch function for possible interception
-const { fetch: originalFetch } = window
-
 class AVNBridge {
 
     private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
@@ -53,6 +50,8 @@ class AVNBridge {
     public MD : markdownit
 
     constructor() {
+        // Async init
+        this.initServiceWorker()
         // Sidebar markdown
         this.MD = markdownit()
             .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
@@ -79,42 +78,31 @@ class AVNBridge {
             }
             return defaultRender(tokens, idx, options, env, self)
         }
-
-        // AVNFS fetch override
-        window.fetch = this.fetchOverride.bind(this)
     }
 
-    async fetchOverride(input : RequestInfo | URL, init: RequestInit | undefined) {
-        const url = input instanceof Request ? input.url : input.toString()
-        if(url.startsWith(Connect.AvnfsUtils.UrlPrefix)) {
-            // Download list of alt servers first time through
-            if(this._avnfsAltServers === undefined) {
-                console.log(`Checking for AVNFS alt servers...`)
-                const result = await this.ConnectServices.Avnfs.getAltServers()
-                this._avnfsAltServers = result.servers.map((server : Connect.AltServer) => server.host)
-                console.log(`AVNFS alt servers`, this._avnfsAltServers)
-            }
-            if(this._avnfsAltServers) {
-                for(let altServer of this._avnfsAltServers) {
-                    const altUrl = url.replace(Connect.AvnfsUtils.Hostname, altServer)
-                    try {
-                        const fetchResult = await originalFetch(altUrl)
-                        if(fetchResult.ok) {
-                            return fetchResult
-                        } else {
-                            console.warn(`Error using AVNFS alt server '${altServer}'`, fetchResult.status, fetchResult.statusText)
-                        }
-                    } catch(e: unknown) {
-                        console.warn(`Exception using AVNFS alt server '${altServer}'`, e)
-                    }
-                    // Blacklist this server to avoid wasting time in future
-                    this._avnfsAltServers = this._avnfsAltServers.filter(server => server != altServer)
-                    // Don't keep iterating over a collection that has changed
-                    break
+    async initServiceWorker() {
+        if ("serviceWorker" in navigator) {
+            try {
+                navigator.serviceWorker.addEventListener("message", (event) => {
+                    console.log("AVNSW info", event.data)
+                    //this.recordAction("avnfsw-info", "classvr_player", event.data)
+                })
+                console.info("Registering AVNSW...")
+                const registration = await navigator.serviceWorker.register("/hub.service.js", { scope: "/" })
+                if (registration.installing) {
+                    console.log("AVNSW installing")
+                } else if (registration.waiting) {
+                    console.log("AVNSW waiting")
+                } else if (registration.active) {
+                    console.log("AVNSW active")
                 }
+            } catch (error) {
+                console.error("AVNSW register failed", error)
             }
+        } else {
+            console.error("Service workers not available")
         }
-        return await originalFetch(input, init)
+    
     }
 
     async getClientId(): Promise<string> {
@@ -852,7 +840,11 @@ class AVNBridge {
     async recordAction(actionId: string, sourceId: string) : Promise<void> {
         try {
             const client = new Connect.ClientCredentials({ clientId: await this.getClientId() })
-            await this.ConnectServices.Clients.recordAction({ client, actionId, sourceId })
+            await this.ConnectServices.Clients.recordAction({ 
+                client, 
+                actionId, 
+                sourceId,
+            })
         } catch (error: unknown) {
             throw new Error(`Error recording action '${actionId}' from '${sourceId}'`)
         }        

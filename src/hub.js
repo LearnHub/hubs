@@ -797,7 +797,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const subscriptions = new Subscriptions(hubId);
   APP.subscriptions = subscriptions;
-  subscriptions.register();
+  // AVN: Disable subscriptions in favour of AVNSW
+  //subscriptions.register();
 
   const scene = document.querySelector("a-scene");
 
