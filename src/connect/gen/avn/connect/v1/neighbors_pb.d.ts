@@ -14,14 +14,22 @@ export declare class NeighborServer extends Message<NeighborServer> {
      */
     wanAddress: string;
     /**
-     * @generated from field: string lanAddress = 3;
-     */
-    lanAddress: string;
-    /**
      * @generated from field: int32 lanPort = 4;
      */
     lanPort: number;
     /**
+     * @generated from field: repeated string lanHostnames = 6;
+     */
+    lanHostnames: string[];
+    /**
+     * SINGLE_LOCAL_HOST_DEPRECATED
+     *
+     * @generated from field: string lanAddress = 3;
+     */
+    lanAddress: string;
+    /**
+     * SINGLE_LOCAL_HOST_DEPRECATED
+     *
      * @generated from field: string lanHostname = 5;
      */
     lanHostname: string;
@@ -50,6 +58,10 @@ export declare class RegisterNeighborServerRequest extends Message<RegisterNeigh
      * @generated from field: int32 lanPort = 3;
      */
     lanPort: number;
+    /**
+     * @generated from field: repeated string lanAddresses = 4;
+     */
+    lanAddresses: string[];
     constructor(data?: PartialMessage<RegisterNeighborServerRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RegisterNeighborServerRequest";
