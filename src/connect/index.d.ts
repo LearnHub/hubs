@@ -59,4 +59,8 @@ export * from "./gen/avn/connect/v1/three_sixty_cities_connect.js";
 export * from "./gen/avn/connect/v1/three_sixty_cities_pb.js";
 export * from "./gen/avn/connect/v1/cloud_connect.js";
 export * from "./gen/avn/connect/v1/cloud_pb.js";
+export * from "./gen/avn/connect/v1/languages_connect.js";
+export * from "./gen/avn/connect/v1/languages_pb.js";
+export * from "./gen/avn/connect/v1/translations_connect.js";
+export * from "./gen/avn/connect/v1/translations_pb.js";
 export * from "./gen/avn/connect/v1/entities_pb.js";
