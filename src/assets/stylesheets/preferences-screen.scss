@@ -359,7 +359,6 @@ $semi-bold: 600;
     font-size: $fontSize;
     @extend %rounded-border;
     @extend %default-font;
-    font-family: theme.$font-family-default;
     color: theme.$text1-color;
     appearance: none;
     background-color: theme.$input-bg-color;
