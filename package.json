@@ -117,7 +117,6 @@
     "networked-aframe": "github:mozillareality/networked-aframe#6093c3a0b2867a9e141cd5c19f7d13dfa7c38479",
     "nipplejs": "github:mozillareality/nipplejs#mr-social-client/master",
     "node-ensure": "0.0.0",
-    "normalize.css": "^8.0.1",
     "pdfjs-dist": "^2.14.305",
     "phoenix": "github:gfodor/phoenix-js#master",
     "postprocessing": "^6.28.7",
