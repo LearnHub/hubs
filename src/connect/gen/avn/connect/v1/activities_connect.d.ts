@@ -1,5 +1,5 @@
 import { GetEntityRequest, SetEntityPropertyRequest } from "./entities_pb.js";
-import { Activity, AddActivityFilesRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest, SearchActivitiesRequest, SearchActivitiesResponse } from "./activities_pb.js";
+import { Activity, AddActivityFilesRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ActivityService
@@ -43,17 +43,6 @@ export declare const ActivityService: {
             readonly name: "RemoveAllFiles";
             readonly I: typeof RemoveAllActivityFilesRequest;
             readonly O: typeof Empty;
-            readonly kind: MethodKind.Unary;
-        };
-        /**
-         * Search all published activities in the given channel
-         *
-         * @generated from rpc avn.connect.v1.ActivityService.SearchActivities
-         */
-        readonly searchActivities: {
-            readonly name: "SearchActivities";
-            readonly I: typeof SearchActivitiesRequest;
-            readonly O: typeof SearchActivitiesResponse;
             readonly kind: MethodKind.Unary;
         };
         /**

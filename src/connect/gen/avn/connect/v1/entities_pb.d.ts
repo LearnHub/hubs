@@ -170,19 +170,43 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     entityId: number;
     /**
-     * @generated from field: optional avn.connect.v1.EntityProperty order_by = 3;
+     * Override to the user agent language
+     *
+     * @generated from field: optional string language_id = 3;
      */
-    orderBy?: EntityProperty;
+    languageId?: string;
     /**
-     * @generated from field: optional avn.connect.v1.SortOrder sort_order = 4;
+     * Search all text fields
+     *
+     * @generated from field: optional string search_text = 4;
+     */
+    searchText?: string;
+    /**
+     * Narrow search results by tag
+     *
+     * @generated from field: repeated int32 filter_in_tags = 5;
+     */
+    filterInTags: number[];
+    /**
+     * @generated from field: repeated int32 filter_out_tags = 6;
+     */
+    filterOutTags: number[];
+    /**
+     * One or more clauses to order the results by
+     *
+     * @generated from field: repeated avn.connect.v1.EntityProperty order_by = 7;
+     */
+    orderBy: EntityProperty[];
+    /**
+     * @generated from field: optional avn.connect.v1.SortOrder sort_order = 8;
      */
     sortOrder?: SortOrder;
     /**
-     * @generated from field: optional int32 page_size = 5;
+     * @generated from field: optional int32 page_size = 9;
      */
     pageSize?: number;
     /**
-     * @generated from field: optional string page_token = 6;
+     * @generated from field: optional string page_token = 10;
      */
     pageToken?: string;
     constructor(data?: PartialMessage<EntityInfoListRequest>);

@@ -260,27 +260,51 @@ class AVNBridge {
     }
 
     public async getProfilesForChannel(channelId: number): Promise<Connect.Profile[]> {
-        const result = await this.ConnectServices.Channels.getProfiles({ auth: this._dimensionAuth, entityId: channelId })
-        return result.results
-    }
-
-    public async getCategoriesForProfile(profileId: number): Promise<Connect.Category[]> {
-        const result = await this.ConnectServices.Profiles.getCategories({ auth: this._dimensionAuth, entityId: profileId })
-        return result.results
-    }
-
-    public async getActivitiesForProfile(profileId: number): Promise<Connect.Activity[]> {
-        const result = await this.ConnectServices.Profiles.getActivities({ auth: this._dimensionAuth, entityId: profileId })
-        return result.results
-    }
-
-    public async getActivitiesForCategory(categoryId: number): Promise<Connect.Activity[]> {
-        const result = await this.ConnectServices.Categories.getActivities({ auth: this._dimensionAuth, entityId: categoryId })
+        const result = await this.ConnectServices.Channels.getProfiles({ 
+            auth: this._dimensionAuth, 
+            entityId: channelId,
+            filterOutTags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ], 
+        })
         return result.results
     }
 
     public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.Activity[]> {
-        const result = await this.ConnectServices.Activities.searchActivities({ auth: this._dimensionAuth, channelId, searchText })
+        const result = await this.ConnectServices.Channels.getActivities({ 
+            auth: this._dimensionAuth, 
+            entityId: channelId, 
+            searchText, 
+            filterOutTags: [ Connect.Tags.NotBrowsable ], 
+            filterInTags: [ Connect.Tags.Scene ],
+        })
+        return result.results
+    }
+
+    public async getCategoriesForProfile(profileId: number): Promise<Connect.Category[]> {
+        const result = await this.ConnectServices.Profiles.getCategories({ 
+            auth: this._dimensionAuth, 
+            entityId: profileId, 
+            filterOutTags: [ Connect.Tags.NotBrowsable ], 
+        })
+        return result.results
+    }
+
+    public async getActivitiesForProfile(profileId: number): Promise<Connect.Activity[]> {
+        const result = await this.ConnectServices.Profiles.getActivities({ 
+            auth: this._dimensionAuth, 
+            entityId: profileId,
+            filterOutTags: [ Connect.Tags.NotBrowsable ], 
+            filterInTags: [ Connect.Tags.Scene ],
+        })
+        return result.results
+    }
+
+    public async getActivitiesForCategory(categoryId: number): Promise<Connect.Activity[]> {
+        const result = await this.ConnectServices.Categories.getActivities({ 
+            auth: this._dimensionAuth, 
+            entityId: categoryId,
+            filterOutTags: [ Connect.Tags.NotBrowsable ], 
+            filterInTags: [ Connect.Tags.Scene ],
+        })
         return result.results
     }
 
