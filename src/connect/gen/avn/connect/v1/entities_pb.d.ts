@@ -77,7 +77,11 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_PUBLISHED = 13;
      */
-    PUBLISHED = 13
+    PUBLISHED = 13,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_AVAILABLE = 14;
+     */
+    AVAILABLE = 14
 }
 /**
  * Common info for channels, profiles, categories, and activities
@@ -192,21 +196,17 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     filterOutTags: number[];
     /**
-     * One or more clauses to order the results by
+     * Clauses to order the results by
      *
-     * @generated from field: repeated avn.connect.v1.EntityProperty order_by = 7;
+     * @generated from field: repeated avn.connect.v1.OrderClause order_by = 7;
      */
-    orderBy: EntityProperty[];
+    orderBy: OrderClause[];
     /**
-     * @generated from field: optional avn.connect.v1.SortOrder sort_order = 8;
-     */
-    sortOrder?: SortOrder;
-    /**
-     * @generated from field: optional int32 page_size = 9;
+     * @generated from field: optional int32 page_size = 8;
      */
     pageSize?: number;
     /**
-     * @generated from field: optional string page_token = 10;
+     * @generated from field: optional string page_token = 9;
      */
     pageToken?: string;
     constructor(data?: PartialMessage<EntityInfoListRequest>);
@@ -316,4 +316,25 @@ export declare class SetEntityPropertyRequest extends Message<SetEntityPropertyR
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SetEntityPropertyRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SetEntityPropertyRequest;
     static equals(a: SetEntityPropertyRequest | PlainMessage<SetEntityPropertyRequest> | undefined, b: SetEntityPropertyRequest | PlainMessage<SetEntityPropertyRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.OrderClause
+ */
+export declare class OrderClause extends Message<OrderClause> {
+    /**
+     * @generated from field: avn.connect.v1.EntityProperty property = 7;
+     */
+    property: EntityProperty;
+    /**
+     * @generated from field: optional avn.connect.v1.SortOrder sort_order = 8;
+     */
+    sortOrder?: SortOrder;
+    constructor(data?: PartialMessage<OrderClause>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.OrderClause";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OrderClause;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): OrderClause;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): OrderClause;
+    static equals(a: OrderClause | PlainMessage<OrderClause> | undefined, b: OrderClause | PlainMessage<OrderClause> | undefined): boolean;
 }

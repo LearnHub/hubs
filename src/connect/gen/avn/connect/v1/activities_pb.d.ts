@@ -84,9 +84,9 @@ export declare class Activity extends Message<Activity> {
      */
     tags: number[];
     /**
-     * @generated from field: bool featured = 9;
+     * @generated from field: optional google.protobuf.Timestamp featured = 9;
      */
-    featured: boolean;
+    featured?: Timestamp;
     /**
      * @generated from field: bool available = 10;
      */
