@@ -263,7 +263,9 @@ class AVNBridge {
         const result = await this.ConnectServices.Channels.getProfiles({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId],
-            filterOutTags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ], 
+            tagFilters: [ 
+                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
+            ],
         })
         return result.results
     }
@@ -285,7 +287,9 @@ class AVNBridge {
         const result = await this.ConnectServices.Profiles.getCategories({ 
             auth: this._dimensionAuth, 
             entityIds: [profileId], 
-            filterOutTags: [ Connect.Tags.NotBrowsable ], 
+            tagFilters: [ 
+                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+            ],
         })
         return result.results
     }
