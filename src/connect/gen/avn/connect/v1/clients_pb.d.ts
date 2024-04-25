@@ -1,5 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Struct, Timestamp } from "@bufbuild/protobuf";
+import { EntityPropertyState } from "./entities_pb.js";
 /**
  * @generated from message avn.connect.v1.ClientCredentials
  */
@@ -74,6 +75,8 @@ export declare class RecordActionResponse extends Message<RecordActionResponse> 
  */
 export declare class CreateClientCredentialsRequest extends Message<CreateClientCredentialsRequest> {
     /**
+     * Useful for user-friendly naming
+     *
      * @generated from field: optional string prefix = 1;
      */
     prefix?: string;
@@ -81,6 +84,12 @@ export declare class CreateClientCredentialsRequest extends Message<CreateClient
      * @generated from field: optional string postfix = 2;
      */
     postfix?: string;
+    /**
+     * Fingerprint of client
+     *
+     * @generated from field: repeated avn.connect.v1.EntityPropertyState client_state = 3;
+     */
+    clientState: EntityPropertyState[];
     constructor(data?: PartialMessage<CreateClientCredentialsRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateClientCredentialsRequest";

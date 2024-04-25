@@ -262,7 +262,7 @@ class AVNBridge {
     public async getProfilesForChannel(channelId: number): Promise<Connect.Profile[]> {
         const result = await this.ConnectServices.Channels.getProfiles({ 
             auth: this._dimensionAuth, 
-            entityId: channelId,
+            entityIds: [channelId],
             filterOutTags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ], 
         })
         return result.results
@@ -271,10 +271,12 @@ class AVNBridge {
     public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.Activity[]> {
         const result = await this.ConnectServices.Channels.getActivities({ 
             auth: this._dimensionAuth, 
-            entityId: channelId, 
+            entityIds: [channelId], 
             searchText, 
-            filterOutTags: [ Connect.Tags.NotBrowsable ], 
-            filterInTags: [ Connect.Tags.Scene ],
+            tagFilters: [ 
+                { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
+                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+            ],
         })
         return result.results
     }
@@ -282,7 +284,7 @@ class AVNBridge {
     public async getCategoriesForProfile(profileId: number): Promise<Connect.Category[]> {
         const result = await this.ConnectServices.Profiles.getCategories({ 
             auth: this._dimensionAuth, 
-            entityId: profileId, 
+            entityIds: [profileId], 
             filterOutTags: [ Connect.Tags.NotBrowsable ], 
         })
         return result.results
@@ -291,9 +293,11 @@ class AVNBridge {
     public async getActivitiesForProfile(profileId: number): Promise<Connect.Activity[]> {
         const result = await this.ConnectServices.Profiles.getActivities({ 
             auth: this._dimensionAuth, 
-            entityId: profileId,
-            filterOutTags: [ Connect.Tags.NotBrowsable ], 
-            filterInTags: [ Connect.Tags.Scene ],
+            entityIds: [profileId],
+            tagFilters: [ 
+                { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
+                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+            ],
         })
         return result.results
     }
@@ -301,9 +305,15 @@ class AVNBridge {
     public async getActivitiesForCategory(categoryId: number): Promise<Connect.Activity[]> {
         const result = await this.ConnectServices.Categories.getActivities({ 
             auth: this._dimensionAuth, 
-            entityId: categoryId,
-            filterOutTags: [ Connect.Tags.NotBrowsable ], 
-            filterInTags: [ Connect.Tags.Scene ],
+            entityIds: [categoryId],
+            tagFilters: [ 
+                { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
+                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+            ],
+            orderBy: [
+                { property: Connect.EntityProperty.AVAILABLE, sortOrder: Connect.SortOrder.DESC },
+                { property: Connect.EntityProperty.NAME, sortOrder: Connect.SortOrder.DESC },
+            ],
         })
         return result.results
     }

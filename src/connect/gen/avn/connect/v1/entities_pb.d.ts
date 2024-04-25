@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { TagFilter } from "./tags_pb.js";
 /**
  * @generated from enum avn.connect.v1.SortOrder
  */
@@ -81,7 +82,15 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_AVAILABLE = 14;
      */
-    AVAILABLE = 14
+    AVAILABLE = 14,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_FEATURED = 15;
+     */
+    FEATURED = 15,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_MAC_ADDRESS = 16;
+     */
+    MAC_ADDRESS = 16
 }
 /**
  * Common info for channels, profiles, categories, and activities
@@ -170,9 +179,9 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     auth?: Authorization;
     /**
-     * @generated from field: int32 entity_id = 2;
+     * @generated from field: repeated int32 entity_ids = 2;
      */
-    entityId: number;
+    entityIds: number[];
     /**
      * Override to the user agent language
      *
@@ -186,15 +195,11 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     searchText?: string;
     /**
-     * Narrow search results by tag
+     * Narrow search results by one or more tag filters (must all be true)
      *
-     * @generated from field: repeated int32 filter_in_tags = 5;
+     * @generated from field: repeated avn.connect.v1.TagFilter tag_filters = 5;
      */
-    filterInTags: number[];
-    /**
-     * @generated from field: repeated int32 filter_out_tags = 6;
-     */
-    filterOutTags: number[];
+    tagFilters: TagFilter[];
     /**
      * Clauses to order the results by
      *
@@ -242,6 +247,7 @@ export declare class EntityInfoListResponse extends Message<EntityInfoListRespon
     static equals(a: EntityInfoListResponse | PlainMessage<EntityInfoListResponse> | undefined, b: EntityInfoListResponse | PlainMessage<EntityInfoListResponse> | undefined): boolean;
 }
 /**
+ * DEPRECATE IN FAVOUR OF SetEntityPropertiesRequest
  * Generic pattern for entity property setting
  *
  * @generated from message avn.connect.v1.SetEntityPropertyRequest
@@ -316,6 +322,97 @@ export declare class SetEntityPropertyRequest extends Message<SetEntityPropertyR
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SetEntityPropertyRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SetEntityPropertyRequest;
     static equals(a: SetEntityPropertyRequest | PlainMessage<SetEntityPropertyRequest> | undefined, b: SetEntityPropertyRequest | PlainMessage<SetEntityPropertyRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.SetEntityPropertiesRequest
+ */
+export declare class SetEntityPropertiesRequest extends Message<SetEntityPropertiesRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: int32 entity_id = 2;
+     */
+    entityId: number;
+    /**
+     * @generated from field: repeated avn.connect.v1.EntityPropertyState states = 3;
+     */
+    states: EntityPropertyState[];
+    constructor(data?: PartialMessage<SetEntityPropertiesRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.SetEntityPropertiesRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetEntityPropertiesRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SetEntityPropertiesRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SetEntityPropertiesRequest;
+    static equals(a: SetEntityPropertiesRequest | PlainMessage<SetEntityPropertiesRequest> | undefined, b: SetEntityPropertiesRequest | PlainMessage<SetEntityPropertiesRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.EntityPropertyState
+ */
+export declare class EntityPropertyState extends Message<EntityPropertyState> {
+    /**
+     * @generated from field: avn.connect.v1.EntityProperty property = 3;
+     */
+    property: EntityProperty;
+    /**
+     * @generated from oneof avn.connect.v1.EntityPropertyState.state
+     */
+    state: {
+        /**
+         * @generated from field: bool bool = 4;
+         */
+        value: boolean;
+        case: "bool";
+    } | {
+        /**
+         * @generated from field: int32 int32 = 5;
+         */
+        value: number;
+        case: "int32";
+    } | {
+        /**
+         * @generated from field: int64 int64 = 6;
+         */
+        value: bigint;
+        case: "int64";
+    } | {
+        /**
+         * @generated from field: float float = 7;
+         */
+        value: number;
+        case: "float";
+    } | {
+        /**
+         * @generated from field: double double = 8;
+         */
+        value: number;
+        case: "double";
+    } | {
+        /**
+         * @generated from field: string string = 9;
+         */
+        value: string;
+        case: "string";
+    } | {
+        /**
+         * @generated from field: google.protobuf.Timestamp timestamp = 10;
+         */
+        value: Timestamp;
+        case: "timestamp";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
+    constructor(data?: PartialMessage<EntityPropertyState>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.EntityPropertyState";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EntityPropertyState;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): EntityPropertyState;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): EntityPropertyState;
+    static equals(a: EntityPropertyState | PlainMessage<EntityPropertyState> | undefined, b: EntityPropertyState | PlainMessage<EntityPropertyState> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.OrderClause

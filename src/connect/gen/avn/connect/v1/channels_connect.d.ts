@@ -30,7 +30,7 @@ export declare const ChannelService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * Get all published profiles in the given channel
+         * Get all published profiles in the given set of channels
          *
          * @generated from rpc avn.connect.v1.ChannelService.GetProfiles
          */
@@ -41,7 +41,18 @@ export declare const ChannelService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * Get all published activities in the given channel
+         * Get all published categories in the given set of channels
+         *
+         * @generated from rpc avn.connect.v1.ChannelService.GetCategories
+         */
+        readonly getCategories: {
+            readonly name: "GetCategories";
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Get all published activities in the given set of channels
          *
          * @generated from rpc avn.connect.v1.ChannelService.GetActivities
          */

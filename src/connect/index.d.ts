@@ -64,4 +64,5 @@ export * from "./gen/avn/connect/v1/languages_connect.js";
 export * from "./gen/avn/connect/v1/languages_pb.js";
 export * from "./gen/avn/connect/v1/translations_connect.js";
 export * from "./gen/avn/connect/v1/translations_pb.js";
+export * from "./gen/avn/connect/v1/tags_pb.js";
 export * from "./gen/avn/connect/v1/entities_pb.js";
