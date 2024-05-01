@@ -90,7 +90,19 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_MAC_ADDRESS = 16;
      */
-    MAC_ADDRESS = 16
+    MAC_ADDRESS = 16,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_SW_VERSION = 17;
+     */
+    SW_VERSION = 17,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_HOSTNAME = 18;
+     */
+    HOSTNAME = 18,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_PLATFORM = 19;
+     */
+    PLATFORM = 19
 }
 /**
  * Common info for channels, profiles, categories, and activities
@@ -118,6 +130,12 @@ export declare class EntityInfo extends Message<EntityInfo> {
      * @generated from field: string preview_image_url = 5;
      */
     previewImageUrl: string;
+    /**
+     * An indication of the origin of the entity
+     *
+     * @generated from field: optional string context = 6;
+     */
+    context?: string;
     /**
      * @generated from field: repeated int32 tags = 7;
      */
@@ -195,7 +213,7 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     searchText?: string;
     /**
-     * Narrow search results by one or more tag filters (must all be true)
+     * Filter search results based on tags (all TagFilters must be true)
      *
      * @generated from field: repeated avn.connect.v1.TagFilter tag_filters = 5;
      */
@@ -247,83 +265,8 @@ export declare class EntityInfoListResponse extends Message<EntityInfoListRespon
     static equals(a: EntityInfoListResponse | PlainMessage<EntityInfoListResponse> | undefined, b: EntityInfoListResponse | PlainMessage<EntityInfoListResponse> | undefined): boolean;
 }
 /**
- * DEPRECATE IN FAVOUR OF SetEntityPropertiesRequest
  * Generic pattern for entity property setting
  *
- * @generated from message avn.connect.v1.SetEntityPropertyRequest
- */
-export declare class SetEntityPropertyRequest extends Message<SetEntityPropertyRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: int32 entity_id = 2;
-     */
-    entityId: number;
-    /**
-     * @generated from field: avn.connect.v1.EntityProperty property = 3;
-     */
-    property: EntityProperty;
-    /**
-     * @generated from oneof avn.connect.v1.SetEntityPropertyRequest.value
-     */
-    value: {
-        /**
-         * @generated from field: bool bool = 4;
-         */
-        value: boolean;
-        case: "bool";
-    } | {
-        /**
-         * @generated from field: int32 int32 = 5;
-         */
-        value: number;
-        case: "int32";
-    } | {
-        /**
-         * @generated from field: int64 int64 = 6;
-         */
-        value: bigint;
-        case: "int64";
-    } | {
-        /**
-         * @generated from field: float float = 7;
-         */
-        value: number;
-        case: "float";
-    } | {
-        /**
-         * @generated from field: double double = 8;
-         */
-        value: number;
-        case: "double";
-    } | {
-        /**
-         * @generated from field: string string = 9;
-         */
-        value: string;
-        case: "string";
-    } | {
-        /**
-         * @generated from field: google.protobuf.Timestamp timestamp = 10;
-         */
-        value: Timestamp;
-        case: "timestamp";
-    } | {
-        case: undefined;
-        value?: undefined;
-    };
-    constructor(data?: PartialMessage<SetEntityPropertyRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.SetEntityPropertyRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetEntityPropertyRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SetEntityPropertyRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SetEntityPropertyRequest;
-    static equals(a: SetEntityPropertyRequest | PlainMessage<SetEntityPropertyRequest> | undefined, b: SetEntityPropertyRequest | PlainMessage<SetEntityPropertyRequest> | undefined): boolean;
-}
-/**
  * @generated from message avn.connect.v1.SetEntityPropertiesRequest
  */
 export declare class SetEntityPropertiesRequest extends Message<SetEntityPropertiesRequest> {
@@ -336,9 +279,9 @@ export declare class SetEntityPropertiesRequest extends Message<SetEntityPropert
      */
     entityId: number;
     /**
-     * @generated from field: repeated avn.connect.v1.EntityPropertyState states = 3;
+     * @generated from field: repeated avn.connect.v1.EntityPropertyState property_states = 3;
      */
-    states: EntityPropertyState[];
+    propertyStates: EntityPropertyState[];
     constructor(data?: PartialMessage<SetEntityPropertiesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SetEntityPropertiesRequest";

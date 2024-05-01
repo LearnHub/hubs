@@ -17,6 +17,7 @@ export declare class AvailableContent extends Message<AvailableContent> {
      */
     licensedCategories: number[];
     /**
+     * DEPRECATED IN FAVOUR OF TagFilter SYSTEM LIKE IN entities.proto
      * Future extension for filtering appropriate content for dimensions
      *
      * @generated from field: repeated int32 tag_whitelist = 10;

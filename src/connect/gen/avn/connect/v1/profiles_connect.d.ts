@@ -1,4 +1,4 @@
-import { EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, SetEntityPropertyRequest } from "./entities_pb.js";
+import { EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
 import { Profile } from "./profiles_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
@@ -39,11 +39,11 @@ export declare const ProfileService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * @generated from rpc avn.connect.v1.ProfileService.SetProperty
+         * @generated from rpc avn.connect.v1.ProfileService.SetProperties
          */
-        readonly setProperty: {
-            readonly name: "SetProperty";
-            readonly I: typeof SetEntityPropertyRequest;
+        readonly setProperties: {
+            readonly name: "SetProperties";
+            readonly I: typeof SetEntityPropertiesRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };

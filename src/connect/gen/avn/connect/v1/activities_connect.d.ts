@@ -1,4 +1,4 @@
-import { GetEntityRequest, SetEntityPropertyRequest } from "./entities_pb.js";
+import { GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
 import { Activity, AddActivityFilesRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
@@ -46,11 +46,11 @@ export declare const ActivityService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * @generated from rpc avn.connect.v1.ActivityService.SetProperty
+         * @generated from rpc avn.connect.v1.ActivityService.SetProperties
          */
-        readonly setProperty: {
-            readonly name: "SetProperty";
-            readonly I: typeof SetEntityPropertyRequest;
+        readonly setProperties: {
+            readonly name: "SetProperties";
+            readonly I: typeof SetEntityPropertiesRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
