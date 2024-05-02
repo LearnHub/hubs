@@ -150,7 +150,7 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
   await AVN.enterRoom(hub.hub_id, NAF.clientId)
 
   // AVN: Moved so activity property is updated (translated name)
-  const roomName = AVN.roomActivity?.name || AVN.roomInfo?.name;
+  const roomName = AVN.roomActivity?.name?.text || AVN.roomInfo?.name;
   document.title = roomName;
   if(nextState.icon) {
     favicon.setAttribute("href", nextState.icon);
