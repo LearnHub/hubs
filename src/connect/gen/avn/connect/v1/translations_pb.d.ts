@@ -5,49 +5,62 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export declare enum TranslationFlags {
     /**
-     * @generated from enum value: TRANSLATION_FLAGS_MARKDOWN_SOURCE = 0;
-     */
-    MARKDOWN_SOURCE = 0
-}
-/**
- * @generated from enum avn.connect.v1.TranslationState
- */
-export declare enum TranslationState {
-    /**
-     * @generated from enum value: TRANSLATION_STATE_UNKNOWN = 0;
+     * @generated from enum value: TRANSLATION_FLAGS_UNKNOWN = 0;
      */
     UNKNOWN = 0,
     /**
-     * @generated from enum value: TRANSLATION_STATE_OK = 1;
+     * Is text a base64 AVNFS path?
+     *
+     * @generated from enum value: TRANSLATION_FLAGS_IS_AVNFS = 1;
      */
-    OK = 1,
+    IS_AVNFS = 1,
     /**
-     * @generated from enum value: TRANSLATION_STATE_SAME_LANGUAGE = 2;
+     * Media type flags (hint for translation)
+     *
+     * @generated from enum value: TRANSLATION_FLAGS_MEDIA_TYPE_TEXT = 10;
      */
-    SAME_LANGUAGE = 2,
+    MEDIA_TYPE_TEXT = 10,
     /**
-     * @generated from enum value: TRANSLATION_STATE_DIALECT = 4;
+     * @generated from enum value: TRANSLATION_FLAGS_MEDIA_TYPE_MARKDOWN = 11;
      */
-    DIALECT = 4,
+    MEDIA_TYPE_MARKDOWN = 11,
     /**
-     * @generated from enum value: TRANSLATION_STATE_FAILED = 256;
+     * @generated from enum value: TRANSLATION_FLAGS_MEDIA_TYPE_HTML = 12;
      */
-    FAILED = 256,
+    MEDIA_TYPE_HTML = 12,
     /**
-     * @generated from enum value: TRANSLATION_STATE_NOT_FOUND = 512;
+     * Translation result flags
+     *
+     * @generated from enum value: TRANSLATION_FLAGS_TRANSLATED = 20;
      */
-    NOT_FOUND = 512
+    TRANSLATED = 20,
+    /**
+     * @generated from enum value: TRANSLATION_FLAGS_SAME_LANGUAGE = 21;
+     */
+    SAME_LANGUAGE = 21,
+    /**
+     * @generated from enum value: TRANSLATION_FLAGS_DIALECT = 22;
+     */
+    DIALECT = 22,
+    /**
+     * @generated from enum value: TRANSLATION_FLAGS_FAILED = 23;
+     */
+    FAILED = 23,
+    /**
+     * @generated from enum value: TRANSLATION_FLAGS_NOT_FOUND = 24;
+     */
+    NOT_FOUND = 24
 }
 /**
- * @generated from message avn.connect.v1.TranslationRequest
+ * @generated from message avn.connect.v1.TranslationField
  */
-export declare class TranslationRequest extends Message<TranslationRequest> {
+export declare class TranslationField extends Message<TranslationField> {
     /**
-     * Source text
+     * Source text (text or AVNFS reference)
      *
-     * @generated from field: string source = 1;
+     * @generated from field: string text = 1;
      */
-    source: string;
+    text: string;
     /**
      * Language of the source text
      *
@@ -61,60 +74,25 @@ export declare class TranslationRequest extends Message<TranslationRequest> {
      */
     targetLanguageId: string;
     /**
-     * ID / differentiator
+     * For Translate: Differential modifier for short or ambiguous text (implemented as a prefix)
+     * For Reverse:   Source ID from a successful translation
+     * For Update:    Source ID from a successful translation
      *
-     * @generated from field: optional string modifier = 4;
+     * @generated from field: string idOrModifier = 4;
      */
-    modifier?: string;
+    idOrModifier: string;
     /**
      * Additional context
      *
      * @generated from field: repeated avn.connect.v1.TranslationFlags flags = 5;
      */
     flags: TranslationFlags[];
-    constructor(data?: PartialMessage<TranslationRequest>);
+    constructor(data?: PartialMessage<TranslationField>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.TranslationRequest";
+    static readonly typeName = "avn.connect.v1.TranslationField";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationRequest;
-    static equals(a: TranslationRequest | PlainMessage<TranslationRequest> | undefined, b: TranslationRequest | PlainMessage<TranslationRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.TranslationResponse
- */
-export declare class TranslationResponse extends Message<TranslationResponse> {
-    /**
-     * Translated text
-     *
-     * @generated from field: string translation = 1;
-     */
-    translation: string;
-    /**
-     * Language of the source text
-     *
-     * @generated from field: string source_language_id = 2;
-     */
-    sourceLanguageId: string;
-    /**
-     * Language of the translated text
-     *
-     * @generated from field: string target_language_id = 3;
-     */
-    targetLanguageId: string;
-    /**
-     * State of the translation
-     *
-     * @generated from field: avn.connect.v1.TranslationState state = 4;
-     */
-    state: TranslationState;
-    constructor(data?: PartialMessage<TranslationResponse>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.TranslationResponse";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationResponse;
-    static equals(a: TranslationResponse | PlainMessage<TranslationResponse> | undefined, b: TranslationResponse | PlainMessage<TranslationResponse> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationField;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationField;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationField;
+    static equals(a: TranslationField | PlainMessage<TranslationField> | undefined, b: TranslationField | PlainMessage<TranslationField> | undefined): boolean;
 }

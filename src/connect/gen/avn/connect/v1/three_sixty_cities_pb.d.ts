@@ -22,6 +22,12 @@ export declare class SearchImagesRequest extends Message<SearchImagesRequest> {
      * @generated from field: optional string page_token = 4;
      */
     pageToken?: string;
+    /**
+     * Override to the user agent language
+     *
+     * @generated from field: optional string language_id = 5;
+     */
+    languageId?: string;
     constructor(data?: PartialMessage<SearchImagesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchImagesRequest";

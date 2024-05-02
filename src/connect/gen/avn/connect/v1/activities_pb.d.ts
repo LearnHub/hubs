@@ -1,5 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
+import { TranslationField } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.ActivityType
@@ -60,9 +61,9 @@ export declare class Activity extends Message<Activity> {
      */
     assetId: string;
     /**
-     * @generated from field: string name = 3;
+     * @generated from field: avn.connect.v1.TranslationField name = 3;
      */
-    name: string;
+    name?: TranslationField;
     /**
      * @generated from field: string icon_url = 4;
      */
@@ -76,9 +77,9 @@ export declare class Activity extends Message<Activity> {
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional string description = 7;
+     * @generated from field: optional avn.connect.v1.TranslationField description = 7;
      */
-    description?: string;
+    description?: TranslationField;
     /**
      * @generated from field: repeated int32 tags = 8;
      */
@@ -100,9 +101,9 @@ export declare class Activity extends Message<Activity> {
      */
     organizationId: number;
     /**
-     * @generated from field: optional string instructions = 13;
+     * @generated from field: optional avn.connect.v1.TranslationField instructions = 13;
      */
-    instructions?: string;
+    instructions?: TranslationField;
     /**
      * @generated from field: optional string credit = 14;
      */

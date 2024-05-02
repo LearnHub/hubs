@@ -266,6 +266,7 @@ class AVNBridge {
             tagFilters: [ 
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
             ],
+            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
@@ -279,6 +280,7 @@ class AVNBridge {
                 { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
+            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
@@ -290,6 +292,7 @@ class AVNBridge {
             tagFilters: [ 
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
+            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
@@ -302,6 +305,7 @@ class AVNBridge {
                 { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
+            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
@@ -318,6 +322,7 @@ class AVNBridge {
                 { property: Connect.EntityProperty.AVAILABLE, sortOrder: Connect.SortOrder.DESC },
                 { property: Connect.EntityProperty.NAME, sortOrder: Connect.SortOrder.DESC },
             ],
+            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
