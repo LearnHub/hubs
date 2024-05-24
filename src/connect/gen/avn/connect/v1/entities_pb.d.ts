@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { TranslationField } from "./translations_pb.js";
+import { Translation } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
 import { TagFilter } from "./tags_pb.js";
 /**
@@ -103,7 +103,11 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_PLATFORM = 19;
      */
-    PLATFORM = 19
+    PLATFORM = 19,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_APPROVED = 20;
+     */
+    APPROVED = 20
 }
 /**
  * Common info for channels, profiles, categories, and activities
@@ -116,9 +120,9 @@ export declare class EntityInfo extends Message<EntityInfo> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.TranslationField name = 2;
+     * @generated from field: avn.connect.v1.Translation name = 2;
      */
-    name?: TranslationField;
+    name?: Translation;
     /**
      * @generated from field: google.protobuf.Timestamp updated = 3;
      */
@@ -165,8 +169,6 @@ export declare class EntityInfo extends Message<EntityInfo> {
     static equals(a: EntityInfo | PlainMessage<EntityInfo> | undefined, b: EntityInfo | PlainMessage<EntityInfo> | undefined): boolean;
 }
 /**
- * Common request signature for entity types
- *
  * @generated from message avn.connect.v1.GetEntityRequest
  */
 export declare class GetEntityRequest extends Message<GetEntityRequest> {
@@ -178,6 +180,12 @@ export declare class GetEntityRequest extends Message<GetEntityRequest> {
      * @generated from field: int32 entity_id = 2;
      */
     entityId: number;
+    /**
+     * Override to the user agent language
+     *
+     * @generated from field: optional string language_id = 3;
+     */
+    languageId?: string;
     constructor(data?: PartialMessage<GetEntityRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetEntityRequest";
@@ -186,6 +194,73 @@ export declare class GetEntityRequest extends Message<GetEntityRequest> {
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetEntityRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetEntityRequest;
     static equals(a: GetEntityRequest | PlainMessage<GetEntityRequest> | undefined, b: GetEntityRequest | PlainMessage<GetEntityRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.CreateEntityRequest
+ */
+export declare class CreateEntityRequest extends Message<CreateEntityRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * Entities with no organization belong to the creating user by default
+     *
+     * @generated from field: optional int32 organization_id = 2;
+     */
+    organizationId?: number;
+    /**
+     * Override to the user agent language
+     *
+     * @generated from field: optional string language_id = 3;
+     */
+    languageId?: string;
+    constructor(data?: PartialMessage<CreateEntityRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.CreateEntityRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateEntityRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateEntityRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateEntityRequest;
+    static equals(a: CreateEntityRequest | PlainMessage<CreateEntityRequest> | undefined, b: CreateEntityRequest | PlainMessage<CreateEntityRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.CreateEntityResponse
+ */
+export declare class CreateEntityResponse extends Message<CreateEntityResponse> {
+    /**
+     * @generated from field: int32 entity_id = 1;
+     */
+    entityId: number;
+    constructor(data?: PartialMessage<CreateEntityResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.CreateEntityResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateEntityResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateEntityResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateEntityResponse;
+    static equals(a: CreateEntityResponse | PlainMessage<CreateEntityResponse> | undefined, b: CreateEntityResponse | PlainMessage<CreateEntityResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.DeleteEntityRequest
+ */
+export declare class DeleteEntityRequest extends Message<DeleteEntityRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: int32 entity_id = 2;
+     */
+    entityId: number;
+    constructor(data?: PartialMessage<DeleteEntityRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.DeleteEntityRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteEntityRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteEntityRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteEntityRequest;
+    static equals(a: DeleteEntityRequest | PlainMessage<DeleteEntityRequest> | undefined, b: DeleteEntityRequest | PlainMessage<DeleteEntityRequest> | undefined): boolean;
 }
 /**
  * Common request for entity lists
@@ -198,6 +273,8 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     auth?: Authorization;
     /**
+     * IDs of container elements (e.g. categories) or owner organizations (i.e. channels)
+     *
      * @generated from field: repeated int32 entity_ids = 2;
      */
     entityIds: number[];
@@ -214,7 +291,7 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     searchText?: string;
     /**
-     * Filter search results based on tags (all TagFilters must be true)
+     * Return entities for which all the TagFilters are true
      *
      * @generated from field: repeated avn.connect.v1.TagFilter tag_filters = 5;
      */

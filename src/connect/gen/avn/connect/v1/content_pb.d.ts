@@ -5,17 +5,29 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export declare class AvailableContent extends Message<AvailableContent> {
     /**
+     * Hint of what channels should be shown for browsing
+     *
      * @generated from field: repeated int32 browsable_channels = 1;
      */
     browsableChannels: number[];
     /**
+     * Published content from these channels is available
+     *
      * @generated from field: repeated int32 licensed_channels = 2;
      */
     licensedChannels: number[];
     /**
+     * Published content in these categories is available
+     *
      * @generated from field: repeated int32 licensed_categories = 4;
      */
     licensedCategories: number[];
+    /**
+     * Published content owned exclusively by these users is available (i.e. from the users playlists)
+     *
+     * @generated from field: repeated int32 licensed_users = 5;
+     */
+    licensedUsers: number[];
     /**
      * DEPRECATED IN FAVOUR OF TagFilter SYSTEM LIKE IN entities.proto
      * Future extension for filtering appropriate content for dimensions

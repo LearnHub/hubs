@@ -10,29 +10,21 @@ export declare class NeighborServer extends Message<NeighborServer> {
      */
     clientId: string;
     /**
-     * @generated from field: string wanAddress = 2;
+     * @generated from field: string wan_address = 2;
      */
     wanAddress: string;
     /**
-     * @generated from field: int32 lanPort = 4;
+     * @generated from field: int32 lan_port = 4;
      */
     lanPort: number;
     /**
-     * @generated from field: repeated string lanHostnames = 6;
+     * @generated from field: string client_name = 5;
+     */
+    clientName: string;
+    /**
+     * @generated from field: repeated string lan_hostnames = 6;
      */
     lanHostnames: string[];
-    /**
-     * SINGLE_LOCAL_HOST_DEPRECATED
-     *
-     * @generated from field: string lanAddress = 3;
-     */
-    lanAddress: string;
-    /**
-     * SINGLE_LOCAL_HOST_DEPRECATED
-     *
-     * @generated from field: string lanHostname = 5;
-     */
-    lanHostname: string;
     constructor(data?: PartialMessage<NeighborServer>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.NeighborServer";
@@ -51,17 +43,21 @@ export declare class RegisterNeighborServerRequest extends Message<RegisterNeigh
      */
     client?: ClientCredentials;
     /**
-     * @generated from field: string lanAddress = 2;
+     * @generated from field: string lan_address = 2;
      */
     lanAddress: string;
     /**
-     * @generated from field: int32 lanPort = 3;
+     * @generated from field: int32 lan_port = 3;
      */
     lanPort: number;
     /**
-     * @generated from field: repeated string lanAddresses = 4;
+     * @generated from field: repeated string lan_addresses = 4;
      */
     lanAddresses: string[];
+    /**
+     * @generated from field: string client_name = 5;
+     */
+    clientName: string;
     constructor(data?: PartialMessage<RegisterNeighborServerRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RegisterNeighborServerRequest";

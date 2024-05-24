@@ -85,7 +85,6 @@ class AVNBridge {
             try {
                 navigator.serviceWorker.addEventListener("message", (event) => {
                     console.log("AVNSW info", event.data)
-                    //this.recordAction("avnfsw-info", "classvr_player", event.data)
                 })
                 console.info("Registering AVNSW...")
                 const registration = await navigator.serviceWorker.register("/hub.service.js", { scope: "/" })

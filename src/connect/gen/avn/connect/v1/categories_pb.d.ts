@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { TranslationField } from "./translations_pb.js";
+import { Translation } from "./translations_pb.js";
 /**
  * @generated from message avn.connect.v1.Category
  */
@@ -10,9 +10,9 @@ export declare class Category extends Message<Category> {
      */
     categoryId: number;
     /**
-     * @generated from field: avn.connect.v1.TranslationField name = 2;
+     * @generated from field: avn.connect.v1.Translation name = 2;
      */
-    name?: TranslationField;
+    name?: Translation;
     /**
      * @generated from field: string icon_url = 3;
      */
@@ -22,13 +22,17 @@ export declare class Category extends Message<Category> {
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.TranslationField description = 5;
+     * @generated from field: optional avn.connect.v1.Translation description = 5;
      */
-    description?: TranslationField;
+    description?: Translation;
     /**
      * @generated from field: repeated int32 tags = 6;
      */
     tags: number[];
+    /**
+     * @generated from field: bool deleted = 7;
+     */
+    deleted: boolean;
     constructor(data?: PartialMessage<Category>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Category";

@@ -27,7 +27,7 @@ export declare class LicenseInfo extends Message<LicenseInfo> {
         case: "clientId";
     } | {
         /**
-         * User assigned license
+         * Licenses that are allocated to the user directly (currently only via Zoho email matching)
          *
          * @generated from field: int32 user_id = 4;
          */
@@ -51,7 +51,7 @@ export declare class LicenseInfo extends Message<LicenseInfo> {
         case: "partnerSession";
     } | {
         /**
-         * User authentication adds privileges
+         * Dimensions created by authenticated users have additional privileges and allow access to user playlist activities
          *
          * @generated from field: int32 authenticated_user_id = 7;
          */

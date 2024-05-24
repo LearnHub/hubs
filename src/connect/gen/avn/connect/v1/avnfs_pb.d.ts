@@ -80,6 +80,62 @@ export declare class GetFileUrlResponse extends Message<GetFileUrlResponse> {
     static equals(a: GetFileUrlResponse | PlainMessage<GetFileUrlResponse> | undefined, b: GetFileUrlResponse | PlainMessage<GetFileUrlResponse> | undefined): boolean;
 }
 /**
+ * @generated from message avn.connect.v1.ImportUrlRequest
+ */
+export declare class ImportUrlRequest extends Message<ImportUrlRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * The remote server URL to import
+     *
+     * @generated from field: string url = 2;
+     */
+    url: string;
+    /**
+     * Override for the media type the remote server returns
+     *
+     * @generated from field: optional string media_type = 3;
+     */
+    mediaType?: string;
+    /**
+     * Additional headers to pass through to the remote server
+     *
+     * @generated from field: map<string, string> headers = 4;
+     */
+    headers: {
+        [key: string]: string;
+    };
+    constructor(data?: PartialMessage<ImportUrlRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.ImportUrlRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ImportUrlRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ImportUrlRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ImportUrlRequest;
+    static equals(a: ImportUrlRequest | PlainMessage<ImportUrlRequest> | undefined, b: ImportUrlRequest | PlainMessage<ImportUrlRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.ImportUrlResponse
+ */
+export declare class ImportUrlResponse extends Message<ImportUrlResponse> {
+    /**
+     * The AVNFS URL of the imported file
+     *
+     * @generated from field: string url = 1;
+     */
+    url: string;
+    constructor(data?: PartialMessage<ImportUrlResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.ImportUrlResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ImportUrlResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ImportUrlResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ImportUrlResponse;
+    static equals(a: ImportUrlResponse | PlainMessage<ImportUrlResponse> | undefined, b: ImportUrlResponse | PlainMessage<ImportUrlResponse> | undefined): boolean;
+}
+/**
  * @generated from message avn.connect.v1.GetManifestRequest
  */
 export declare class GetManifestRequest extends Message<GetManifestRequest> {
@@ -160,6 +216,10 @@ export declare class AltServer extends Message<AltServer> {
      */
     type: AltServerType;
     /**
+     * @generated from field: string client_name = 2;
+     */
+    clientName: string;
+    /**
      * @generated from field: string client_id = 3;
      */
     clientId: string;
@@ -167,12 +227,6 @@ export declare class AltServer extends Message<AltServer> {
      * @generated from field: repeated string hosts = 4;
      */
     hosts: string[];
-    /**
-     * SINGLE_LOCAL_HOST_DEPRECATED
-     *
-     * @generated from field: string host = 2;
-     */
-    host: string;
     constructor(data?: PartialMessage<AltServer>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.AltServer";

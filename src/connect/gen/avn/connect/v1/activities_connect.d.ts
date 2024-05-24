@@ -1,5 +1,5 @@
-import { GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
-import { Activity, AddActivityFilesRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest } from "./activities_pb.js";
+import { CreateEntityResponse, DeleteEntityRequest, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
+import { Activity, AddActivityFilesRequest, CreateActivityRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ActivityService
@@ -14,6 +14,24 @@ export declare const ActivityService: {
             readonly name: "GetActivity";
             readonly I: typeof GetEntityRequest;
             readonly O: typeof Activity;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ActivityService.CreateActivity
+         */
+        readonly createActivity: {
+            readonly name: "CreateActivity";
+            readonly I: typeof CreateActivityRequest;
+            readonly O: typeof CreateEntityResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ActivityService.DeleteActivity
+         */
+        readonly deleteActivity: {
+            readonly name: "DeleteActivity";
+            readonly I: typeof DeleteEntityRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
         /**
@@ -46,6 +64,8 @@ export declare const ActivityService: {
             readonly kind: MethodKind.Unary;
         };
         /**
+         * Property management
+         *
          * @generated from rpc avn.connect.v1.ActivityService.SetProperties
          */
         readonly setProperties: {
