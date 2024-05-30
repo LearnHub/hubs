@@ -389,11 +389,7 @@ function runMigration(version, json) {
 }
 
 const convertStandardMaterialsIfNeeded = (object, gltf) => {
-  // COMPRESSED_SCENE_UPDATE replace this assignment with the one commented out below
-  const materialQuality = gltf?.asset?.generator && gltf.asset.generator.startsWith("Khronos glTF Blender")
-    ? "low"
-    : window.APP.store.state.preferences.materialQualitySetting
-  //const materialQuality = window.APP.store.state.preferences.materialQualitySetting
+  const materialQuality = window.APP.store.state.preferences.materialQualitySetting
   updateMaterials(object, material => convertStandardMaterial(material, materialQuality));
   return object;
 };
