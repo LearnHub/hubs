@@ -5,6 +5,9 @@ import { LUTCubeLoader } from "three/examples/jsm/loaders/LUTCubeLoader";
 import blenderLutPath from "../assets/blender-lut.cube";
 import { NoToneMapping } from "three";
 
+// AVN: FOR DEFAULT ENV
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+
 const toneMappingOptions = {
   None: "NoToneMapping",
   Linear: "LinearToneMapping",
@@ -270,6 +273,16 @@ export class EnvironmentSystem {
     } else {
       this.scene.environment = null;
       this.prevEnvMapTextureUUID = null;
+      // AVN: Add default environment map to give some illumination
+      console.warn(`No environment map defined in scene so default will be used`)
+      const hdriLoader = new RGBELoader()
+      const self = this
+      hdriLoader.load('https://avnfs.com/0SmIbNXdvHjegyqss93eJf8JQsWYRdaXuVTCY6VHtqQ?size=400376&type=image%2Fvnd.radiance', function (texture) {
+        const envMap = self.pmremGenerator.fromEquirectangular(texture).texture
+        texture.dispose()
+        envMap.flipY = true
+        self.scene.environment = envMap
+      })
     }
 
     if (this.scene.fog?.name !== settings.fogType) {
