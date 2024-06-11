@@ -931,7 +931,7 @@ class UIRoot extends Component {
       <>
         {/* AVN: Room linking and VR mode have been separated */}
         <RoomEntryModal
-          roomName={this.props.avnRoomActivity?.name?.text || this.props.hub.name}
+          roomName={this.props.avnRoomActivity?.name?.translation || this.props.hub.name}
           showRoomFull={showRoomFull}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {

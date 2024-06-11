@@ -7,8 +7,8 @@ import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
 export function EduverseTeacherSidebar({ roomActivity, roomInfo, onClose }) {
-  const name = roomActivity?.name?.text || roomInfo.name?.text
-  const text = roomActivity?.description?.text
+  const name = roomActivity?.name?.translation
+  const text = roomActivity?.description?.translation
   return (
     <Sidebar
       title={
