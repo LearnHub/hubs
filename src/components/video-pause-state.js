@@ -20,7 +20,9 @@ AFRAME.registerComponent("video-pause-state", {
   onVideoLoaded() {
     this.videoComponent = this.el.components["media-video"];
     this.video = this.videoComponent.video;
-    this.video.addEventListener("pause", this.onPauseStateChange);
+    if(this.video) {
+      this.video.addEventListener("pause", this.onPauseStateChange);
+    }
   },
 
   onPauseStateChange() {

@@ -429,10 +429,12 @@ AFRAME.registerComponent("media-video", {
       }
 
       this.video = texture.image;
-      this.video.loop = this.data.loop;
-      this.video.addEventListener("pause", this.onPauseStateChange);
-      this.video.addEventListener("play", this.onPauseStateChange);
-
+      if(this.video) {
+        this.video.loop = this.data.loop;
+        this.video.addEventListener("pause", this.onPauseStateChange);
+        this.video.addEventListener("play", this.onPauseStateChange);
+      }
+      
       if (texture.hls) {
         const updateHLSLiveState = () => {
           if (texture.hls.currentLevel >= 0) {
