@@ -20,12 +20,11 @@ async function checkAltServers() {
     if (!nextCheckTimestamp || now > nextCheckTimestamp ) {
         // Don't check more often than every 60 minutes
         nextCheckTimestamp = now + 60 * 60_000
-        // ALT_SERVER_TESTING once every 30 seconds for stress testing
-        nextCheckTimestamp = now + 30_000   
+        // ALT_SERVER_TESTING once every 5 minutes for testing
+        nextCheckTimestamp = now +  5 * 60_000
         try {
             console.log("AVNSW downloading altservers...")
-            // ALT_SERVER_TESTING restore production URL
-            const response = await fetch("https://rest-alpha.avncloud.com/v1/avnfs/altservers") // http://localhost:8181/v1/avnfs/altservers
+            const response = await fetch("https://rest.avncloud.com/v1/avnfs/altservers") // https://rest-alpha.avncloud.com/v1/avnfs/altservers http://localhost:8181/v1/avnfs/altservers
             if (response.ok) {
                 const newAltServers = await response.json()
                 console.log("AVNSW new altservers downloaded", newAltServers)
