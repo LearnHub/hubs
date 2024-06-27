@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { TranscodeImageSpec } from "./media_pb.js";
 import { Activity } from "./activities_pb.js";
 /**
  * @generated from message avn.connect.v1.SearchImagesRequest
@@ -28,6 +29,14 @@ export declare class SearchImagesRequest extends Message<SearchImagesRequest> {
      * @generated from field: optional string language_id = 5;
      */
     languageId?: string;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec icon_spec = 6;
+     */
+    iconSpec?: TranscodeImageSpec;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 7;
+     */
+    previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<SearchImagesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchImagesRequest";

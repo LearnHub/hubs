@@ -2,6 +2,7 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Translation } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
+import { TranscodeImageSpec } from "./media_pb.js";
 import { TagFilter } from "./tags_pb.js";
 /**
  * @generated from enum avn.connect.v1.SortOrder
@@ -132,9 +133,9 @@ export declare class EntityInfo extends Message<EntityInfo> {
      */
     iconUrl: string;
     /**
-     * @generated from field: string preview_image_url = 5;
+     * @generated from field: string preview_url = 5;
      */
-    previewImageUrl: string;
+    previewUrl: string;
     /**
      * An indication of the origin of the entity
      *
@@ -186,6 +187,14 @@ export declare class GetEntityRequest extends Message<GetEntityRequest> {
      * @generated from field: optional string language_id = 3;
      */
     languageId?: string;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec icon_spec = 4;
+     */
+    iconSpec?: TranscodeImageSpec;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 5;
+     */
+    previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<GetEntityRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetEntityRequest";
@@ -310,6 +319,14 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      * @generated from field: optional string page_token = 9;
      */
     pageToken?: string;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec icon_spec = 10;
+     */
+    iconSpec?: TranscodeImageSpec;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 11;
+     */
+    previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<EntityInfoListRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.EntityInfoListRequest";

@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { TranscodeImageSpec } from "./media_pb.js";
 import { EntityProperty, SortOrder } from "./entities_pb.js";
 /**
  * Cloud files can be owned by users or organizations
@@ -56,9 +57,9 @@ export declare class CloudFile extends Message<CloudFile> {
     /**
      * In future this should be based on an image request spec in the request
      *
-     * @generated from field: string thumbnail_url = 7;
+     * @generated from field: string preview_url = 7;
      */
-    thumbnailUrl: string;
+    previewUrl: string;
     /**
      * CLOUD_FILE_LEGACY_ID
      *
@@ -112,6 +113,10 @@ export declare class GetCloudFilesRequest extends Message<GetCloudFilesRequest> 
      * @generated from field: repeated int32 cloud_file_ids = 2;
      */
     cloudFileIds: number[];
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 3;
+     */
+    previewSpec?: TranscodeImageSpec;
     /**
      * @generated from field: repeated string legacy_ids = 10;
      */
@@ -277,6 +282,10 @@ export declare class SearchCloudFilesRequest extends Message<SearchCloudFilesReq
      * @generated from field: optional string page_token = 12;
      */
     pageToken?: string;
+    /**
+     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 13;
+     */
+    previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<SearchCloudFilesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.SearchCloudFilesRequest";

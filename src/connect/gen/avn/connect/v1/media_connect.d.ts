@@ -1,4 +1,4 @@
-import { GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse } from "./media_pb.js";
+import { GetImageMetadataResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.MediaService
@@ -6,6 +6,50 @@ import { MethodKind } from "@bufbuild/protobuf";
 export declare const MediaService: {
     readonly typeName: "avn.connect.v1.MediaService";
     readonly methods: {
+        /**
+         * Create a summary image for the given media file
+         *
+         * @generated from rpc avn.connect.v1.MediaService.GetPreviewImage
+         */
+        readonly getPreviewImage: {
+            readonly name: "GetPreviewImage";
+            readonly I: typeof GetPreviewImageRequest;
+            readonly O: typeof GetPreviewImageResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Metadata functions
+         *
+         * @generated from rpc avn.connect.v1.MediaService.GetImageMetadata
+         */
+        readonly getImageMetadata: {
+            readonly name: "GetImageMetadata";
+            readonly I: typeof GetMetadataRequest;
+            readonly O: typeof GetImageMetadataResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Transcoding images
+         *
+         * @generated from rpc avn.connect.v1.MediaService.TranscodeImage
+         */
+        readonly transcodeImage: {
+            readonly name: "TranscodeImage";
+            readonly I: typeof TranscodeImageRequest;
+            readonly O: typeof TranscodeImageResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Transcoding videos
+         *
+         * @generated from rpc avn.connect.v1.MediaService.TranscodeVideo
+         */
+        readonly transcodeVideo: {
+            readonly name: "TranscodeVideo";
+            readonly I: typeof TranscodeVideoRequest;
+            readonly O: typeof TranscodeVideoResponse;
+            readonly kind: MethodKind.Unary;
+        };
         /**
          * A mapping of well known file extensions to media types
          *

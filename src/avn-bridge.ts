@@ -265,7 +265,7 @@ class AVNBridge {
             tagFilters: [ 
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
             ],
-            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
+            pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
@@ -279,7 +279,9 @@ class AVNBridge {
                 { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
-            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
+            pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
+            iconSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 256 }),
+            previewSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 512 }),
         })
         return result.results
     }
@@ -291,7 +293,7 @@ class AVNBridge {
             tagFilters: [ 
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
-            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
+            pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
@@ -304,7 +306,9 @@ class AVNBridge {
                 { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
-            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
+            pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
+            iconSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 256 }),
+            previewSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 512 }),
         })
         return result.results
     }
@@ -319,9 +323,11 @@ class AVNBridge {
             ],
             orderBy: [
                 { property: Connect.EntityProperty.AVAILABLE, sortOrder: Connect.SortOrder.DESC },
-                { property: Connect.EntityProperty.NAME, sortOrder: Connect.SortOrder.DESC },
+                { property: Connect.EntityProperty.NAME, sortOrder: Connect.SortOrder.ASC },
             ],
-            pageSize: 128, // Use MAX_PAGE_SIZE until proper paging is implemented
+            pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
+            iconSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 256 }),
+            previewSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 512 }),
         })
         return result.results
     }

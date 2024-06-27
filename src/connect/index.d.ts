@@ -66,3 +66,6 @@ export * from "./gen/avn/connect/v1/translations_connect.js";
 export * from "./gen/avn/connect/v1/translations_pb.js";
 export * from "./gen/avn/connect/v1/tags_pb.js";
 export * from "./gen/avn/connect/v1/entities_pb.js";
+export * from "./gen/avn/connect/v1/command_pb.js";
+export * from "./gen/avn/connect/v1/media_connect.js";
+export * from "./gen/avn/connect/v1/media_pb.js";

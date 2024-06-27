@@ -33,6 +33,10 @@ export declare class Category extends Message<Category> {
      * @generated from field: bool deleted = 7;
      */
     deleted: boolean;
+    /**
+     * @generated from field: string preview_url = 8;
+     */
+    previewUrl: string;
     constructor(data?: PartialMessage<Category>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Category";

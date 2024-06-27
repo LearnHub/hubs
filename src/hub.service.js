@@ -23,8 +23,11 @@ async function checkAltServers() {
         // ALT_SERVER_TESTING once every 5 minutes for testing
         nextCheckTimestamp = now +  5 * 60_000
         try {
-            console.log("AVNSW downloading altservers...")
-            const response = await fetch("https://rest.avncloud.com/v1/avnfs/altservers") // https://rest-alpha.avncloud.com/v1/avnfs/altservers http://localhost:8181/v1/avnfs/altservers
+            const AltServerEndpoint = self.location.hostname.startsWith("alpha") || self.location.hostname.startsWith("me")
+                ? "https://rest-alpha.avncloud.com/v1/avnfs/altservers"
+                : "https://rest.avncloud.com/v1/avnfs/altservers"        
+            console.log(`AVNSW: Downloading altservers from '${AltServerEndpoint}'...`)
+            const response = await fetch(AltServerEndpoint)
             if (response.ok) {
                 const newAltServers = await response.json()
                 console.log("AVNSW new altservers downloaded", newAltServers)

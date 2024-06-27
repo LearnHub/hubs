@@ -69,9 +69,9 @@ export declare class Activity extends Message<Activity> {
      */
     iconUrl: string;
     /**
-     * @generated from field: string preview_image_url = 5;
+     * @generated from field: string preview_url = 5;
      */
-    previewImageUrl: string;
+    previewUrl: string;
     /**
      * @generated from field: google.protobuf.Timestamp updated = 6;
      */

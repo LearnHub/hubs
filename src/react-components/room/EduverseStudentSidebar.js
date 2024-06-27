@@ -7,7 +7,6 @@ import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
 export function EduverseStudentSidebar({ roomActivity, roomInfo, onClose }) {
-console.log("!!!", roomActivity)
   const name = roomActivity?.name?.translation
   const text = roomActivity?.instructions?.translation || roomActivity?.description?.translation
   return (

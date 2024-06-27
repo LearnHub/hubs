@@ -56,7 +56,7 @@ export function AvnMediaTile({ entry, onClick, ...rest }) {
       {...rest}
     >
       <a className={styles.thumbnailLink} href={entry.url} rel="noreferrer noopener" onClick={onClick}>
-        <img src={entry.previewImageUrl || entry.iconUrl} alt={entry.name.translation} loading="lazy"/>
+        <img src={entry.previewUrl || entry.iconUrl} alt={entry.name.translation} loading="lazy" crossOrigin="anonymous"/>
       </a>
     </BaseTile>
   );

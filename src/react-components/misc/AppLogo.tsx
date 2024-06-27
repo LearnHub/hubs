@@ -14,6 +14,6 @@ export function AppLogo({ className }: { className?: string }) {
   return shouldDisplayHmcLogo ? (
     <HmcLogo className="hmc-logo" />
   ) : (
-    <img className={className} alt={configs.translation("app-name")} src={logo} />
+    <img className={className} alt={configs.translation("app-name")} src={logo} crossOrigin="anonymous"/>
   );
 }

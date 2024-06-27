@@ -29,6 +29,10 @@ export declare class Profile extends Message<Profile> {
      * @generated from field: repeated int32 tags = 6;
      */
     tags: number[];
+    /**
+     * @generated from field: string preview_url = 7;
+     */
+    previewUrl: string;
     constructor(data?: PartialMessage<Profile>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Profile";
