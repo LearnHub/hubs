@@ -5,9 +5,9 @@ import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
  */
 export declare class Channel extends Message<Channel> {
     /**
-     * @generated from field: int32 channel_id = 1;
+     * @generated from field: int32 entity_id = 1;
      */
-    channelId: number;
+    entityId: number;
     /**
      * @generated from field: string name = 2;
      */

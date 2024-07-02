@@ -53,9 +53,9 @@ export declare enum ActivityFileType {
  */
 export declare class Activity extends Message<Activity> {
     /**
-     * @generated from field: int32 activity_id = 1;
+     * @generated from field: int32 entity_id = 1;
      */
-    activityId: number;
+    entityId: number;
     /**
      * @generated from field: string asset_id = 2;
      */

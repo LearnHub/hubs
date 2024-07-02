@@ -6,9 +6,9 @@ import { Translation } from "./translations_pb.js";
  */
 export declare class Profile extends Message<Profile> {
     /**
-     * @generated from field: int32 profile_id = 1;
+     * @generated from field: int32 entity_id = 1;
      */
-    profileId: number;
+    entityId: number;
     /**
      * @generated from field: avn.connect.v1.Translation name = 2;
      */

@@ -1,4 +1,4 @@
-import { GetImageMetadataResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
+import { GetImageMetadataResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, GetVideoMetadataResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.MediaService
@@ -29,7 +29,16 @@ export declare const MediaService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * Transcoding images
+         * @generated from rpc avn.connect.v1.MediaService.GetVideoMetadata
+         */
+        readonly getVideoMetadata: {
+            readonly name: "GetVideoMetadata";
+            readonly I: typeof GetMetadataRequest;
+            readonly O: typeof GetVideoMetadataResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Transcoding functions
          *
          * @generated from rpc avn.connect.v1.MediaService.TranscodeImage
          */
@@ -40,8 +49,6 @@ export declare const MediaService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * Transcoding videos
-         *
          * @generated from rpc avn.connect.v1.MediaService.TranscodeVideo
          */
         readonly transcodeVideo: {
