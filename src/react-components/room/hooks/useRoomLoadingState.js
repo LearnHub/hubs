@@ -4,6 +4,8 @@ import { waitForPreloads } from "../../../utils/preload";
 import { shouldUseNewLoader } from "../../../utils/bit-utils";
 
 function reducer(state, action) {
+  // AVN: Diagnostic tracking
+  console.log(`AVN: Load event '${action.type}'`)
   switch (action.type) {
     case "loading-error":
       return { ...state, loadingError: action.errorMessage };
@@ -118,6 +120,9 @@ export function useRoomLoadingState(sceneEl) {
   const done =
     sceneEl.is("loaded") ||
     (environmentLoaded && networkConnected && dialogConnected && doneLoadingObjects && donePreloading);
+
+  // AVN: Useful diagnostics when taking time to load
+  console.log("AVN: Load state", { done, sceneIsLoaded: sceneEl.is("loaded"), environmentLoaded, networkConnected, dialogConnected, doneLoadingObjects, donePreloading })
 
   let messageKey = "";
 
