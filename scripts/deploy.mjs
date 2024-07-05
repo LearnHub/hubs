@@ -34,6 +34,9 @@ const getTs = (() => {
   };
 
   const res = await fetch(`https://${host}/api/ita/configs/hubs`, { headers });
+  if(res.ok === false) {
+    console.warn(`Failed to fetch from host '${host}': ${await res.text()}`)
+  }
   const hubsConfigs = await res.json();
   const buildEnv = {};
   for (const [k, v] of Object.entries(hubsConfigs.general)) {
