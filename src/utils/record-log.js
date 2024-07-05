@@ -1,54 +1,52 @@
 // Record the console log for saving
 
-var consoleHistory = null;
-
 // Save recorded log to file
 export function SaveConsoleLog() {
-  if (consoleHistory) {
-    consoleHistory.saveToFile();
+  if (window.consoleHistory) {
+    window.consoleHistory.saveToFile();
   } else {
     console.error("Unexpected call when log recording is disabled");
   }
 }
 
-// Monkey patch for serializing BigInt https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
-BigInt.prototype.toJSON = function() { return this.toString() }
+if (true && !window.consoleHistory && 'URLSearchParams' in window && (new URLSearchParams(window.location.search).get("record_log") || "true") == "true") {
 
-// Circular references can crash JSON.stringify
-// Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
-function getSerializationTransform(depthLimit) {
-  const seen = new WeakSet();
-  return (key, value) => {
-    try {
-      --depthLimit;
-      const valueType = typeof value;
-      if (value != null) {
-        if (valueType === "object") {
-          // Check for circular references
-          if (seen.has(value)) {
-            return "∞";
-          }
-          seen.add(value);
-          // Allow recursion into arrays
-          if (Array.isArray(value)) {
-            return value;
-          }
-          if(depthLimit > 0) {
-            return value;
-          } else {
-            return "[snip]";
+  // Monkey patch for serializing BigInt https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
+  BigInt.prototype.toJSON = function() { return this.toString() }
+
+  // Circular references can crash JSON.stringify
+  // Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Cyclic_object_value
+  function getSerializationTransform(depthLimit) {
+    const seen = new WeakSet();
+    return (key, value) => {
+      try {
+        --depthLimit;
+        const valueType = typeof value;
+        if (value != null) {
+          if (valueType === "object") {
+            // Check for circular references
+            if (seen.has(value)) {
+              return "∞";
+            }
+            seen.add(value);
+            // Allow recursion into arrays
+            if (Array.isArray(value)) {
+              return value;
+            }
+            if(depthLimit > 0) {
+              return value;
+            } else {
+              return "[snip]";
+            }
           }
         }
+        return value;
+      } finally {
+        ++depthLimit;
       }
-      return value;
-    } finally {
-      ++depthLimit;
-    }
+    };
   };
-};
 
-// AVN: Make record_log opt-out by default
-if (true && 'URLSearchParams' in window && (new URLSearchParams(window.location.search).get("record_log") || "true") == "true") {
 
   class ConsoleHistory {
     constructor(maximumEntries) {
@@ -101,44 +99,44 @@ if (true && 'URLSearchParams' in window && (new URLSearchParams(window.location.
 
   }
 
-  consoleHistory = new ConsoleHistory(10000);
+  window.consoleHistory = new ConsoleHistory(10000)
 
   // Intercept the built-in console methods
 
   const origConsoleLog = console.log;
   console.log = function () {
     origConsoleLog.apply(null, arguments);
-    consoleHistory.record("log", Array.from(arguments));
+    window.consoleHistory.record("log", Array.from(arguments));
   };
 
   const origConsoleInfo = console.info;
   console.info = function () {
     origConsoleInfo.apply(null, arguments);
-    consoleHistory.record("info", Array.from(arguments));
+    window.consoleHistory.record("info", Array.from(arguments));
   };
 
   const origConsoleWarn = console.warn;
   console.warn = function () {
     origConsoleWarn.apply(null, arguments);
-    consoleHistory.record("warn", Array.from(arguments), new Error());
+    window.consoleHistory.record("warn", Array.from(arguments), new Error());
   };
 
   const origConsoleError = console.error;
   console.error = function () {
     origConsoleError.apply(null, arguments);
-    consoleHistory.record("error", Array.from(arguments), new Error());
+    window.consoleHistory.record("error", Array.from(arguments), new Error());
   };
 
   const origConsoleDebug = console.debug;
   console.debug = function () {
     origConsoleDebug.apply(null, arguments);
-    consoleHistory.record("debug", Array.from(arguments));
+    window.consoleHistory.record("debug", Array.from(arguments));
   };
 
   // Additional top-level error handlers
 
-  window.onunhandledrejection = e => consoleHistory.record("error", [e]);
-  window.onerror = (msg, file, line, col, error) => consoleHistory.record("error", [msg], error);
+  window.onunhandledrejection = e => window.consoleHistory.record("error", [e]);
+  window.onerror = (msg, file, line, col, error) => window.consoleHistory.record("error", [msg], error);
 
   // Listen for browser deprecations and interventions. Ref https://developers.google.com/web/updates/2018/07/reportingobserver
 
