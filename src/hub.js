@@ -826,9 +826,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.APP.entryManager = entryManager;
 
   APP.dialog.on(DIALOG_CONNECTION_CONNECTED, () => {
+    console.log("AVN: dialog service connected");
     scene.emit("didConnectToDialog");
   });
   APP.dialog.on(DIALOG_CONNECTION_ERROR_FATAL, () => {
+    console.log("AVN: dialog service failed", ExitReason);
     // TODO: Change the wording of the connect error to match dialog connection error
     // TODO: Tell the user that dialog is broken, but don't completely end the experience
     remountUI({ roomUnavailableReason: ExitReason.connectError });
