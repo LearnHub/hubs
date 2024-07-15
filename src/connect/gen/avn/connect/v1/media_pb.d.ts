@@ -41,6 +41,109 @@ export declare enum MediaStreamType {
     NB = 7
 }
 /**
+ * @generated from enum avn.connect.v1.MediaTranscodeState
+ */
+export declare enum MediaTranscodeState {
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_QUEUED = 1;
+     */
+    QUEUED = 1,
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_TRANSCODING = 2;
+     */
+    TRANSCODING = 2,
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_TRANSFERRING = 3;
+     */
+    TRANSFERRING = 3,
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_COMPLETE = 4;
+     */
+    COMPLETE = 4,
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_ERROR = 5;
+     */
+    ERROR = 5,
+    /**
+     * @generated from enum value: MEDIA_TRANSCODE_STATE_CANCELED = 6;
+     */
+    CANCELED = 6
+}
+/**
+ * @generated from enum avn.connect.v1.MediaCompatibilityArea
+ */
+export declare enum MediaCompatibilityArea {
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_AREA_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_AREA_CONTAINER = 1;
+     */
+    CONTAINER = 1,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_AREA_VIDEO_CODEC = 2;
+     */
+    VIDEO_CODEC = 2,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_AREA_AUDIO_CODEC = 3;
+     */
+    AUDIO_CODEC = 3,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_AREA_OTHER_CODEC = 4;
+     */
+    OTHER_CODEC = 4
+}
+/**
+ * @generated from enum avn.connect.v1.MediaCompatibilityReason
+ */
+export declare enum MediaCompatibilityReason {
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * Errors (incompatible)
+     *
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_NOT_SUPPORTED = 1;
+     */
+    NOT_SUPPORTED = 1,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_MAX_PIXEL_WIDTH = 2;
+     */
+    MAX_PIXEL_WIDTH = 2,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_MAX_PIXEL_HEIGHT = 3;
+     */
+    MAX_PIXEL_HEIGHT = 3,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_PIXEL_FORMAT = 4;
+     */
+    PIXEL_FORMAT = 4,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_MAX_FRAMERATE = 5;
+     */
+    MAX_FRAMERATE = 5,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_MAX_BITRATE = 6;
+     */
+    MAX_BITRATE = 6,
+    /**
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_CHANNEL_COUNT = 7;
+     */
+    CHANNEL_COUNT = 7,
+    /**
+     * Warnings (compatible, but exceeding target)
+     *
+     * @generated from enum value: MEDIA_COMPATIBILITY_REASON_TARGET_BITRATE = 8;
+     */
+    TARGET_BITRATE = 8
+}
+/**
  * @generated from message avn.connect.v1.GetPreviewImageRequest
  */
 export declare class GetPreviewImageRequest extends Message<GetPreviewImageRequest> {
@@ -117,6 +220,28 @@ export declare class GetImageMetadataResponse extends Message<GetImageMetadataRe
      * @generated from field: int32 height_pixels = 2;
      */
     heightPixels: number;
+    /**
+     * Media type
+     *
+     * @generated from field: string media_type = 3;
+     */
+    mediaType: string;
+    /**
+     * One of in,mm,cm,pt,pc,px,em,ex
+     *
+     * @generated from field: string width_units = 4;
+     */
+    widthUnits: string;
+    /**
+     * @generated from field: string height_units = 5;
+     */
+    heightUnits: string;
+    /**
+     * Orientation
+     *
+     * @generated from field: optional int32 orientation = 6;
+     */
+    orientation?: number;
     constructor(data?: PartialMessage<GetImageMetadataResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetImageMetadataResponse";
@@ -172,13 +297,13 @@ export declare class MediaStreamMetadata extends Message<MediaStreamMetadata> {
      */
     isDefault: boolean;
     /**
-     * FOURCC codec tag code
+     * One of: hvc1, hev1, avc1, mp4a
      *
      * @generated from field: string codec_tag = 4;
      */
     codecTag: string;
     /**
-     * Codec details
+     * One of: h264, hevc, mp3, aac
      *
      * @generated from field: string codec_name = 5;
      */
@@ -202,15 +327,15 @@ export declare class MediaStreamMetadata extends Message<MediaStreamMetadata> {
     /**
      * Real base frame rate of the stream (in variable frame rate streams, this is the fastest rate to expect)
      *
-     * @generated from field: avn.connect.v1.MediaRational real_base_frame_rate = 9;
+     * @generated from field: avn.connect.v1.MediaRational real_base_framerate = 9;
      */
-    realBaseFrameRate?: MediaRational;
+    realBaseFramerate?: MediaRational;
     /**
      * Average frame rate of the stream
      *
-     * @generated from field: avn.connect.v1.MediaRational average_frame_rate = 10;
+     * @generated from field: avn.connect.v1.MediaRational average_framerate = 10;
      */
-    averageFrameRate?: MediaRational;
+    averageFramerate?: MediaRational;
     /**
      * The average bitrate of the encoded data (in bits per second)
      *
@@ -299,7 +424,7 @@ export declare class MediaStreamMetadata extends Message<MediaStreamMetadata> {
  */
 export declare class MediaFormatMetadata extends Message<MediaFormatMetadata> {
     /**
-     * Container information (may include synonyms such as mov,mp4,m4a,3gp,3g2,mj2)
+     * Container information (may include synonyms such as mov, mp4, m4a, 3gp, 3g2, mj2)
      *
      * @generated from field: repeated string container_formats = 1;
      */
@@ -430,81 +555,85 @@ export declare class TranscodeImageResponse extends Message<TranscodeImageRespon
  */
 export declare class MediaFormatSpec extends Message<MediaFormatSpec> {
     /**
-     * FOURCC codec tag code
-     *
-     * @generated from field: string codec_tag = 1;
+     * @generated from field: string codec_name = 1;
      */
-    codecTag: string;
+    codecName: string;
+    /**
+     * Supported tags such as hvc1 or hev1 (empty implies that all stream types supported)
+     *
+     * @generated from field: repeated string supported_codec_tags = 2;
+     */
+    supportedCodecTags: string[];
     /**
      * Stream type to use this codec with
      *
-     * @generated from field: avn.connect.v1.MediaStreamType stream_type = 2;
+     * @generated from field: avn.connect.v1.MediaStreamType stream_type = 3;
      */
     streamType: MediaStreamType;
     /**
      * Priority of this codec as a transcode target
      *
-     * @generated from field: int32 priority = 3;
+     * @generated from field: int32 priority = 4;
      */
     priority: number;
     /**
      * Max width in pixels
      *
-     * @generated from field: optional int32 max_width_pixels = 4;
+     * @generated from field: optional int32 max_width_pixels = 5;
      */
     maxWidthPixels?: number;
     /**
      * Target width when transcoding
      *
-     * @generated from field: optional int32 target_width_pixels = 5;
+     * @generated from field: optional int32 target_width_pixels = 6;
      */
     targetWidthPixels?: number;
     /**
      * Max Height in pixels
      *
-     * @generated from field: optional int32 max_height_pixels = 6;
+     * @generated from field: optional int32 max_height_pixels = 7;
      */
     maxHeightPixels?: number;
     /**
      * Target height when transcoding
      *
-     * @generated from field: optional int32 target_height_pixels = 7;
+     * @generated from field: optional int32 target_height_pixels = 8;
      */
     targetHeightPixels?: number;
     /**
      * Supported pixel formats for video
      *
-     * @generated from field: repeated string supported_pixel_formats = 8;
+     * @generated from field: repeated string supported_pixel_formats = 9;
      */
     supportedPixelFormats: string[];
     /**
      * Max frame rate
      *
-     * @generated from field: optional int32 max_frame_rate = 9;
+     * @generated from field: optional int32 max_framerate = 10;
      */
-    maxFrameRate?: number;
+    maxFramerate?: number;
     /**
      * Max bitrate
      *
-     * @generated from field: optional int64 max_bitrate_bits_per_second = 10;
+     * @generated from field: optional int64 max_bitrate_bits_per_second = 11;
      */
     maxBitrateBitsPerSecond?: bigint;
     /**
      * Target bitrate when transcoding
      *
-     * @generated from field: optional int64 target_bitrate_bits_per_second = 11;
+     * @generated from field: optional int64 target_bitrate_bits_per_second = 12;
      */
     targetBitrateBitsPerSecond?: bigint;
     /**
      * Max number of audio channels
      *
-     * @generated from field: optional int32 max_audio_channels = 12;
+     * @generated from field: optional int32 max_audio_channels = 13;
      */
     maxAudioChannels?: number;
     /**
      * Max audio sample rate
      *
-     * @generated from field: optional int32 max_sample_rate_hertz = 13;
+     * @generated from field: optional int32 max_sample_rate_hertz = 14;
      */
     maxSampleRateHertz?: number;
     constructor(data?: PartialMessage<MediaFormatSpec>);
@@ -521,14 +650,16 @@ export declare class MediaFormatSpec extends Message<MediaFormatSpec> {
  */
 export declare class MediaDeviceSpec extends Message<MediaDeviceSpec> {
     /**
-     * @generated from field: string device_id = 1;
+     * @generated from field: string media_device_id = 1;
      */
-    deviceId: string;
+    mediaDeviceId: string;
     /**
-     * @generated from field: string device_name = 2;
+     * @generated from field: string media_device_name = 2;
      */
-    deviceName: string;
+    mediaDeviceName: string;
     /**
+     * First container is the preferred option when transcoding
+     *
      * @generated from field: repeated string supported_container_formats = 3;
      */
     supportedContainerFormats: string[];
@@ -579,9 +710,23 @@ export declare class TranscodeVideoRequest extends Message<TranscodeVideoRequest
  */
 export declare class TranscodeVideoResponse extends Message<TranscodeVideoResponse> {
     /**
-     * @generated from field: string media_url = 1;
+     * State of the transcoding process
+     *
+     * @generated from field: avn.connect.v1.MediaTranscodeState state = 1;
      */
-    mediaUrl: string;
+    state: MediaTranscodeState;
+    /**
+     * Set once the job has finished regardless of outcome
+     *
+     * @generated from field: optional avn.connect.v1.TranscodeVideoResult result = 2;
+     */
+    result?: TranscodeVideoResult;
+    /**
+     * May be set when processing to indicated progress
+     *
+     * @generated from field: optional int32 progress_percent = 3;
+     */
+    progressPercent?: number;
     constructor(data?: PartialMessage<TranscodeVideoResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.TranscodeVideoResponse";
@@ -590,6 +735,37 @@ export declare class TranscodeVideoResponse extends Message<TranscodeVideoRespon
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranscodeVideoResponse;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranscodeVideoResponse;
     static equals(a: TranscodeVideoResponse | PlainMessage<TranscodeVideoResponse> | undefined, b: TranscodeVideoResponse | PlainMessage<TranscodeVideoResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.TranscodeVideoResult
+ */
+export declare class TranscodeVideoResult extends Message<TranscodeVideoResult> {
+    /**
+     * Set if the job succeeded
+     *
+     * @generated from field: optional string media_url = 1;
+     */
+    mediaUrl?: string;
+    /**
+     * Populated if there were transcode errors
+     *
+     * @generated from field: repeated string errors = 2;
+     */
+    errors: string[];
+    /**
+     * Populated if there were transcode warnings
+     *
+     * @generated from field: repeated string warnings = 3;
+     */
+    warnings: string[];
+    constructor(data?: PartialMessage<TranscodeVideoResult>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.TranscodeVideoResult";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranscodeVideoResult;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranscodeVideoResult;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranscodeVideoResult;
+    static equals(a: TranscodeVideoResult | PlainMessage<TranscodeVideoResult> | undefined, b: TranscodeVideoResult | PlainMessage<TranscodeVideoResult> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.MediaTypeExtension
@@ -641,4 +817,133 @@ export declare class GetMediaTypeExtensionMapResponse extends Message<GetMediaTy
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMediaTypeExtensionMapResponse;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMediaTypeExtensionMapResponse;
     static equals(a: GetMediaTypeExtensionMapResponse | PlainMessage<GetMediaTypeExtensionMapResponse> | undefined, b: GetMediaTypeExtensionMapResponse | PlainMessage<GetMediaTypeExtensionMapResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.MediaCompatibilityIssue
+ */
+export declare class MediaCompatibilityIssue extends Message<MediaCompatibilityIssue> {
+    /**
+     * @generated from field: avn.connect.v1.MediaCompatibilityArea area = 1;
+     */
+    area: MediaCompatibilityArea;
+    /**
+     * @generated from field: avn.connect.v1.MediaCompatibilityReason reason = 2;
+     */
+    reason: MediaCompatibilityReason;
+    /**
+     * @generated from field: string detail = 3;
+     */
+    detail: string;
+    constructor(data?: PartialMessage<MediaCompatibilityIssue>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.MediaCompatibilityIssue";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MediaCompatibilityIssue;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MediaCompatibilityIssue;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MediaCompatibilityIssue;
+    static equals(a: MediaCompatibilityIssue | PlainMessage<MediaCompatibilityIssue> | undefined, b: MediaCompatibilityIssue | PlainMessage<MediaCompatibilityIssue> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.CheckMediaCompatibilityRequest
+ */
+export declare class CheckMediaCompatibilityRequest extends Message<CheckMediaCompatibilityRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: string media_url = 2;
+     */
+    mediaUrl: string;
+    /**
+     * @generated from field: avn.connect.v1.MediaDeviceSpec target_device_spec = 3;
+     */
+    targetDeviceSpec?: MediaDeviceSpec;
+    constructor(data?: PartialMessage<CheckMediaCompatibilityRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.CheckMediaCompatibilityRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CheckMediaCompatibilityRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CheckMediaCompatibilityRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CheckMediaCompatibilityRequest;
+    static equals(a: CheckMediaCompatibilityRequest | PlainMessage<CheckMediaCompatibilityRequest> | undefined, b: CheckMediaCompatibilityRequest | PlainMessage<CheckMediaCompatibilityRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.CheckMediaCompatibilityResponse
+ */
+export declare class CheckMediaCompatibilityResponse extends Message<CheckMediaCompatibilityResponse> {
+    /**
+     * @generated from field: bool container_is_supported = 1;
+     */
+    containerIsSupported: boolean;
+    /**
+     * @generated from field: bool video_stream_is_available = 2;
+     */
+    videoStreamIsAvailable: boolean;
+    /**
+     * @generated from field: bool video_stream_is_supported = 3;
+     */
+    videoStreamIsSupported: boolean;
+    /**
+     * @generated from field: bool audio_stream_is_available = 4;
+     */
+    audioStreamIsAvailable: boolean;
+    /**
+     * @generated from field: bool audio_stream_is_supported = 5;
+     */
+    audioStreamIsSupported: boolean;
+    /**
+     * @generated from field: repeated avn.connect.v1.MediaCompatibilityIssue errors = 6;
+     */
+    errors: MediaCompatibilityIssue[];
+    /**
+     * @generated from field: repeated avn.connect.v1.MediaCompatibilityIssue warnings = 7;
+     */
+    warnings: MediaCompatibilityIssue[];
+    constructor(data?: PartialMessage<CheckMediaCompatibilityResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.CheckMediaCompatibilityResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CheckMediaCompatibilityResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CheckMediaCompatibilityResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CheckMediaCompatibilityResponse;
+    static equals(a: CheckMediaCompatibilityResponse | PlainMessage<CheckMediaCompatibilityResponse> | undefined, b: CheckMediaCompatibilityResponse | PlainMessage<CheckMediaCompatibilityResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetMediaDeviceSpecsRequest
+ */
+export declare class GetMediaDeviceSpecsRequest extends Message<GetMediaDeviceSpecsRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: repeated string media_device_ids = 2;
+     */
+    mediaDeviceIds: string[];
+    constructor(data?: PartialMessage<GetMediaDeviceSpecsRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.GetMediaDeviceSpecsRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMediaDeviceSpecsRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMediaDeviceSpecsRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMediaDeviceSpecsRequest;
+    static equals(a: GetMediaDeviceSpecsRequest | PlainMessage<GetMediaDeviceSpecsRequest> | undefined, b: GetMediaDeviceSpecsRequest | PlainMessage<GetMediaDeviceSpecsRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetMediaDeviceSpecsResponse
+ */
+export declare class GetMediaDeviceSpecsResponse extends Message<GetMediaDeviceSpecsResponse> {
+    /**
+     * @generated from field: repeated avn.connect.v1.MediaDeviceSpec media_device_specs = 1;
+     */
+    mediaDeviceSpecs: MediaDeviceSpec[];
+    constructor(data?: PartialMessage<GetMediaDeviceSpecsResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.GetMediaDeviceSpecsResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMediaDeviceSpecsResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMediaDeviceSpecsResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMediaDeviceSpecsResponse;
+    static equals(a: GetMediaDeviceSpecsResponse | PlainMessage<GetMediaDeviceSpecsResponse> | undefined, b: GetMediaDeviceSpecsResponse | PlainMessage<GetMediaDeviceSpecsResponse> | undefined): boolean;
 }

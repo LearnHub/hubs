@@ -1,6 +1,7 @@
 import { AddCloudFilesRequest, AddCloudFilesResponse, GetCloudFilesRequest, GetCloudFilesResponse, GetCloudSummaryRequest, GetCloudSummaryResponse, RemoveCloudFilesRequest, SearchCloudFilesRequest, SearchCloudFilesResponse } from "./cloud_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 import { AddTagsRequest, RemoveTagsRequest } from "./tags_pb.js";
+import { SetEntityPropertiesRequest } from "./entities_pb.js";
 /**
  * @generated from service avn.connect.v1.CloudService
  */
@@ -68,6 +69,17 @@ export declare const CloudService: {
             readonly name: "GetCloudSummary";
             readonly I: typeof GetCloudSummaryRequest;
             readonly O: typeof GetCloudSummaryResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Property management
+         *
+         * @generated from rpc avn.connect.v1.CloudService.SetProperties
+         */
+        readonly setProperties: {
+            readonly name: "SetProperties";
+            readonly I: typeof SetEntityPropertiesRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };

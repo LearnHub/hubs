@@ -16,7 +16,7 @@ export declare class CommandRequest extends Message<CommandRequest> {
      */
     command: string;
     /**
-     * Escape output files with angle brackets to upload and return: <filename>
+     * Escape output filenames with angle brackets, e.g. <output.txt>
      *
      * @generated from field: repeated string arguments = 3;
      */

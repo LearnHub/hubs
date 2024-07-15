@@ -4,25 +4,6 @@ import { Authorization } from "./authorization_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
 import { EntityProperty, SortOrder } from "./entities_pb.js";
 /**
- * Cloud files can be owned by users or organizations
- *
- * @generated from enum avn.connect.v1.CloudType
- */
-export declare enum CloudType {
-    /**
-     * @generated from enum value: CLOUD_TYPE_UNSPECIFIED = 0;
-     */
-    UNSPECIFIED = 0,
-    /**
-     * @generated from enum value: CLOUD_TYPE_USER = 1;
-     */
-    USER = 1,
-    /**
-     * @generated from enum value: CLOUD_TYPE_ORGANIZATION = 2;
-     */
-    ORGANIZATION = 2
-}
-/**
  * @generated from message avn.connect.v1.CloudFile
  */
 export declare class CloudFile extends Message<CloudFile> {
@@ -31,15 +12,26 @@ export declare class CloudFile extends Message<CloudFile> {
      */
     cloudFileId: number;
     /**
-     * User or Org ID based on type
+     * Cloud files can be owned by users or organizations
      *
-     * @generated from field: avn.connect.v1.CloudType cloud_type = 2;
+     * @generated from oneof avn.connect.v1.CloudFile.owner
      */
-    cloudType: CloudType;
-    /**
-     * @generated from field: int32 owner_id = 3;
-     */
-    ownerId: number;
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 2;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 3;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
     /**
      * AVNFS URL
      *
@@ -156,15 +148,24 @@ export declare class AddCloudFilesRequest extends Message<AddCloudFilesRequest> 
      */
     auth?: Authorization;
     /**
-     * User or Org ID based on type
-     *
-     * @generated from field: avn.connect.v1.CloudType cloud_type = 2;
+     * @generated from oneof avn.connect.v1.AddCloudFilesRequest.owner
      */
-    cloudType: CloudType;
-    /**
-     * @generated from field: int32 owner_id = 3;
-     */
-    ownerId: number;
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 2;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 3;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
     /**
      * @generated from field: repeated string file_urls = 4;
      */
@@ -235,15 +236,24 @@ export declare class SearchCloudFilesRequest extends Message<SearchCloudFilesReq
      */
     auth?: Authorization;
     /**
-     * User or Org ID based on type
-     *
-     * @generated from field: avn.connect.v1.CloudType cloud_type = 2;
+     * @generated from oneof avn.connect.v1.SearchCloudFilesRequest.owner
      */
-    cloudType: CloudType;
-    /**
-     * @generated from field: int32 owner_id = 3;
-     */
-    ownerId: number;
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 2;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 3;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
     /**
      * @generated from field: optional string search_text = 4;
      */
@@ -325,15 +335,24 @@ export declare class GetCloudSummaryRequest extends Message<GetCloudSummaryReque
      */
     auth?: Authorization;
     /**
-     * User or Org ID based on type
-     *
-     * @generated from field: avn.connect.v1.CloudType cloud_type = 2;
+     * @generated from oneof avn.connect.v1.GetCloudSummaryRequest.owner
      */
-    cloudType: CloudType;
-    /**
-     * @generated from field: int32 owner_id = 3;
-     */
-    ownerId: number;
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 2;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 3;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
     constructor(data?: PartialMessage<GetCloudSummaryRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetCloudSummaryRequest";

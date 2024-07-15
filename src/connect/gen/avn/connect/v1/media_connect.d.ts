@@ -1,4 +1,4 @@
-import { GetImageMetadataResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, GetVideoMetadataResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
+import { CheckMediaCompatibilityRequest, CheckMediaCompatibilityResponse, GetImageMetadataResponse, GetMediaDeviceSpecsRequest, GetMediaDeviceSpecsResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, GetVideoMetadataResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.MediaService
@@ -38,6 +38,15 @@ export declare const MediaService: {
             readonly kind: MethodKind.Unary;
         };
         /**
+         * @generated from rpc avn.connect.v1.MediaService.CheckMediaCompatibility
+         */
+        readonly checkMediaCompatibility: {
+            readonly name: "CheckMediaCompatibility";
+            readonly I: typeof CheckMediaCompatibilityRequest;
+            readonly O: typeof CheckMediaCompatibilityResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
          * Transcoding functions
          *
          * @generated from rpc avn.connect.v1.MediaService.TranscodeImage
@@ -55,7 +64,7 @@ export declare const MediaService: {
             readonly name: "TranscodeVideo";
             readonly I: typeof TranscodeVideoRequest;
             readonly O: typeof TranscodeVideoResponse;
-            readonly kind: MethodKind.Unary;
+            readonly kind: MethodKind.ServerStreaming;
         };
         /**
          * A mapping of well known file extensions to media types
@@ -66,6 +75,17 @@ export declare const MediaService: {
             readonly name: "GetMediaTypeExtensionMap";
             readonly I: typeof GetMediaTypeExtensionMapRequest;
             readonly O: typeof GetMediaTypeExtensionMapResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * A mapping of recommended media specs for well known devices
+         *
+         * @generated from rpc avn.connect.v1.MediaService.GetMediaDeviceSpecs
+         */
+        readonly getMediaDeviceSpecs: {
+            readonly name: "GetMediaDeviceSpecs";
+            readonly I: typeof GetMediaDeviceSpecsRequest;
+            readonly O: typeof GetMediaDeviceSpecsResponse;
             readonly kind: MethodKind.Unary;
         };
     };

@@ -108,7 +108,11 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_APPROVED = 20;
      */
-    APPROVED = 20
+    APPROVED = 20,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_FILENAME = 21;
+     */
+    FILENAME = 21
 }
 /**
  * Common info for channels, profiles, categories, and activities
@@ -160,6 +164,25 @@ export declare class EntityInfo extends Message<EntityInfo> {
      * @generated from field: optional string asset_id = 10;
      */
     assetId?: string;
+    /**
+     * @generated from oneof avn.connect.v1.EntityInfo.owner
+     */
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 11;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 12;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
     constructor(data?: PartialMessage<EntityInfo>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.EntityInfo";
