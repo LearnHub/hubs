@@ -689,13 +689,23 @@ export declare class TranscodeVideoRequest extends Message<TranscodeVideoRequest
      */
     auth?: Authorization;
     /**
+     * The media file to transcode
+     *
      * @generated from field: string media_url = 2;
      */
     mediaUrl: string;
     /**
+     * The target spec to transcode to
+     *
      * @generated from field: avn.connect.v1.MediaDeviceSpec target_device_spec = 3;
      */
     targetDeviceSpec?: MediaDeviceSpec;
+    /**
+     * Force transcoding even if the media file is already on spec
+     *
+     * @generated from field: bool force_transcode = 4;
+     */
+    forceTranscode: boolean;
     constructor(data?: PartialMessage<TranscodeVideoRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.TranscodeVideoRequest";
