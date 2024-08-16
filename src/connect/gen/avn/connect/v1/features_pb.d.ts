@@ -101,3 +101,40 @@ export declare class UserInterfaceFeatures extends Message<UserInterfaceFeatures
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UserInterfaceFeatures;
     static equals(a: UserInterfaceFeatures | PlainMessage<UserInterfaceFeatures> | undefined, b: UserInterfaceFeatures | PlainMessage<UserInterfaceFeatures> | undefined): boolean;
 }
+/**
+ * @generated from message avn.connect.v1.AvailableContent
+ */
+export declare class AvailableContent extends Message<AvailableContent> {
+    /**
+     * Hint of what channels should be shown for browsing (POSSIBLY DEPRECATED AS SHOULD BE FILTERED BY CLIENT)
+     *
+     * @generated from field: repeated int32 browsable_channels = 1;
+     */
+    browsableChannels: number[];
+    /**
+     * Published content from these channels is available
+     *
+     * @generated from field: repeated int32 licensed_channels = 2;
+     */
+    licensedChannels: number[];
+    /**
+     * Published content in these categories is available
+     *
+     * @generated from field: repeated int32 licensed_categories = 4;
+     */
+    licensedCategories: number[];
+    /**
+     * Published content owned exclusively by these users is available (i.e. from the users playlists)
+     *
+     * @generated from field: repeated int32 licensed_users = 5;
+     */
+    licensedUsers: number[];
+    constructor(data?: PartialMessage<AvailableContent>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.AvailableContent";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AvailableContent;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AvailableContent;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AvailableContent;
+    static equals(a: AvailableContent | PlainMessage<AvailableContent> | undefined, b: AvailableContent | PlainMessage<AvailableContent> | undefined): boolean;
+}

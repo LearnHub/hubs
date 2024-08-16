@@ -2,15 +2,16 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
-import { EntityProperty, SortOrder } from "./entities_pb.js";
+import { OrderClause, TextSearch } from "./entities_pb.js";
+import { TagFilter } from "./tags_pb.js";
 /**
  * @generated from message avn.connect.v1.CloudFile
  */
 export declare class CloudFile extends Message<CloudFile> {
     /**
-     * @generated from field: int32 cloud_file_id = 1;
+     * @generated from field: int32 entity_id = 1;
      */
-    cloudFileId: number;
+    entityId: number;
     /**
      * Cloud files can be owned by users or organizations
      *
@@ -102,9 +103,9 @@ export declare class GetCloudFilesRequest extends Message<GetCloudFilesRequest> 
      */
     auth?: Authorization;
     /**
-     * @generated from field: repeated int32 cloud_file_ids = 2;
+     * @generated from field: repeated int32 entity_ids = 2;
      */
-    cloudFileIds: number[];
+    entityIds: number[];
     /**
      * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 3;
      */
@@ -184,9 +185,9 @@ export declare class AddCloudFilesRequest extends Message<AddCloudFilesRequest> 
  */
 export declare class AddCloudFilesResponse extends Message<AddCloudFilesResponse> {
     /**
-     * @generated from field: repeated int32 cloud_file_ids = 1;
+     * @generated from field: repeated int32 entity_ids = 1;
      */
-    cloudFileIds: number[];
+    entityIds: number[];
     /**
      * CLOUD_FILE_LEGACY_ID
      *
@@ -211,9 +212,9 @@ export declare class RemoveCloudFilesRequest extends Message<RemoveCloudFilesReq
      */
     auth?: Authorization;
     /**
-     * @generated from field: repeated int32 cloud_file_ids = 2;
+     * @generated from field: repeated int32 entity_ids = 2;
      */
-    cloudFileIds: number[];
+    entityIds: number[];
     /**
      * @generated from field: repeated string legacy_ids = 10;
      */
@@ -255,15 +256,17 @@ export declare class SearchCloudFilesRequest extends Message<SearchCloudFilesReq
         value?: undefined;
     };
     /**
-     * @generated from field: optional string search_text = 4;
+     * Search text fields
+     *
+     * @generated from field: optional avn.connect.v1.TextSearch text_search = 4;
      */
-    searchText?: string;
+    textSearch?: TextSearch;
     /**
      * Not implemented yet
      *
-     * @generated from field: repeated int32 filter_tags = 5;
+     * @generated from field: repeated avn.connect.v1.TagFilter tag_filters = 5;
      */
-    filterTags: number[];
+    tagFilters: TagFilter[];
     /**
      * @generated from field: repeated string filter_media_types = 6;
      */
@@ -277,13 +280,11 @@ export declare class SearchCloudFilesRequest extends Message<SearchCloudFilesReq
      */
     before?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.EntityProperty order_by = 9;
+     * Clauses to order the results by
+     *
+     * @generated from field: repeated avn.connect.v1.OrderClause order_by = 9;
      */
-    orderBy?: EntityProperty;
-    /**
-     * @generated from field: optional avn.connect.v1.SortOrder sort_order = 10;
-     */
-    sortOrder?: SortOrder;
+    orderBy: OrderClause[];
     /**
      * @generated from field: optional int32 page_size = 11;
      */

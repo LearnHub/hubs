@@ -5,6 +5,19 @@ import { Authorization } from "./authorization_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
 import { TagFilter } from "./tags_pb.js";
 /**
+ * @generated from enum avn.connect.v1.SearchFlags
+ */
+export declare enum SearchFlags {
+    /**
+     * @generated from enum value: SEARCH_FLAGS_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+    /**
+     * @generated from enum value: SEARCH_FLAGS_EXACT_MATCH = 1;
+     */
+    EXACT_MATCH = 1
+}
+/**
  * @generated from enum avn.connect.v1.SortOrder
  */
 export declare enum SortOrder {
@@ -112,7 +125,15 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_FILENAME = 21;
      */
-    FILENAME = 21
+    FILENAME = 21,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_ITEM_COUNT = 22;
+     */
+    ITEM_COUNT = 22,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_TRACK_COUNT = 23;
+     */
+    TRACK_COUNT = 23
 }
 /**
  * Common info for channels, profiles, categories, and activities
@@ -151,31 +172,25 @@ export declare class EntityInfo extends Message<EntityInfo> {
      */
     tags: number[];
     /**
-     * @generated from field: bool available = 8;
+     * @generated from field: optional google.protobuf.Timestamp published = 8;
      */
-    available: boolean;
+    published?: Timestamp;
     /**
      * @generated from field: optional google.protobuf.Timestamp featured = 9;
      */
     featured?: Timestamp;
     /**
-     * Currently only used for activities
-     *
-     * @generated from field: optional string asset_id = 10;
-     */
-    assetId?: string;
-    /**
      * @generated from oneof avn.connect.v1.EntityInfo.owner
      */
     owner: {
         /**
-         * @generated from field: int32 organization_id = 11;
+         * @generated from field: int32 organization_id = 10;
          */
         value: number;
         case: "organizationId";
     } | {
         /**
-         * @generated from field: int32 user_id = 12;
+         * @generated from field: int32 user_id = 11;
          */
         value: number;
         case: "userId";
@@ -183,6 +198,26 @@ export declare class EntityInfo extends Message<EntityInfo> {
         case: undefined;
         value?: undefined;
     };
+    /**
+     * @generated from field: bool available = 20;
+     */
+    available: boolean;
+    /**
+     * @generated from field: optional string asset_id = 21;
+     */
+    assetId?: string;
+    /**
+     * @generated from field: optional int64 sizeBytes = 22;
+     */
+    sizeBytes?: bigint;
+    /**
+     * @generated from field: optional int32 itemCount = 30;
+     */
+    itemCount?: number;
+    /**
+     * @generated from field: optional int32 trackCount = 31;
+     */
+    trackCount?: number;
     constructor(data?: PartialMessage<EntityInfo>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.EntityInfo";
@@ -295,6 +330,35 @@ export declare class DeleteEntityRequest extends Message<DeleteEntityRequest> {
     static equals(a: DeleteEntityRequest | PlainMessage<DeleteEntityRequest> | undefined, b: DeleteEntityRequest | PlainMessage<DeleteEntityRequest> | undefined): boolean;
 }
 /**
+ * @generated from message avn.connect.v1.CopyEntityRequest
+ */
+export declare class CopyEntityRequest extends Message<CopyEntityRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * Entities with no organization belong to the creating user by default
+     *
+     * @generated from field: optional int32 organization_id = 2;
+     */
+    organizationId?: number;
+    /**
+     * Target entity to copy
+     *
+     * @generated from field: optional int32 target_id = 3;
+     */
+    targetId?: number;
+    constructor(data?: PartialMessage<CopyEntityRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.CopyEntityRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CopyEntityRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CopyEntityRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CopyEntityRequest;
+    static equals(a: CopyEntityRequest | PlainMessage<CopyEntityRequest> | undefined, b: CopyEntityRequest | PlainMessage<CopyEntityRequest> | undefined): boolean;
+}
+/**
  * Common request for entity lists
  *
  * @generated from message avn.connect.v1.EntityInfoListRequest
@@ -317,11 +381,11 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     languageId?: string;
     /**
-     * Search all text fields
+     * Search text fields
      *
-     * @generated from field: optional string search_text = 4;
+     * @generated from field: optional avn.connect.v1.TextSearch text_search = 4;
      */
-    searchText?: string;
+    textSearch?: TextSearch;
     /**
      * Return entities for which all the TagFilters are true
      *
@@ -381,6 +445,60 @@ export declare class EntityInfoListResponse extends Message<EntityInfoListRespon
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): EntityInfoListResponse;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): EntityInfoListResponse;
     static equals(a: EntityInfoListResponse | PlainMessage<EntityInfoListResponse> | undefined, b: EntityInfoListResponse | PlainMessage<EntityInfoListResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.AddChildrenRequest
+ */
+export declare class AddChildrenRequest extends Message<AddChildrenRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: int32 parent_id = 2;
+     */
+    parentId: number;
+    /**
+     * @generated from field: repeated int32 child_ids = 3;
+     */
+    childIds: number[];
+    /**
+     * @generated from field: optional bool replace_existing = 4;
+     */
+    replaceExisting?: boolean;
+    constructor(data?: PartialMessage<AddChildrenRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.AddChildrenRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AddChildrenRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AddChildrenRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AddChildrenRequest;
+    static equals(a: AddChildrenRequest | PlainMessage<AddChildrenRequest> | undefined, b: AddChildrenRequest | PlainMessage<AddChildrenRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.RemoveChildrenRequest
+ */
+export declare class RemoveChildrenRequest extends Message<RemoveChildrenRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: int32 parent_id = 2;
+     */
+    parentId: number;
+    /**
+     * @generated from field: repeated int32 child_ids = 3;
+     */
+    childIds: number[];
+    constructor(data?: PartialMessage<RemoveChildrenRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.RemoveChildrenRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveChildrenRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveChildrenRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveChildrenRequest;
+    static equals(a: RemoveChildrenRequest | PlainMessage<RemoveChildrenRequest> | undefined, b: RemoveChildrenRequest | PlainMessage<RemoveChildrenRequest> | undefined): boolean;
 }
 /**
  * Generic pattern for entity property setting
@@ -458,7 +576,13 @@ export declare class EntityPropertyState extends Message<EntityPropertyState> {
         case: "string";
     } | {
         /**
-         * @generated from field: google.protobuf.Timestamp timestamp = 10;
+         * @generated from field: bytes bytes = 10;
+         */
+        value: Uint8Array;
+        case: "bytes";
+    } | {
+        /**
+         * @generated from field: google.protobuf.Timestamp timestamp = 11;
          */
         value: Timestamp;
         case: "timestamp";
@@ -474,6 +598,31 @@ export declare class EntityPropertyState extends Message<EntityPropertyState> {
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): EntityPropertyState;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): EntityPropertyState;
     static equals(a: EntityPropertyState | PlainMessage<EntityPropertyState> | undefined, b: EntityPropertyState | PlainMessage<EntityPropertyState> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.TextSearch
+ */
+export declare class TextSearch extends Message<TextSearch> {
+    /**
+     * @generated from field: string text = 1;
+     */
+    text: string;
+    /**
+     * @generated from field: repeated avn.connect.v1.EntityProperty properties = 2;
+     */
+    properties: EntityProperty[];
+    /**
+     * @generated from field: repeated avn.connect.v1.SearchFlags conditions = 3;
+     */
+    conditions: SearchFlags[];
+    constructor(data?: PartialMessage<TextSearch>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.TextSearch";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TextSearch;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TextSearch;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TextSearch;
+    static equals(a: TextSearch | PlainMessage<TextSearch> | undefined, b: TextSearch | PlainMessage<TextSearch> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.OrderClause

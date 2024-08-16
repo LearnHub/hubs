@@ -1,6 +1,7 @@
 import { CreateEntityResponse, DeleteEntityRequest, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
-import { Activity, AddActivityFilesRequest, CreateActivityRequest, RemoveActivityFilesRequest, RemoveAllActivityFilesRequest } from "./activities_pb.js";
+import { Activity, AddActivityFilesRequest, CreateActivityRequest, RemoveActivityFilesRequest } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
+import { AddTagsRequest, RemoveTagsRequest } from "./tags_pb.js";
 /**
  * @generated from service avn.connect.v1.ActivityService
  */
@@ -55,11 +56,22 @@ export declare const ActivityService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * @generated from rpc avn.connect.v1.ActivityService.RemoveAllFiles
+         * Tag management
+         *
+         * @generated from rpc avn.connect.v1.ActivityService.AddTags
          */
-        readonly removeAllFiles: {
-            readonly name: "RemoveAllFiles";
-            readonly I: typeof RemoveAllActivityFilesRequest;
+        readonly addTags: {
+            readonly name: "AddTags";
+            readonly I: typeof AddTagsRequest;
+            readonly O: typeof Empty;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ActivityService.RemoveTags
+         */
+        readonly removeTags: {
+            readonly name: "RemoveTags";
+            readonly I: typeof RemoveTagsRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };

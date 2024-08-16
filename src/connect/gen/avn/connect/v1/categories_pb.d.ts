@@ -18,25 +18,56 @@ export declare class Category extends Message<Category> {
      */
     iconUrl: string;
     /**
-     * @generated from field: google.protobuf.Timestamp updated = 4;
+     * @generated from field: string preview_url = 4;
+     */
+    previewUrl: string;
+    /**
+     * @generated from field: google.protobuf.Timestamp updated = 5;
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.Translation description = 5;
+     * @generated from field: optional avn.connect.v1.Translation description = 6;
      */
     description?: Translation;
     /**
-     * @generated from field: repeated int32 tags = 6;
+     * @generated from field: repeated int32 tags = 7;
      */
     tags: number[];
     /**
-     * @generated from field: bool deleted = 7;
+     * @generated from field: optional google.protobuf.Timestamp published = 8;
+     */
+    published?: Timestamp;
+    /**
+     * @generated from field: optional google.protobuf.Timestamp featured = 9;
+     */
+    featured?: Timestamp;
+    /**
+     * @generated from oneof avn.connect.v1.Category.owner
+     */
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 10;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 11;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
+    /**
+     * @generated from field: bool deleted = 12;
      */
     deleted: boolean;
     /**
-     * @generated from field: string preview_url = 8;
+     * @generated from field: int32 item_count = 13;
      */
-    previewUrl: string;
+    itemCount: number;
     constructor(data?: PartialMessage<Category>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Category";

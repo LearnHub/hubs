@@ -1,6 +1,7 @@
 import { EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
 import { Profile } from "./profiles_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
+import { AddTagsRequest, RemoveTagsRequest } from "./tags_pb.js";
 /**
  * @generated from service avn.connect.v1.ProfileService
  */
@@ -36,6 +37,26 @@ export declare const ProfileService: {
             readonly name: "GetActivities";
             readonly I: typeof EntityInfoListRequest;
             readonly O: typeof EntityInfoListResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Tag management
+         *
+         * @generated from rpc avn.connect.v1.ProfileService.AddTags
+         */
+        readonly addTags: {
+            readonly name: "AddTags";
+            readonly I: typeof AddTagsRequest;
+            readonly O: typeof Empty;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ProfileService.RemoveTags
+         */
+        readonly removeTags: {
+            readonly name: "RemoveTags";
+            readonly I: typeof RemoveTagsRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
         /**

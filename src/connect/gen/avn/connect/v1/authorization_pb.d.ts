@@ -35,48 +35,35 @@ export declare enum IdentityProvider {
     CLASSLINK = 6
 }
 /**
+ * Authorization to content and services from one or more sources
+ *
  * @generated from message avn.connect.v1.Authorization
  */
 export declare class Authorization extends Message<Authorization> {
     /**
-     * @generated from oneof avn.connect.v1.Authorization.method
+     * The OpenID JWT of the authenticated user
+     *
+     * @generated from field: optional string user_jwt = 1;
      */
-    method: {
-        /**
-         * The OpenID JWT of the authenticated user
-         *
-         * @generated from field: string user_jwt = 1;
-         */
-        value: string;
-        case: "userJwt";
-    } | {
-        /**
-         * Just the dimension ID
-         *
-         * @generated from field: string dimension_id = 2;
-         */
-        value: string;
-        case: "dimensionId";
-    } | {
-        /**
-         * The confirmed connection credentials
-         *
-         * @generated from field: avn.connect.v1.ConnectionCredentials credentials = 3;
-         */
-        value: ConnectionCredentials;
-        case: "credentials";
-    } | {
-        /**
-         * Fixed API key
-         *
-         * @generated from field: string user_api_key = 4;
-         */
-        value: string;
-        case: "userApiKey";
-    } | {
-        case: undefined;
-        value?: undefined;
-    };
+    userJwt?: string;
+    /**
+     * Dimensions have intrinsic authorization parameters
+     *
+     * @generated from field: optional string dimension_id = 2;
+     */
+    dimensionId?: string;
+    /**
+     * The confirmed connection credentials
+     *
+     * @generated from field: optional avn.connect.v1.ConnectionCredentials credentials = 3;
+     */
+    credentials?: ConnectionCredentials;
+    /**
+     * API key used exlusively for CC1 legacy access
+     *
+     * @generated from field: optional string user_api_key = 4;
+     */
+    userApiKey?: string;
     constructor(data?: PartialMessage<Authorization>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Authorization";

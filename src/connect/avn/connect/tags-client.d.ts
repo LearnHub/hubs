@@ -18,3 +18,4 @@ export declare const Model = 2374;
 export declare const Audio = 2655;
 export declare const Image = 2376;
 export declare const Video = 2377;
+export declare const Topic = 2741;

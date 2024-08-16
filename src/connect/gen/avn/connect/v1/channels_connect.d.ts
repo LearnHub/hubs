@@ -8,7 +8,7 @@ export declare const ChannelService: {
     readonly typeName: "avn.connect.v1.ChannelService";
     readonly methods: {
         /**
-         * Get a specific channel
+         * Get details for a specific channel
          *
          * @generated from rpc avn.connect.v1.ChannelService.GetChannel
          */
@@ -25,6 +25,17 @@ export declare const ChannelService: {
          */
         readonly getBrowsableChannels: {
             readonly name: "GetBrowsableChannels";
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Get all allowed channels from the given set of channels
+         *
+         * @generated from rpc avn.connect.v1.ChannelService.GetChannels
+         */
+        readonly getChannels: {
+            readonly name: "GetChannels";
             readonly I: typeof EntityInfoListRequest;
             readonly O: typeof EntityInfoListResponse;
             readonly kind: MethodKind.Unary;

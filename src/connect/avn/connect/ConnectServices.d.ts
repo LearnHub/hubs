@@ -23,6 +23,7 @@ import { LanguageService } from "../../gen/avn/connect/v1/languages_connect.js";
 import { TranslationService } from "../../gen/avn/connect/v1/translations_connect.js";
 import { TagService } from "../../gen/avn/connect/v1/tags_connect.js";
 import { PermissionService } from "../../gen/avn/connect/v1/permissions_connect.js";
+import { ContentService } from "../../gen/avn/connect/v1/content_connect.js";
 export declare const GwebUrl = "https://gweb.avncloud.com";
 export declare const GwebAlphaUrl = "https://gweb-alpha.avncloud.com";
 export declare class ConnectServices {
@@ -53,4 +54,5 @@ export declare class ConnectServices {
     Translations: PromiseClient<typeof TranslationService>;
     Tags: PromiseClient<typeof TagService>;
     Permissions: PromiseClient<typeof PermissionService>;
+    Content: PromiseClient<typeof ContentService>;
 }

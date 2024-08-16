@@ -57,73 +57,96 @@ export declare class Activity extends Message<Activity> {
      */
     entityId: number;
     /**
-     * @generated from field: string asset_id = 2;
-     */
-    assetId: string;
-    /**
-     * @generated from field: avn.connect.v1.Translation name = 3;
+     * @generated from field: avn.connect.v1.Translation name = 2;
      */
     name?: Translation;
     /**
-     * @generated from field: string icon_url = 4;
+     * @generated from field: string icon_url = 3;
      */
     iconUrl: string;
     /**
-     * @generated from field: string preview_url = 5;
+     * @generated from field: string preview_url = 4;
      */
     previewUrl: string;
     /**
-     * @generated from field: google.protobuf.Timestamp updated = 6;
+     * @generated from field: google.protobuf.Timestamp updated = 5;
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.Translation description = 7;
+     * @generated from field: optional avn.connect.v1.Translation description = 6;
      */
     description?: Translation;
     /**
-     * @generated from field: repeated int32 tags = 8;
+     * @generated from field: repeated int32 tags = 7;
      */
     tags: number[];
+    /**
+     * @generated from field: optional google.protobuf.Timestamp published = 8;
+     */
+    published?: Timestamp;
     /**
      * @generated from field: optional google.protobuf.Timestamp featured = 9;
      */
     featured?: Timestamp;
     /**
-     * @generated from field: bool available = 10;
+     * @generated from oneof avn.connect.v1.Activity.owner
+     */
+    owner: {
+        /**
+         * @generated from field: int32 organization_id = 10;
+         */
+        value: number;
+        case: "organizationId";
+    } | {
+        /**
+         * @generated from field: int32 user_id = 11;
+         */
+        value: number;
+        case: "userId";
+    } | {
+        case: undefined;
+        value?: undefined;
+    };
+    /**
+     * @generated from field: bool deleted = 12;
+     */
+    deleted: boolean;
+    /**
+     * @generated from field: bool available = 13;
      */
     available: boolean;
     /**
-     * Set ACTIVITY_TYPE_FILE types
-     *
-     * @generated from field: repeated string file_urls = 11;
+     * @generated from field: string asset_id = 14;
      */
-    fileUrls: string[];
+    assetId: string;
     /**
-     * @generated from field: int32 organization_id = 12;
-     */
-    organizationId: number;
-    /**
-     * @generated from field: optional avn.connect.v1.Translation instructions = 13;
+     * @generated from field: optional avn.connect.v1.Translation instructions = 15;
      */
     instructions?: Translation;
     /**
-     * @generated from field: optional string credit = 14;
+     * @generated from field: optional string credit = 16;
      */
     credit?: string;
     /**
-     * @generated from field: avn.connect.v1.ActivityType type = 15;
-     */
-    type: ActivityType;
-    /**
-     * @generated from field: repeated string screenshot_urls = 16;
+     * @generated from field: repeated string screenshot_urls = 17;
      */
     screenshotUrls: string[];
     /**
+     * @generated from field: avn.connect.v1.ActivityType type = 18;
+     */
+    type: ActivityType;
+    /**
      * Set ACTIVITY_TYPE_URL types
      *
-     * @generated from field: optional string url = 17;
+     * @generated from field: optional string url = 20;
      */
     url?: string;
+    /**
+     * Set ACTIVITY_TYPE_FILE types
+     *
+     * @generated from field: repeated string file_urls = 30;
+     */
+    fileUrls: string[];
     constructor(data?: PartialMessage<Activity>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Activity";
@@ -190,6 +213,12 @@ export declare class AddActivityFilesRequest extends Message<AddActivityFilesReq
      * @generated from field: avn.connect.v1.ActivityFileType file_type = 4;
      */
     fileType: ActivityFileType;
+    /**
+     * Replace all existing files?
+     *
+     * @generated from field: optional bool replace_existing = 5;
+     */
+    replaceExisting?: boolean;
     constructor(data?: PartialMessage<AddActivityFilesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.AddActivityFilesRequest";
@@ -227,29 +256,4 @@ export declare class RemoveActivityFilesRequest extends Message<RemoveActivityFi
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveActivityFilesRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveActivityFilesRequest;
     static equals(a: RemoveActivityFilesRequest | PlainMessage<RemoveActivityFilesRequest> | undefined, b: RemoveActivityFilesRequest | PlainMessage<RemoveActivityFilesRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.RemoveAllActivityFilesRequest
- */
-export declare class RemoveAllActivityFilesRequest extends Message<RemoveAllActivityFilesRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: int32 entity_id = 2;
-     */
-    entityId: number;
-    /**
-     * @generated from field: avn.connect.v1.ActivityFileType file_type = 3;
-     */
-    fileType: ActivityFileType;
-    constructor(data?: PartialMessage<RemoveAllActivityFilesRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.RemoveAllActivityFilesRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RemoveAllActivityFilesRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveAllActivityFilesRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveAllActivityFilesRequest;
-    static equals(a: RemoveAllActivityFilesRequest | PlainMessage<RemoveAllActivityFilesRequest> | undefined, b: RemoveAllActivityFilesRequest | PlainMessage<RemoveAllActivityFilesRequest> | undefined): boolean;
 }

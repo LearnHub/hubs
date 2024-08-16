@@ -57,6 +57,12 @@ export declare enum TranslationFlags {
      */
     NEUTRAL_SOURCE = 23,
     /**
+     * Original source was requested
+     *
+     * @generated from enum value: TRANSLATION_FLAGS_ORIGINAL_SOURCE = 24;
+     */
+    ORIGINAL_SOURCE = 24,
+    /**
      * Translation could not be found
      *
      * @generated from enum value: TRANSLATION_FLAGS_NOT_FOUND = 41;
@@ -117,13 +123,13 @@ export declare class Translation extends Message<Translation> {
      */
     translation: string;
     /**
-     * Language of the source text
+     * Language of the source text (blank if source is language neutral)
      *
      * @generated from field: string source_language_id = 2;
      */
     sourceLanguageId: string;
     /**
-     * Language to translate to
+     * Language to translate to (blank if source should not be translated)
      *
      * @generated from field: string target_language_id = 3;
      */

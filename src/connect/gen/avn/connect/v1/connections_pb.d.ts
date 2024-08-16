@@ -1,9 +1,8 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { User } from "./user_pb.js";
-import { AvailableContent } from "./content_pb.js";
+import { AvailableContent, UserInterfaceFeatures } from "./features_pb.js";
 import { InteractionPermissions } from "./interaction_permissions_pb.js";
-import { UserInterfaceFeatures } from "./features_pb.js";
 /**
  * @generated from enum avn.connect.v1.ConnectionStatus
  */

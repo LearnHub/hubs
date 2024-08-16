@@ -6,9 +6,8 @@ import { ConnectionCredentials, ConnectionInstance } from "./connections_pb.js";
 import { PresenceUpdate } from "./presence_pb.js";
 import { LessonContext } from "./lesson_context_pb.js";
 import { OperationState } from "./operations_pb.js";
-import { AvailableContent } from "./content_pb.js";
+import { AvailableContent, UserInterfaceFeatures } from "./features_pb.js";
 import { InteractionPermissions } from "./interaction_permissions_pb.js";
-import { UserInterfaceFeatures } from "./features_pb.js";
 import { LicenseInfo } from "./licenses_pb.js";
 import { PartnerSession } from "./partners_pb.js";
 /**
@@ -124,60 +123,41 @@ export declare class JoinDimensionRequest extends Message<JoinDimensionRequest> 
  */
 export declare class DimensionEvent extends Message<DimensionEvent> {
     /**
-     * @generated from oneof avn.connect.v1.DimensionEvent.message
+     * Status of the connected dimension
+     *
+     * @generated from field: optional avn.connect.v1.DimensionStatus status = 1;
      */
-    message: {
-        /**
-         * Status of the connected dimension
-         *
-         * @generated from field: avn.connect.v1.DimensionStatus status = 1;
-         */
-        value: DimensionStatus;
-        case: "status";
-    } | {
-        /**
-         * Immutable info about the dimension
-         *
-         * @generated from field: avn.connect.v1.DimensionInfo info = 2;
-         */
-        value: DimensionInfo;
-        case: "info";
-    } | {
-        /**
-         * Connection details including credentials for future calls
-         *
-         * @generated from field: avn.connect.v1.ConnectionInstance connection = 3;
-         */
-        value: ConnectionInstance;
-        case: "connection";
-    } | {
-        /**
-         * Broadcast message to display
-         *
-         * @generated from field: avn.connect.v1.DimensionBroadcast broadcast = 4;
-         */
-        value: DimensionBroadcast;
-        case: "broadcast";
-    } | {
-        /**
-         * Track people joinging and leaving the dimension
-         *
-         * @generated from field: avn.connect.v1.PresenceUpdate presence = 5;
-         */
-        value: PresenceUpdate;
-        case: "presence";
-    } | {
-        /**
-         * Track lesson context changes (gather and look)
-         *
-         * @generated from field: avn.connect.v1.LessonContext lesson = 6;
-         */
-        value: LessonContext;
-        case: "lesson";
-    } | {
-        case: undefined;
-        value?: undefined;
-    };
+    status?: DimensionStatus;
+    /**
+     * Immutable info about the dimension
+     *
+     * @generated from field: optional avn.connect.v1.DimensionInfo info = 2;
+     */
+    info?: DimensionInfo;
+    /**
+     * Connection details including credentials for future calls
+     *
+     * @generated from field: optional avn.connect.v1.ConnectionInstance connection = 3;
+     */
+    connection?: ConnectionInstance;
+    /**
+     * Broadcast message to display
+     *
+     * @generated from field: optional avn.connect.v1.DimensionBroadcast broadcast = 4;
+     */
+    broadcast?: DimensionBroadcast;
+    /**
+     * Track people joinging and leaving the dimension
+     *
+     * @generated from field: optional avn.connect.v1.PresenceUpdate presence = 5;
+     */
+    presence?: PresenceUpdate;
+    /**
+     * Track lesson context changes (gather and look)
+     *
+     * @generated from field: optional avn.connect.v1.LessonContext lesson = 6;
+     */
+    lesson?: LessonContext;
     constructor(data?: PartialMessage<DimensionEvent>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.DimensionEvent";

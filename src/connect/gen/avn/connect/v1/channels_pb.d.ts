@@ -1,5 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
+import { Translation } from "./translations_pb.js";
 /**
  * @generated from message avn.connect.v1.Channel
  */
@@ -9,9 +10,9 @@ export declare class Channel extends Message<Channel> {
      */
     entityId: number;
     /**
-     * @generated from field: string name = 2;
+     * @generated from field: avn.connect.v1.Translation name = 2;
      */
-    name: string;
+    name?: Translation;
     /**
      * @generated from field: string icon_url = 3;
      */
@@ -25,9 +26,9 @@ export declare class Channel extends Message<Channel> {
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional string description = 6;
+     * @generated from field: optional avn.connect.v1.Translation description = 6;
      */
-    description?: string;
+    description?: Translation;
     constructor(data?: PartialMessage<Channel>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Channel";

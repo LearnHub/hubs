@@ -274,7 +274,7 @@ class AVNBridge {
         const result = await this.ConnectServices.Channels.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId], 
-            searchText, 
+            textSearch: searchText ? { text: searchText } : undefined,
             tagFilters: [ 
                 { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
@@ -322,7 +322,6 @@ class AVNBridge {
                 { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
             orderBy: [
-                { property: Connect.EntityProperty.AVAILABLE, sortOrder: Connect.SortOrder.DESC },
                 { property: Connect.EntityProperty.NAME, sortOrder: Connect.SortOrder.ASC },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
@@ -343,7 +342,7 @@ class AVNBridge {
     }
 
     public async createNewDimension(passId: string | undefined): Promise<boolean> {
-        const auth = this._accessToken ? new Connect.Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
+        const auth = this._accessToken ? new Connect.Authorization({ userJwt: this._accessToken }) : undefined
         const createDimensionResult = await this.ConnectServices.Dimensions.createDimension({
             client: new Connect.ClientCredentials({ clientId: await this.getClientId() }),
             auth,
@@ -351,7 +350,7 @@ class AVNBridge {
             passId,
         })
         this._dimensionId = createDimensionResult.dimensionId
-        this._dimensionAuth = new Connect.Authorization({ method: { case: "dimensionId", value: this._dimensionId } })
+        this._dimensionAuth = new Connect.Authorization({ dimensionId: this._dimensionId })
         return true
     }
 
@@ -359,7 +358,7 @@ class AVNBridge {
         try {
             const getRoomDimensionResult = await this.ConnectServices.Rooms.getRoomDimension({ roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
-            this._dimensionAuth = new Connect.Authorization({ method: { case: "dimensionId", value: this._dimensionId } })
+            this._dimensionAuth = new Connect.Authorization({ dimensionId: this._dimensionId })
             console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
             return true
         } catch {
@@ -372,7 +371,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new Connect.Authorization({ credentials })
             const result = await this.ConnectServices.Users.getOrganizationMembership({ auth, userId })
             return result.memberships
         } else {
@@ -385,7 +384,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new Connect.Authorization({ credentials })
             return await this.ConnectServices.Organizations.getOrganization({ auth, entityId: organizationId })
         } else {
             throw new Error(`Not authenticated to get organization`)
@@ -420,7 +419,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new Connect.Authorization({ credentials })
             await this.ConnectServices.Organizations.joinOrganization({ auth, joinCode })
         } else {
             throw new Error(`Not authenticated to join organization`)
@@ -436,7 +435,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ method: { case: "credentials", value: credentials } })
+            const auth = new Connect.Authorization({ credentials })
             const userLicenses = await this.ConnectServices.Licenses.getUserLicenses({auth})
             for(let userLicense of userLicenses.licenses) {
                 if(userLicense.licenseId && userLicense.expires) {
@@ -468,68 +467,60 @@ class AVNBridge {
 
     public async streamMessageHandler(
         abortController: AbortController,
-        dimensionStreamIterator: AsyncIterator<Connect.DimensionEvent, Connect.DimensionEvent>
+        dimensionStreamIterator: AsyncIterator<Connect.DimensionEvent, Connect.DimensionEvent>,
+        pendingMessage: IteratorResult<Connect.DimensionEvent, Connect.DimensionEvent> | undefined,
     ): Promise<void> {
         try {
             console.debug("AVN: message streaming handler begin")
             while (!abortController.signal.aborted) {
-                const { done, value } = await dimensionStreamIterator.next()
+                const { done, value } = pendingMessage ?? await dimensionStreamIterator.next()
+                pendingMessage = undefined
                 if (done) {
                     console.info(`AVN: dimension message stream ended`)
                     break
                 }
-                switch (value.message.case) {
-                    case "status":
-                        if(this._lastDimensionStatus !== value.message.value) {
-                            this._lastDimensionStatus = value.message.value
-                            global.dispatchEvent(new Event("avn-dimension-status-changed"))
-                        }
-                        // CLOSE or OPEN is the only expected status after the initial OPEN
-                        if (value.message.value.state === Connect.OperationState.CLOSED) {
-                            console.log(`Dimension was closed with reason '${value.message.value.detail}'`)
-                            // The fake close might be cancelled if the session reopens
-                            clearInterval(this._closeSceneTimeout)
-                            this._closeSceneTimeout = setTimeout(() => {
-                                // Fake the hubs closing until the API supports room closure
-                                // @ts-ignore
-                                document.querySelector("a-scene")?.emit("hub_closed")
-                            }, 15000)
-                        } else if(value.message.value.state !== Connect.OperationState.OPEN) {
-                            console.warn(`Unexpected dimension state change '${value.message.value.state}'`)
-                        }
-                        break
-                    case "connection":
-                        this._dimensionConnection = value.message.value
-                        console.info(`AVN: update dimension connection`, value.message.value)
-                        global.dispatchEvent(new Event("avn-dimension-connection-changed"))
-                        global.dispatchEvent(new Event("avn-allow-back-changed"))
-                        global.dispatchEvent(new Event("avn-allow-explore-changed"))
-                        global.dispatchEvent(new Event("avn-allow-navigation-changed"))
-                        break
-                    case "info":
-                        this._dimensionInfo = value.message.value
-                        console.info(`AVN: update dimension info`, value.message.value)
-                        global.dispatchEvent(new Event("avn-dimension-info-changed"))
-                        break
-                    case "broadcast":
-                        //console.debug("TODO: broadcast MESSAGE", value.message)
-                        break
-                    case "presence":
-                        //console.debug("TODO: presence MESSAGE", value.message)
-                        break
-                    case "lesson":
-                        this._learnLessonContext = value.message.value
-                        global.dispatchEvent(new Event("avn-allow-back-changed"))
-                        global.dispatchEvent(new Event("avn-allow-explore-changed"))
-                        global.dispatchEvent(new Event("avn-allow-navigation-changed"))
-                        if (value.message.value) {
-                            console.debug(`AVN: student lesson context set`, value.message.value)
-                        } else {
-                            console.debug(`AVN: student lesson context reset`)
-                        }
-                        break
-                    default:
-                        console.error(`AVN: Unexpected message type '${value.message.case}'`)
+                if(value.status) {
+                    if(this._lastDimensionStatus !== value.status) {
+                        this._lastDimensionStatus = value.status
+                        global.dispatchEvent(new Event("avn-dimension-status-changed"))
+                    }
+                    // CLOSE or OPEN is the only expected status after the initial OPEN
+                    if (value.status.state === Connect.OperationState.CLOSED) {
+                        console.log(`Dimension was closed with reason '${value.status.detail}'`)
+                        // The fake close might be cancelled if the session reopens
+                        clearInterval(this._closeSceneTimeout)
+                        this._closeSceneTimeout = setTimeout(() => {
+                            // Fake the hubs closing until the API supports room closure
+                            // @ts-ignore
+                            document.querySelector("a-scene")?.emit("hub_closed")
+                        }, 15000)
+                    } else if(value.status.state !== Connect.OperationState.OPEN) {
+                        console.warn(`Unexpected dimension state change '${value.status.state}'`)
+                    }
+                }
+                if(value.connection) {
+                    this._dimensionConnection = value.connection
+                    console.info(`AVN: update dimension connection`, value.connection)
+                    global.dispatchEvent(new Event("avn-dimension-connection-changed"))
+                    global.dispatchEvent(new Event("avn-allow-back-changed"))
+                    global.dispatchEvent(new Event("avn-allow-explore-changed"))
+                    global.dispatchEvent(new Event("avn-allow-navigation-changed"))
+                }
+                if(value.info) {
+                    this._dimensionInfo = value.info
+                    console.info(`AVN: update dimension info`, value.info)
+                    global.dispatchEvent(new Event("avn-dimension-info-changed"))
+                }
+                if(value.lesson) {
+                    this._learnLessonContext = value.lesson
+                    global.dispatchEvent(new Event("avn-allow-back-changed"))
+                    global.dispatchEvent(new Event("avn-allow-explore-changed"))
+                    global.dispatchEvent(new Event("avn-allow-navigation-changed"))
+                    if (value.lesson) {
+                        console.debug(`AVN: student lesson context set`, value.lesson)
+                    } else {
+                        console.debug(`AVN: student lesson context reset`)
+                    }
                 }
             }
             if (abortController.signal.aborted) {
@@ -590,7 +581,7 @@ class AVNBridge {
             }
             await this.abortStreamIfActive()
             const abortController = new AbortController()
-            const auth = this._accessToken ? new Connect.Authorization({ method: { case: "userJwt", value: this._accessToken } }) : undefined
+            const auth = this._accessToken ? new Connect.Authorization({ userJwt: this._accessToken }) : undefined
             console.info(`Joining dimension '${this.dimensionId}'...`)
             const dimensionStream = this.ConnectServices.Dimensions.joinDimension({
                     client: new Connect.ClientCredentials({ clientId: await this.getClientId() }),
@@ -603,19 +594,19 @@ class AVNBridge {
             console.info(`Constructing stream iterator`)
             const dimensionStreamIterator: AsyncIterator<Connect.DimensionEvent, Connect.DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
             console.info(`Waiting for first message...`)
-            const { done, value } = await dimensionStreamIterator.next()
-            if (done) {
+            const firstMessage = await dimensionStreamIterator.next()
+            if (firstMessage.done) {
                 console.error(`AVN: dimension stream unexpectedly terminated`)
                 abortController.abort("STREAM_OPEN_FAILED")
                 return Connect.OperationState.UNSPECIFIED
             }
             // First message must say that the dimension is OPEN
-            if (value.message.case !== "status" || value.message.value.state !== Connect.OperationState.OPEN) {
-                console.error(`AVN: failed to join dimension '${this.dimensionId}'`, value.message)
+            if (firstMessage.value.status === undefined || firstMessage.value.status.state !== Connect.OperationState.OPEN) {
+                console.error(`AVN: failed to join dimension '${this.dimensionId}'`, firstMessage.value)
                 abortController.abort("STREAM_STATE_UNEXPECTED")
-                return value.message.case === "status" ? value.message.value.state : Connect.OperationState.UNSPECIFIED
+                return firstMessage.value.status?.state ?? Connect.OperationState.UNSPECIFIED
             }
-            this._lastDimensionStatus = value.message.value
+            this._lastDimensionStatus = firstMessage.value.status
             global.dispatchEvent(new Event("avn-dimension-status-changed"))
             // Clear any pending instructions queued due to the session closing
             clearInterval(this._closeSceneTimeout)
@@ -623,7 +614,7 @@ class AVNBridge {
             // Record abort controller
             this._streamAbortController = abortController
             // Start message loop
-            this._streamMessageHandlerPromise = this.streamMessageHandler(abortController, dimensionStreamIterator)
+            this._streamMessageHandlerPromise = this.streamMessageHandler(abortController, dimensionStreamIterator, firstMessage)
 
             return Connect.OperationState.OPEN
         } catch (error: unknown) {

@@ -1,8 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Authorization } from "./authorization_pb.js";
-import { Activity } from "./activities_pb.js";
 import { Translation } from "./translations_pb.js";
+import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.PlaylistTrackType
  */
@@ -19,110 +18,6 @@ export declare enum PlaylistTrackType {
      * @generated from enum value: PLAYLIST_TRACK_TYPE_CLOUD = 2;
      */
     CLOUD = 2
-}
-/**
- * @generated from message avn.connect.v1.MatchUserActivitiesCloudRequest
- */
-export declare class MatchUserActivitiesCloudRequest extends Message<MatchUserActivitiesCloudRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: int32 cloud_file_id = 2;
-     */
-    cloudFileId: number;
-    constructor(data?: PartialMessage<MatchUserActivitiesCloudRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MatchUserActivitiesCloudRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MatchUserActivitiesCloudRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MatchUserActivitiesCloudRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MatchUserActivitiesCloudRequest;
-    static equals(a: MatchUserActivitiesCloudRequest | PlainMessage<MatchUserActivitiesCloudRequest> | undefined, b: MatchUserActivitiesCloudRequest | PlainMessage<MatchUserActivitiesCloudRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.MatchUserActivitiesFilesRequest
- */
-export declare class MatchUserActivitiesFilesRequest extends Message<MatchUserActivitiesFilesRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: string name = 2;
-     */
-    name: string;
-    /**
-     * @generated from field: string icon_url = 3;
-     */
-    iconUrl: string;
-    /**
-     * @generated from field: repeated int32 tags = 4;
-     */
-    tags: number[];
-    /**
-     * @generated from field: repeated string file_urls = 5;
-     */
-    fileUrls: string[];
-    constructor(data?: PartialMessage<MatchUserActivitiesFilesRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MatchUserActivitiesFilesRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MatchUserActivitiesFilesRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MatchUserActivitiesFilesRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MatchUserActivitiesFilesRequest;
-    static equals(a: MatchUserActivitiesFilesRequest | PlainMessage<MatchUserActivitiesFilesRequest> | undefined, b: MatchUserActivitiesFilesRequest | PlainMessage<MatchUserActivitiesFilesRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.MatchUserActivitiesUrlRequest
- */
-export declare class MatchUserActivitiesUrlRequest extends Message<MatchUserActivitiesUrlRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * @generated from field: string name = 2;
-     */
-    name: string;
-    /**
-     * @generated from field: string icon_url = 3;
-     */
-    iconUrl: string;
-    /**
-     * @generated from field: repeated int32 tags = 4;
-     */
-    tags: number[];
-    /**
-     * @generated from field: string url = 5;
-     */
-    url: string;
-    constructor(data?: PartialMessage<MatchUserActivitiesUrlRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MatchUserActivitiesUrlRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MatchUserActivitiesUrlRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MatchUserActivitiesUrlRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MatchUserActivitiesUrlRequest;
-    static equals(a: MatchUserActivitiesUrlRequest | PlainMessage<MatchUserActivitiesUrlRequest> | undefined, b: MatchUserActivitiesUrlRequest | PlainMessage<MatchUserActivitiesUrlRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.MatchUserActivitiesResponse
- */
-export declare class MatchUserActivitiesResponse extends Message<MatchUserActivitiesResponse> {
-    /**
-     * @generated from field: avn.connect.v1.Activity activity = 1;
-     */
-    activity?: Activity;
-    constructor(data?: PartialMessage<MatchUserActivitiesResponse>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MatchUserActivitiesResponse";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MatchUserActivitiesResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MatchUserActivitiesResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MatchUserActivitiesResponse;
-    static equals(a: MatchUserActivitiesResponse | PlainMessage<MatchUserActivitiesResponse> | undefined, b: MatchUserActivitiesResponse | PlainMessage<MatchUserActivitiesResponse> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.Playlist
