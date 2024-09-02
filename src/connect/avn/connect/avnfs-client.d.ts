@@ -1,4 +1,4 @@
-import { ConnectServices } from "./ConnectServices.js";
+import { ConnectServices } from "./connect-services.js";
 import { Authorization } from "../../gen/avn/connect/v1/authorization_pb.js";
 export declare const Hostname = "avnfs.com";
 export declare const UrlPrefix = "https://avnfs.com";

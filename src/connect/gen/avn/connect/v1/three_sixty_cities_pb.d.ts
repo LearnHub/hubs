@@ -2,7 +2,7 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
-import { Activity } from "./activities_pb.js";
+import { EntityInfo } from "./entities_pb.js";
 /**
  * @generated from message avn.connect.v1.SearchImagesRequest
  */
@@ -51,9 +51,9 @@ export declare class SearchImagesRequest extends Message<SearchImagesRequest> {
  */
 export declare class SearchImagesResponse extends Message<SearchImagesResponse> {
     /**
-     * @generated from field: repeated avn.connect.v1.Activity results = 1;
+     * @generated from field: repeated avn.connect.v1.EntityInfo results = 1;
      */
-    results: Activity[];
+    results: EntityInfo[];
     /**
      * @generated from field: optional string next_page_token = 2;
      */

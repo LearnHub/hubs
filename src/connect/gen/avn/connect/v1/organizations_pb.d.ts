@@ -137,6 +137,10 @@ export declare class Organization extends Message<Organization> {
      * @generated from field: string country_id = 15;
      */
     countryId: string;
+    /**
+     * @generated from field: bool publisher = 16;
+     */
+    publisher: boolean;
     constructor(data?: PartialMessage<Organization>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Organization";

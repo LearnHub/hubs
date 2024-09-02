@@ -30,15 +30,23 @@ export declare class Profile extends Message<Profile> {
      */
     description?: Translation;
     /**
-     * @generated from field: repeated int32 tags = 7;
+     * @generated from field: optional avn.connect.v1.Translation instructions = 7;
+     */
+    instructions?: Translation;
+    /**
+     * @generated from field: string language_id = 8;
+     */
+    languageId: string;
+    /**
+     * @generated from field: repeated int32 tags = 9;
      */
     tags: number[];
     /**
-     * @generated from field: optional google.protobuf.Timestamp published = 8;
+     * @generated from field: optional google.protobuf.Timestamp published = 10;
      */
     published?: Timestamp;
     /**
-     * @generated from field: optional google.protobuf.Timestamp featured = 9;
+     * @generated from field: optional google.protobuf.Timestamp featured = 11;
      */
     featured?: Timestamp;
     /**
@@ -46,13 +54,13 @@ export declare class Profile extends Message<Profile> {
      */
     owner: {
         /**
-         * @generated from field: int32 organization_id = 10;
+         * @generated from field: int32 organization_id = 12;
          */
         value: number;
         case: "organizationId";
     } | {
         /**
-         * @generated from field: int32 user_id = 11;
+         * @generated from field: int32 user_id = 13;
          */
         value: number;
         case: "userId";
@@ -61,11 +69,11 @@ export declare class Profile extends Message<Profile> {
         value?: undefined;
     };
     /**
-     * @generated from field: bool deleted = 12;
+     * @generated from field: bool deleted = 14;
      */
     deleted: boolean;
     /**
-     * @generated from field: int32 item_count = 13;
+     * @generated from field: int32 item_count = 15;
      */
     itemCount: number;
     constructor(data?: PartialMessage<Profile>);

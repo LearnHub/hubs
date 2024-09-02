@@ -395,8 +395,8 @@ AFRAME.registerComponent("media-loader", {
       const isLinkElement = contentType === "text/html"
       const parsedUrl = isFragment ? undefined : new URL(src);
       if(parsedUrl) {
-        if(Connect.AvnfsUtils.isValidUrl(parsedUrl)) {
-          const { mediaType } = Connect.AvnfsUtils.decodeUrl(parsedUrl)
+        if(Connect.Avnfs.isValidUrl(parsedUrl)) {
+          const { mediaType } = Connect.Avnfs.decodeUrl(parsedUrl)
           if(!isLinkElement) {
             contentType = mediaType;
           }

@@ -933,27 +933,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Join dimension
   const joinResult = await AVN.joinDimension()
   switch (joinResult) {
-    case Connect.OperationState.OPEN:
+    case Connect.PB.OperationState.OPEN:
       console.info(`AVN: dimension open`);
       scene.emit("didJoinDimension");
       break;
-    case Connect.OperationState.CLOSED:
+    case Connect.PB.OperationState.CLOSED:
       console.error(`AVN: dimension closed`)
       scene.emit("errorLoadingRoom", `Session is closed.`);
       return
-    case Connect.OperationState.NOT_FOUND:
+    case Connect.PB.OperationState.NOT_FOUND:
       console.error(`AVN: dimension not found`)
       scene.emit("errorLoadingRoom", `Session not found.`);
       return
-    case Connect.OperationState.EXPIRED:
+    case Connect.PB.OperationState.EXPIRED:
       console.error(`AVN: dimension expired`)
       scene.emit("errorLoadingRoom", `Session has expired.`);
       return
-    case Connect.OperationState.FORBIDDEN:
+    case Connect.PB.OperationState.FORBIDDEN:
       console.error(`AVN: dimension forbidden`)
       scene.emit("errorLoadingRoom", `Session is forbidden.`);
       return
-    case Connect.OperationState.ERROR:
+    case Connect.PB.OperationState.ERROR:
       console.error(`AVN: dimension join error`)
       scene.emit("errorLoadingRoom", `Session is not available because an error occurred.`);
       return        

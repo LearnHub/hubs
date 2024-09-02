@@ -29,15 +29,15 @@ class AVNBridge {
 
     private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
     private _accessToken: string | undefined
-    private _roomInfo: Connect.RoomInfo | undefined
+    private _roomInfo: Connect.PB.RoomInfo | undefined
     // Activity is only set when the room represents one
-    private _roomActivity: Connect.Activity | undefined
-    private _teachLessonContext: Connect.LessonContext | undefined
-    private _learnLessonContext: Connect.LessonContext | undefined
-    private _dimensionInfo: Connect.DimensionInfo | undefined
-    private _dimensionConnection: Connect.ConnectionInstance | undefined
+    private _roomActivity: Connect.PB.Activity | undefined
+    private _teachLessonContext: Connect.PB.LessonContext | undefined
+    private _learnLessonContext: Connect.PB.LessonContext | undefined
+    private _dimensionInfo: Connect.PB.DimensionInfo | undefined
+    private _dimensionConnection: Connect.PB.ConnectionInstance | undefined
     private _dimensionId: string = ""
-    private _dimensionAuth: Connect.Authorization | undefined = undefined
+    private _dimensionAuth: Connect.PB.Authorization | undefined = undefined
     private _cachedClientId: string | undefined
 
     private _avnfsAltServers: string[] | undefined
@@ -156,8 +156,8 @@ class AVNBridge {
     }
 
     // Mutations trigger event `avn-dimension-status-changed`
-    private _lastDimensionStatus: Connect.DimensionStatus | undefined
-    get dimensionStatus() : Connect.DimensionStatus | undefined {
+    private _lastDimensionStatus: Connect.PB.DimensionStatus | undefined
+    get dimensionStatus() : Connect.PB.DimensionStatus | undefined {
         return this._lastDimensionStatus
     }
 
@@ -246,92 +246,92 @@ class AVNBridge {
         try {
             const healthCheckResult = await this.ConnectServices.Health.check({})
             console.debug(`AVN: health check result: ${healthCheckResult.status}`)
-            return healthCheckResult.status === Connect.HealthCheckResponse_ServingStatus.SERVING
+            return healthCheckResult.status === Connect.PB.HealthCheckResponse_ServingStatus.SERVING
         } catch (error: unknown) {
             console.error(`AVN: health check exception`, error)
         }
         return false
     }
 
-    public async getBrowsableChannels(): Promise<Connect.Channel[]> {
+    public async getBrowsableChannels(): Promise<Connect.PB.Channel[]> {
         const result = await this.ConnectServices.Channels.getBrowsableChannels({ auth: this._dimensionAuth })
         return result.results
     }
 
-    public async getProfilesForChannel(channelId: number): Promise<Connect.Profile[]> {
+    public async getProfilesForChannel(channelId: number): Promise<Connect.PB.Profile[]> {
         const result = await this.ConnectServices.Channels.getProfiles({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId],
             tagFilters: [ 
-                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
 
-    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.Activity[]> {
+    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.PB.Activity[]> {
         const result = await this.ConnectServices.Channels.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId], 
             textSearch: searchText ? { text: searchText } : undefined,
             tagFilters: [ 
-                { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
-                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
-            iconSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 256 }),
-            previewSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 512 }),
+            iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
+            previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
         })
         return result.results
     }
 
-    public async getCategoriesForProfile(profileId: number): Promise<Connect.Category[]> {
+    public async getCategoriesForProfile(profileId: number): Promise<Connect.PB.Category[]> {
         const result = await this.ConnectServices.Profiles.getCategories({ 
             auth: this._dimensionAuth, 
             entityIds: [profileId], 
             tagFilters: [ 
-                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
     }
 
-    public async getActivitiesForProfile(profileId: number): Promise<Connect.Activity[]> {
+    public async getActivitiesForProfile(profileId: number): Promise<Connect.PB.Activity[]> {
         const result = await this.ConnectServices.Profiles.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [profileId],
             tagFilters: [ 
-                { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
-                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
-            iconSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 256 }),
-            previewSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 512 }),
+            iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
+            previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
         })
         return result.results
     }
 
-    public async getActivitiesForCategory(categoryId: number): Promise<Connect.Activity[]> {
+    public async getActivitiesForCategory(categoryId: number): Promise<Connect.PB.Activity[]> {
         const result = await this.ConnectServices.Categories.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [categoryId],
             tagFilters: [ 
-                { condition: Connect.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
-                { condition: Connect.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
             orderBy: [
-                { property: Connect.EntityProperty.NAME, sortOrder: Connect.SortOrder.ASC },
+                { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
-            iconSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 256 }),
-            previewSpec: new Connect.TranscodeImageSpec({ maxSizePixels: 512 }),
+            iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
+            previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
         })
         return result.results
     }
 
-    public async getPass(passId: string): Promise<Connect.Pass | undefined> {
+    public async getPass(passId: string): Promise<Connect.PB.Pass | undefined> {
         try {
             const getPassResult = await this.ConnectServices.Passes.getPass({ passId })
             return getPassResult.result
@@ -342,15 +342,15 @@ class AVNBridge {
     }
 
     public async createNewDimension(passId: string | undefined): Promise<boolean> {
-        const auth = this._accessToken ? new Connect.Authorization({ userJwt: this._accessToken }) : undefined
+        const auth = this._accessToken ? new Connect.PB.Authorization({ userJwt: this._accessToken }) : undefined
         const createDimensionResult = await this.ConnectServices.Dimensions.createDimension({
-            client: new Connect.ClientCredentials({ clientId: await this.getClientId() }),
+            client: new Connect.PB.ClientCredentials({ clientId: await this.getClientId() }),
             auth,
             preferredDomain: PreferredDomain,
             passId,
         })
         this._dimensionId = createDimensionResult.dimensionId
-        this._dimensionAuth = new Connect.Authorization({ dimensionId: this._dimensionId })
+        this._dimensionAuth = new Connect.PB.Authorization({ dimensionId: this._dimensionId })
         return true
     }
 
@@ -358,7 +358,7 @@ class AVNBridge {
         try {
             const getRoomDimensionResult = await this.ConnectServices.Rooms.getRoomDimension({ roomId })
             this._dimensionId = getRoomDimensionResult.dimensionId
-            this._dimensionAuth = new Connect.Authorization({ dimensionId: this._dimensionId })
+            this._dimensionAuth = new Connect.PB.Authorization({ dimensionId: this._dimensionId })
             console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
             return true
         } catch {
@@ -367,11 +367,11 @@ class AVNBridge {
         return false
     }
 
-    async getUserOrganizationMembership(): Promise<Connect.OrganizationMembership[]> {
+    async getUserOrganizationMembership(): Promise<Connect.PB.OrganizationMembership[]> {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ credentials })
+            const auth = new Connect.PB.Authorization({ credentials })
             const result = await this.ConnectServices.Users.getOrganizationMembership({ auth, userId })
             return result.memberships
         } else {
@@ -380,19 +380,19 @@ class AVNBridge {
         return []
     }
 
-    async getOrganization(organizationId: number): Promise<Connect.Organization> {
+    async getOrganization(organizationId: number): Promise<Connect.PB.Organization> {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ credentials })
+            const auth = new Connect.PB.Authorization({ credentials })
             return await this.ConnectServices.Organizations.getOrganization({ auth, entityId: organizationId })
         } else {
             throw new Error(`Not authenticated to get organization`)
         }
     }
 
-    public async getUserOrganizations(): Promise<{organization: Connect.Organization, role: Connect.Role}[]> {
-        const result = new Array<{organization: Connect.Organization, role: Connect.Role}>()
+    public async getUserOrganizations(): Promise<{organization: Connect.PB.Organization, role: Connect.PB.Role}[]> {
+        const result = new Array<{organization: Connect.PB.Organization, role: Connect.PB.Role}>()
         const userOrgRoles = await this.getUserOrganizationMembership()
         for(let userOrgRole of userOrgRoles) {
             const role = await this.getRole(userOrgRole.roleId)
@@ -403,11 +403,11 @@ class AVNBridge {
     }
 
     // Roles are expect to remain fixed
-    private _roleMap: Map<number, Connect.Role> | undefined
-    async getRole(roleId: number): Promise<Connect.Role> {
+    private _roleMap: Map<number, Connect.PB.Role> | undefined
+    async getRole(roleId: number): Promise<Connect.PB.Role> {
         if(!this._roleMap) {
             const result = await this.ConnectServices.Roles.getRoles({})            
-            this._roleMap = new Map<number, Connect.Role>()
+            this._roleMap = new Map<number, Connect.PB.Role>()
             for(let role of result.roles) {
                 this._roleMap.set(role.roleId, role)
             }
@@ -419,7 +419,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ credentials })
+            const auth = new Connect.PB.Authorization({ credentials })
             await this.ConnectServices.Organizations.joinOrganization({ auth, joinCode })
         } else {
             throw new Error(`Not authenticated to join organization`)
@@ -430,12 +430,12 @@ class AVNBridge {
         return true//![""].includes(planCode)
     }
 
-    public async getUserLicenses(): Promise<{licenseId: string, organization: Connect.Organization | undefined, expires: Date, planCodes: string[]}[]> {
-        const result = new Array<{licenseId: string, expires: Date, organization: Connect.Organization | undefined, planCodes: string[]}>()
+    public async getUserLicenses(): Promise<{licenseId: string, organization: Connect.PB.Organization | undefined, expires: Date, planCodes: string[]}[]> {
+        const result = new Array<{licenseId: string, expires: Date, organization: Connect.PB.Organization | undefined, planCodes: string[]}>()
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = new Connect.Authorization({ credentials })
+            const auth = new Connect.PB.Authorization({ credentials })
             const userLicenses = await this.ConnectServices.Licenses.getUserLicenses({auth})
             for(let userLicense of userLicenses.licenses) {
                 if(userLicense.licenseId && userLicense.expires) {
@@ -467,8 +467,8 @@ class AVNBridge {
 
     public async streamMessageHandler(
         abortController: AbortController,
-        dimensionStreamIterator: AsyncIterator<Connect.DimensionEvent, Connect.DimensionEvent>,
-        pendingMessage: IteratorResult<Connect.DimensionEvent, Connect.DimensionEvent> | undefined,
+        dimensionStreamIterator: AsyncIterator<Connect.PB.DimensionEvent, Connect.PB.DimensionEvent>,
+        pendingMessage: IteratorResult<Connect.PB.DimensionEvent, Connect.PB.DimensionEvent> | undefined,
     ): Promise<void> {
         try {
             console.debug("AVN: message streaming handler begin")
@@ -485,7 +485,7 @@ class AVNBridge {
                         global.dispatchEvent(new Event("avn-dimension-status-changed"))
                     }
                     // CLOSE or OPEN is the only expected status after the initial OPEN
-                    if (value.status.state === Connect.OperationState.CLOSED) {
+                    if (value.status.state === Connect.PB.OperationState.CLOSED) {
                         console.log(`Dimension was closed with reason '${value.status.detail}'`)
                         // The fake close might be cancelled if the session reopens
                         clearInterval(this._closeSceneTimeout)
@@ -494,7 +494,7 @@ class AVNBridge {
                             // @ts-ignore
                             document.querySelector("a-scene")?.emit("hub_closed")
                         }, 15000)
-                    } else if(value.status.state !== Connect.OperationState.OPEN) {
+                    } else if(value.status.state !== Connect.PB.OperationState.OPEN) {
                         console.warn(`Unexpected dimension state change '${value.status.state}'`)
                     }
                 }
@@ -553,7 +553,7 @@ class AVNBridge {
     async rejoinDimension(): Promise<void> {
         console.log("AVN: rejoining dimension...")
         const result = await this.joinDimension()
-        if (result === Connect.OperationState.OPEN) {
+        if (result === Connect.PB.OperationState.OPEN) {
             this._dimensionRejoinTimeout = 1000
         } else {
             // Try again with an exponential backoff
@@ -573,18 +573,18 @@ class AVNBridge {
         }
     }
 
-    public async joinDimension(): Promise<Connect.OperationState> {
+    public async joinDimension(): Promise<Connect.PB.OperationState> {
         try {
             if (!this.dimensionId) {
                 console.error("No dimension ID has been set")
-                return Connect.OperationState.UNSPECIFIED
+                return Connect.PB.OperationState.UNSPECIFIED
             }
             await this.abortStreamIfActive()
             const abortController = new AbortController()
-            const auth = this._accessToken ? new Connect.Authorization({ userJwt: this._accessToken }) : undefined
+            const auth = this._accessToken ? new Connect.PB.Authorization({ userJwt: this._accessToken }) : undefined
             console.info(`Joining dimension '${this.dimensionId}'...`)
             const dimensionStream = this.ConnectServices.Dimensions.joinDimension({
-                    client: new Connect.ClientCredentials({ clientId: await this.getClientId() }),
+                    client: new Connect.PB.ClientCredentials({ clientId: await this.getClientId() }),
                     auth,
                     dimensionId: this.dimensionId,
                 },
@@ -592,19 +592,19 @@ class AVNBridge {
             )
             console.info(`Connected to dimension '${this.dimensionId}'`)
             console.info(`Constructing stream iterator`)
-            const dimensionStreamIterator: AsyncIterator<Connect.DimensionEvent, Connect.DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
+            const dimensionStreamIterator: AsyncIterator<Connect.PB.DimensionEvent, Connect.PB.DimensionEvent> = dimensionStream[Symbol.asyncIterator]()
             console.info(`Waiting for first message...`)
             const firstMessage = await dimensionStreamIterator.next()
             if (firstMessage.done) {
                 console.error(`AVN: dimension stream unexpectedly terminated`)
                 abortController.abort("STREAM_OPEN_FAILED")
-                return Connect.OperationState.UNSPECIFIED
+                return Connect.PB.OperationState.UNSPECIFIED
             }
             // First message must say that the dimension is OPEN
-            if (firstMessage.value.status === undefined || firstMessage.value.status.state !== Connect.OperationState.OPEN) {
+            if (firstMessage.value.status === undefined || firstMessage.value.status.state !== Connect.PB.OperationState.OPEN) {
                 console.error(`AVN: failed to join dimension '${this.dimensionId}'`, firstMessage.value)
                 abortController.abort("STREAM_STATE_UNEXPECTED")
-                return firstMessage.value.status?.state ?? Connect.OperationState.UNSPECIFIED
+                return firstMessage.value.status?.state ?? Connect.PB.OperationState.UNSPECIFIED
             }
             this._lastDimensionStatus = firstMessage.value.status
             global.dispatchEvent(new Event("avn-dimension-status-changed"))
@@ -616,11 +616,11 @@ class AVNBridge {
             // Start message loop
             this._streamMessageHandlerPromise = this.streamMessageHandler(abortController, dimensionStreamIterator, firstMessage)
 
-            return Connect.OperationState.OPEN
+            return Connect.PB.OperationState.OPEN
         } catch (error: unknown) {
             console.warn(`AVN: exception joining dimension: ${error instanceof Error ? error.message : "Unknown error"}`)
         }
-        return Connect.OperationState.UNSPECIFIED
+        return Connect.PB.OperationState.UNSPECIFIED
     }
 
     public async enterRoom(roomId: string, sessionId: string): Promise<void> {
@@ -647,7 +647,7 @@ class AVNBridge {
     // Guiding
 
     public async setLessonFocus(position: THREE.Vector3 | undefined): Promise<boolean> {
-        const newContext = new Connect.LessonContext({
+        const newContext = new Connect.PB.LessonContext({
             focus: {
                 roomId: this._roomInfo?.roomId,
                 assetId: this._roomInfo?.assetId,
@@ -663,7 +663,7 @@ class AVNBridge {
             dimensionId: this._dimensionId,
             context: newContext,
         })
-        if (result.state == Connect.OperationState.SUCCESS) {
+        if (result.state == Connect.PB.OperationState.SUCCESS) {
             this._teachLessonContext = newContext
             global.dispatchEvent(new Event("avn-allow-back-changed"))
             global.dispatchEvent(new Event("avn-allow-explore-changed"))
@@ -680,7 +680,7 @@ class AVNBridge {
             credentials: this._dimensionConnection?.credentials,
             dimensionId: this._dimensionId
         })
-        if (result.state == Connect.OperationState.SUCCESS) {
+        if (result.state == Connect.PB.OperationState.SUCCESS) {
             this._teachLessonContext = undefined
             global.dispatchEvent(new Event("avn-allow-back-changed"))
             global.dispatchEvent(new Event("avn-allow-explore-changed"))
@@ -730,7 +730,7 @@ class AVNBridge {
         return url.replace(this.dynamicAssetPrefix, `${this._assetDomain}/${this._dimensionId}`) + "#" + this._roomInfo?.assetId
     }
 
-    async fetchRoomInfoForUrl(url: string) : Promise<Connect.RoomInfo | undefined> {
+    async fetchRoomInfoForUrl(url: string) : Promise<Connect.PB.RoomInfo | undefined> {
         try {
             const openRoomResult = await this.ConnectServices.Rooms.openRoom({ dimensionId: this._dimensionId, url })
             return openRoomResult.roomInfo
@@ -743,13 +743,13 @@ class AVNBridge {
     // Media
 
     isAvnUrl(url: string) {        
-        return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(Connect.AvnfsUtils.UrlPrefix)
+        return url.startsWith(this.dynamicAssetPrefix) || url.startsWith(Connect.Avnfs.UrlPrefix)
     }
 
     async fetchMediaData(mediaUrl: string) {
         try {
-            if(mediaUrl.startsWith(Connect.AvnfsUtils.UrlPrefix)) {
-                const { mediaType } = Connect.AvnfsUtils.decodeUrl(new URL(mediaUrl))
+            if(mediaUrl.startsWith(Connect.Avnfs.UrlPrefix)) {
+                const { mediaType } = Connect.Avnfs.decodeUrl(new URL(mediaUrl))
                 return {
                     "origin": mediaUrl,
                     "meta": {
@@ -832,7 +832,7 @@ class AVNBridge {
     }
 
     // Record the last focus instruction that was processed to avoid repeat counting or reverting to previous rooms
-    private _lastProcessedFocus : Connect.LessonFocus | undefined
+    private _lastProcessedFocus : Connect.PB.LessonFocus | undefined
 
     // Process AVN events that should happen in system space    
     public tick(characterController: CharacterControllerSystem) {
@@ -878,7 +878,7 @@ class AVNBridge {
     //TODO: Add "data" parameter
     async recordAction(actionId: string, sourceId: string) : Promise<void> {
         try {
-            const client = new Connect.ClientCredentials({ clientId: await this.getClientId() })
+            const client = new Connect.PB.ClientCredentials({ clientId: await this.getClientId() })
             await this.ConnectServices.Clients.recordAction({ 
                 client, 
                 actionId, 

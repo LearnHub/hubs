@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Translation } from "./translations_pb.js";
+import { AndroidPackage } from "./packages_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.ActivityType
@@ -77,15 +78,23 @@ export declare class Activity extends Message<Activity> {
      */
     description?: Translation;
     /**
-     * @generated from field: repeated int32 tags = 7;
+     * @generated from field: optional avn.connect.v1.Translation instructions = 7;
+     */
+    instructions?: Translation;
+    /**
+     * @generated from field: string language_id = 8;
+     */
+    languageId: string;
+    /**
+     * @generated from field: repeated int32 tags = 9;
      */
     tags: number[];
     /**
-     * @generated from field: optional google.protobuf.Timestamp published = 8;
+     * @generated from field: optional google.protobuf.Timestamp published = 10;
      */
     published?: Timestamp;
     /**
-     * @generated from field: optional google.protobuf.Timestamp featured = 9;
+     * @generated from field: optional google.protobuf.Timestamp featured = 11;
      */
     featured?: Timestamp;
     /**
@@ -93,13 +102,13 @@ export declare class Activity extends Message<Activity> {
      */
     owner: {
         /**
-         * @generated from field: int32 organization_id = 10;
+         * @generated from field: int32 organization_id = 12;
          */
         value: number;
         case: "organizationId";
     } | {
         /**
-         * @generated from field: int32 user_id = 11;
+         * @generated from field: int32 user_id = 13;
          */
         value: number;
         case: "userId";
@@ -108,45 +117,51 @@ export declare class Activity extends Message<Activity> {
         value?: undefined;
     };
     /**
-     * @generated from field: bool deleted = 12;
+     * @generated from field: bool deleted = 14;
      */
     deleted: boolean;
     /**
-     * @generated from field: bool available = 13;
+     * @generated from field: bool available = 15;
      */
     available: boolean;
     /**
-     * @generated from field: string asset_id = 14;
+     * @generated from field: string asset_id = 16;
      */
     assetId: string;
     /**
-     * @generated from field: optional avn.connect.v1.Translation instructions = 15;
+     * @generated from field: optional string context = 17;
      */
-    instructions?: Translation;
+    context?: string;
     /**
-     * @generated from field: optional string credit = 16;
-     */
-    credit?: string;
-    /**
-     * @generated from field: repeated string screenshot_urls = 17;
+     * @generated from field: repeated string screenshot_urls = 18;
      */
     screenshotUrls: string[];
     /**
-     * @generated from field: avn.connect.v1.ActivityType type = 18;
+     * @generated from field: optional int64 size_bytes = 19;
+     */
+    sizeBytes?: bigint;
+    /**
+     * @generated from field: avn.connect.v1.ActivityType type = 20;
      */
     type: ActivityType;
     /**
-     * Set ACTIVITY_TYPE_URL types
+     * ACTIVITY_TYPE_URL properties
      *
-     * @generated from field: optional string url = 20;
+     * @generated from field: optional string url = 31;
      */
     url?: string;
     /**
-     * Set ACTIVITY_TYPE_FILE types
+     * ACTIVITY_TYPE_FILE properties
      *
-     * @generated from field: repeated string file_urls = 30;
+     * @generated from field: repeated string file_urls = 32;
      */
     fileUrls: string[];
+    /**
+     * ACTIVITY_TYPE_APP properties
+     *
+     * @generated from field: repeated avn.connect.v1.AndroidPackage android_packages = 33;
+     */
+    androidPackages: AndroidPackage[];
     constructor(data?: PartialMessage<Activity>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Activity";

@@ -79,9 +79,9 @@ export declare enum EntityProperty {
      */
     INSTRUCTIONS = 9,
     /**
-     * @generated from enum value: ENTITY_PROPERTY_CREDIT = 10;
+     * @generated from enum value: ENTITY_PROPERTY_CONTEXT = 10;
      */
-    CREDIT = 10,
+    CONTEXT = 10,
     /**
      * @generated from enum value: ENTITY_PROPERTY_ASSET_ID = 11;
      */
@@ -207,15 +207,15 @@ export declare class EntityInfo extends Message<EntityInfo> {
      */
     assetId?: string;
     /**
-     * @generated from field: optional int64 sizeBytes = 22;
+     * @generated from field: optional int64 size_bytes = 22;
      */
     sizeBytes?: bigint;
     /**
-     * @generated from field: optional int32 itemCount = 30;
+     * @generated from field: optional int32 item_count = 30;
      */
     itemCount?: number;
     /**
-     * @generated from field: optional int32 trackCount = 31;
+     * @generated from field: optional int32 track_count = 31;
      */
     trackCount?: number;
     constructor(data?: PartialMessage<EntityInfo>);
@@ -240,7 +240,7 @@ export declare class GetEntityRequest extends Message<GetEntityRequest> {
      */
     entityId: number;
     /**
-     * Override to the user agent language
+     * Override to the user agent language (an empty string signifies no translation should be made)
      *
      * @generated from field: optional string language_id = 3;
      */

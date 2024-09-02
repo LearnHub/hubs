@@ -1,4 +1,4 @@
-import { HashBase } from "./HashBase";
+import { HashBase } from "./hash-base";
 export declare class Sha256 extends HashBase {
     constructor();
     private _w;

@@ -128,3 +128,24 @@ export declare class MatchActivityResponse extends Message<MatchActivityResponse
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MatchActivityResponse;
     static equals(a: MatchActivityResponse | PlainMessage<MatchActivityResponse> | undefined, b: MatchActivityResponse | PlainMessage<MatchActivityResponse> | undefined): boolean;
 }
+/**
+ * @generated from message avn.connect.v1.SubmitCommunityCategoryRequest
+ */
+export declare class SubmitCommunityCategoryRequest extends Message<SubmitCommunityCategoryRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: int32 entity_id = 2;
+     */
+    entityId: number;
+    constructor(data?: PartialMessage<SubmitCommunityCategoryRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.SubmitCommunityCategoryRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SubmitCommunityCategoryRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SubmitCommunityCategoryRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SubmitCommunityCategoryRequest;
+    static equals(a: SubmitCommunityCategoryRequest | PlainMessage<SubmitCommunityCategoryRequest> | undefined, b: SubmitCommunityCategoryRequest | PlainMessage<SubmitCommunityCategoryRequest> | undefined): boolean;
+}

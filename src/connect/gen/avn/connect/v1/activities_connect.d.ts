@@ -1,4 +1,4 @@
-import { CreateEntityResponse, DeleteEntityRequest, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
+import { CopyEntityRequest, CreateEntityResponse, DeleteEntityRequest, EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
 import { Activity, AddActivityFilesRequest, CreateActivityRequest, RemoveActivityFilesRequest } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 import { AddTagsRequest, RemoveTagsRequest } from "./tags_pb.js";
@@ -33,6 +33,37 @@ export declare const ActivityService: {
             readonly name: "DeleteActivity";
             readonly I: typeof DeleteEntityRequest;
             readonly O: typeof Empty;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ActivityService.CopyActivity
+         */
+        readonly copyActivity: {
+            readonly name: "CopyActivity";
+            readonly I: typeof CopyEntityRequest;
+            readonly O: typeof CreateEntityResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Get organization activities
+         *
+         * @generated from rpc avn.connect.v1.ActivityService.GetOrganizationActivities
+         */
+        readonly getOrganizationActivities: {
+            readonly name: "GetOrganizationActivities";
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Get user activities
+         *
+         * @generated from rpc avn.connect.v1.ActivityService.GetUserActivities
+         */
+        readonly getUserActivities: {
+            readonly name: "GetUserActivities";
+            readonly I: typeof EntityInfoListRequest;
+            readonly O: typeof EntityInfoListResponse;
             readonly kind: MethodKind.Unary;
         };
         /**

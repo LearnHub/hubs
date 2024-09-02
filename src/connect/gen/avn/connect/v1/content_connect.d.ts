@@ -1,5 +1,5 @@
-import { MatchActivityFromCloudRequest, MatchActivityFromFilesRequest, MatchActivityFromUrlRequest, MatchActivityResponse } from "./content_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { MatchActivityFromCloudRequest, MatchActivityFromFilesRequest, MatchActivityFromUrlRequest, MatchActivityResponse, SubmitCommunityCategoryRequest } from "./content_pb.js";
+import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ContentService
  */
@@ -37,6 +37,17 @@ export declare const ContentService: {
             readonly name: "MatchActivityFromUrl";
             readonly I: typeof MatchActivityFromUrlRequest;
             readonly O: typeof MatchActivityResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * User submissions for community library
+         *
+         * @generated from rpc avn.connect.v1.ContentService.SubmitCommunityCategory
+         */
+        readonly submitCommunityCategory: {
+            readonly name: "SubmitCommunityCategory";
+            readonly I: typeof SubmitCommunityCategoryRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };
