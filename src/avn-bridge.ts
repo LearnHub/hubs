@@ -25,6 +25,12 @@ const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
 
 const LocalDevMode = isLocalClient()
 
+// Feature overrides
+const SearchParams = new URLSearchParams(window.location.search)
+const showNavbar = (SearchParams.get("showNavbar") || "true") === "true"
+const showSidebar = (SearchParams.get("showSidebar") || "true") === "true"
+const showRoomEntryFlow = (SearchParams.get("showRoomEntryFlow") || "true") === "true"
+
 class AVNBridge {
 
     private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
@@ -49,6 +55,7 @@ class AVNBridge {
     // Markdown utility renderer
     public MD : markdownit
 
+        
     constructor() {
         // Async init
         this.initServiceWorker()
@@ -500,6 +507,12 @@ class AVNBridge {
                 }
                 if(value.connection) {
                     this._dimensionConnection = value.connection
+                    if(this._dimensionConnection.features) {
+                        this._dimensionConnection.features.showNavbar &&= showNavbar
+                        this._dimensionConnection.features.showSidebar &&= showSidebar
+                        this._dimensionConnection.features.showRoomEntryFlow &&= showRoomEntryFlow
+                    }
+                    
                     console.info(`AVN: update dimension connection`, value.connection)
                     global.dispatchEvent(new Event("avn-dimension-connection-changed"))
                     global.dispatchEvent(new Event("avn-allow-back-changed"))
