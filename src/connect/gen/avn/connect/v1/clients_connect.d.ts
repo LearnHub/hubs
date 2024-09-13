@@ -1,4 +1,4 @@
-import { CreateClientCredentialsRequest, CreateClientCredentialsResponse, GetLighthouseServersRequest, GetLighthouseServersResponse, RecordActionRequest, RecordActionResponse, RegisterLighthouseServerRequest, RegisterLighthouseServerResponse } from "./clients_pb.js";
+import { CreateClientCredentialsRequest, CreateClientCredentialsResponse, GetLighthouseServersRequest, GetLighthouseServersResponse, RecordActionRequest, RecordActionResponse, RecordFeedbackRequest, RecordFeedbackResponse, RegisterLighthouseServerRequest, RegisterLighthouseServerResponse } from "./clients_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ClientService
@@ -28,6 +28,17 @@ export declare const ClientService: {
             readonly name: "RecordAction";
             readonly I: typeof RecordActionRequest;
             readonly O: typeof RecordActionResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Record user feedback
+         *
+         * @generated from rpc avn.connect.v1.ClientService.RecordFeedback
+         */
+        readonly recordFeedback: {
+            readonly name: "RecordFeedback";
+            readonly I: typeof RecordFeedbackRequest;
+            readonly O: typeof RecordFeedbackResponse;
             readonly kind: MethodKind.Unary;
         };
         /**

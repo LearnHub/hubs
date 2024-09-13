@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { OperationState } from "./operations_pb.js";
 /**
  * Video stream types
  *
@@ -39,39 +40,6 @@ export declare enum MediaStreamType {
      * @generated from enum value: MEDIA_STREAM_TYPE_NB = 7;
      */
     NB = 7
-}
-/**
- * @generated from enum avn.connect.v1.MediaTranscodeState
- */
-export declare enum MediaTranscodeState {
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_UNSPECIFIED = 0;
-     */
-    UNSPECIFIED = 0,
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_QUEUED = 1;
-     */
-    QUEUED = 1,
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_TRANSCODING = 2;
-     */
-    TRANSCODING = 2,
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_TRANSFERRING = 3;
-     */
-    TRANSFERRING = 3,
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_COMPLETE = 4;
-     */
-    COMPLETE = 4,
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_ERROR = 5;
-     */
-    ERROR = 5,
-    /**
-     * @generated from enum value: MEDIA_TRANSCODE_STATE_CANCELED = 6;
-     */
-    CANCELED = 6
 }
 /**
  * @generated from enum avn.connect.v1.MediaCompatibilityArea
@@ -494,7 +462,9 @@ export declare class GetVideoMetadataResponse extends Message<GetVideoMetadataRe
  */
 export declare class TranscodeImageSpec extends Message<TranscodeImageSpec> {
     /**
-     * Maximum height or width in pixels: must be one of 8, 16, 32, 64, 128, 256, 512, 1024, or 2048
+     * Maximum height or width in pixels
+     * Must be one of 8, 16, 32, 64, 128, 256, 512, 1024, or 2048
+     * -1 indicates that the original image should be returned
      *
      * @generated from field: int32 max_size_pixels = 1;
      */
@@ -722,9 +692,9 @@ export declare class TranscodeVideoResponse extends Message<TranscodeVideoRespon
     /**
      * State of the transcoding process
      *
-     * @generated from field: avn.connect.v1.MediaTranscodeState state = 1;
+     * @generated from field: avn.connect.v1.OperationState state = 1;
      */
-    state: MediaTranscodeState;
+    state: OperationState;
     /**
      * Set once the job has finished regardless of outcome
      *

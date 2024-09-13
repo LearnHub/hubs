@@ -69,3 +69,5 @@ export * from "./gen/avn/connect/v1/media_pb.js";
 export * from "./gen/avn/connect/v1/content_connect.js";
 export * from "./gen/avn/connect/v1/content_pb.js";
 export * from "./gen/avn/connect/v1/packages_pb.js";
+export * from "./gen/avn/connect/v1/blockade_connect.js";
+export * from "./gen/avn/connect/v1/blockade_pb.js";

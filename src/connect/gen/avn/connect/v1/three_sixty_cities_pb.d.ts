@@ -30,11 +30,11 @@ export declare class SearchImagesRequest extends Message<SearchImagesRequest> {
      */
     languageId?: string;
     /**
-     * @generated from field: avn.connect.v1.TranscodeImageSpec icon_spec = 6;
+     * @generated from field: optional avn.connect.v1.TranscodeImageSpec icon_spec = 6;
      */
     iconSpec?: TranscodeImageSpec;
     /**
-     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 7;
+     * @generated from field: optional avn.connect.v1.TranscodeImageSpec preview_spec = 7;
      */
     previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<SearchImagesRequest>);

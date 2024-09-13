@@ -73,3 +73,22 @@ export declare class Authorization extends Message<Authorization> {
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Authorization;
     static equals(a: Authorization | PlainMessage<Authorization> | undefined, b: Authorization | PlainMessage<Authorization> | undefined): boolean;
 }
+/**
+ * Utility message for services that only required authorization
+ *
+ * @generated from message avn.connect.v1.AuthOnlyRequest
+ */
+export declare class AuthOnlyRequest extends Message<AuthOnlyRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    constructor(data?: PartialMessage<AuthOnlyRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.AuthOnlyRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthOnlyRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AuthOnlyRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AuthOnlyRequest;
+    static equals(a: AuthOnlyRequest | PlainMessage<AuthOnlyRequest> | undefined, b: AuthOnlyRequest | PlainMessage<AuthOnlyRequest> | undefined): boolean;
+}

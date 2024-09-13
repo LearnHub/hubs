@@ -1,4 +1,4 @@
-import { CopyEntityRequest, CreateEntityResponse, DeleteEntityRequest, EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
+import { CopyEntityRequest, CreateEntityResponse, DeleteEntityRequest, EntityInfoListRequest, EntityInfoListResponse, GetEntityRequest, GetMetadataResponse, MetadataRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
 import { Activity, AddActivityFilesRequest, CreateActivityRequest, RemoveActivityFilesRequest } from "./activities_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 import { AddTagsRequest, RemoveTagsRequest } from "./tags_pb.js";
@@ -103,6 +103,26 @@ export declare const ActivityService: {
         readonly removeTags: {
             readonly name: "RemoveTags";
             readonly I: typeof RemoveTagsRequest;
+            readonly O: typeof Empty;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Key-value pair metadata per activity
+         *
+         * @generated from rpc avn.connect.v1.ActivityService.GetMetadata
+         */
+        readonly getMetadata: {
+            readonly name: "GetMetadata";
+            readonly I: typeof MetadataRequest;
+            readonly O: typeof GetMetadataResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.ActivityService.SetMetadata
+         */
+        readonly setMetadata: {
+            readonly name: "SetMetadata";
+            readonly I: typeof MetadataRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };

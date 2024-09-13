@@ -1,5 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Struct, Timestamp } from "@bufbuild/protobuf";
+import { Authorization } from "./authorization_pb.js";
 import { EntityPropertyState } from "./entities_pb.js";
 /**
  * @generated from message avn.connect.v1.ClientCredentials
@@ -48,6 +49,12 @@ export declare class RecordActionRequest extends Message<RecordActionRequest> {
      * @generated from field: optional google.protobuf.Struct data = 4;
      */
     data?: Struct;
+    /**
+     * Optional authorization info to provide context and permission
+     *
+     * @generated from field: optional avn.connect.v1.Authorization auth = 5;
+     */
+    auth?: Authorization;
     constructor(data?: PartialMessage<RecordActionRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RecordActionRequest";
@@ -69,6 +76,60 @@ export declare class RecordActionResponse extends Message<RecordActionResponse> 
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordActionResponse;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordActionResponse;
     static equals(a: RecordActionResponse | PlainMessage<RecordActionResponse> | undefined, b: RecordActionResponse | PlainMessage<RecordActionResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.RecordFeedbackRequest
+ */
+export declare class RecordFeedbackRequest extends Message<RecordFeedbackRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * The feedback identifier
+     *
+     * @generated from field: string feedback_id = 2;
+     */
+    feedbackId: string;
+    /**
+     * The primary feedback reason ID
+     *
+     * @generated from field: string feedback_reason = 3;
+     */
+    feedbackReason: string;
+    /**
+     * Freeform details supplied by the user
+     *
+     * @generated from field: optional string feedback_detail = 4;
+     */
+    feedbackDetail?: string;
+    /**
+     * Optional extra structured data
+     *
+     * @generated from field: optional google.protobuf.Struct data = 5;
+     */
+    data?: Struct;
+    constructor(data?: PartialMessage<RecordFeedbackRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.RecordFeedbackRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RecordFeedbackRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordFeedbackRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordFeedbackRequest;
+    static equals(a: RecordFeedbackRequest | PlainMessage<RecordFeedbackRequest> | undefined, b: RecordFeedbackRequest | PlainMessage<RecordFeedbackRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.RecordFeedbackResponse
+ */
+export declare class RecordFeedbackResponse extends Message<RecordFeedbackResponse> {
+    constructor(data?: PartialMessage<RecordFeedbackResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.RecordFeedbackResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RecordFeedbackResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordFeedbackResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordFeedbackResponse;
+    static equals(a: RecordFeedbackResponse | PlainMessage<RecordFeedbackResponse> | undefined, b: RecordFeedbackResponse | PlainMessage<RecordFeedbackResponse> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.CreateClientCredentialsRequest

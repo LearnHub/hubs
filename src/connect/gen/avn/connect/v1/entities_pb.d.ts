@@ -246,11 +246,11 @@ export declare class GetEntityRequest extends Message<GetEntityRequest> {
      */
     languageId?: string;
     /**
-     * @generated from field: avn.connect.v1.TranscodeImageSpec icon_spec = 4;
+     * @generated from field: optional avn.connect.v1.TranscodeImageSpec icon_spec = 4;
      */
     iconSpec?: TranscodeImageSpec;
     /**
-     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 5;
+     * @generated from field: optional avn.connect.v1.TranscodeImageSpec preview_spec = 5;
      */
     previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<GetEntityRequest>);
@@ -407,11 +407,11 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     pageToken?: string;
     /**
-     * @generated from field: avn.connect.v1.TranscodeImageSpec icon_spec = 10;
+     * @generated from field: optional avn.connect.v1.TranscodeImageSpec icon_spec = 10;
      */
     iconSpec?: TranscodeImageSpec;
     /**
-     * @generated from field: avn.connect.v1.TranscodeImageSpec preview_spec = 11;
+     * @generated from field: optional avn.connect.v1.TranscodeImageSpec preview_spec = 11;
      */
     previewSpec?: TranscodeImageSpec;
     constructor(data?: PartialMessage<EntityInfoListRequest>);
@@ -499,6 +499,69 @@ export declare class RemoveChildrenRequest extends Message<RemoveChildrenRequest
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RemoveChildrenRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RemoveChildrenRequest;
     static equals(a: RemoveChildrenRequest | PlainMessage<RemoveChildrenRequest> | undefined, b: RemoveChildrenRequest | PlainMessage<RemoveChildrenRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.EntityMetadata
+ */
+export declare class EntityMetadata extends Message<EntityMetadata> {
+    /**
+     * @generated from field: int32 entity_id = 1;
+     */
+    entityId: number;
+    /**
+     * @generated from field: string key = 2;
+     */
+    key: string;
+    /**
+     * @generated from field: optional string value = 3;
+     */
+    value?: string;
+    constructor(data?: PartialMessage<EntityMetadata>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.EntityMetadata";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EntityMetadata;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): EntityMetadata;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): EntityMetadata;
+    static equals(a: EntityMetadata | PlainMessage<EntityMetadata> | undefined, b: EntityMetadata | PlainMessage<EntityMetadata> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.MetadataRequest
+ */
+export declare class MetadataRequest extends Message<MetadataRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: avn.connect.v1.EntityMetadata metadata = 2;
+     */
+    metadata?: EntityMetadata;
+    constructor(data?: PartialMessage<MetadataRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.MetadataRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MetadataRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MetadataRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MetadataRequest;
+    static equals(a: MetadataRequest | PlainMessage<MetadataRequest> | undefined, b: MetadataRequest | PlainMessage<MetadataRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetMetadataResponse
+ */
+export declare class GetMetadataResponse extends Message<GetMetadataResponse> {
+    /**
+     * @generated from field: repeated avn.connect.v1.EntityMetadata results = 1;
+     */
+    results: EntityMetadata[];
+    constructor(data?: PartialMessage<GetMetadataResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.GetMetadataResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMetadataResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMetadataResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMetadataResponse;
+    static equals(a: GetMetadataResponse | PlainMessage<GetMetadataResponse> | undefined, b: GetMetadataResponse | PlainMessage<GetMetadataResponse> | undefined): boolean;
 }
 /**
  * Generic pattern for entity property setting

@@ -6,6 +6,7 @@ export declare const DuplicateUploadEventType = "duplicate";
 export declare const TypeQueryParam = "type";
 export declare const SizeQueryParam = "size";
 export declare const NameQueryParam = "name";
+export declare const MaxSinglePartUploadSizeBytes = 5368709120;
 export type FileSpec = {
     hash: string;
     sizeBytes: number;
