@@ -173,40 +173,6 @@ export declare class EnterRoomResponse extends Message<EnterRoomResponse> {
     static equals(a: EnterRoomResponse | PlainMessage<EnterRoomResponse> | undefined, b: EnterRoomResponse | PlainMessage<EnterRoomResponse> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.GetRoomDimensionRequest
- */
-export declare class GetRoomDimensionRequest extends Message<GetRoomDimensionRequest> {
-    /**
-     * @generated from field: string room_id = 1;
-     */
-    roomId: string;
-    constructor(data?: PartialMessage<GetRoomDimensionRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.GetRoomDimensionRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomDimensionRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetRoomDimensionRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetRoomDimensionRequest;
-    static equals(a: GetRoomDimensionRequest | PlainMessage<GetRoomDimensionRequest> | undefined, b: GetRoomDimensionRequest | PlainMessage<GetRoomDimensionRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.GetRoomDimensionResponse
- */
-export declare class GetRoomDimensionResponse extends Message<GetRoomDimensionResponse> {
-    /**
-     * @generated from field: string dimension_id = 1;
-     */
-    dimensionId: string;
-    constructor(data?: PartialMessage<GetRoomDimensionResponse>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.GetRoomDimensionResponse";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetRoomDimensionResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetRoomDimensionResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetRoomDimensionResponse;
-    static equals(a: GetRoomDimensionResponse | PlainMessage<GetRoomDimensionResponse> | undefined, b: GetRoomDimensionResponse | PlainMessage<GetRoomDimensionResponse> | undefined): boolean;
-}
-/**
  * @generated from message avn.connect.v1.ResolveMediaRequest
  */
 export declare class ResolveMediaRequest extends Message<ResolveMediaRequest> {

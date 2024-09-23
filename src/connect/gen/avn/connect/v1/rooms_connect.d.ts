@@ -1,4 +1,4 @@
-import { EnterRoomRequest, EnterRoomResponse, GetRoomDimensionRequest, GetRoomDimensionResponse, GetRoomRequest, GetRoomResponse, OpenRoomRequest, OpenRoomResponse, ResolveMediaRequest, ResolveMediaResponse } from "./rooms_pb.js";
+import { EnterRoomRequest, EnterRoomResponse, GetRoomRequest, GetRoomResponse, OpenRoomRequest, OpenRoomResponse, ResolveMediaRequest, ResolveMediaResponse } from "./rooms_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.RoomService
@@ -26,15 +26,6 @@ export declare const RoomService: {
             readonly name: "OpenRoom";
             readonly I: typeof OpenRoomRequest;
             readonly O: typeof OpenRoomResponse;
-            readonly kind: MethodKind.Unary;
-        };
-        /**
-         * @generated from rpc avn.connect.v1.RoomService.GetRoomDimension
-         */
-        readonly getRoomDimension: {
-            readonly name: "GetRoomDimension";
-            readonly I: typeof GetRoomDimensionRequest;
-            readonly O: typeof GetRoomDimensionResponse;
             readonly kind: MethodKind.Unary;
         };
         /**

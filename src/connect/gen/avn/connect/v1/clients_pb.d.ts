@@ -44,6 +44,12 @@ export declare class RecordActionRequest extends Message<RecordActionRequest> {
      */
     sourceId: string;
     /**
+     * The hosting platform, typically the web page hostname
+     *
+     * @generated from field: string host_id = 6;
+     */
+    hostId: string;
+    /**
      * Optional extra data associated with the action
      *
      * @generated from field: optional google.protobuf.Struct data = 4;
@@ -63,19 +69,6 @@ export declare class RecordActionRequest extends Message<RecordActionRequest> {
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordActionRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordActionRequest;
     static equals(a: RecordActionRequest | PlainMessage<RecordActionRequest> | undefined, b: RecordActionRequest | PlainMessage<RecordActionRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.RecordActionResponse
- */
-export declare class RecordActionResponse extends Message<RecordActionResponse> {
-    constructor(data?: PartialMessage<RecordActionResponse>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.RecordActionResponse";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RecordActionResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordActionResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordActionResponse;
-    static equals(a: RecordActionResponse | PlainMessage<RecordActionResponse> | undefined, b: RecordActionResponse | PlainMessage<RecordActionResponse> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.RecordFeedbackRequest
@@ -117,19 +110,6 @@ export declare class RecordFeedbackRequest extends Message<RecordFeedbackRequest
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordFeedbackRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordFeedbackRequest;
     static equals(a: RecordFeedbackRequest | PlainMessage<RecordFeedbackRequest> | undefined, b: RecordFeedbackRequest | PlainMessage<RecordFeedbackRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.RecordFeedbackResponse
- */
-export declare class RecordFeedbackResponse extends Message<RecordFeedbackResponse> {
-    constructor(data?: PartialMessage<RecordFeedbackResponse>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.RecordFeedbackResponse";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RecordFeedbackResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RecordFeedbackResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RecordFeedbackResponse;
-    static equals(a: RecordFeedbackResponse | PlainMessage<RecordFeedbackResponse> | undefined, b: RecordFeedbackResponse | PlainMessage<RecordFeedbackResponse> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.CreateClientCredentialsRequest

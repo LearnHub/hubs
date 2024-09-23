@@ -1,5 +1,5 @@
-import { CreateClientCredentialsRequest, CreateClientCredentialsResponse, GetLighthouseServersRequest, GetLighthouseServersResponse, RecordActionRequest, RecordActionResponse, RecordFeedbackRequest, RecordFeedbackResponse, RegisterLighthouseServerRequest, RegisterLighthouseServerResponse } from "./clients_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { CreateClientCredentialsRequest, CreateClientCredentialsResponse, GetLighthouseServersRequest, GetLighthouseServersResponse, RecordActionRequest, RecordFeedbackRequest, RegisterLighthouseServerRequest, RegisterLighthouseServerResponse } from "./clients_pb.js";
+import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.ClientService
  */
@@ -18,16 +18,12 @@ export declare const ClientService: {
         /**
          * Record arbitrary actions that might not be captured in other data flows
          *
-         * TODO
-         * rpc RecordPlatform(RecordPlatformRequest) returns (RecordPlatformResponse);
-         * rpc RecordStatistic(RecordStatisticRequest) returns (RecordStatisticResponse);
-         *
          * @generated from rpc avn.connect.v1.ClientService.RecordAction
          */
         readonly recordAction: {
             readonly name: "RecordAction";
             readonly I: typeof RecordActionRequest;
-            readonly O: typeof RecordActionResponse;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
         /**
@@ -38,7 +34,7 @@ export declare const ClientService: {
         readonly recordFeedback: {
             readonly name: "RecordFeedback";
             readonly I: typeof RecordFeedbackRequest;
-            readonly O: typeof RecordFeedbackResponse;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
         /**

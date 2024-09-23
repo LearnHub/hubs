@@ -363,8 +363,8 @@ class AVNBridge {
 
     public async setDimensionFromRoomId(roomId: string): Promise<boolean> {
         try {
-            const getRoomDimensionResult = await this.ConnectServices.Rooms.getRoomDimension({ roomId })
-            this._dimensionId = getRoomDimensionResult.dimensionId
+            const getRoomResult = await this.ConnectServices.Rooms.getRoom({ roomId })
+            this._dimensionId = getRoomResult.roomInfo.dimensionId
             this._dimensionAuth = new Connect.PB.Authorization({ dimensionId: this._dimensionId })
             console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
             return true
@@ -892,11 +892,7 @@ class AVNBridge {
     async recordAction(actionId: string, sourceId: string) : Promise<void> {
         try {
             const client = new Connect.PB.ClientCredentials({ clientId: await this.getClientId() })
-            await this.ConnectServices.Clients.recordAction({ 
-                client, 
-                actionId, 
-                sourceId,
-            })
+            await this.ConnectServices.Clients.recordAction({ client, actionId, sourceId, hostId: window.location.hostname })
         } catch (error: unknown) {
             throw new Error(`Error recording action '${actionId}' from '${sourceId}'`)
         }        

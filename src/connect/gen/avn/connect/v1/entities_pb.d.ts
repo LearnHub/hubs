@@ -133,7 +133,11 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_TRACK_COUNT = 23;
      */
-    TRACK_COUNT = 23
+    TRACK_COUNT = 23,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_TAGS = 24;
+     */
+    TAGS = 24
 }
 /**
  * Common info for channels, profiles, categories, and activities
