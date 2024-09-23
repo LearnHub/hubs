@@ -272,6 +272,7 @@ class AVNBridge {
             tagFilters: [ 
                 { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
             ],
+            orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
@@ -286,6 +287,7 @@ class AVNBridge {
                 { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
+            orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
             iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
             previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
@@ -300,6 +302,7 @@ class AVNBridge {
             tagFilters: [ 
                 { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
+            orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
         })
         return result.results
@@ -313,6 +316,7 @@ class AVNBridge {
                 { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
                 { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
             ],
+            orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
             iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
             previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
