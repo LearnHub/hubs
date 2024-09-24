@@ -358,6 +358,7 @@ class AVNBridge {
             client: new Connect.PB.ClientCredentials({ clientId: await this.getClientId() }),
             auth,
             preferredDomain: PreferredDomain,
+            referrer: window.location.hostname,
             passId,
         })
         this._dimensionId = createDimensionResult.dimensionId

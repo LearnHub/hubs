@@ -44,7 +44,7 @@ export declare class CreateDimensionRequest extends Message<CreateDimensionReque
      */
     auth?: Authorization;
     /**
-     * A hall pass to use for addtional licensing
+     * A hall pass to use for additional licensing
      *
      * @generated from field: optional string pass_id = 3;
      */
@@ -62,11 +62,11 @@ export declare class CreateDimensionRequest extends Message<CreateDimensionReque
      */
     referrer?: string;
     /**
-     * Additional channel organization IDs to license
+     * Narrow dimension license scope to a specific organization
      *
-     * @generated from field: repeated int32 additional_channels = 6;
+     * @generated from field: optional int32 context_organization_id = 6;
      */
-    additionalChannels: number[];
+    contextOrganizationId?: number;
     constructor(data?: PartialMessage<CreateDimensionRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.CreateDimensionRequest";
