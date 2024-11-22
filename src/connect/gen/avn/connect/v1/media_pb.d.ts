@@ -179,15 +179,15 @@ export declare class GetImageMetadataResponse extends Message<GetImageMetadataRe
     /**
      * Width
      *
-     * @generated from field: int32 width_pixels = 1;
+     * @generated from field: float width = 1;
      */
-    widthPixels: number;
+    width: number;
     /**
      * Height
      *
-     * @generated from field: int32 height_pixels = 2;
+     * @generated from field: float height = 2;
      */
-    heightPixels: number;
+    height: number;
     /**
      * Media type
      *
@@ -594,6 +594,12 @@ export declare class MediaFormatSpec extends Message<MediaFormatSpec> {
      * @generated from field: optional int64 target_bitrate_bits_per_second = 12;
      */
     targetBitrateBitsPerSecond?: bigint;
+    /**
+     * Target quality when transcoding
+     *
+     * @generated from field: optional int32 target_quality_percent = 15;
+     */
+    targetQualityPercent?: number;
     /**
      * Max number of audio channels
      *

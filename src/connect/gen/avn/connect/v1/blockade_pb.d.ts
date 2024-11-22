@@ -146,6 +146,12 @@ export declare class GenerateSkyboxRequest extends Message<GenerateSkyboxRequest
      * @generated from field: optional int32 seed = 8;
      */
     seed?: number;
+    /**
+     * License context to use independent of authorization
+     *
+     * @generated from field: int32 context_organization_id = 9;
+     */
+    contextOrganizationId: number;
     constructor(data?: PartialMessage<GenerateSkyboxRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GenerateSkyboxRequest";

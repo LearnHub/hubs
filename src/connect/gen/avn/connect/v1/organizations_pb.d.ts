@@ -151,6 +151,8 @@ export declare class Organization extends Message<Organization> {
     static equals(a: Organization | PlainMessage<Organization> | undefined, b: Organization | PlainMessage<Organization> | undefined): boolean;
 }
 /**
+ * Used for creating organizations
+ *
  * @generated from message avn.connect.v1.OrganizationSpec
  */
 export declare class OrganizationSpec extends Message<OrganizationSpec> {
@@ -182,6 +184,14 @@ export declare class OrganizationSpec extends Message<OrganizationSpec> {
      * @generated from field: string phone = 7;
      */
     phone: string;
+    /**
+     * @generated from field: int32 parent_id = 8;
+     */
+    parentId: number;
+    /**
+     * @generated from field: optional string owner_email = 9;
+     */
+    ownerEmail?: string;
     constructor(data?: PartialMessage<OrganizationSpec>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.OrganizationSpec";
