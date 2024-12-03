@@ -158,7 +158,6 @@
   "sign-in-modal.signin-message.pin": "只有登陆才可以在房间放置物品。",
   "sign-in-modal.signin-message.remove-owner": "只有登陆才可以指定主持人。",
   "sign-in-modal.signin-message.room-settings": "只有登陆才可以改变房间设置。",
-  "sign-in-modal.signin-message.tweet": "只有登陆才可以发送信息。",
   "sign-in-modal.signin-message.unpin": "只有登陆才可以在房间移除物品。",
   "sign-in-modal.wait-for-verification": "<p>邮件已发送!</p><p>下一步, 用你的手机，平板电脑或是个人电脑进入邮箱点击链接。</p><p>未收到邮件? 你可能无法创建账户。</p>",
   "spectating-label.label": "看",
@@ -170,7 +169,5 @@
   "tips.mobile.locomotion": "很好! 移动的话，用两根手指",
   "tips.mobile.look": "欢迎! 👋 用鼠标点击或者拖拽参观四周。",
   "tips.streaming": "现在传输到休息室。点击离开。",
-  "twitter-oauth-modal.connect-button": "连接 Twitter",
-  "twitter-oauth-modal.message": "连接 Twitter 从 {appName} 发送 tweets",
   "ui-root.interstitial-prompt": "继续"
 }

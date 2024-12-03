@@ -26,7 +26,6 @@ const HUB_CREATOR_PERMISSIONS = [
   "amplify_audio"
 ];
 const VALID_PERMISSIONS = HUB_CREATOR_PERMISSIONS.concat([
-  "tweet",
   "spawn_camera",
   "spawn_drawing",
   "spawn_and_move_media",
@@ -388,17 +387,6 @@ export default class HubChannel extends EventTarget {
           resolve(res);
         })
         .receive("error", reject);
-    });
-  };
-
-  getTwitterOAuthURL = () => {
-    return new Promise((resolve, reject) => {
-      this.channel
-        .push("oauth", { type: "twitter" })
-        .receive("ok", res => {
-          resolve(res.oauth_url);
-        })
-        .receive("error", err => reject(new Error(err.reason)));
     });
   };
 

@@ -153,7 +153,6 @@
   "scene-page.create-button": "Crear una sala con esta escena",
   "scene-page.edit-button": "Editar en {editorName}",
   "scene-page.remix-button": "Remezclar en {editorName}",
-  "scene-page.tweet-button": "Compartir en Twitter",
   "scene-page.unavailable": "Esta escena ya no está disponible.",
   "scene-url-modal.change-scene-button": "Cambiar la escena",
   "scene-url-modal.create-in-spoke": "O crear una nueva sala usando {editorName}.",
@@ -171,7 +170,6 @@
   "sign-in-modal.signin-message.pin": "Necesitas iniciar sesión para fijar objetos.",
   "sign-in-modal.signin-message.remove-owner": "Necesitas iniciar sesión para eliminar moderadores.",
   "sign-in-modal.signin-message.room-settings": "Necesitas iniciar sesión para cambiar las propiedades de la sala.",
-  "sign-in-modal.signin-message.tweet": "Necesitas iniciar sesión para enviar tuits.",
   "sign-in-modal.signin-message.unpin": "Necesitas iniciar sesión para desanclar objetos.",
   "sign-in-modal.wait-for-verification": "<p>¡Correo enviado a {email}!</p><p>Para continuar, haz clic en el vínculo del correo usando un teléfono, tablet o computador.</p><p>¿No tienes correo? No podrás crear una cuenta.</p>",
   "spectating-label.label": "Estás mirando",
@@ -192,8 +190,5 @@
   "tips.mobile.locomotion": "¡Genial! Para moverte, pellizca con dos dedos.",
   "tips.mobile.look": "¡Bienvenido(a)! 👋 Toca y arrastra para mirar alrededor.",
   "tips.streaming": "Estás transmitiendo a la antesala. Haz clic para terminar.",
-  "tweet-editor-modal.tweet-button": "Tuitear",
-  "twitter-oauth-modal.connect-button": "Conectarse a Twitter",
-  "twitter-oauth-modal.message": "Conectarse a Twitter para enviar tuits desde {appName}.",
   "ui-root.interstitial-prompt": "Continuar"
 }

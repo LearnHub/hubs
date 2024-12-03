@@ -18,7 +18,6 @@ type Permission =
   | "fly"
   | "voice_chat"
   | "spawn_drawing"
-  | "tweet"
   | "kick_users"
   | "mute_users";
 

@@ -72,10 +72,6 @@ export const SignInMessages = defineMessages({
     id: "sign-in-modal.signin-message.favorite-rooms",
     defaultMessage: "You'll need to sign in to add favorite rooms."
   },
-  tweet: {
-    id: "sign-in-modal.signin-message.tweet",
-    defaultMessage: "You'll need to sign in to send tweets."
-  }
 });
 
 export function SubmitEmail({ onSubmitEmail, initialEmail, privacyUrl, termsUrl, message }) {

@@ -5,8 +5,6 @@ import classNames from "classnames";
 import { formatSystemMessage } from "./room/ChatSidebar";
 
 import ChatMessage from "./chat-message";
-import PhotoMessage from "./photo-message";
-import VideoMessage from "./video-message";
 import ImageMessage from "./image-message";
 import { getPresenceContextForSession } from "../utils/phoenix-utils";
 import { useIntl } from "react-intl";
@@ -56,28 +54,6 @@ export function PresenceLog({ entries, preset, hubId, history, presences, onView
             className={classNames(entryClasses, styles.media)}
             body={e.body}
             maySpawn={e.maySpawn}
-          />
-        );
-      case "photo":
-        return (
-          <PhotoMessage
-            key={e.key}
-            name={e.name}
-            className={classNames(entryClasses, styles.media)}
-            body={e.body}
-            maySpawn={e.maySpawn}
-            hubId={hubId}
-          />
-        );
-      case "video":
-        return (
-          <VideoMessage
-            key={e.key}
-            name={e.name}
-            className={classNames(entryClasses, styles.media)}
-            body={e.body}
-            maySpawn={e.maySpawn}
-            hubId={hubId}
           />
         );
       case "permission":

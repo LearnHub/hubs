@@ -104,7 +104,6 @@ import { ExitReason } from "./room/ExitedRoomScreen";
 import { UserProfileSidebarContainer } from "./room/UserProfileSidebarContainer";
 import { CloseRoomModal } from "./room/CloseRoomModal";
 import { WebVRUnsupportedModal } from "./room/WebVRUnsupportedModal";
-import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip, RecordModeTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
@@ -453,8 +452,6 @@ class UIRoot extends Component {
       );
     
     this.playerRig = scene.querySelector("#avatar-rig");
-
-    scene.addEventListener("action_media_tweet", this.onTweet);
   }
 
   UNSAFE_componentWillMount() {
@@ -467,7 +464,6 @@ class UIRoot extends Component {
     this.props.scene.removeEventListener("share_video_enabled", this.onShareVideoEnabled);
     this.props.scene.removeEventListener("share_video_disabled", this.onShareVideoDisabled);
     this.props.scene.removeEventListener("share_video_failed", this.onShareVideoFailed);
-    this.props.scene.removeEventListener("action_media_tweet", this.onTweet);
     this.props.store.removeEventListener("statechanged", this.storeUpdated);
     window.removeEventListener("concurrentload", this.onConcurrentLoad);
     window.removeEventListener("idle_detected", this.onIdleDetected);
@@ -821,22 +817,6 @@ class UIRoot extends Component {
     }
 
     return false;
-  };
-
-  onTweet = ({ detail }) => {
-    handleExitTo2DInterstitial(true, () => {}).then(() => {
-      this.props.performConditionalSignIn(
-        () => this.props.hubChannel.signedIn,
-        () => {
-          this.showNonHistoriedDialog(TweetModalContainer, {
-            hubChannel: this.props.hubChannel,
-            isAdmin: configs.isAdmin(),
-            ...detail
-          });
-        },
-        SignInMessages.tweet
-      );
-    });
   };
 
   onChangeScene = () => {

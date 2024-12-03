@@ -161,7 +161,6 @@
   "scene-page.create-button": "Создать комнату с этой сценой",
   "scene-page.edit-button": "Редактировать в {editorName}",
   "scene-page.remix-button": "Переработать в {editorName}",
-  "scene-page.tweet-button": "Поделиться в Twitter",
   "scene-page.unavailable": "Эта сцена более недоступна.",
   "scene-url-modal.change-scene-button": "Сменить сцену",
   "scene-url-modal.create-in-spoke": "Или создать новую комнату в {editorName}.",
@@ -179,7 +178,6 @@
   "sign-in-modal.signin-message.pin": "Зарегистрируйтесь, чтобы закреплять объекты.",
   "sign-in-modal.signin-message.remove-owner": "Зарегистрируйтесь, чтобы удалить администраторов.",
   "sign-in-modal.signin-message.room-settings": "Зарегистрируйтесь, чтобы изменить настройки комнаты.",
-  "sign-in-modal.signin-message.tweet": "Зарегистрируйтесь, чтобы отправлять твиты.",
   "sign-in-modal.signin-message.unpin": "Зарегистрируйтесь, чтобы откреплять объекты.",
   "sign-in-modal.wait-for-verification": "<p>Мы выслали письмо на {email}.</p><p>Чтобы продолжить, перейдите по указанной в нём ссылке с помощью телефона, планшета или компьютера.</p><p>Вы не сможете создать учётную запись, если у вас нет электронной почты.</p>",
   "spectating-label.label": "Вы наблюдаете за",
@@ -200,8 +198,5 @@
   "tips.mobile.locomotion": "Отлично! Дотроньтесь и раздвиньте два пальца, чтобы перемещаться.",
   "tips.mobile.look": "Добро пожаловать! 👋 Дотроньтесь и потяните, чтобы посмотреть по сторонам.",
   "tips.streaming": "Вы транслируете видео в холл. Кликните, чтобы прекратить показ.",
-  "tweet-editor-modal.tweet-button": "Написать твит",
-  "twitter-oauth-modal.connect-button": "Подключиться к Twitter",
-  "twitter-oauth-modal.message": "Подключиться к Twitter, чтобы публиковать твиты из {appName}.",
   "ui-root.interstitial-prompt": "Продолжить"
 }

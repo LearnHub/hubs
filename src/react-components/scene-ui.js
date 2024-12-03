@@ -7,7 +7,6 @@ import configs from "../utils/configs";
 import { createAndRedirectToNewHub, getReticulumFetchUrl } from "../utils/phoenix-utils";
 import { ReactComponent as CodeBranch } from "./icons/CodeBranch.svg";
 import { ReactComponent as Pen } from "./icons/Pen.svg";
-import { ReactComponent as Twitter } from "./icons/Twitter.svg";
 import IfFeature from "./if-feature";
 import { AppLogo } from "./misc/AppLogo";
 
@@ -51,20 +50,6 @@ class SceneUI extends Component {
 
     const { sceneAllowRemixing, isOwner, sceneProjectId, parentScene, sceneId, intl } = this.props;
     const sceneUrl = [location.protocol, "//", location.host, location.pathname].join("");
-    const tweetText = intl.formatMessage(
-      {
-        id: "scene-page.default-tweet",
-        defaultMessage: "{sceneName} in {shareHashtag}"
-      },
-      {
-        sceneName: this.props.sceneName,
-        shareHashtag: configs.translation("share-hashtag")
-      }
-    );
-    const tweetLink = `https://twitter.com/share?url=${encodeURIComponent(sceneUrl)}&text=${encodeURIComponent(
-      tweetText
-    )}`;
-
     const unknown = intl.formatMessage({ id: "scene-page.unknown", defaultMessage: "unknown" });
 
     let attributions;
@@ -235,12 +220,6 @@ class SceneUI extends Component {
                   )
                 )}
               </IfFeature>
-              <a href={tweetLink} rel="noopener noreferrer" target="_blank" className={styles.scenePreviewButton}>
-                <Twitter />
-                <div>
-                  <FormattedMessage id="scene-page.tweet-button" defaultMessage="Share on Twitter" />
-                </div>
-              </a>
             </div>
           </div>
           <div className={styles.info}>

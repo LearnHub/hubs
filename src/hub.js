@@ -122,7 +122,6 @@ import "./components/clone-media-button";
 import "./components/open-media-button";
 import "./components/change-hub-when-near";
 import "./components/refresh-media-button";
-import "./components/tweet-media-button";
 import "./components/remix-avatar-button";
 import "./components/transform-object-button";
 import "./components/scale-button";
@@ -288,7 +287,7 @@ let isOAuthModal = false;
 // OAuth popup handler
 // TODO: Replace with a new oauth callback route that has this postMessage script.
 try {
-  if (window.opener && window.opener.doingTwitterOAuth) {
+  if (window.opener) {
     window.opener.postMessage("oauth-successful");
     isOAuthModal = true;
     window.close();

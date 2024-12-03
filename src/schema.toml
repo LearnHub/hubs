@@ -9,7 +9,6 @@ translations.en."contact-email" = { category = "translations", type = "string", 
 translations.en."settings.community" = { category = "translations", type = "string", name = "Community Prompt", description = "Prompt for joining your community." }
 
 translations.en."app-full-name" = { category = "translations", type = "string", internal = "true" }
-translations.en."app-twitter-user" = { category = "translations", type = "string", internal = "true" }
 translations.en."editor-name" = { category = "translations", type = "string", internal = "true" }
 
 features.disable_sign_up = { category = "features", type = "boolean", name = "Disable account creation", description = "Prevent visitors from creating accounts. Accounts must be created by an administrator." }
