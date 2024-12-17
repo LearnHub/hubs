@@ -20,8 +20,6 @@ async function checkAltServers() {
     if (!nextCheckTimestamp || now > nextCheckTimestamp ) {
         // Don't check more often than every 60 minutes
         nextCheckTimestamp = now + 60 * 60_000
-        // ALT_SERVER_TESTING once every 5 minutes for testing
-        nextCheckTimestamp = now +  5 * 60_000
         try {
             const AltServerEndpoint = self.location.hostname.startsWith("alpha") || self.location.hostname.startsWith("me")
                 ? "https://rest-alpha.avncloud.com/v1/avnfs/altservers"
@@ -76,8 +74,8 @@ self.addEventListener("fetch", (event) => {
                     }
                     info.servers[altServer.clientId] = altServerStats
                 }
-                // For every host on the alt server
-                for (let host of altServer.hosts) {
+                // For every host on the alt server (copy so original array can be modified)
+                for (let host of altServer.hosts.slice()) {
                     let altServerFailed = false
                     const altUrl = event.request.url.replace("avnfs.com", host)
                     try {
@@ -104,7 +102,7 @@ self.addEventListener("fetch", (event) => {
                         altServerStats.errorTime = new Date()
                         altServerFailed = true
                     }
-                    // Don't try that host again (TODO: this could be smarter)
+                    // Don't try that host again
                     if(altServerFailed) {
                         // Update the hosts list for future calls
                         altServer.hosts = altServer.hosts.filter(it => it != host)
