@@ -6,6 +6,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { GLTFGoogleTiltBrushMaterialExtension } from "three-icosa";
 import HubsTextureLoader from "../loaders/HubsTextureLoader";
 import { convertStandardMaterial, mapMaterials, updateMaterials } from "../utils/material-utils";
 import { getCustomGLTFParserURLResolver } from "../utils/media-url-utils";
@@ -892,6 +893,8 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     .register(parser => new GLTFHubsTextureBasisExtension(parser))
     .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
     .register(parser => new GLTFHubsLoopAnimationComponent(parser))
+    // XRBRUSH_SHADER_REFACTOR
+    .register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, `https://s3.eu-west-2.amazonaws.com/dev.classvr.com/brushes/`))
     .register(
       parser =>
         new GLTFLodExtension(parser, {

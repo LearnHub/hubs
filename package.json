@@ -143,6 +143,7 @@
     "three": "github:mozillareality/three.js#65b5105908f5f135cad25fed07e25f15f3876777",
     "three-ammo": "github:mozillareality/three-ammo",
     "three-gltf-extensions": "^0.0.14",
+    "three-icosa": "^0.4.2-alpha.6",
     "three-mesh-bvh": "^0.3.7",
     "three-pathfinding": "^1.1.0",
     "three-to-ammo": "github:infinitelee/three-to-ammo",
