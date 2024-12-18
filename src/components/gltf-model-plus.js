@@ -894,7 +894,7 @@ export async function loadGLTF(src, contentType, onProgress, jsonPreprocessor) {
     .register(parser => new GLTFMozTextureRGBE(parser, new RGBELoader().setDataType(THREE.HalfFloatType)))
     .register(parser => new GLTFHubsLoopAnimationComponent(parser))
     // XRBRUSH_SHADER_REFACTOR
-    .register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, `https://s3.eu-west-2.amazonaws.com/dev.classvr.com/brushes/`))
+    .register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, `https://dev.avncloud.com/brushes/`))
     .register(
       parser =>
         new GLTFLodExtension(parser, {
