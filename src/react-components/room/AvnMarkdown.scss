@@ -67,15 +67,26 @@
     right: 0px;
     top:-15px;
   }  
-  .objective1::before{ content: "1"; }
-  .objective2::before{ content: "2"; }
-  .objective3::before{ content: "3"; }
-  .objective4::before{ content: "4"; }
-  .objective5::before{ content: "5"; }
-  .objective6::before{ content: "6"; }
-  .objective7::before{ content: "7"; }
-  .objective8::before{ content: "8"; }
-  .objective9::before{ content: "9"; }
+  .objective1::before  { content: "1";  }
+  .objective2::before  { content: "2";  }
+  .objective3::before  { content: "3";  }
+  .objective4::before  { content: "4";  }
+  .objective5::before  { content: "5";  }
+  .objective6::before  { content: "6";  }
+  .objective7::before  { content: "7";  }
+  .objective8::before  { content: "8";  }
+  .objective9::before  { content: "9";  }
+  .objective10::before { content: "10"; }
+  .objective11::before { content: "11"; }
+  .objective12::before { content: "12"; }
+  .objective13::before { content: "13"; }
+  .objective14::before { content: "14"; }
+  .objective15::before { content: "15"; }
+  .objective16::before { content: "16"; }
+  .objective17::before { content: "17"; }
+  .objective18::before { content: "18"; }
+  .objective19::before { content: "19"; }
+  .objective20::before { content: "20"; }
   
   .task {
     font-size: 110%;
