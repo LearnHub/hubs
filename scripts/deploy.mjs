@@ -45,7 +45,7 @@ const getTs = (() => {
 
   const version = getTs();
 
-  buildEnv.BUILD_VERSION = `1.1.0.${version}-AVN`;
+  buildEnv.BUILD_VERSION = `1.1.1.${version}-AVN`;
   buildEnv.ITA_SERVER = "";
   buildEnv.POSTGREST_SERVER = "";
   buildEnv.CONFIGURABLE_SERVICES = "janus-gateway,reticulum,hubs,spoke";
