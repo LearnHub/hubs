@@ -1,4 +1,4 @@
-import { CreateDimensionRequest, CreateDimensionResponse, DimensionEvent, JoinDimensionRequest, SetLessonContextRequest, SetLessonContextResponse } from "./dimensions_pb.js";
+import { CreateDimensionRequest, CreateDimensionResponse, DimensionEvent, DimensionInstance, GetDimensionRequest, JoinDimensionRequest, SetLessonContextRequest, SetLessonContextResponse } from "./dimensions_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.DimensionService
@@ -13,6 +13,15 @@ export declare const DimensionService: {
             readonly name: "CreateDimension";
             readonly I: typeof CreateDimensionRequest;
             readonly O: typeof CreateDimensionResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc avn.connect.v1.DimensionService.GetDimension
+         */
+        readonly getDimension: {
+            readonly name: "GetDimension";
+            readonly I: typeof GetDimensionRequest;
+            readonly O: typeof DimensionInstance;
             readonly kind: MethodKind.Unary;
         };
         /**

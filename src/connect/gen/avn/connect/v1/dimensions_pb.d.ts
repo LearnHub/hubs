@@ -94,6 +94,31 @@ export declare class CreateDimensionResponse extends Message<CreateDimensionResp
     static equals(a: CreateDimensionResponse | PlainMessage<CreateDimensionResponse> | undefined, b: CreateDimensionResponse | PlainMessage<CreateDimensionResponse> | undefined): boolean;
 }
 /**
+ * @generated from message avn.connect.v1.GetDimensionRequest
+ */
+export declare class GetDimensionRequest extends Message<GetDimensionRequest> {
+    /**
+     * @generated from field: avn.connect.v1.ClientCredentials client = 1;
+     */
+    client?: ClientCredentials;
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 2;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: string dimension_id = 3;
+     */
+    dimensionId: string;
+    constructor(data?: PartialMessage<GetDimensionRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.GetDimensionRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetDimensionRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetDimensionRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetDimensionRequest;
+    static equals(a: GetDimensionRequest | PlainMessage<GetDimensionRequest> | undefined, b: GetDimensionRequest | PlainMessage<GetDimensionRequest> | undefined): boolean;
+}
+/**
  * @generated from message avn.connect.v1.JoinDimensionRequest
  */
 export declare class JoinDimensionRequest extends Message<JoinDimensionRequest> {

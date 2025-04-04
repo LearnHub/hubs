@@ -82,6 +82,10 @@ export declare class Activity extends Message<Activity> {
      */
     instructions?: Translation;
     /**
+     * @generated from field: optional avn.connect.v1.Translation keywords = 21;
+     */
+    keywords?: Translation;
+    /**
      * @generated from field: string language_id = 8;
      */
     languageId: string;

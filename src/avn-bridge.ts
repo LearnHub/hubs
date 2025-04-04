@@ -270,7 +270,7 @@ class AVNBridge {
             auth: this._dimensionAuth, 
             entityIds: [channelId],
             tagFilters: [ 
-                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable, Connect.Tags.LessonPlan, Connect.Tags.SceneGuide ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.PB.TagId.NOT_BROWSABLE, Connect.PB.TagId.LESSON_PLAN, Connect.PB.TagId.SCENE_GUIDE ] },
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
@@ -284,8 +284,8 @@ class AVNBridge {
             entityIds: [channelId], 
             textSearch: searchText ? { text: searchText } : undefined,
             tagFilters: [ 
-                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
-                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.PB.TagId.SCENE ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.PB.TagId.NOT_BROWSABLE ] },
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
@@ -300,7 +300,7 @@ class AVNBridge {
             auth: this._dimensionAuth, 
             entityIds: [profileId], 
             tagFilters: [ 
-                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.PB.TagId.NOT_BROWSABLE ] },
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
@@ -313,8 +313,8 @@ class AVNBridge {
             auth: this._dimensionAuth, 
             entityIds: [profileId],
             tagFilters: [ 
-                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
-                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.PB.TagId.SCENE ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.PB.TagId.NOT_BROWSABLE ] },
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
@@ -329,8 +329,8 @@ class AVNBridge {
             auth: this._dimensionAuth, 
             entityIds: [categoryId],
             tagFilters: [ 
-                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.Tags.Scene ] },
-                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.Tags.NotBrowsable ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_ANY_OF, tags: [ Connect.PB.TagId.SCENE ] },
+                { condition: Connect.PB.TagFilterCondition.HAS_NONE_OF, tags: [ Connect.PB.TagId.NOT_BROWSABLE ] },
             ],
             orderBy: [
                 { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC },

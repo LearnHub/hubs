@@ -36,9 +36,9 @@ export declare class JoinOrganizationResponse extends Message<JoinOrganizationRe
     static equals(a: JoinOrganizationResponse | PlainMessage<JoinOrganizationResponse> | undefined, b: JoinOrganizationResponse | PlainMessage<JoinOrganizationResponse> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.CreateNewUserOrganizationRequest
+ * @generated from message avn.connect.v1.CreateOrganizationRequest
  */
-export declare class CreateNewUserOrganizationRequest extends Message<CreateNewUserOrganizationRequest> {
+export declare class CreateOrganizationRequest extends Message<CreateOrganizationRequest> {
     /**
      * @generated from field: avn.connect.v1.Authorization auth = 1;
      */
@@ -47,31 +47,31 @@ export declare class CreateNewUserOrganizationRequest extends Message<CreateNewU
      * @generated from field: avn.connect.v1.OrganizationSpec organization_spec = 2;
      */
     organizationSpec?: OrganizationSpec;
-    constructor(data?: PartialMessage<CreateNewUserOrganizationRequest>);
+    constructor(data?: PartialMessage<CreateOrganizationRequest>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.CreateNewUserOrganizationRequest";
+    static readonly typeName = "avn.connect.v1.CreateOrganizationRequest";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateNewUserOrganizationRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateNewUserOrganizationRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateNewUserOrganizationRequest;
-    static equals(a: CreateNewUserOrganizationRequest | PlainMessage<CreateNewUserOrganizationRequest> | undefined, b: CreateNewUserOrganizationRequest | PlainMessage<CreateNewUserOrganizationRequest> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateOrganizationRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateOrganizationRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateOrganizationRequest;
+    static equals(a: CreateOrganizationRequest | PlainMessage<CreateOrganizationRequest> | undefined, b: CreateOrganizationRequest | PlainMessage<CreateOrganizationRequest> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.CreateNewUserOrganizationResponse
+ * @generated from message avn.connect.v1.CreateOrganizationResponse
  */
-export declare class CreateNewUserOrganizationResponse extends Message<CreateNewUserOrganizationResponse> {
+export declare class CreateOrganizationResponse extends Message<CreateOrganizationResponse> {
     /**
      * @generated from field: avn.connect.v1.Organization organization = 1;
      */
     organization?: Organization;
-    constructor(data?: PartialMessage<CreateNewUserOrganizationResponse>);
+    constructor(data?: PartialMessage<CreateOrganizationResponse>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.CreateNewUserOrganizationResponse";
+    static readonly typeName = "avn.connect.v1.CreateOrganizationResponse";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateNewUserOrganizationResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateNewUserOrganizationResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateNewUserOrganizationResponse;
-    static equals(a: CreateNewUserOrganizationResponse | PlainMessage<CreateNewUserOrganizationResponse> | undefined, b: CreateNewUserOrganizationResponse | PlainMessage<CreateNewUserOrganizationResponse> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateOrganizationResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateOrganizationResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateOrganizationResponse;
+    static equals(a: CreateOrganizationResponse | PlainMessage<CreateOrganizationResponse> | undefined, b: CreateOrganizationResponse | PlainMessage<CreateOrganizationResponse> | undefined): boolean;
 }
 /**
  * @generated from message avn.connect.v1.Organization
@@ -94,9 +94,9 @@ export declare class Organization extends Message<Organization> {
      */
     address: string;
     /**
-     * @generated from field: string post_code = 5;
+     * @generated from field: string postcode = 5;
      */
-    postCode: string;
+    postcode: string;
     /**
      * @generated from field: string phone = 6;
      */
@@ -173,9 +173,9 @@ export declare class OrganizationSpec extends Message<OrganizationSpec> {
      */
     state: string;
     /**
-     * @generated from field: string post_code = 5;
+     * @generated from field: string postcode = 5;
      */
-    postCode: string;
+    postcode: string;
     /**
      * @generated from field: string country_id = 6;
      */
@@ -189,9 +189,9 @@ export declare class OrganizationSpec extends Message<OrganizationSpec> {
      */
     parentId: number;
     /**
-     * @generated from field: optional string owner_email = 9;
+     * @generated from field: optional string email = 9;
      */
-    ownerEmail?: string;
+    email?: string;
     constructor(data?: PartialMessage<OrganizationSpec>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.OrganizationSpec";

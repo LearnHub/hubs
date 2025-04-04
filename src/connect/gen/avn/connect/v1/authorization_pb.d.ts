@@ -64,6 +64,12 @@ export declare class Authorization extends Message<Authorization> {
      * @generated from field: optional string user_api_key = 4;
      */
     userApiKey?: string;
+    /**
+     * JWT for a device
+     *
+     * @generated from field: optional string device_jwt = 5;
+     */
+    deviceJwt?: string;
     constructor(data?: PartialMessage<Authorization>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Authorization";

@@ -24,6 +24,190 @@ export declare enum TagFilterCondition {
     HAS_NONE_OF = 3
 }
 /**
+ * @generated from enum avn.connect.v1.TagGroupId
+ */
+export declare enum TagGroupId {
+    /**
+     * @generated from enum value: TAG_GROUP_ID_UNKNOWN = 0;
+     */
+    UNKNOWN = 0,
+    /**
+     * @generated from enum value: TAG_GROUP_ID_SUBJECT = 1;
+     */
+    SUBJECT = 1,
+    /**
+     * @generated from enum value: TAG_GROUP_ID_AGE_RANGE = 2;
+     */
+    AGE_RANGE = 2,
+    /**
+     * @generated from enum value: TAG_GROUP_ID_PLATFORM = 10;
+     */
+    PLATFORM = 10,
+    /**
+     * @generated from enum value: TAG_GROUP_ID_MEDIA = 28;
+     */
+    MEDIA = 28
+}
+/**
+ * @generated from enum avn.connect.v1.TagId
+ */
+export declare enum TagId {
+    /**
+     * @generated from enum value: TAG_ID_UNKNOWN = 0;
+     */
+    UNKNOWN = 0,
+    /**
+     * Information
+     *
+     * @generated from enum value: TAG_ID_EDUVERSE_AI = 2745;
+     */
+    EDUVERSE_AI = 2745,
+    /**
+     * @generated from enum value: TAG_ID_AI_GENERATED = 2747;
+     */
+    AI_GENERATED = 2747,
+    /**
+     * @generated from enum value: TAG_ID_SKYBOX_AI = 2746;
+     */
+    SKYBOX_AI = 2746,
+    /**
+     * @generated from enum value: TAG_ID_CLASS_CANVAS = 2778;
+     */
+    CLASS_CANVAS = 2778,
+    /**
+     * @generated from enum value: TAG_ID_NOT_BROWSABLE = 2427;
+     */
+    NOT_BROWSABLE = 2427,
+    /**
+     * @generated from enum value: TAG_ID_NAVIGABLE = 2683;
+     */
+    NAVIGABLE = 2683,
+    /**
+     * @generated from enum value: TAG_ID_COSPACES = 2743;
+     */
+    COSPACES = 2743,
+    /**
+     * @generated from enum value: TAG_ID_THINGLINK = 2742;
+     */
+    THINGLINK = 2742,
+    /**
+     * Media
+     *
+     * @generated from enum value: TAG_ID_FLAT = 2715;
+     */
+    FLAT = 2715,
+    /**
+     * @generated from enum value: TAG_ID_EQUIRECTANGULAR_360 = 2363;
+     */
+    EQUIRECTANGULAR_360 = 2363,
+    /**
+     * @generated from enum value: TAG_ID_EQUIRECTANGULAR_180 = 2550;
+     */
+    EQUIRECTANGULAR_180 = 2550,
+    /**
+     * @generated from enum value: TAG_ID_CUBEMAP = 2373;
+     */
+    CUBEMAP = 2373,
+    /**
+     * @generated from enum value: TAG_ID_STEREO_TB_LR = 2362;
+     */
+    STEREO_TB_LR = 2362,
+    /**
+     * @generated from enum value: TAG_ID_STEREO_SBS = 2364;
+     */
+    STEREO_SBS = 2364,
+    /**
+     * @generated from enum value: TAG_ID_AR = 2367;
+     */
+    AR = 2367,
+    /**
+     * @generated from enum value: TAG_ID_VR = 2366;
+     */
+    VR = 2366,
+    /**
+     * @generated from enum value: TAG_ID_SCENE_GUIDE = 2656;
+     */
+    SCENE_GUIDE = 2656,
+    /**
+     * @generated from enum value: TAG_ID_LESSON_PLAN = 2372;
+     */
+    LESSON_PLAN = 2372,
+    /**
+     * @generated from enum value: TAG_ID_WORKSHEET = 2371;
+     */
+    WORKSHEET = 2371,
+    /**
+     * @generated from enum value: TAG_ID_ANIMATED = 2613;
+     */
+    ANIMATED = 2613,
+    /**
+     * @generated from enum value: TAG_ID_INTERACTIVE = 2697;
+     */
+    INTERACTIVE = 2697,
+    /**
+     * @generated from enum value: TAG_ID_SCENE = 2375;
+     */
+    SCENE = 2375,
+    /**
+     * @generated from enum value: TAG_ID_AVATAR = 2666;
+     */
+    AVATAR = 2666,
+    /**
+     * @generated from enum value: TAG_ID_MODEL = 2374;
+     */
+    MODEL = 2374,
+    /**
+     * @generated from enum value: TAG_ID_AUDIO = 2655;
+     */
+    AUDIO = 2655,
+    /**
+     * @generated from enum value: TAG_ID_IMAGE = 2376;
+     */
+    IMAGE = 2376,
+    /**
+     * @generated from enum value: TAG_ID_VIDEO = 2377;
+     */
+    VIDEO = 2377,
+    /**
+     * @generated from enum value: TAG_ID_TOPIC = 2741;
+     */
+    TOPIC = 2741,
+    /**
+     * @generated from enum value: TAG_ID_THREE_DOF = 2776;
+     */
+    THREE_DOF = 2776,
+    /**
+     * @generated from enum value: TAG_ID_SIX_DOF = 2777;
+     */
+    SIX_DOF = 2777,
+    /**
+     * Age Ranges
+     *
+     * @generated from enum value: TAG_ID_AGE_RANGE_UNDER_5 = 17;
+     */
+    AGE_RANGE_UNDER_5 = 17,
+    /**
+     * @generated from enum value: TAG_ID_AGE_RANGE_5_TO_7 = 18;
+     */
+    AGE_RANGE_5_TO_7 = 18,
+    /**
+     * @generated from enum value: TAG_ID_AGE_RANGE_7_TO_11 = 19;
+     */
+    AGE_RANGE_7_TO_11 = 19,
+    /**
+     * @generated from enum value: TAG_ID_AGE_RANGE_11_TO_14 = 20;
+     */
+    AGE_RANGE_11_TO_14 = 20,
+    /**
+     * @generated from enum value: TAG_ID_AGE_RANGE_14_TO_16 = 21;
+     */
+    AGE_RANGE_14_TO_16 = 21,
+    /**
+     * @generated from enum value: TAG_ID_AGE_RANGE_OVER_16 = 22;
+     */
+    AGE_RANGE_OVER_16 = 22
+}
+/**
  * @generated from message avn.connect.v1.Tag
  */
 export declare class Tag extends Message<Tag> {

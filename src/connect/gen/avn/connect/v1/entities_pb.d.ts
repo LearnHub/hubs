@@ -137,7 +137,35 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_TAGS = 24;
      */
-    TAGS = 24
+    TAGS = 24,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_ADDRESS = 25;
+     */
+    ADDRESS = 25,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_CITY = 26;
+     */
+    CITY = 26,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_STATE = 27;
+     */
+    STATE = 27,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_POSTCODE = 28;
+     */
+    POSTCODE = 28,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_PHONE = 29;
+     */
+    PHONE = 29,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_EMAIL = 30;
+     */
+    EMAIL = 30,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_KEYWORDS = 31;
+     */
+    KEYWORDS = 31
 }
 /**
  * Common info for channels, profiles, categories, and activities

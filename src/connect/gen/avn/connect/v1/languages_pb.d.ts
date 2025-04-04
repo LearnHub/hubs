@@ -18,7 +18,7 @@ export declare enum TextDirection {
  */
 export declare class Language extends Message<Language> {
     /**
-     * ID
+     * ID (IETF BCP 47)
      *
      * @generated from field: string language_id = 1;
      */

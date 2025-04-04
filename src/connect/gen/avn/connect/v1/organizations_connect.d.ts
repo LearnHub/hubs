@@ -1,6 +1,6 @@
-import { GetEntityRequest } from "./entities_pb.js";
-import { JoinOrganizationRequest, JoinOrganizationResponse, Organization } from "./organizations_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { GetEntityRequest, SetEntityPropertiesRequest } from "./entities_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, JoinOrganizationRequest, JoinOrganizationResponse, Organization } from "./organizations_pb.js";
+import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.OrganizationService
  */
@@ -23,6 +23,28 @@ export declare const OrganizationService: {
             readonly name: "JoinOrganization";
             readonly I: typeof JoinOrganizationRequest;
             readonly O: typeof JoinOrganizationResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * rpc CreateNewUserOrganization(CreateNewUserOrganizationRequest) returns (CreateNewUserOrganizationResponse);
+         *
+         * @generated from rpc avn.connect.v1.OrganizationService.CreateOrganization
+         */
+        readonly createOrganization: {
+            readonly name: "CreateOrganization";
+            readonly I: typeof CreateOrganizationRequest;
+            readonly O: typeof CreateOrganizationResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Property management
+         *
+         * @generated from rpc avn.connect.v1.OrganizationService.SetProperties
+         */
+        readonly setProperties: {
+            readonly name: "SetProperties";
+            readonly I: typeof SetEntityPropertiesRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };
