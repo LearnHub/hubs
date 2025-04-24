@@ -84,7 +84,7 @@ export function AvnMediaBrowser({
             preset={selectedChannelId === channel.entityId ? "primary" : "transparent"}
             onClick={() => onSelectChannel(channel.entityId)}
           >
-            {channel.name.translation}
+            {channel.name.text}
           </Button>
         ))}
       </div>
@@ -97,7 +97,7 @@ export function AvnMediaBrowser({
             preset={selectedProfileId === profile.entityId ? "primary" : "transparent"}
             onClick={() => onSelectProfile(profile.entityId)}
           >
-            {profile.name.translation}
+            {profile.name.text}
           </Button>
         ))}
       </div>
@@ -110,7 +110,7 @@ export function AvnMediaBrowser({
             preset={selectedCategoryId === category.entityId ? "primary" : "transparent"}
             onClick={() => onSelectCategory(category.entityId)}
           >
-            {category.name.translation}
+            {category.name.text}
           </Button>
         ))}
       </div>

@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Translation } from "./translations_pb.js";
+import { Translatable } from "./translations_pb.js";
 /**
  * @generated from message avn.connect.v1.Profile
  */
@@ -10,9 +10,9 @@ export declare class Profile extends Message<Profile> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * @generated from field: string icon_url = 3;
      */
@@ -26,17 +26,17 @@ export declare class Profile extends Message<Profile> {
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.Translation description = 6;
+     * @generated from field: optional avn.connect.v1.Translatable description = 6;
      */
-    description?: Translation;
+    description?: Translatable;
     /**
-     * @generated from field: optional avn.connect.v1.Translation instructions = 7;
+     * @generated from field: optional avn.connect.v1.Translatable instructions = 7;
      */
-    instructions?: Translation;
+    instructions?: Translatable;
     /**
-     * @generated from field: optional avn.connect.v1.Translation keywords = 21;
+     * @generated from field: optional avn.connect.v1.Translatable keywords = 21;
      */
-    keywords?: Translation;
+    keywords?: Translatable;
     /**
      * @generated from field: string language_id = 8;
      */

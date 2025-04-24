@@ -402,11 +402,11 @@ export declare class MediaFormatMetadata extends Message<MediaFormatMetadata> {
      */
     containerDisplayName: string;
     /**
-     * Overall duration
+     * Overall duration (not all files populate the duration field)
      *
-     * @generated from field: float duration_seconds = 3;
+     * @generated from field: optional float duration_seconds = 3;
      */
-    durationSeconds: number;
+    durationSeconds?: number;
     /**
      * Total size
      *
@@ -414,11 +414,11 @@ export declare class MediaFormatMetadata extends Message<MediaFormatMetadata> {
      */
     sizeBytes: bigint;
     /**
-     * Estimated average bitrate
+     * Estimated average bitrate (not all files populate the bitrate field)
      *
-     * @generated from field: int64 bitrate_bits_per_second = 5;
+     * @generated from field: optional int64 bitrate_bits_per_second = 5;
      */
-    bitrateBitsPerSecond: bigint;
+    bitrateBitsPerSecond?: bigint;
     /**
      * Additional metadata
      *

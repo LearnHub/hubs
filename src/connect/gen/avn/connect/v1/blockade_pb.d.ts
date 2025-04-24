@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { Translation } from "./translations_pb.js";
+import { Translatable, TranslationSpec } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
 import { OperationState } from "./operations_pb.js";
 import { EntityInfo } from "./entities_pb.js";
@@ -13,9 +13,9 @@ export declare class BlockadeSkyboxStyleFamily extends Message<BlockadeSkyboxSty
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * @generated from field: repeated avn.connect.v1.BlockadeSkyboxStyle styles = 3;
      */
@@ -38,13 +38,13 @@ export declare class BlockadeSkyboxStyle extends Message<BlockadeSkyboxStyle> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
-     * @generated from field: optional avn.connect.v1.Translation description = 3;
+     * @generated from field: optional avn.connect.v1.Translatable description = 3;
      */
-    description?: Translation;
+    description?: Translatable;
     /**
      * @generated from field: int32 max_prompt_size = 4;
      */
@@ -75,11 +75,9 @@ export declare class GetSkyboxStyleFamiliesRequest extends Message<GetSkyboxStyl
      */
     auth?: Authorization;
     /**
-     * Override to the user agent language
-     *
-     * @generated from field: optional string language_id = 2;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 2;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetSkyboxStyleFamiliesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetSkyboxStyleFamiliesRequest";

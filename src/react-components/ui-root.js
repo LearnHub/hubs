@@ -906,12 +906,15 @@ class UIRoot extends Component {
     if(showRoomFull) {
       console.log(`Room is full: entryDisallowed = ${this.props.entryDisallowed}, entered = ${this.state.entered}`)
     }
+    const roomName = this.props.avnRoomActivity?.name?.text 
+      ? Document.parseHTMLUnsafe(this.props.avnRoomActivity?.name?.text).body.innerText
+      : this.props.hub.name;
     // TODO: What does onEnteringCanceled do?
     return (
       <>
-        {/* AVN: Room linking and VR mode have been separated */}
+        {/* AVN: Room linking and VR mode have been separated */}      
         <RoomEntryModal
-          roomName={this.props.avnRoomActivity?.name?.translation || this.props.hub.name}
+          roomName={roomName}
           showRoomFull={showRoomFull}
           showJoinRoom={!this.state.waitingOnAudio && !this.props.entryDisallowed}
           onJoinRoom={() => {

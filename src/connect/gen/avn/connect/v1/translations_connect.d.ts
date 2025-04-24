@@ -1,4 +1,4 @@
-import { Translation, TranslationRequest } from "./translations_pb.js";
+import { Translatable, TranslationRequest } from "./translations_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.TranslationService
@@ -17,7 +17,7 @@ export declare const TranslationService: {
         readonly translate: {
             readonly name: "Translate";
             readonly I: typeof TranslationRequest;
-            readonly O: typeof Translation;
+            readonly O: typeof Translatable;
             readonly kind: MethodKind.Unary;
         };
     };

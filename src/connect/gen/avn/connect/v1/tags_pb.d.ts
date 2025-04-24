@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { Translation } from "./translations_pb.js";
+import { Translatable, TranslationSpec } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.TagFilterCondition
@@ -216,9 +216,9 @@ export declare class Tag extends Message<Tag> {
      */
     tagId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * @generated from field: int32 tag_group_id = 3;
      */
@@ -249,9 +249,9 @@ export declare class TagGroup extends Message<TagGroup> {
      */
     tagGroupId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * @generated from field: string language_id = 3;
      */
@@ -278,9 +278,9 @@ export declare class GetTagsRequest extends Message<GetTagsRequest> {
      */
     tagIds: number[];
     /**
-     * @generated from field: optional string language_id = 2;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 2;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetTagsRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetTagsRequest";
@@ -316,9 +316,9 @@ export declare class GetTagGroupRequest extends Message<GetTagGroupRequest> {
      */
     tagGroupId: number;
     /**
-     * @generated from field: optional string language_id = 2;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 2;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetTagGroupRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetTagGroupRequest";

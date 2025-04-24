@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Translation } from "./translations_pb.js";
+import { Translatable } from "./translations_pb.js";
 import { AndroidPackage } from "./packages_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
@@ -58,9 +58,9 @@ export declare class Activity extends Message<Activity> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * @generated from field: string icon_url = 3;
      */
@@ -74,17 +74,17 @@ export declare class Activity extends Message<Activity> {
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.Translation description = 6;
+     * @generated from field: optional avn.connect.v1.Translatable description = 6;
      */
-    description?: Translation;
+    description?: Translatable;
     /**
-     * @generated from field: optional avn.connect.v1.Translation instructions = 7;
+     * @generated from field: optional avn.connect.v1.Translatable instructions = 7;
      */
-    instructions?: Translation;
+    instructions?: Translatable;
     /**
-     * @generated from field: optional avn.connect.v1.Translation keywords = 21;
+     * @generated from field: optional avn.connect.v1.Translatable keywords = 21;
      */
-    keywords?: Translation;
+    keywords?: Translatable;
     /**
      * @generated from field: string language_id = 8;
      */
@@ -192,7 +192,7 @@ export declare class CreateActivityRequest extends Message<CreateActivityRequest
      */
     organizationId?: number;
     /**
-     * Override to the user agent language
+     * Language for activity
      *
      * @generated from field: optional string language_id = 3;
      */

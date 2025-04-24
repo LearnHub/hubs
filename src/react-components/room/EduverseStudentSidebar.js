@@ -7,8 +7,8 @@ import { CloseButton } from "../input/CloseButton";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
 export function EduverseStudentSidebar({ roomActivity, roomInfo, onClose }) {
-  const name = roomActivity?.name?.translation
-  const text = roomActivity?.instructions?.translation || roomActivity?.description?.translation
+  const name = roomActivity?.name?.text
+  const text = roomActivity?.instructions?.text || roomActivity?.description?.text
   return (
     <Sidebar
       title={
@@ -24,10 +24,10 @@ export function EduverseStudentSidebar({ roomActivity, roomInfo, onClose }) {
       <div className={styles.informationContainer}>
         <h1>
           {roomInfo.iconUrl && (<img src={roomInfo.iconUrl} className={styles.sceneIcon}/>)}
-          <span className={styles.sceneName}>{name}</span>
+          <span className={styles.sceneName} dangerouslySetInnerHTML={{ __html: name }}/>
         </h1>
         {text && (
-            <div className={markdownStyles.markdown} dangerouslySetInnerHTML={{ __html: AVNGlobal.MD.render(text) }} />
+            <div className={markdownStyles.markdown} dangerouslySetInnerHTML={{ __html: text }} />
         )}
       </div>
     </Sidebar>

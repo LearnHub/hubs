@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { TranslationSpec } from "./translations_pb.js";
 /**
  * @generated from enum avn.connect.v1.GeoPlaceType
  */
@@ -79,9 +80,9 @@ export declare class GetGeoPlaceRequest extends Message<GetGeoPlaceRequest> {
      */
     placeId: string;
     /**
-     * @generated from field: optional string language_id = 3;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 3;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetGeoPlaceRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetGeoPlaceRequest";
@@ -169,11 +170,9 @@ export declare class GeoSuggestRequest extends Message<GeoSuggestRequest> {
      */
     pageSize?: number;
     /**
-     * Language override
-     *
-     * @generated from field: optional string language_id = 6;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 6;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GeoSuggestRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GeoSuggestRequest";

@@ -1,7 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
-import { Translation } from "./translations_pb.js";
+import { Translatable, TranslationSpec } from "./translations_pb.js";
 /**
  * @generated from message avn.connect.v1.GetCountryRequest
  */
@@ -15,9 +15,9 @@ export declare class GetCountryRequest extends Message<GetCountryRequest> {
      */
     countryId: string;
     /**
-     * @generated from field: optional string language_id = 3;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 3;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetCountryRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetCountryRequest";
@@ -36,9 +36,9 @@ export declare class GetCountriesRequest extends Message<GetCountriesRequest> {
      */
     auth?: Authorization;
     /**
-     * @generated from field: optional string language_id = 2;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 2;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetCountriesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetCountriesRequest";
@@ -86,9 +86,9 @@ export declare class Country extends Message<Country> {
     /**
      * Name translated into request language
      *
-     * @generated from field: avn.connect.v1.Translation name = 3;
+     * @generated from field: avn.connect.v1.Translatable name = 3;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * Name in the default language of the country
      *

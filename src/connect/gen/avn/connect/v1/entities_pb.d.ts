@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Translation } from "./translations_pb.js";
+import { Translatable, TranslationSpec } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
 import { TagFilter } from "./tags_pb.js";
@@ -178,9 +178,9 @@ export declare class EntityInfo extends Message<EntityInfo> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translation name = 2;
+     * @generated from field: avn.connect.v1.Translatable name = 2;
      */
-    name?: Translation;
+    name?: Translatable;
     /**
      * @generated from field: google.protobuf.Timestamp updated = 3;
      */
@@ -272,11 +272,9 @@ export declare class GetEntityRequest extends Message<GetEntityRequest> {
      */
     entityId: number;
     /**
-     * Override to the user agent language (an empty string signifies no translation should be made)
-     *
-     * @generated from field: optional string language_id = 3;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 3;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     /**
      * @generated from field: optional avn.connect.v1.TranscodeImageSpec icon_spec = 4;
      */
@@ -407,11 +405,9 @@ export declare class EntityInfoListRequest extends Message<EntityInfoListRequest
      */
     entityIds: number[];
     /**
-     * Override to the user agent language
-     *
-     * @generated from field: optional string language_id = 3;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 3;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     /**
      * Search text fields
      *

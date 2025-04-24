@@ -6,17 +6,6 @@ import configs from "./utils/configs"
 // Including this file pulls in unnessary additional support files, which can cause errors
 //import { changeHub } from "./change-hub"
 
-// Markdown utility class
-import markdownit from "markdown-it"
-import markdownitattrs from "markdown-it-attrs"
-import markdownitcontainer from "markdown-it-container"
-// @ts-ignore no type def
-import markdownitsub from "markdown-it-sub"
-// @ts-ignore no type def
-import markdownitsup from "markdown-it-sup"
-// @ts-ignore no type def
-import markdownitbracketedspans from "markdown-it-bracketed-spans"
-  
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
 const ConnectToAlphaBackend = PreferredDomain === "me.eduverse.com"
@@ -52,39 +41,9 @@ class AVNBridge {
         ? "http://127.0.0.1:8282"
         : `https://gweb${ChannelPostfix}.avncloud.com`)
 
-    // Markdown utility renderer
-    public MD : markdownit
-
-        
     constructor() {
         // Async init
         this.initServiceWorker()
-        // Sidebar markdown
-        this.MD = markdownit()
-            .use(markdownitattrs, { allowedAttributes: ['id', 'class' ] })
-            .use(markdownitbracketedspans)
-            .use(markdownitcontainer, "block")
-            .use(markdownitsub)
-            .use(markdownitsup)
-        // Rule to open links with target="_blank" (https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer)
-        const defaultRender = this.MD.renderer.rules.link_open || function(tokens, idx, options, env, self) {
-            return self.renderToken(tokens, idx, options)
-        }
-        this.MD.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-            const attrs = tokens[idx].attrs
-            let isLegacySceneLink = false
-            if(attrs) {
-                const aIndex = tokens[idx].attrIndex('target')
-                if (aIndex < 0) {
-                    tokens[idx].attrPush(['target', '_blank'])
-                } else {
-                    attrs[aIndex][1] = '_blank'
-                }
-            } else {
-                console.warn(`Expected anchor to have attributes`)
-            }
-            return defaultRender(tokens, idx, options, env, self)
-        }
     }
 
     async initServiceWorker() {
@@ -261,7 +220,10 @@ class AVNBridge {
     }
 
     public async getBrowsableChannels(): Promise<Connect.PB.Channel[]> {
-        const result = await this.ConnectServices.Channels.getBrowsableChannels({ auth: this._dimensionAuth })
+        const result = await this.ConnectServices.Channels.getBrowsableChannels({ 
+            auth: this._dimensionAuth,
+            translate: { languageId: navigator.language },
+        })
         return result.results
     }
 
@@ -274,6 +236,7 @@ class AVNBridge {
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
+            translate: { languageId: navigator.language },
         })
         return result.results
     }
@@ -291,6 +254,7 @@ class AVNBridge {
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
             iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
             previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
+            translate: { languageId: navigator.language },
         })
         return result.results
     }
@@ -304,6 +268,7 @@ class AVNBridge {
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
+            translate: { languageId: navigator.language },
         })
         return result.results
     }
@@ -320,6 +285,7 @@ class AVNBridge {
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
             iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
             previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
+            translate: { languageId: navigator.language },
         })
         return result.results
     }
@@ -338,6 +304,7 @@ class AVNBridge {
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
             iconSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 256 }),
             previewSpec: new Connect.PB.TranscodeImageSpec({ maxSizePixels: 512 }),
+            translate: { languageId: navigator.language },
         })
         return result.results
     }
@@ -650,7 +617,11 @@ class AVNBridge {
         this._roomInfo = enterRoomResult.roomInfo
         const activityId = enterRoomResult.roomInfo.activityId
         if(activityId) {
-            this._roomActivity = await this.ConnectServices.Activities.getActivity({ auth: this._dimensionAuth, entityId: activityId })
+            this._roomActivity = await this.ConnectServices.Activities.getActivity({ 
+                auth: this._dimensionAuth, 
+                entityId: activityId,
+                translate: { languageId: navigator.language, format: Connect.PB.TranslationFormat.HTML },
+            })
         } else {
             this._roomActivity = undefined
         }

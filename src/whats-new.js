@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { createRoot } from "react-dom/client";
 import InfiniteScroll from "react-infinite-scroller";
-import markdownit from "markdown-it";
 import { FormattedMessage } from "react-intl";
 import { WrappedIntlProvider } from "./react-components/wrapped-intl-provider";
 import { AuthContextProvider } from "./react-components/auth/AuthContext";
@@ -21,8 +20,6 @@ registerTelemetry("/whats-new", "Hubs What's New");
 function formatDate(value) {
   return value && new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
-
-const md = markdownit();
 
 class WhatsNew extends Component {
   state = {

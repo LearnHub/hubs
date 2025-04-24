@@ -43,15 +43,7 @@ export function RoomEntryModal({
     <Modal className={classNames(styles.roomEntryModal, className)} disableFullscreen {...rest}>
       <Column center className={styles.content}>
         {breakpoint !== "sm" && breakpoint !== "md" && <AppLogo className={styles.logo} />}
-        <div className={styles.roomName}>
-          {
-          // AVN: Title is just cruft
-          // <h5>
-          //   <FormattedMessage id="room-entry-modal.room-name-label" defaultMessage="Room Name" />
-          // </h5>
-          } 
-          <p>{roomName}</p>
-        </div>
+        <div className={styles.roomName} dangerouslySetInnerHTML={{ __html: roomName }}/>
         <Column center className={styles.buttons}>
         {showJoinRoom && (
             <Button preset="accept" onClick={() => {
@@ -118,7 +110,7 @@ export function RoomEntryModal({
             </>
           )}
           {avnEntryMessage && (
-            <div className={classNames(styles.avnEntryMessage, markdownStyles.markdown)} dangerouslySetInnerHTML={{ __html: AVNGlobal.MD.render(avnEntryMessage) }} />
+            <div className={classNames(styles.avnEntryMessage, markdownStyles.markdown)} dangerouslySetInnerHTML={{ __html: avnEntryMessage }} />
           )}
         </Column>
       </Column>

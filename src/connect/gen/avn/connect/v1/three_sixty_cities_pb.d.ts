@@ -1,6 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
+import { TranslationSpec } from "./translations_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
 import { EntityInfo } from "./entities_pb.js";
 /**
@@ -24,11 +25,9 @@ export declare class SearchImagesRequest extends Message<SearchImagesRequest> {
      */
     pageToken?: string;
     /**
-     * Override to the user agent language
-     *
-     * @generated from field: optional string language_id = 5;
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 5;
      */
-    languageId?: string;
+    translate?: TranslationSpec;
     /**
      * @generated from field: optional avn.connect.v1.TranscodeImageSpec icon_spec = 6;
      */
