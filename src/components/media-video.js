@@ -152,9 +152,9 @@ AFRAME.registerComponent("media-video", {
         // else has so there is a timekeeper. Do not due this on iOS because iOS has an
         // annoying "auto-pause" feature that forces one non-autoplaying video to play
         // at once, which will pause the videos for everyone in the room if owned.
-        if (!isIOS && NAF.utils.getNetworkOwner(this.networkedEl) === "scene") {
+        if (!isIOS && this.networkedEl && NAF.utils.getNetworkOwner(this.networkedEl) === "scene") {
           setTimeout(() => {
-            if (NAF.utils.getNetworkOwner(this.networkedEl) === "scene") {
+            if (this.networkedEl && NAF.utils.getNetworkOwner(this.networkedEl) === "scene") {
               NAF.utils.takeOwnership(this.networkedEl);
             }
           }, 2000 + Math.floor(Math.random() * 2000));

@@ -68,7 +68,9 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
   const scene = AFRAME.scenes[0];
   
   // AVN: navigation sound
-  scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
+  if(scene) {
+    scene.systems["hubs-systems"].soundEffectsSystem.playSoundOneShot(SOUND_MEDIA_LOADED);
+  }
 
   // Generate leave events for everyone in the room.
   Object.keys(APP.hubChannel.presence.state).forEach(key => {
