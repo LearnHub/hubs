@@ -44,6 +44,16 @@ class AVNBridge {
     constructor() {
         // Async init
         this.initServiceWorker()
+
+        window.addEventListener('message', event => {
+            const assetId = event?.data?.assetId
+            if(assetId) {
+                console.log(`Post message request for assetId: ${assetId}`)
+                this.tryChangeScene(`https://scene.link/${assetId}`)
+            } else {
+                console.warn(`Unexpected post message`, event)
+            }
+        })
     }
 
     async initServiceWorker() {
