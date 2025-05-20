@@ -137,7 +137,7 @@ async function grantedMicLabels() {
 }
 
 const isMobile = AFRAME.utils.device.isMobile();
-const isMobileVR = AFRAME.utils.device.isMobileVR();
+const isThisMobileVR = AFRAME.utils.device.isMobileVR();
 const AUTO_EXIT_TIMER_SECONDS = 10;
 
 class UIRoot extends Component {
@@ -171,6 +171,7 @@ class UIRoot extends Component {
     subscriptions: PropTypes.object,
     initialIsFavorited: PropTypes.bool,
     showSignInDialog: PropTypes.bool,
+    showBitECSBasedClientRefreshPrompt: PropTypes.bool,
     signInMessage: PropTypes.object,
     onContinueAfterSignIn: PropTypes.func,
     showSafariMicDialog: PropTypes.bool,
@@ -290,7 +291,7 @@ class UIRoot extends Component {
               });
             } catch (e) {
               console.error(e);
-              this.props.exitScene(ExitReason.sceneError); // https://github.com/mozilla/hubs/issues/1950
+              this.props.exitScene(ExitReason.sceneError); // https://github.com/Hubs-Foundation/hubs/issues/1950
             }
           }
 
@@ -589,7 +590,7 @@ class UIRoot extends Component {
   handleForceEntry = () => {    
     console.log("Forced entry type: " + this.props.forcedVREntryType);
 
-    if (!this.props.forcedVREntryType) return;
+    if (!this.props.forcedVREntryType || !this.props.hubChannel.canEnterRoom(this.props.hub)) return;
 
     if (this.props.forcedVREntryType.startsWith("daydream")) {
       this.enterDaydream();
@@ -941,7 +942,7 @@ class UIRoot extends Component {
               this.handleForceEntry();
             }
           }}
-          showEnterOnDevice={!this.state.waitingOnAudio && !this.props.entryDisallowed && !isMobileVR}
+          showEnterOnDevice={!this.state.waitingOnAudio && !this.props.entryDisallowed && !isThisMobileVR}
           onEnterOnDevice={() => this.attemptLink()}
           showSpectate={!this.state.waitingOnAudio}
           onSpectate={() => this.setState({ watching: true })}
@@ -1235,7 +1236,7 @@ class UIRoot extends Component {
 
     const canCreateRoom = !configs.feature("disable_room_creation") || configs.isAdmin();
     const canCloseRoom = this.props.hubChannel && !!this.props.hubChannel.canOrWillIfCreator("close_hub");
-    const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isMobileVR;
+    const isModerator = this.props.hubChannel && this.props.hubChannel.canOrWillIfCreator("kick_users") && !isThisMobileVR;
 
     const avnShowPlaceMenu = true || this.props.avnDimensionConnection?.permissions?.allowShareMedia 
     || this.props.avnDimensionConnection?.permissions?.allowPen
@@ -1316,7 +1317,7 @@ class UIRoot extends Component {
               id: "see-plans",
               label: <FormattedMessage id="more-menu.see-plans-cta" defaultMessage="See Plans" />,
               icon: { src: hubsLogo, alt: "Logo" },
-              href: "https://hubs.mozilla.com/#subscribe"
+              href: "https://hubsfoundation.org/getting-started"
             }
         ].filter(item => item)
       },
@@ -1409,7 +1410,7 @@ class UIRoot extends Component {
             id: "report-issue",
             label: <FormattedMessage id="more-menu.report-issue" defaultMessage="Report Issue" />,
             icon: WarningCircleIcon,
-            href: configs.link("issue_report", "https://hubs.mozilla.com/docs/help.html")
+            href: configs.link("issue_report", "https://docs.hubsfoundation.org/help.html")
           },
           // AVN: UX clutter
           this.props.avnDimensionConnection?.features?.showStartTour && entered && {
@@ -1436,7 +1437,7 @@ class UIRoot extends Component {
             id: "controls",
             label: <FormattedMessage id="more-menu.controls" defaultMessage="Controls" />,
             icon: SupportIcon,
-            href: configs.link("controls", "https://hubs.mozilla.com/docs/hubs-controls.html")
+            href: configs.link("controls", "https://docs.hubsfoundation.org/hubs-controls.html")
           },
           configs.feature("show_whats_new_link") && {
             id: "whats-new",
@@ -1940,7 +1941,7 @@ class UIRoot extends Component {
                       }}
                     />
                     }
-                    {entered && isMobileVR && (
+                    {entered && isThisMobileVR && (
                       <ToolbarButton
                         className={styleUtils.hideLg}
                         icon={<VRIcon />}
@@ -2011,7 +2012,7 @@ class UIRoot extends Component {
                       />)
                     }
                     {entered &&
-                      isMobileVR && (
+                      isThisMobileVR && (
                         <ToolbarButton
                           icon={<VRIcon />}
                           preset="accept"
@@ -2046,6 +2047,14 @@ class UIRoot extends Component {
               />
             )}
           </div>
+          {this.props.showBitECSBasedClientRefreshPrompt && (
+            <div className={styles.bitecsBasedClientRefreshPrompt}>
+              <FormattedMessage
+                id="ui-root.bitecs-based-client-refresh-prompt"
+                defaultMessage="This page will be reloaded in five seconds because the room owner toggled the bitECS based client activation flag."
+              />
+            </div>
+          )}
         </ReactAudioContext.Provider>
       </MoreMenuContextProvider>
     );

@@ -7,8 +7,10 @@ import configs from "../utils/configs";
 import { createAndRedirectToNewHub, getReticulumFetchUrl } from "../utils/phoenix-utils";
 import { ReactComponent as CodeBranch } from "./icons/CodeBranch.svg";
 import { ReactComponent as Pen } from "./icons/Pen.svg";
+import { ReactComponent as ShareIcon } from "./icons/Share.svg";
 import IfFeature from "./if-feature";
 import { AppLogo } from "./misc/AppLogo";
+import { share } from "../utils/share";
 
 class SceneUI extends Component {
   static propTypes = {
@@ -50,6 +52,24 @@ class SceneUI extends Component {
 
     const { sceneAllowRemixing, isOwner, sceneProjectId, parentScene, sceneId, intl } = this.props;
     const sceneUrl = [location.protocol, "//", location.host, location.pathname].join("");
+    const tweetText = intl.formatMessage(
+      {
+        id: "scene-page.default-tweet",
+        defaultMessage: "{sceneName} in {shareHashtag}"
+      },
+      {
+        sceneName: this.props.sceneName,
+        shareHashtag: configs.translation("share-hashtag")
+      }
+    );
+    const onShareClick = async () => {
+      try {
+        await share({ url: sceneUrl, title: tweetText });
+      } catch (error) {
+        console.error(`while sharing (from scene UI):`, error);
+      }
+    };
+
     const unknown = intl.formatMessage({ id: "scene-page.unknown", defaultMessage: "unknown" });
 
     let attributions;

@@ -1,11 +1,13 @@
 import { showHoverEffect } from "../utils/permissions-utils";
 
+// prettier-ignore
 const interactorOneTransform = [
   1, 0, 0, 0,
   0, 1, 0, 0,
   0, 0, 1, 0,
   0, 0, 0, 1
 ];
+// prettier-ignore
 const interactorTwoTransform = [
   1, 0, 0, 0,
   0, 1, 0, 0,
@@ -35,8 +37,8 @@ AFRAME.registerComponent("hoverable-visuals", {
     this.boundingBox = null;
 
     const isMobile = AFRAME.utils.device.isMobile();
-    const isMobileVR = AFRAME.utils.device.isMobileVR();
-    this.isTouchscreen = isMobile && !isMobileVR;
+    const isThisMobileVR = AFRAME.utils.device.isMobileVR();
+    this.isTouchscreen = isMobile && !isThisMobileVR;
   },
   tick(time) {
     if (!this.uniforms || !this.uniforms.length) return;

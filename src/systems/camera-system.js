@@ -8,9 +8,15 @@ import { qsGet } from "../utils/qs_truthy";
 const customFOV = qsGet("fov");
 const enableThirdPersonMode = qsTruthy("thirdPerson");
 import { Layers } from "../camera-layers";
-import { HoveredRemoteRight, Inspectable, LocalAvatar, RemoteAvatar } from "../bit-components";
-import { findAncestorWithAnyComponent, findAncestorWithComponent, shouldUseNewLoader } from "../utils/bit-utils";
-import { defineQuery } from "bitecs";
+import { HoveredRemoteRight, Inspectable, Inspected, LocalAvatar, RemoteAvatar } from "../bit-components";
+import {
+  anyEntityWith,
+  findAncestorWithAnyComponent,
+  findAncestorWithComponent,
+  shouldUseNewLoader
+} from "../utils/bit-utils";
+import { addComponent, defineQuery, removeComponent } from "bitecs";
+import { INSPECTABLE_FLAGS } from "../bit-systems/inspect-system";
 
 function getInspectableInHierarchy(eid) {
   let inspectable = findAncestorWithComponent(APP.world, Inspectable, eid);
@@ -74,6 +80,7 @@ const decompose = (function () {
 })();
 
 const IDENTITY = new THREE.Matrix4().identity();
+const V_ONE = new THREE.Vector3(1, 1, 1);
 const orbit = (function () {
   const owq = new THREE.Quaternion();
   const owp = new THREE.Vector3();
@@ -425,7 +432,10 @@ export class CameraSystem {
   }
 
   tick = (function () {
-    const translation = new THREE.Matrix4();
+    const tmpMat = new THREE.Matrix4();
+    const position = new THREE.Vector3();
+    const quat = new THREE.Quaternion();
+    const scale = new THREE.Vector3();
     let uiRoot;
     const hoveredQuery = defineQuery([HoveredRemoteRight]);
     return function tick(scene, dt) {
@@ -438,9 +448,6 @@ export class CameraSystem {
       const isGhost = !entered && uiRoot && uiRoot.firstChild && uiRoot.firstChild.classList.contains("isGhost");
       if (isGhost && this.mode !== CAMERA_MODE_FIRST_PERSON && this.mode !== CAMERA_MODE_INSPECT) {
         this.mode = CAMERA_MODE_FIRST_PERSON;
-        const position = new THREE.Vector3();
-        const quat = new THREE.Quaternion();
-        const scale = new THREE.Vector3();
         this.viewingRig.object3D.updateMatrices();
         this.viewingRig.object3D.matrixWorld.decompose(position, quat, scale);
         position.setFromMatrixPosition(this.viewingCamera.matrixWorld);
@@ -466,8 +473,8 @@ export class CameraSystem {
         if (shouldUseNewLoader()) {
           if (hoveredQuery(APP.world).length) {
             const hovered = hoveredQuery(APP.world)[0];
-            const obj = APP.world.eid2obj.get(hovered);
-            this.inspect(obj, 1.5);
+            addComponent(APP.world, Inspected, hovered);
+            Inspectable.flags[hovered] |= INSPECTABLE_FLAGS.TARGET_CHANGED;
           }
         } else {
           const hoverEl = this.interaction.state.rightRemote.hovered || this.interaction.state.leftRemote.hovered;
@@ -478,7 +485,14 @@ export class CameraSystem {
         }
       } else if (this.mode === CAMERA_MODE_INSPECT && this.userinput.get(paths.actions.stopInspecting)) {
         scene.emit("uninspect");
-        this.uninspect();
+        if (shouldUseNewLoader()) {
+          const inspected = anyEntityWith(APP.world, Inspected);
+          if (inspected) {
+            removeComponent(APP.world, Inspected, inspected);
+          }
+        } else {
+          this.uninspect();
+        }
       }
 
       if (this.userinput.get(paths.actions.nextCameraMode)) {
@@ -496,16 +510,18 @@ export class CameraSystem {
           setMatrixWorld(this.avatarPOV.object3D, this.viewingCamera.matrixWorld);
         } else {
           this.avatarPOV.object3D.updateMatrices();
-          setMatrixWorld(this.viewingCamera, this.avatarPOV.object3D.matrixWorld);
+          this.avatarPOV.object3D.matrixWorld.decompose(position, quat, scale);
+          tmpMat.compose(position, quat, V_ONE);
+          setMatrixWorld(this.viewingCamera, tmpMat);
         }
       } else if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR || this.mode === CAMERA_MODE_THIRD_PERSON_FAR) {
         if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR) {
-          translation.makeTranslation(0, 1, 3);
+          tmpMat.makeTranslation(0, 1, 3);
         } else {
-          translation.makeTranslation(0, 2, 8);
+          tmpMat.makeTranslation(0, 2, 8);
         }
         this.avatarRig.object3D.updateMatrices();
-        this.viewingRig.object3D.matrixWorld.copy(this.avatarRig.object3D.matrixWorld).multiply(translation);
+        this.viewingRig.object3D.matrixWorld.copy(this.avatarRig.object3D.matrixWorld).multiply(tmpMat);
         setMatrixWorld(this.viewingRig.object3D, this.viewingRig.object3D.matrixWorld);
         this.avatarPOV.object3D.quaternion.copy(this.viewingCamera.quaternion);
         this.avatarPOV.object3D.matrixNeedsUpdate = true;

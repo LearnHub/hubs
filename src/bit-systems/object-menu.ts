@@ -1,4 +1,4 @@
-import { addComponent, defineQuery, enterQuery, entityExists, exitQuery, hasComponent } from "bitecs";
+import { addComponent, defineQuery, enterQuery, entityExists, exitQuery, hasComponent, removeComponent } from "bitecs";
 import { Matrix4, Vector3 } from "three";
 import type { HubsWorld } from "../app";
 import {
@@ -12,10 +12,28 @@ import {
   ObjectMenuTarget,
   RemoteRight,
   Rigidbody,
-  MediaContentBounds,
-  Deleting
+  Deleting,
+  MediaLoader,
+  ObjectDropped,
+  FloatyObject,
+  Owned,
+  MediaVideo,
+  MediaImage,
+  MediaPDF,
+  MediaMirrored,
+  Inspected,
+  Inspectable,
+  Deletable,
+  MediaRefresh,
+  MyCameraTool,
+  CameraTool
 } from "../bit-components";
-import { anyEntityWith, findAncestorWithComponents } from "../utils/bit-utils";
+import {
+  anyEntityWith,
+  findAncestorWithComponent,
+  findAncestorWithComponents,
+  hasAnyComponent
+} from "../utils/bit-utils";
 import { createNetworkedEntity } from "../utils/create-networked-entity";
 import HubChannel from "../utils/hub-channel";
 import type { EntityID } from "../utils/networking-types";
@@ -27,7 +45,10 @@ import { TRANSFORM_MODE } from "../components/transform-object-button";
 import { ScalingHandler } from "../components/scale-button";
 import { canPin, setPinned } from "../utils/bit-pinning-helper";
 import { ObjectMenuTransformFlags } from "../inflators/object-menu-transform";
-
+import { COLLISION_LAYERS } from "../constants";
+import { FLOATY_OBJECT_FLAGS } from "../systems/floaty-object-system";
+import { INSPECTABLE_FLAGS } from "./inspect-system";
+import { ObjectMenuPositions } from "../prefabs/object-menu";
 // Working variables.
 const _vec3_1 = new Vector3();
 const _vec3_2 = new Vector3();
@@ -44,17 +65,21 @@ function clicked(world: HubsWorld, eid: EntityID) {
 }
 
 function objectMenuTarget(world: HubsWorld, menu: EntityID, sceneIsFrozen: boolean) {
+  const held = heldQuery(world).map(eid => eid === ObjectMenu.inspectButtonRef[menu])[0];
+  if (held) {
+    return ObjectMenu.targetRef[menu];
+  }
+
   if (!sceneIsFrozen) {
     return 0;
   }
 
   // We can have more than one object menu target in the object hierarchy so we need to explicity look
-  // for the media loader entity here. ie. The object menu target in the media loader entity and the
-  // video menu in the video entity
-  // TODO We should use something more meaningful than MediaContentBounds for the media loader root entity
-  // or rename that to something like MediaRoot
+  // for the root media loader entity.
+  // We should probably use something more meaningful to refer to that spawned media root than Deletable.
+  // Maybe something like MediaRoot or SpawnedMediaRoot.
   const target = hoveredQuery(world).map(eid =>
-    findAncestorWithComponents(world, [MediaContentBounds, ObjectMenuTarget], eid)
+    findAncestorWithComponents(world, [Deletable, ObjectMenuTarget], eid)
   )[0];
   if (target) {
     if (hasComponent(world, Deleting, target)) {
@@ -68,7 +93,6 @@ function objectMenuTarget(world: HubsWorld, menu: EntityID, sceneIsFrozen: boole
   if (entityExists(world, ObjectMenu.targetRef[menu])) {
     return ObjectMenu.targetRef[menu];
   }
-
   return 0;
 }
 
@@ -165,32 +189,46 @@ function cloneObject(world: HubsWorld, sourceEid: EntityID) {
   setMatrixWorld(clonedObj, clonedMatrixWorld);
 }
 
+const tmpPos = new Vector3();
+function focus(world: HubsWorld, menu: EntityID, track: boolean = false) {
+  const myCam = anyEntityWith(APP.world, MyCameraTool);
+  if (!myCam) return;
+
+  let target = ObjectMenu.targetRef[menu];
+  if (track) {
+    const tracking = CameraTool.trackTarget[myCam];
+    CameraTool.trackTarget[myCam] = tracking === target ? 0 : target;
+  } else {
+    const targetObj = world.eid2obj.get(target)!;
+    targetObj.getWorldPosition(tmpPos);
+    world.eid2obj.get(myCam)!.lookAt(tmpPos);
+  }
+}
+
 function handleClicks(world: HubsWorld, menu: EntityID, hubChannel: HubChannel) {
   if (clicked(world, ObjectMenu.pinButtonRef[menu])) {
     setPinned(hubChannel, world, ObjectMenu.targetRef[menu], true);
   } else if (clicked(world, ObjectMenu.unpinButtonRef[menu])) {
     setPinned(hubChannel, world, ObjectMenu.targetRef[menu], false);
   } else if (clicked(world, ObjectMenu.cameraFocusButtonRef[menu])) {
-    console.log("Clicked focus");
+    focus(world, menu);
   } else if (clicked(world, ObjectMenu.cameraTrackButtonRef[menu])) {
-    console.log("Clicked track");
+    focus(world, menu, true);
   } else if (clicked(world, ObjectMenu.removeButtonRef[menu])) {
     ObjectMenu.flags[menu] &= ~ObjectMenuFlags.Visible;
     deleteTheDeletableAncestor(world, ObjectMenu.targetRef[menu]);
   } else if (clicked(world, ObjectMenu.dropButtonRef[menu])) {
-    console.log("Clicked drop");
-  } else if (clicked(world, ObjectMenu.inspectButtonRef[menu])) {
-    console.log("Clicked inspect");
+    addComponent(world, ObjectDropped, ObjectMenu.targetRef[menu]);
   } else if (clicked(world, ObjectMenu.deserializeDrawingButtonRef[menu])) {
     console.log("Clicked deserialize drawing");
   } else if (clicked(world, ObjectMenu.openLinkButtonRef[menu])) {
     openLink(world, ObjectMenu.targetRef[menu]);
   } else if (clicked(world, ObjectMenu.refreshButtonRef[menu])) {
-    console.log("Clicked refresh");
+    addComponent(world, MediaRefresh, ObjectMenu.targetRef[menu]);
   } else if (clicked(world, ObjectMenu.cloneButtonRef[menu])) {
     cloneObject(world, ObjectMenu.targetRef[menu]);
   } else if (clicked(world, ObjectMenu.mirrorButtonRef[menu])) {
-    console.log("Clicked mirror");
+    addComponent(world, MediaMirrored, ObjectMenu.targetRef[menu]);
   }
 }
 
@@ -203,6 +241,13 @@ function handleHeldEnter(world: HubsWorld, eid: EntityID, menuEid: EntityID) {
     case ObjectMenu.scaleButtonRef[menuEid]:
       ObjectMenu.flags[menuEid] &= ~ObjectMenuFlags.Visible;
       startScaling(world, menuEid, ObjectMenu.targetRef[menuEid]);
+      break;
+    case ObjectMenu.inspectButtonRef[menuEid]:
+      if (!hasComponent(world, Inspected, ObjectMenu.targetRef[menuEid])) {
+        ObjectMenu.flags[menuEid] &= ~ObjectMenuFlags.Visible;
+        addComponent(world, Inspected, ObjectMenu.targetRef[menuEid]);
+        Inspectable.flags[ObjectMenu.targetRef[menuEid]] |= INSPECTABLE_FLAGS.TARGET_CHANGED;
+      }
       break;
   }
 }
@@ -217,11 +262,18 @@ function handleHeldExit(world: HubsWorld, eid: EntityID, menuEid: EntityID) {
       ObjectMenu.flags[menuEid] |= ObjectMenuFlags.Visible;
       stopScaling(world, menuEid);
       break;
+    case ObjectMenu.inspectButtonRef[menuEid]:
+      if (hasComponent(world, Inspected, ObjectMenu.targetRef[menuEid])) {
+        ObjectMenu.flags[menuEid] |= ObjectMenuFlags.Visible;
+        removeComponent(world, Inspected, ObjectMenu.targetRef[menuEid]);
+      }
+      break;
   }
 }
 
 function updateVisibility(world: HubsWorld, menu: EntityID, frozen: boolean) {
-  const target = ObjectMenu.targetRef[menu];
+  if (!APP.hubChannel) return;
+  let target = ObjectMenu.targetRef[menu];
   const visible = !!(target && frozen) && (ObjectMenu.flags[menu] & ObjectMenuFlags.Visible) !== 0;
 
   // TODO We are handling menus visibility in a similar way for all the object menus, we
@@ -236,33 +288,100 @@ function updateVisibility(world: HubsWorld, menu: EntityID, frozen: boolean) {
   const obj = world.eid2obj.get(menu)!;
   obj.visible = visible;
 
-  // Parent visibility doesn't block raycasting, so we must set each button to be invisible
-  // TODO: Ensure that children of invisible entities aren't raycastable
-  world.eid2obj.get(ObjectMenu.unpinButtonRef[menu])!.visible = visible && isPinned(target);
-  world.eid2obj.get(ObjectMenu.pinButtonRef[menu])!.visible =
-    visible && !isPinned(target) && canPin(APP.hubChannel!, target);
-  world.eid2obj.get(ObjectMenu.removeButtonRef[menu])!.visible =
-    visible && !isPinned(target) && APP.hubChannel!.can("spawn_and_move_media");
-  world.eid2obj.get(ObjectMenu.cloneButtonRef[menu])!.visible = visible && APP.hubChannel!.can("spawn_and_move_media");
-  world.eid2obj.get(ObjectMenu.rotateButtonRef[menu])!.visible = visible && APP.hubChannel!.can("spawn_and_move_media");
-  world.eid2obj.get(ObjectMenu.scaleButtonRef[menu])!.visible = visible && APP.hubChannel!.can("spawn_and_move_media");
-  world.eid2obj.get(ObjectMenu.openLinkButtonRef[menu])!.visible = visible;
+  // We need the media loader entity as that's the entity that's actually pinned and we
+  // need to check its state to show/hide certain buttons
+  // TODO At this moment all objects that have an object menu have been loaded by a media loader
+  // but this might not be true in the future if we allow adding object menus to arbitrary objects.
+  const mediaLoader = findAncestorWithComponent(world, MediaLoader, target);
+  target = mediaLoader ? mediaLoader : target;
+
+  const canISpawnMove = APP.hubChannel.can("spawn_and_move_media");
+  const canIPin = !!(target && canPin(APP.hubChannel, target));
+  const isEntityPinned = isPinned(target);
+  const media = MediaLoader.mediaRef[target];
+  const isVideoImagePdf = hasAnyComponent(world, [MediaVideo, MediaImage, MediaPDF], media);
+  const isMirrored = hasComponent(world, MediaMirrored, target);
+  const isDropped = hasComponent(world, ObjectDropped, target);
+  const isInspectable = hasComponent(world, Inspectable, target);
+  const isInspected = hasComponent(world, Inspected, target);
+  const isRefreshing = hasComponent(world, MediaRefresh, target);
+  const isCameraActive = !!anyEntityWith(APP.world, MyCameraTool);
+
+  const openLinkButtonObj = world.eid2obj.get(ObjectMenu.openLinkButtonRef[menu])!;
+  const mirrorButtonObj = world.eid2obj.get(ObjectMenu.mirrorButtonRef[menu])!;
+  const inspectButtonObj = world.eid2obj.get(ObjectMenu.inspectButtonRef[menu])!;
+  const refreshButtonObj = world.eid2obj.get(ObjectMenu.refreshButtonRef[menu])!;
+
+  openLinkButtonObj.visible = visible;
+  mirrorButtonObj.visible = visible && isVideoImagePdf && !isMirrored;
+  inspectButtonObj.visible = visible && isInspectable && !isInspected;
+  refreshButtonObj.visible = visible && !isRefreshing;
+
+  if (canISpawnMove) {
+    world.eid2obj.get(ObjectMenu.unpinButtonRef[menu])!.visible = visible && isEntityPinned && canIPin;
+    world.eid2obj.get(ObjectMenu.pinButtonRef[menu])!.visible = visible && !isEntityPinned && canIPin;
+    world.eid2obj.get(ObjectMenu.removeButtonRef[menu])!.visible = visible && !isEntityPinned;
+    world.eid2obj.get(ObjectMenu.cloneButtonRef[menu])!.visible = visible;
+    world.eid2obj.get(ObjectMenu.rotateButtonRef[menu])!.visible = visible && (!isEntityPinned || canIPin);
+    world.eid2obj.get(ObjectMenu.scaleButtonRef[menu])!.visible = visible && (!isEntityPinned || canIPin);
+    world.eid2obj.get(ObjectMenu.dropButtonRef[menu])!.visible =
+      visible && !isVideoImagePdf && !isEntityPinned && !isDropped;
+
+    openLinkButtonObj.position.fromArray(ObjectMenuPositions.openLink);
+    mirrorButtonObj.position.fromArray(ObjectMenuPositions.mirror);
+    if (isEntityPinned) {
+      inspectButtonObj.position.fromArray(ObjectMenuPositions.inspectP);
+    } else if (isVideoImagePdf) {
+      inspectButtonObj.position.fromArray(ObjectMenuPositions.inspect);
+    } else {
+      inspectButtonObj.position.fromArray(ObjectMenuPositions.inspectM);
+    }
+    refreshButtonObj.position.fromArray(ObjectMenuPositions.refresh);
+
+    world.eid2obj.get(ObjectMenu.cameraFocusButtonRef[menu])!.visible = isCameraActive;
+    world.eid2obj.get(ObjectMenu.cameraTrackButtonRef[menu])!.visible = isCameraActive;
+  } else {
+    [
+      ObjectMenu.unpinButtonRef[menu],
+      ObjectMenu.pinButtonRef[menu],
+      ObjectMenu.removeButtonRef[menu],
+      ObjectMenu.cloneButtonRef[menu],
+      ObjectMenu.rotateButtonRef[menu],
+      ObjectMenu.scaleButtonRef[menu],
+      ObjectMenu.dropButtonRef[menu],
+      ObjectMenu.cameraFocusButtonRef[menu],
+      ObjectMenu.cameraTrackButtonRef[menu]
+    ].forEach(ref => {
+      world.eid2obj.get(ref)!.visible = false;
+    });
+
+    openLinkButtonObj.position.fromArray(ObjectMenuPositions.openLinkU);
+    mirrorButtonObj.position.fromArray(ObjectMenuPositions.mirrorU);
+    inspectButtonObj.position.fromArray(ObjectMenuPositions.inspectU);
+    refreshButtonObj.position.fromArray(ObjectMenuPositions.refreshU);
+  }
+
+  openLinkButtonObj.matrixNeedsUpdate = true;
+  mirrorButtonObj.matrixNeedsUpdate = true;
+  inspectButtonObj.matrixNeedsUpdate = true;
+  refreshButtonObj.matrixNeedsUpdate = true;
+
+  // This is a hacky way of giving a chance to the object-menu-transform system to center the menu based on the
+  // visible buttons without accounting for the background plane.
+  const same = ObjectMenuTransform.prevObjectRef[menu] === ObjectMenuTransform.targetObjectRef[menu];
+  world.eid2obj.get(ObjectMenu.backgroundRef[menu])!.visible = visible && same;
 
   // Hide unimplemented features for now.
   // TODO: Implement and show the buttons.
-  world.eid2obj.get(ObjectMenu.cameraFocusButtonRef[menu])!.visible = false;
-  world.eid2obj.get(ObjectMenu.cameraTrackButtonRef[menu])!.visible = false;
   world.eid2obj.get(ObjectMenu.deserializeDrawingButtonRef[menu])!.visible = false;
-  world.eid2obj.get(ObjectMenu.mirrorButtonRef[menu])!.visible = false;
-  world.eid2obj.get(ObjectMenu.inspectButtonRef[menu])!.visible = false;
-  world.eid2obj.get(ObjectMenu.dropButtonRef[menu])!.visible = false;
-  world.eid2obj.get(ObjectMenu.refreshButtonRef[menu])!.visible = false;
 }
 
 const hoveredQuery = defineQuery([HoveredRemoteRight]);
 const heldQuery = defineQuery([HeldRemoteRight]);
 const heldEnterQuery = enterQuery(heldQuery);
 const heldExitQuery = exitQuery(heldQuery);
+const objectDroppedQuery = defineQuery([ObjectDropped]);
+const objectDroppedEnterQuery = enterQuery(objectDroppedQuery);
 export function objectMenuSystem(world: HubsWorld, sceneIsFrozen: boolean, hubChannel: HubChannel) {
   const menu = anyEntityWith(world, ObjectMenu)!;
 
@@ -284,5 +403,25 @@ export function objectMenuSystem(world: HubsWorld, sceneIsFrozen: boolean, hubCh
       scalingHandler.tick();
     }
   }
+
+  objectDroppedEnterQuery(world).forEach(eid => {
+    takeOwnership(world, eid);
+    if (!hasComponent(world, Owned, eid)) return;
+
+    const physicsSystem = APP.scene?.systems["hubs-systems"].physicsSystem;
+    FloatyObject.flags[eid] &= ~FLOATY_OBJECT_FLAGS.MODIFY_GRAVITY_ON_RELEASE;
+    physicsSystem.updateRigidBody(eid, {
+      type: "dynamic",
+      gravity: { x: 0, y: -9.8, z: 0 },
+      angularDamping: 0.01,
+      linearDamping: 0.01,
+      linearSleepingThreshold: 1.6,
+      angularSleepingThreshold: 2.5,
+      collisionFilterMask: COLLISION_LAYERS.DEFAULT_INTERACTABLE
+    });
+
+    physicsSystem.activateBody(Rigidbody.bodyId[eid]);
+  });
+
   updateVisibility(world, menu, sceneIsFrozen);
 }

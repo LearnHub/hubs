@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext, createContext, useCallback, Children, cloneElement } from "react";
 import PropTypes from "prop-types";
 import { mediaSort, mediaSortAframe, getMediaType, getMediaTypeAframe } from "../../../utils/media-sorting.js";
-import { shouldUseNewLoader } from "../../../utils/bit-utils";
-import { defineQuery, hasComponent } from "bitecs";
-import { MediaInfo } from "../../../bit-components.js";
+import { anyEntityWith, shouldUseNewLoader } from "../../../utils/bit-utils";
+import { addComponent, defineQuery, hasComponent, removeComponent } from "bitecs";
+import { Inspected, MediaInfo } from "../../../bit-components.js";
 
 function getUrl(eid) {
   return hasComponent(APP.world, MediaInfo, eid) ? APP.getString(MediaInfo.accessibleUrl[eid]) : "";
@@ -56,14 +56,22 @@ function handleInspect(scene, object, callback) {
 
   callback(object);
 
-  const object3D = shouldUseNewLoader() ? APP.world.eid2obj.get(object.eid) : object.el.object3D;
-
-  if (object3D !== cameraSystem.inspectable) {
-    if (cameraSystem.inspectable) {
-      cameraSystem.uninspect(false);
+  if (shouldUseNewLoader()) {
+    const inspected = anyEntityWith(APP.world, Inspected);
+    if (inspected != object.eid) {
+      if (inspected) {
+        removeComponent(APP.world, Inspected, inspected);
+      }
+      addComponent(APP.world, Inspected, object.eid);
     }
+  } else {
+    if (object.el.object3D !== cameraSystem.inspectable) {
+      if (cameraSystem.inspectable) {
+        cameraSystem.uninspect(false);
+      }
 
-    cameraSystem.inspect(object3D, 1.5, false);
+      cameraSystem.inspect(object.el.object3D, 1.5, false);
+    }
   }
 }
 
@@ -72,11 +80,20 @@ function handleDeselect(scene, object, callback) {
 
   callback(null);
 
-  cameraSystem.uninspect(false);
+  if (shouldUseNewLoader()) {
+    const inspected = anyEntityWith(APP.world, Inspected);
+    if (inspected) {
+      removeComponent(APP.world, Inspected, inspected);
+    }
+    if (object) {
+      addComponent(APP.world, Inspected, object.eid);
+    }
+  } else {
+    cameraSystem.uninspect(false);
 
-  if (object) {
-    const object3D = shouldUseNewLoader() ? APP.world.eid2obj.get(object.eid) : object.el.object3D;
-    cameraSystem.inspect(object3D, 1.5, false);
+    if (object) {
+      cameraSystem.inspect(object.el.object3D, 1.5, false);
+    }
   }
 }
 
@@ -100,6 +117,11 @@ export function ObjectListProvider({ scene, children }) {
             eid: eid
           }));
         setObjects(objects);
+
+        const inspected = anyEntityWith(APP.world, Inspected);
+        if (!inspected || !objects.find(o => o.eid === inspected)) {
+          setSelectedObject(null);
+        }
       } else {
         const objects = scene.systems["listed-media"].els.sort(mediaSortAframe).map(el => ({
           id: el.object3D.id,
@@ -109,6 +131,13 @@ export function ObjectListProvider({ scene, children }) {
           el
         }));
         setObjects(objects);
+
+        const cameraSystem = scene.systems["hubs-systems"].cameraSystem;
+        const inspectedEl = cameraSystem.inspectable && cameraSystem.inspectable.el;
+
+        if (!inspectedEl || !objects.find(o => o.el === inspectedEl)) {
+          setSelectedObject(null);
+        }
       }
     }
 
@@ -128,32 +157,31 @@ export function ObjectListProvider({ scene, children }) {
       scene.removeEventListener("listed_media_changed", updateMediaEntities);
       clearTimeout(timeout);
     };
-  }, [scene, setObjects]);
+  }, [scene, setObjects, setSelectedObject]);
 
   useEffect(() => {
     function onInspectTargetChanged() {
-      const cameraSystem = scene.systems["hubs-systems"].cameraSystem;
-
       if (shouldUseNewLoader()) {
-        const inspectedEid = cameraSystem.inspectable && cameraSystem.inspectable.eid;
+        const inspected = anyEntityWith(APP.world, Inspected);
 
-        if (inspectedEid) {
-          const object = objects.find(o => o.eid === inspectedEid);
+        if (inspected) {
+          const object = objects.find(o => o.eid === inspected);
 
           if (object) {
             setSelectedObject(object);
           } else {
             setSelectedObject({
-              id: APP.world.eid2obj.get(inspectedEid)?.id,
-              name: getDisplayString(getUrl(inspectedEid)),
-              type: getMediaType(inspectedEid),
-              eid: inspectedEid
+              id: APP.world.eid2obj.get(inspected)?.id,
+              name: getDisplayString(getUrl(inspected)),
+              type: getMediaType(inspected),
+              eid: inspected
             });
           }
         } else {
           setSelectedObject(null);
         }
       } else {
+        const cameraSystem = scene.systems["hubs-systems"].cameraSystem;
         const inspectedEl = cameraSystem.inspectable && cameraSystem.inspectable.el;
 
         if (inspectedEl) {

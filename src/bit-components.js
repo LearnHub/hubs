@@ -70,6 +70,13 @@ export const HoveredHandRight = defineComponent();
 export const HoveredHandLeft = defineComponent();
 export const HoveredRemoteRight = defineComponent();
 export const HoveredRemoteLeft = defineComponent();
+export const HoverableVisuals = defineComponent({
+  geometryRadius: Types.f32
+});
+/**
+ * @type {Map<EntityId, Uniform[]}>}
+ */
+export const HoverableVisualsUniforms = new Map();
 export const HeldHandRight = defineComponent();
 export const HeldHandLeft = defineComponent();
 export const HeldRemoteRight = defineComponent();
@@ -89,9 +96,14 @@ export const TextButton = defineComponent({ labelRef: Types.eid });
 export const HoldableButton = defineComponent();
 export const SingleActionButton = defineComponent();
 export const Pen = defineComponent();
+export const PenActive = defineComponent();
+export const PenUpdated = defineComponent();
 export const HoverMenuChild = defineComponent();
 export const Static = defineComponent();
-export const Inspectable = defineComponent();
+export const Inspectable = defineComponent({
+  flags: Types.ui8
+});
+export const Inspected = defineComponent();
 export const PreventAudioBoost = defineComponent();
 export const IgnoreSpaceBubble = defineComponent();
 export const Rigidbody = defineComponent({
@@ -154,18 +166,23 @@ export const MyCameraTool = defineComponent();
 export const MediaLoader = defineComponent({
   src: Types.ui32,
   flags: Types.ui8,
-  fileId: Types.ui32
+  fileId: Types.ui32,
+  count: Types.ui8,
+  mediaRef: Types.eid
 });
 MediaLoader.src[$isStringType] = true;
 MediaLoader.fileId[$isStringType] = true;
+export const MediaLoaderOffset = defineComponent();
 export const MediaLoaded = defineComponent();
 export const LoadedByMediaLoader = defineComponent();
+export const MediaRefresh = defineComponent();
 export const MediaContentBounds = defineComponent({
   bounds: [Types.f32, 3]
 });
 export const MediaInfo = defineComponent({
   accessibleUrl: Types.ui32,
-  contentType: Types.ui32
+  contentType: Types.ui32,
+  mediaType: Types.ui8
 });
 MediaInfo.accessibleUrl[$isStringType] = true;
 MediaInfo.contentType[$isStringType] = true;
@@ -215,12 +232,17 @@ export const MediaPDF = defineComponent({
   pageNumber: Types.ui8
 });
 MediaPDF.map = new Map();
+export const MediaPDFUpdated = defineComponent({
+  pageNumber: Types.ui8
+});
 
 export const MediaVideo = defineComponent({
   ratio: Types.f32,
   flags: Types.ui8,
-  projection: Types.ui8
+  projection: Types.ui8,
+  lastUpdate: Types.ui32
 });
+export const MediaVideoUpdated = defineComponent();
 /**
  * @type {Map<EntityId, HTMLVideoElement}>}
  */
@@ -260,6 +282,9 @@ export const VideoMenu = defineComponent({
   headRef: Types.eid,
   playIndicatorRef: Types.eid,
   pauseIndicatorRef: Types.eid,
+  snapRef: Types.eid,
+  volUpRef: Types.eid,
+  volDownRef: Types.eid,
   clearTargetTimer: Types.f64
 });
 export const AudioEmitter = defineComponent({
@@ -275,6 +300,7 @@ EnvironmentSettings.map = new Map();
 
 // TODO: Store this data elsewhere, since only one or two will ever exist.
 export const ObjectMenu = defineComponent({
+  backgroundRef: Types.eid,
   pinButtonRef: Types.eid,
   unpinButtonRef: Types.eid,
   cameraFocusButtonRef: Types.eid,
@@ -293,6 +319,28 @@ export const ObjectMenu = defineComponent({
   handlingTargetRef: Types.eid,
   flags: Types.ui8
 });
+export const ObjectDropped = defineComponent();
+export const MediaMirrored = defineComponent({
+  linkedRef: Types.eid
+});
+export const MirroredMedia = defineComponent({
+  linkedRef: Types.eid
+});
+export const LinkedMedia = defineComponent({
+  linkedRef: Types.eid
+});
+export const FollowInFov = defineComponent({
+  offset: [Types.f32, 3],
+  angle: Types.f32,
+  speed: Types.f32,
+  started: Types.ui8
+});
+export const MirrorMenu = defineComponent({
+  closeRef: Types.eid,
+  mirrorTargetRef: Types.eid,
+  flags: Types.ui8
+});
+export const AvatarPOVNode = defineComponent();
 // TODO: Store this data elsewhere, since only one or two will ever exist.
 export const LinkHoverMenu = defineComponent({
   targetObjectRef: Types.eid,
@@ -311,12 +359,14 @@ export const PDFMenu = defineComponent({
   prevButtonRef: Types.eid,
   nextButtonRef: Types.eid,
   pageLabelRef: Types.eid,
+  snapRef: Types.eid,
   targetRef: Types.eid,
   clearTargetTimer: Types.f64
 });
 export const ObjectMenuTarget = defineComponent({
   flags: Types.ui8
 });
+export const MediaSnapped = defineComponent();
 export const NetworkDebug = defineComponent();
 export const NetworkDebugRef = defineComponent({
   ref: Types.eid

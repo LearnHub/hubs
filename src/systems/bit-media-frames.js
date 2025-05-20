@@ -20,7 +20,6 @@ import {
   MediaFrame,
   MediaImage,
   MediaLoaded,
-  MediaLoading,
   MediaPDF,
   MediaVideo,
   Networked,
@@ -29,14 +28,14 @@ import {
   Rigidbody
 } from "../bit-components";
 import { MediaType } from "../utils/media-utils";
-import { cloneObject3D, createPlaneBufferGeometry, disposeNode, setMatrixWorld } from "../utils/three-utils";
+import { cloneObject3D, disposeNode, setMatrixWorld, createPlaneBufferGeometry } from "../utils/three-utils";
 import { takeOwnership } from "../utils/take-ownership";
 import { takeSoftOwnership } from "../utils/take-soft-ownership";
 import { findAncestorWithComponent, findChildWithComponent } from "../utils/bit-utils";
-import { TEXTURES_FLIP_Y } from "../loaders/HubsTextureLoader";
 import { addObject3DComponent } from "../utils/jsx-entity";
 import { updateMaterials } from "../utils/material-utils";
 import { MEDIA_FRAME_FLAGS, AxisAlignType } from "../inflators/media-frame";
+import { TEXTURES_FLIP_Y } from "../loaders/HubsTextureLoader";
 import {
   Box3,
   DoubleSide,
@@ -116,7 +115,7 @@ function getCapturableEntity(world, physicsSystem, frame) {
     const eid = bodyData.object3D.eid;
     if (
       MediaFrame.mediaType[frame] & mediaTypeMaskFor(world, eid) &&
-      !hasComponent(world, MediaLoading, eid) &&
+      hasComponent(world, MediaContentBounds, eid) &&
       !inOtherFrame(world, frame, eid) &&
       !isAncestor(bodyData.object3D, frameObj)
     ) {

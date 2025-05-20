@@ -28,8 +28,8 @@ import { cloneObject3D, setMatrixWorld } from "../utils/three-utils";
 import { waitForDOMContentLoaded } from "../utils/async-utils";
 
 import { SHAPE } from "three-ammo/constants";
-import { addComponent, entityExists, removeComponent } from "bitecs";
-import { MediaContentBounds, MediaLoading } from "../bit-components";
+import { addComponent } from "bitecs";
+import { MediaContentBounds } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
@@ -303,9 +303,6 @@ AFRAME.registerComponent("media-loader", {
       }
 
       el.emit("media-loaded");
-      if (el.eid && entityExists(APP.world, el.eid)) {
-        removeComponent(APP.world, MediaLoading, el.eid);
-      }
     };
 
     if (this.data.animate) {
@@ -380,7 +377,6 @@ AFRAME.registerComponent("media-loader", {
 
       if ((forceLocalRefresh || srcChanged) && !this.showLoaderTimeout) {
         this.showLoaderTimeout = setTimeout(this.showLoader, 100);
-        addComponent(APP.world, MediaLoading, this.el.eid);
       }
 
       //check if url is an anchor hash e.g. #Spawn_Point_1

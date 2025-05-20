@@ -7,7 +7,6 @@ import HubChannel from "./hub-channel";
 import { queueEntityStateAsMessage } from "./listen-for-network-messages";
 import { networkableComponents, schemas } from "./network-schemas";
 import { CreateMessage, EntityID, NetworkID, StorableUpdateMessage } from "./networking-types";
-import qsTruthy from "./qs_truthy";
 import { deleteTheDeletableAncestor } from "../bit-systems/delete-entity-system";
 
 export type EntityState = {
@@ -170,14 +169,8 @@ function createEntityStatePayload(world: HubsWorld, rootEid: EntityID): CreateEn
 
   if (prefabName == "media" && fileId && src) {
     const fileAccessToken = new URL(src).searchParams.get("token") as string;
-    const { promotionToken } = APP.store.state.uploadPromotionTokens.find(
-      (upload: { fileId: string }) => upload.fileId === fileId
-    );
-    if (promotionToken) {
-      payload.file_id = fileId;
-      payload.file_access_token = fileAccessToken;
-      payload.promotion_token = promotionToken;
-    }
+    payload.file_id = fileId;
+    payload.file_access_token = fileAccessToken;
   }
   return payload;
 }
@@ -268,7 +261,7 @@ function loadFromJson(hubChannel: HubChannel) {
 };
 
 const TEST_ASSET_STATE =
-  "https://raw.githubusercontent.com/mozilla/hubs-sample-assets/main/Hubs%20Components/test_json/__NAME__";
+  "https://raw.githubusercontent.com/Hubs-Foundation/hubs-sample-assets/main/Hubs%20Components/test_json/__NAME__";
 
 export async function loadState(hubChannel: HubChannel, world: HubsWorld, state: string) {
   clearState(world, hubChannel);

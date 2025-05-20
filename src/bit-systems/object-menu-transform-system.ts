@@ -1,4 +1,4 @@
-import { defineQuery } from "bitecs";
+import { defineQuery, removeComponent } from "bitecs";
 import { HubsWorld } from "../app";
 import { ObjectMenuTarget, ObjectMenuTransform } from "../bit-components";
 import { EntityID } from "../utils/networking-types";
@@ -7,7 +7,6 @@ import { isFacingCamera, setFromObject, setMatrixWorld } from "../utils/three-ut
 import { ObjectMenuTargetFlags } from "../inflators/object-menu-target";
 import { ObjectMenuTransformFlags } from "../inflators/object-menu-transform";
 
-const offset = new Vector3();
 const tmpVec1 = new Vector3();
 const tmpVec2 = new Vector3();
 const tmpQuat1 = new Quaternion();
@@ -17,6 +16,7 @@ const tmpMat42 = new Matrix4();
 const aabb = new Box3();
 const sphere = new Sphere();
 const yVector = new Vector3(0, 1, 0);
+const UNIT_V3 = new Vector3(1, 1, 1);
 
 // Calculate the AABB without accounting for the root object rotation
 function getAABB(obj: Object3D, box: Box3, onlyVisible: boolean = false) {
@@ -36,7 +36,7 @@ function getAABB(obj: Object3D, box: Box3, onlyVisible: boolean = false) {
   obj.updateMatrixWorld();
 }
 
-// Check https://github.com/mozilla/hubs/pull/6289#issuecomment-1739003555 for implementation details.
+// Check https://github.com/Hubs-Foundation/hubs/pull/6289#issuecomment-1739003555 for implementation details.
 function transformMenu(world: HubsWorld, menu: EntityID) {
   const targetEid = ObjectMenuTransform.targetObjectRef[menu];
   const targetObj = world.eid2obj.get(targetEid);
@@ -44,18 +44,6 @@ function transformMenu(world: HubsWorld, menu: EntityID) {
   if (!targetObj || !enabled) return;
 
   const menuObj = world.eid2obj.get(menu)!;
-
-  // Calculate the menu offset based on visible elements
-  const center = (ObjectMenuTransform.flags[menu] & ObjectMenuTransformFlags.Center) !== 0 ? true : false;
-  if (center && ObjectMenuTransform.targetObjectRef[menu] !== ObjectMenuTransform.prevObjectRef[menu]) {
-    getAABB(menuObj, aabb);
-    aabb.getCenter(tmpVec1);
-    getAABB(menuObj, aabb, true);
-    aabb.getCenter(tmpVec2);
-    offset.subVectors(tmpVec1, tmpVec2);
-    offset.z = 0;
-  }
-
   const camera = APP.scene?.systems["hubs-systems"].cameraSystem.viewingCamera;
   camera.updateMatrices();
 
@@ -74,17 +62,20 @@ function transformMenu(world: HubsWorld, menu: EntityID) {
     menuObj.lookAt(tmpVec2.setFromMatrixPosition(camera.matrixWorld));
     menuObj.translateZ(sphere.radius);
 
-    if (center) {
-      menuObj.position.add(offset);
-      menuObj.matrixNeedsUpdate = true;
-    }
-
     // TODO We need to handle the menu positioning when the player is inside the bounding sphere.
     // For now we are defaulting to the current AFrame behavior.
   } else {
     targetObj.updateMatrices(true, true);
-    tmpMat4.copy(targetObj.matrixWorld);
-    tmpMat4.decompose(tmpVec1, tmpQuat1, tmpVec2);
+    targetObj.matrixWorld.decompose(tmpVec1, tmpQuat1, tmpVec2);
+
+    const scale = (ObjectMenuTransform.flags[menu] & ObjectMenuTransformFlags.Scale) !== 0 ? true : false;
+    if (scale) {
+      targetObj.getWorldScale(tmpVec2);
+      tmpMat42.compose(tmpVec1, tmpQuat1, tmpVec2);
+    } else {
+      tmpMat42.compose(tmpVec1, tmpQuat1, UNIT_V3);
+    }
+    tmpMat4.copy(tmpMat42);
 
     const isFacing = isFacingCamera(targetObj);
     if (!isFacing) {
@@ -93,14 +84,8 @@ function transformMenu(world: HubsWorld, menu: EntityID) {
       tmpMat4.multiply(tmpMat42);
     }
 
-    if (center) {
-      tmpMat42.makeTranslation(offset.x, offset.y, offset.z);
-      tmpMat4.multiply(tmpMat42);
-    }
-
     setMatrixWorld(menuObj, tmpMat4);
   }
-
   ObjectMenuTransform.prevObjectRef[menu] = ObjectMenuTransform.targetObjectRef[menu];
 }
 

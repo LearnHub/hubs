@@ -7,7 +7,7 @@ import { createNetworkedEntity } from "./utils/create-networked-entity";
 const isBotMode = qsTruthy("bot");
 const isMobile = AFRAME.utils.device.isMobile();
 const forceEnableTouchscreen = hackyMobileSafariTest();
-const isMobileVR = AFRAME.utils.device.isMobileVR();
+const isThisMobileVR = AFRAME.utils.device.isMobileVR();
 const isDebug = qsTruthy("debug");
 const qs = new URLSearchParams(location.search);
 
@@ -40,6 +40,9 @@ export default class SceneEntryManager {
     this.leftCursorController = document.getElementById("left-cursor-controller");
     this.avatarRig = document.getElementById("avatar-rig");
     this._entered = false;
+    /**
+     * @type {Function}
+     */
     this.performConditionalSignIn = () => {};
     this.history = history;
   }
@@ -442,7 +445,7 @@ export default class SceneEntryManager {
       const { entry, selectAction } = e.detail;
       if (selectAction !== "spawn") return;
 
-      const delaySpawn = isIn2DInterstitial() && !isMobileVR;
+      const delaySpawn = isIn2DInterstitial() && !isThisMobileVR;
       await exit2DInterstitialAndEnterVR();
 
       // If user has HMD lifted up or gone through interstitial, delay spawning for now. eventually show a modal
