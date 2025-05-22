@@ -8,7 +8,8 @@ import configs from "./utils/configs"
 
 const PreferredDomain = (configs as any).RETICULUM_SERVER
 console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
-const ConnectToAlphaBackend = PreferredDomain === "me.eduverse.com"
+// Temporarily avoid connection to alpha backend during transition period
+const ConnectToAlphaBackend = false && PreferredDomain === "me.eduverse.com"
 const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
 const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
 
