@@ -480,6 +480,7 @@ class UIRoot extends Component {
 
   // AVN: Streamlined version of sign-in dialog flow
   avnShowContextualSignInDialog = async () => {
+    console.log(`AVN: Starting OIDC sign in flow...`)
     const { authChannel, onContinueAfterSignIn } = this.props;
     this.showNonHistoriedDialog(RoomSignInModalContainer, {
       step: SignInStep.waitForVerification,
@@ -487,6 +488,7 @@ class UIRoot extends Component {
     });
     const { authComplete } = await authChannel.startOIDCAuthentication(this.props.hubChannel);
     await authComplete;
+    console.log(`AVN: OIDC sign in flow complete`)
     this.setState({ signedIn: true });
     (onContinueAfterSignIn || this.closeDialog)();
   };

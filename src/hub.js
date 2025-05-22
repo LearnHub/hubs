@@ -483,7 +483,7 @@ export async function updateEnvironmentForHub(hub, entryManager) {
         console.log(`Scene file initial load took ${Math.round(performance.now() - loadStart)}ms`);
 
         // Show the canvas once the model has loaded
-        document.querySelector(".a-canvas").classList.remove("a-hidden");
+        document.querySelector(".a-canvas")?.classList?.remove("a-hidden");
 
         sceneEl.addState("visible");
 
