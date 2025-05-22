@@ -36,6 +36,15 @@ let isAdmin = false;
   }
 });
 
+// AVN: Local client running directly (not in container) is expected to be hosted at hubs.local:8080
+configs.IS_LOCAL_CLIENT = document.location.host === "hubs.local:8080"
+if(configs.IS_LOCAL_CLIENT) {
+  console.log("AVN Detected local client hosting")
+}
+
+// AVN: The local metadata version isn't accurate for local instances, so use the hostname instead
+configs["RETICULUM_SERVER"] = document.location.hostname
+
 // Custom clients do not use <meta> tags for passing data, so if thumbnail_server meta tag exists, it is not a custom client
 const hasThumbnailServerMetaTag = !!document.querySelector("meta[name='env:thumbnail_server']");
 configs.IS_LOCAL_OR_CUSTOM_CLIENT = !hasThumbnailServerMetaTag;

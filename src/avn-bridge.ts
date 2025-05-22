@@ -1,29 +1,51 @@
 import * as Connect from "./connect"
-import { isLocalClient } from "./utils/phoenix-utils"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
-
 import configs from "./utils/configs"
-// Including this file pulls in unnessary additional support files, which can cause errors
-//import { changeHub } from "./change-hub"
 
-const PreferredDomain = (configs as any).RETICULUM_SERVER
-console.log(`AVN: PreferredDomain: ${PreferredDomain}`)
-// HACK_ALPHA_DOMAIN
-const ConnectToAlphaBackend = PreferredDomain === "me.eduverse.com" || true
-const ChannelPostfix = ConnectToAlphaBackend ? `-alpha` : ""
-const ShortDomainPrefix = ConnectToAlphaBackend ? `alpha.` : ""
+const SearchParams = new URLSearchParams(window.location.search)
 
-const LocalDevMode = isLocalClient()
+// Hosting overrides can be applied through URL parameters with values `local` or `alpha`
+
+// Where is Hubs being hosted? (client and reticulum)
+const HubsHost = SearchParams.get("hubsHost") === "local" 
+    ? "hubs.local"
+    : SearchParams.get("hubsHost") === "alpha" 
+        ? `me.eduverse.com`
+        : (configs as any).RETICULUM_SERVER
+console.log(`AVN HubsHost: ${HubsHost}`)
+
+// Where is gRPC-web hosted? (ConnectServices)
+const GwebHost = SearchParams.get("gwebHost") === "local" 
+    ? "http://127.0.0.1:8282"
+    : SearchParams.get("gwebHost") === "alpha" 
+        ? `https://gweb-alpha.avncloud.com`
+        : `https://gweb.avncloud.com`
+console.log(`AVN GwebHost: ${GwebHost}`)
+
+// Where are the REST services hosted? (legacy assets)
+const RestHost = SearchParams.get("restHost") === "local" 
+    ? "https://localhost:8181"
+    : SearchParams.get("restHost") === "alpha" 
+        ? `https://rest-alpha.avncloud.com`
+        : `https://rest.avncloud.com`
+console.log(`AVN RestHost: ${RestHost}`)
+
+// Where is the short URL service hosted? (invites)
+const ShortHost = SearchParams.get("shortHost") === "local" 
+    ? "https://localhost:8181"
+    : SearchParams.get("shortHost") === "alpha" 
+        ? `https://alpha.edvr.se`
+        : `https://edvr.se`
+console.log(`AVN ShortHost: ${ShortHost}`)
 
 // Feature overrides
-const SearchParams = new URLSearchParams(window.location.search)
 const showNavbar = (SearchParams.get("showNavbar") || "true") === "true"
 const showSidebar = (SearchParams.get("showSidebar") || "true") === "true"
 const showRoomEntryFlow = (SearchParams.get("showRoomEntryFlow") || "true") === "true"
 
 class AVNBridge {
 
-    private _assetDomain = LocalDevMode ? "https://localhost:8181" : `https://rest${ChannelPostfix}.avncloud.com`
+    private _assetDomain = RestHost
     private _accessToken: string | undefined
     private _roomInfo: Connect.PB.RoomInfo | undefined
     // Activity is only set when the room represents one
@@ -38,9 +60,7 @@ class AVNBridge {
 
     private _avnfsAltServers: string[] | undefined
 
-    private ConnectServices = new Connect.ConnectServices(LocalDevMode
-        ? "http://127.0.0.1:8282"
-        : `https://gweb${ChannelPostfix}.avncloud.com`)
+    private ConnectServices = new Connect.ConnectServices(GwebHost)
 
     constructor() {
         // Async init
@@ -181,7 +201,7 @@ class AVNBridge {
     }
 
     get shortDomain(): string {
-        return `https://${ShortDomainPrefix}edvr.se`
+        return ShortHost
     }
 
     // Authentication
@@ -335,7 +355,7 @@ class AVNBridge {
         const createDimensionResult = await this.ConnectServices.Dimensions.createDimension({
             client: new Connect.PB.ClientCredentials({ clientId: await this.getClientId() }),
             auth,
-            preferredDomain: PreferredDomain,
+            preferredDomain: HubsHost,
             referrer: window.location.hostname,
             passId,
         })

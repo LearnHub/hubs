@@ -9,7 +9,8 @@ export function hasReticulumServer() {
 }
 
 export function isLocalClient() {
-  return hasReticulumServer() && document.location.host !== configs.RETICULUM_SERVER;
+  // AVN: Hardcode assumptions are preferred for local clients
+  return configs.IS_LOCAL_CLIENT;
 }
 
 export function hubUrl(hubId, extraParams, slug, waypoint) {

@@ -1,9 +1,9 @@
 import React from "react";
 import { AVN } from "../../avn-bridge"
 import { sleep } from "../../utils/async-utils";
-import { isLocalClient } from "../../utils/phoenix-utils";
 import { store } from "../../utils/store-instance";
 import { LoadingScreen } from "../room/LoadingScreen";
+import configs from "../../utils/configs";
 export class AVNHomePage extends React.Component {
 
   state = {
@@ -88,8 +88,27 @@ export class AVNHomePage extends React.Component {
           }
           if(roomInfo) {
             console.log(`Found room ${roomInfo.domain} ${roomInfo.roomId}`)
-            const roomUrl = isLocalClient() ? `/hub.html?hub_id=${roomInfo.roomId}` : `https://${roomInfo.domain}/${roomInfo.roomId}/${assetId}`
+            const newUrlParams = []
+            let roomUrl
+            if(configs.IS_LOCAL_CLIENT) {
+              roomUrl = `/hub.html`
+              newUrlParams.push(`hub_id=${roomInfo.roomId}`)
+            } else {
+              roomUrl = `https://${roomInfo.domain}${document.location.port != 443 ? `:${document.location.port}` : ""}/${roomInfo.roomId}/${assetId}`
+            }
             this.setState({ message: `Joining ${roomInfo.name}...` })
+            // Add on any support utility parameters
+            const AvnUtilityParameters = [ "hubsHost", "gwebHost", "restHost", "shortHost" ]
+            AvnUtilityParameters.forEach(param => {
+              const value = searchParams.get(param)
+              if(value) {
+                newUrlParams.push(`${param}=${value}`)
+              }
+            })
+            if(newUrlParams.length > 0) {
+              roomUrl += "?" + newUrlParams.join("&")
+            }
+            console.log(`Redirecting to ${roomUrl}`)
             document.location.replace(roomUrl)
           } else {
             console.error("AVN: Failed to open a room")
