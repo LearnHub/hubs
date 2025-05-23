@@ -2,38 +2,54 @@ import * as Connect from "./connect"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
 import configs from "./utils/configs"
 
+const LocalHost = "hubs.local"
+const AlphaHost = "evcn.link"
+
 const SearchParams = new URLSearchParams(window.location.search)
 
 // Hosting overrides can be applied through URL parameters with values `local` or `alpha`
+// or by virtue of the hosting domain
+
+const IsLocalHost = window.location.host === `${LocalHost}:8080`
+const IsLocalContainerHost = window.location.host === LocalHost
+const IsAlphaHost = window.location.host === AlphaHost
+
+console.log(`AVN IsLocalHost:${IsLocalHost} IsLocalContainerHost:${IsLocalContainerHost} IsAlphaHost:${IsAlphaHost}`)
+
+const hubsHostDirective = SearchParams.get("hubsHost") ?? ((IsLocalHost || IsLocalContainerHost) ? "local" : IsAlphaHost ? "alpha" : undefined)
+const gwebHostDirective = SearchParams.get("gwebHost") ?? ((IsLocalHost || IsLocalContainerHost) ? "local" : IsAlphaHost ? "alpha" : undefined)
+const restHostDirective = SearchParams.get("restHost") ?? ((IsLocalHost || IsLocalContainerHost) ? "local" : IsAlphaHost ? "alpha" : undefined)
 
 // Where is Hubs being hosted? (client and reticulum)
-const HubsHost = SearchParams.get("hubsHost") === "local" 
+const HubsHost = hubsHostDirective === "local"
     ? "hubs.local"
-    : SearchParams.get("hubsHost") === "alpha" 
-        ? `me.eduverse.com`
-        : (configs as any).RETICULUM_SERVER
+    : hubsHostDirective === "alpha" 
+        ? AlphaHost
+        : window.location.hostname
 console.log(`AVN HubsHost: ${HubsHost}`)
+// Override config setting
+configs["RETICULUM_SERVER"] = HubsHost
 
 // Where is gRPC-web hosted? (ConnectServices)
-const GwebHost = SearchParams.get("gwebHost") === "local" 
+const GwebHost = gwebHostDirective === "local" 
     ? "http://127.0.0.1:8282"
-    : SearchParams.get("gwebHost") === "alpha" 
+    : gwebHostDirective === "alpha" 
         ? `https://gweb-alpha.avncloud.com`
         : `https://gweb.avncloud.com`
 console.log(`AVN GwebHost: ${GwebHost}`)
 
 // Where are the REST services hosted? (legacy assets)
-const RestHost = SearchParams.get("restHost") === "local" 
+const RestHost = restHostDirective === "local" 
     ? "http://localhost:8181"
-    : SearchParams.get("restHost") === "alpha" 
+    : restHostDirective === "alpha" 
         ? `https://rest-alpha.avncloud.com`
         : `https://rest.avncloud.com`
 console.log(`AVN RestHost: ${RestHost}`)
 
 // Where is the short URL service hosted? (invites and hall passes)
-const ShortHost = SearchParams.get("restHost") === "local" 
+const ShortHost = restHostDirective === "local" 
     ? "http://localhost:8181"
-    : SearchParams.get("restHost") === "alpha" 
+    : restHostDirective === "alpha" 
         ? `https://alpha.edvr.se`
         : `https://edvr.se`
 console.log(`AVN ShortHost: ${ShortHost}`)

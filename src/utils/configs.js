@@ -21,7 +21,6 @@ let isAdmin = false;
 ].forEach(x => {
   const el = document.querySelector(`meta[name='env:${x.toLowerCase()}']`);
   configs[x] = el ? el.getAttribute("content") : process.env[x];
-
   const BASE_ASSETS_PATH_KEY = "BASE_ASSETS_PATH";
   if (x === BASE_ASSETS_PATH_KEY && configs[BASE_ASSETS_PATH_KEY]) {
     // BASE_ASSETS_PATH might be a relative URL like "/" when it is set in
@@ -42,8 +41,8 @@ if(configs.IS_LOCAL_CLIENT) {
   console.log("AVN Detected local client hosting")
 }
 
-// AVN: The local metadata version isn't accurate for local instances, so use the hostname instead
-configs["RETICULUM_SERVER"] = document.location.hostname
+// AVN: Metadata verison will be overridden in avn-bridge for cross-server development
+configs["RETICULUM_SERVER"] = undefined
 
 // Custom clients do not use <meta> tags for passing data, so if thumbnail_server meta tag exists, it is not a custom client
 const hasThumbnailServerMetaTag = !!document.querySelector("meta[name='env:thumbnail_server']");

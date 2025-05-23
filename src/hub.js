@@ -611,7 +611,7 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data)
   
   // AVN: Hubs uses port 8443 in some configurations, which is not very firewall friendly
   if(hub.port != 443) {
-    console.error(`Dialog port should be 443!`);
+    console.error(`AVN Dialog port should be 443!`);
   }
 
   // Mute media until the scene has been fully loaded.
