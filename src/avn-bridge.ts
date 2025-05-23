@@ -24,16 +24,16 @@ console.log(`AVN GwebHost: ${GwebHost}`)
 
 // Where are the REST services hosted? (legacy assets)
 const RestHost = SearchParams.get("restHost") === "local" 
-    ? "https://localhost:8181"
+    ? "http://localhost:8181"
     : SearchParams.get("restHost") === "alpha" 
         ? `https://rest-alpha.avncloud.com`
         : `https://rest.avncloud.com`
 console.log(`AVN RestHost: ${RestHost}`)
 
-// Where is the short URL service hosted? (invites)
-const ShortHost = SearchParams.get("shortHost") === "local" 
-    ? "https://localhost:8181"
-    : SearchParams.get("shortHost") === "alpha" 
+// Where is the short URL service hosted? (invites and hall passes)
+const ShortHost = SearchParams.get("restHost") === "local" 
+    ? "http://localhost:8181"
+    : SearchParams.get("restHost") === "alpha" 
         ? `https://alpha.edvr.se`
         : `https://edvr.se`
 console.log(`AVN ShortHost: ${ShortHost}`)
