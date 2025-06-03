@@ -2,17 +2,17 @@ import * as Connect from "./connect"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
 import configs from "./utils/configs"
 
-const LocalHost = "hubs.local"
-const AlphaHost = "evcn.link"
+const LocalHostname = "hubs.localhost"
+const AlphaHostname = "gb.eduverse.com"
 
 const SearchParams = new URLSearchParams(window.location.search)
 
 // Hosting overrides can be applied through URL parameters with values `local` or `alpha`
 // or by virtue of the hosting domain
 
-const IsLocalHost = window.location.host === `${LocalHost}:8080`
-const IsLocalContainerHost = window.location.host === LocalHost
-const IsAlphaHost = window.location.host === AlphaHost
+const IsLocalHost = window.location.host === `${LocalHostname}:8080`
+const IsLocalContainerHost = window.location.host === LocalHostname
+const IsAlphaHost = window.location.host === AlphaHostname
 
 console.log(`AVN IsLocalHost:${IsLocalHost} IsLocalContainerHost:${IsLocalContainerHost} IsAlphaHost:${IsAlphaHost}`)
 
@@ -22,9 +22,9 @@ const restHostDirective = SearchParams.get("restHost") ?? ((IsLocalHost || IsLoc
 
 // Where is Hubs being hosted? (client and reticulum)
 const HubsHost = hubsHostDirective === "local"
-    ? "hubs.local"
+    ? LocalHostname
     : hubsHostDirective === "alpha" 
-        ? AlphaHost
+        ? AlphaHostname
         : window.location.hostname
 console.log(`AVN HubsHost: ${HubsHost}`)
 // Override config setting
