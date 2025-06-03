@@ -36,7 +36,7 @@ env:
 # Registry_Password: This must be added in each job that needs it.
   Registry_Namespace: ${{ inputs.Override_Registry_Namespace || vars.REGISTRY_NAMESPACE }}
   Image_Tag: ${{ inputs.Override_Image_Tag || github.ref_name }}
-  Dockerfile: ${{ inputs.Override_Dockerfile || 'RetPageOriginDockerfile' }}
+  Dockerfile: ${{ inputs.Override_Dockerfile || 'Dockerfile' }}
   Code_Path: ${{ inputs.Override_Code_Path }}
   Use_Build_Cache: ${{ inputs.Use_Build_Cache }}
 # repo_name: This must be added in each job that needs it.

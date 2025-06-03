@@ -7,7 +7,7 @@ fi
 
 DOCKER_DEFAULT_PLATFORM=linux/amd64
 echo -e "\n ### building ### "
-docker build -f RetPageOriginDockerfile -t hubs:retpack .
+docker build -f Dockerfile -t hubs:retpack .
 
 echo -e "\n ### packing ### "
 docker run -v $PWD/.retpack/:/tmp/ \

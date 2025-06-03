@@ -22,7 +22,7 @@ jobs:
     uses: Hubs-Foundation/hubs-ops/.github/workflows/turkeyGitops.yml@master
     with:
       registry: hubsfoundation
-      dockerfile: RetPageOriginDockerfile
+      dockerfile: Dockerfile
       k8s_deployment: hubs
       k8s_deployment_container: hubs
       bio_script_path: scripts/hab-wrap-and-push.sh
