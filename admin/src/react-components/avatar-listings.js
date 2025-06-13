@@ -61,7 +61,7 @@ export const AvatarListingList = props => (
       <OwnedFileImage
         source="thumbnail_owned_file_id"
         aspect="tall"
-        defaultImage="https://asset-bundles-prod.reticulum.io/bots/avatar_unavailable.png"
+        defaultImage="https://avnfs.com/fWk_rQkO4X7LRuYRwbdCYtM90QGVZHRToFbqUuiTfSc?size=67655&type=image%2Fpng&name=avatar_unavailable.png"
       />
       <TextField source="name" />
       <TextField source="order" />
