@@ -21,8 +21,7 @@ async function checkAltServers() {
         // Don't check more often than every 60 minutes
         nextCheckTimestamp = now + 60 * 60_000
         try {
-            const searchParams = new URLSearchParams(self.location.search)
-            const AltServerEndpoint = searchParams.get("restHost") === "alpha" 
+            const AltServerEndpoint = self.location.hostname === "gb.eduverse.com" 
                 ? "https://rest-alpha.avncloud.com/v1/avnfs/altservers"
                 : "https://rest.avncloud.com/v1/avnfs/altservers"        
             console.log(`AVNSW: Downloading altservers from '${AltServerEndpoint}'...`)
