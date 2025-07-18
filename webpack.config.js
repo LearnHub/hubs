@@ -174,6 +174,7 @@ async function fetchAppConfigAndEnvironmentVars() {
     return appConfig;
   }
 
+  /* AVN: shortlink and thumbnail not needed, but it appears this endpoint no longer exists anyway 
   const hubsConfigsResponse = await fetch(`https://${host}/api/ita/configs/hubs`, { headers });
 
   const hubsConfigs = await hubsConfigsResponse.json();
@@ -183,13 +184,14 @@ async function fetchAppConfigAndEnvironmentVars() {
   }
 
   const { shortlink_domain, thumbnail_server } = hubsConfigs.general;
+  */
 
   const localIp = process.env.HOST_IP || (await internalIpV4()) || "localhost";
 
   process.env.RETICULUM_SERVER = host;
-  process.env.SHORTLINK_DOMAIN = shortlink_domain;
+  process.env.SHORTLINK_DOMAIN = "AVN_SHORTLINK_DOMAIN_DEPRECATED";
   process.env.CORS_PROXY_SERVER = `hubs.local:8080/cors-proxy`;
-  process.env.THUMBNAIL_SERVER = thumbnail_server;
+  process.env.THUMBNAIL_SERVER = "AVN_THUMBNAIL_SERVER_DEPRECATED";
   process.env.NON_CORS_PROXY_DOMAINS = `${localIp},hubs.local,localhost`;
 
   return appConfig;
