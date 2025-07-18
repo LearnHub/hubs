@@ -7,8 +7,7 @@ const AlphaHostname = "gb.eduverse.com"
 
 const SearchParams = new URLSearchParams(window.location.search)
 
-// Hosting overrides can be applied through URL parameters with values `local` or `alpha`
-// or by virtue of the hosting domain
+// Hosting overrides can be applied through URL parameters with values `local` or `alpha` or by virtue of the hosting domain
 
 const IsLocalHost = window.location.host === `${LocalHostname}:8080`
 const IsLocalContainerHost = window.location.host === LocalHostname
