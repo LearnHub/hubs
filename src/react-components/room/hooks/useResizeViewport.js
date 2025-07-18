@@ -68,7 +68,8 @@ export function useResizeViewport(viewportRef, store, scene) {
 
       const canvasRect = entries[0].contentRect;
 
-      const rendererSize = calculateRendererSize(canvasRect, maxResolution, isVRPresenting);
+      // AVN: Limiting the rendering size to anything less than the target canvas seems unnecessary on all supported platforms
+      const rendererSize = canvasRect //calculateRendererSize(canvasRect, maxResolution, isVRPresenting);
 
       const canvas = scene.canvas;
       canvas.style.width = canvasRect.width + "px";

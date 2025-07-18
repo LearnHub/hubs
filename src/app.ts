@@ -230,6 +230,9 @@ export class App {
       // EffectComposer manages renderer size internally
       (sceneEl as any).addEventListener("rendererresize", function ({ detail }: { detail: DOMRectReadOnly }) {
         renderer.setSize(detail.width, detail.height, false);
+        // AVN: This varies with browser zoom level so must be updated dynamically and while we could track it through an explicit event, 
+        // zoom changes also trigger the resize event anyway
+        renderer.setPixelRatio(window.devicePixelRatio);
       });
     }
 
