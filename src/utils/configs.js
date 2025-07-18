@@ -35,8 +35,8 @@ let isAdmin = false;
   }
 });
 
-// AVN: Local client running directly (not in container) is expected to be hosted at hubs.local:8080
-configs.IS_LOCAL_CLIENT = document.location.host === "hubs.local:8080"
+// AVN: Local client running directly (not in container) is expected to be hosted at hubs.localhost:8080
+configs.IS_LOCAL_CLIENT = document.location.host === "hubs.localhost:8080"
 if(configs.IS_LOCAL_CLIENT) {
   console.log("AVN Detected local client hosting")
 }
