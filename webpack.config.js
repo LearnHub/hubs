@@ -144,7 +144,8 @@ function createDefaultAppConfig() {
 }
 
 async function fetchAppConfigAndEnvironmentVars() {
-  const { internalIpV4 } = await import("internal-ip");
+  // AVN: Not required
+  //const { internalIpV4 } = await import("internal-ip");
 
   if (!fs.existsSync(".ret.credentials")) {
     throw new Error("Not logged in to Hubs Cloud. Run `npm run login` first.");
@@ -184,15 +185,15 @@ async function fetchAppConfigAndEnvironmentVars() {
   }
 
   const { shortlink_domain, thumbnail_server } = hubsConfigs.general;
-  */
 
   const localIp = process.env.HOST_IP || (await internalIpV4()) || "localhost";
+  */
 
   process.env.RETICULUM_SERVER = host;
   process.env.SHORTLINK_DOMAIN = "AVN_SHORTLINK_DOMAIN_DEPRECATED";
-  process.env.CORS_PROXY_SERVER = `hubs.local:8080/cors-proxy`;
+  process.env.CORS_PROXY_SERVER = "AVN_CORS_PROXY_SERVER_DEPRECATED";
   process.env.THUMBNAIL_SERVER = "AVN_THUMBNAIL_SERVER_DEPRECATED";
-  process.env.NON_CORS_PROXY_DOMAINS = `${localIp},hubs.local,localhost`;
+  process.env.NON_CORS_PROXY_DOMAINS = "AVN_NON_CORS_PROXY_DOMAINS_DEPRECATED";
 
   return appConfig;
 }
@@ -252,7 +253,7 @@ module.exports = async (env, argv) => {
     }
 
     if (env.localDev) {
-      const localDevHost = "hubs.local";
+      const localDevHost = "hubs.localhost";
       // Local Dev Environment (npm run local)
       Object.assign(process.env, {
         HOST: localDevHost,
@@ -289,7 +290,7 @@ module.exports = async (env, argv) => {
     // .replaceAll("connect-src", "connect-src https://example.com");
   }
 
-  const internalHostname = process.env.INTERNAL_HOSTNAME || "hubs.local";
+  const internalHostname = process.env.INTERNAL_HOSTNAME || "hubs.localhost";
   return {
     cache: {
       type: "filesystem"
