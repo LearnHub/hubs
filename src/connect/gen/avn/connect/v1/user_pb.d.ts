@@ -29,8 +29,6 @@ export declare class User extends Message<User> {
      */
     deleted: boolean;
     /**
-     * More sensitive fields are optional based on permissions and availability
-     *
      * @generated from field: optional bool email_verified = 10;
      */
     emailVerified?: boolean;
@@ -50,6 +48,12 @@ export declare class User extends Message<User> {
      * @generated from field: optional google.protobuf.Timestamp last_login = 14;
      */
     lastLogin?: Timestamp;
+    /**
+     * Languages that the user is allowed to translate
+     *
+     * @generated from field: repeated string translation_ids = 15;
+     */
+    translationIds: string[];
     constructor(data?: PartialMessage<User>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.User";

@@ -118,6 +118,12 @@ export declare class AvailableContent extends Message<AvailableContent> {
      */
     licensedChannels: number[];
     /**
+     * Avaialble features by custom SKU ID
+     *
+     * @generated from field: repeated int32 licensed_features = 3;
+     */
+    licensedFeatures: number[];
+    /**
      * Published content in these categories is available
      *
      * @generated from field: repeated int32 licensed_categories = 4;

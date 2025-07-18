@@ -165,7 +165,11 @@ export declare enum EntityProperty {
     /**
      * @generated from enum value: ENTITY_PROPERTY_KEYWORDS = 31;
      */
-    KEYWORDS = 31
+    KEYWORDS = 31,
+    /**
+     * @generated from enum value: ENTITY_PROPERTY_SUMMARY = 32;
+     */
+    SUMMARY = 32
 }
 /**
  * Common info for channels, profiles, categories, and activities

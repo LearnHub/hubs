@@ -74,6 +74,10 @@ export declare class Activity extends Message<Activity> {
      */
     updated?: Timestamp;
     /**
+     * @generated from field: optional avn.connect.v1.Translatable summary = 22;
+     */
+    summary?: Translatable;
+    /**
      * @generated from field: optional avn.connect.v1.Translatable description = 6;
      */
     description?: Translatable;

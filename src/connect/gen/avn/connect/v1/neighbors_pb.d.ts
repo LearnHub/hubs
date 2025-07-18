@@ -1,27 +1,37 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import { Message, proto3, Struct } from "@bufbuild/protobuf";
 import { ClientCredentials } from "./clients_pb.js";
 /**
  * @generated from message avn.connect.v1.NeighborServer
  */
 export declare class NeighborServer extends Message<NeighborServer> {
     /**
+     * Server ID
+     *
      * @generated from field: string client_id = 1;
      */
     clientId: string;
     /**
-     * @generated from field: string wan_address = 2;
+     * Ordered list of WAN IPs the server has called in on
+     *
+     * @generated from field: repeated string wan_addresses = 3;
      */
-    wanAddress: string;
+    wanAddresses: string[];
     /**
+     * The LAN port for the local server
+     *
      * @generated from field: int32 lan_port = 4;
      */
     lanPort: number;
     /**
+     * Server display name
+     *
      * @generated from field: string client_name = 5;
      */
     clientName: string;
     /**
+     * Ordered list of the LAN hostnames for the server
+     *
      * @generated from field: repeated string lan_hostnames = 6;
      */
     lanHostnames: string[];
@@ -43,21 +53,29 @@ export declare class RegisterNeighborServerRequest extends Message<RegisterNeigh
      */
     client?: ClientCredentials;
     /**
-     * @generated from field: string lan_address = 2;
-     */
-    lanAddress: string;
-    /**
+     * The LAN port for this server
+     *
      * @generated from field: int32 lan_port = 3;
      */
     lanPort: number;
     /**
+     * The LAN addresses for this server
+     *
      * @generated from field: repeated string lan_addresses = 4;
      */
     lanAddresses: string[];
     /**
+     * Server display name
+     *
      * @generated from field: string client_name = 5;
      */
     clientName: string;
+    /**
+     * Server statistics with flexible schema
+     *
+     * @generated from field: optional google.protobuf.Struct client_statistics = 6;
+     */
+    clientStatistics?: Struct;
     constructor(data?: PartialMessage<RegisterNeighborServerRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.RegisterNeighborServerRequest";

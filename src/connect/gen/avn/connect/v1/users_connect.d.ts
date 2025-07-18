@@ -1,6 +1,6 @@
-import { GetEntityRequest } from "./entities_pb.js";
+import { DeleteEntityRequest, GetEntityRequest } from "./entities_pb.js";
 import { User } from "./user_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { Empty, MethodKind } from "@bufbuild/protobuf";
 import { GetOrganizationMembershipRequest, GetOrganizationMembershipResponse, SearchMemberOrganizationsRequest, SearchMemberOrganizationsResponse } from "./users_pb.js";
 /**
  * @generated from service avn.connect.v1.UserService
@@ -37,6 +37,17 @@ export declare const UserService: {
             readonly name: "SearchMemberOrganizations";
             readonly I: typeof SearchMemberOrganizationsRequest;
             readonly O: typeof SearchMemberOrganizationsResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Requires the deleteUsers permission
+         *
+         * @generated from rpc avn.connect.v1.UserService.DeleteUser
+         */
+        readonly deleteUser: {
+            readonly name: "DeleteUser";
+            readonly I: typeof DeleteEntityRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };

@@ -1,5 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
+import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.TranslationFormat
  */
@@ -137,15 +138,19 @@ export declare class Translatable extends Message<Translatable> {
  */
 export declare class TranslationRequest extends Message<TranslationRequest> {
     /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
      * Source text
      *
-     * @generated from field: string text = 1;
+     * @generated from field: string text = 2;
      */
     text: string;
     /**
      * Language and format of the source text
      *
-     * @generated from field: avn.connect.v1.TranslationSpec source_spec = 2;
+     * @generated from field: avn.connect.v1.TranslationSpec source_spec = 3;
      */
     sourceSpec?: TranslationSpec;
     /**
@@ -153,13 +158,13 @@ export declare class TranslationRequest extends Message<TranslationRequest> {
      * - if undefined the original source will be returned unmodified
      * - if the format field is set to UNDEFINED the source format will be preserved
      *
-     * @generated from field: optional avn.connect.v1.TranslationSpec target_spec = 3;
+     * @generated from field: optional avn.connect.v1.TranslationSpec target_spec = 4;
      */
     targetSpec?: TranslationSpec;
     /**
      * Differential modifier for short or ambiguous text (currently implemented as a prefix for backward compatibility with CC1)
      *
-     * @generated from field: string modifier = 4;
+     * @generated from field: string modifier = 5;
      */
     modifier: string;
     constructor(data?: PartialMessage<TranslationRequest>);
@@ -170,4 +175,89 @@ export declare class TranslationRequest extends Message<TranslationRequest> {
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationRequest;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationRequest;
     static equals(a: TranslationRequest | PlainMessage<TranslationRequest> | undefined, b: TranslationRequest | PlainMessage<TranslationRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.TranslationUpdateRequest
+ */
+export declare class TranslationUpdateRequest extends Message<TranslationUpdateRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: string translation_id = 2;
+     */
+    translationId: string;
+    /**
+     * @generated from field: string source_language_id = 3;
+     */
+    sourceLanguageId: string;
+    /**
+     * @generated from field: string target_language_id = 4;
+     */
+    targetLanguageId: string;
+    /**
+     * New translated text
+     *
+     * @generated from field: string text = 5;
+     */
+    text: string;
+    constructor(data?: PartialMessage<TranslationUpdateRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.TranslationUpdateRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationUpdateRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationUpdateRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationUpdateRequest;
+    static equals(a: TranslationUpdateRequest | PlainMessage<TranslationUpdateRequest> | undefined, b: TranslationUpdateRequest | PlainMessage<TranslationUpdateRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.TranslationLookupRequest
+ */
+export declare class TranslationLookupRequest extends Message<TranslationLookupRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: string translation_id = 2;
+     */
+    translationId: string;
+    /**
+     * @generated from field: string source_language_id = 3;
+     */
+    sourceLanguageId: string;
+    /**
+     * @generated from field: string target_language_id = 4;
+     */
+    targetLanguageId: string;
+    constructor(data?: PartialMessage<TranslationLookupRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.TranslationLookupRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationLookupRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationLookupRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationLookupRequest;
+    static equals(a: TranslationLookupRequest | PlainMessage<TranslationLookupRequest> | undefined, b: TranslationLookupRequest | PlainMessage<TranslationLookupRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.TranslationLookupResponse
+ */
+export declare class TranslationLookupResponse extends Message<TranslationLookupResponse> {
+    /**
+     * @generated from field: string source_text = 1;
+     */
+    sourceText: string;
+    /**
+     * @generated from field: string target_text = 2;
+     */
+    targetText: string;
+    constructor(data?: PartialMessage<TranslationLookupResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.TranslationLookupResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationLookupResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationLookupResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationLookupResponse;
+    static equals(a: TranslationLookupResponse | PlainMessage<TranslationLookupResponse> | undefined, b: TranslationLookupResponse | PlainMessage<TranslationLookupResponse> | undefined): boolean;
 }

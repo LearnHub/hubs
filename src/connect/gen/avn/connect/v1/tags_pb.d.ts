@@ -91,6 +91,10 @@ export declare enum TagId {
      */
     THINGLINK = 2742,
     /**
+     * @generated from enum value: TAG_ID_SHIM_CONTAINER = 2795;
+     */
+    SHIM_CONTAINER = 2795,
+    /**
      * Media
      *
      * @generated from enum value: TAG_ID_FLAT = 2715;
