@@ -33,7 +33,6 @@ import { MediaContentBounds } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
-import { AvnTags } from "../avn-tags";
 import * as Connect from "../connect";
 
 let loadingObject;
@@ -407,7 +406,7 @@ AFRAME.registerComponent("media-loader", {
               contentType = (result.meta && result.meta.expected_content_type) || contentType;
             }
             const tags = result.meta && result.meta.tags;
-            isAvatar = tags && tags.includes(AvnTags.Avatar);
+            isAvatar = tags && tags.includes(PB.AvnTags.Avatar);
           } else {
             console.warn(`Unexpected URL to resolve '${src}'`)
           }
