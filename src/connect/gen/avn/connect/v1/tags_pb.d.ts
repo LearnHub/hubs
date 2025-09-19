@@ -1,6 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { Translatable, TranslationSpec } from "./translations_pb.js";
+import { TranslationSpec } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.TagFilterCondition
@@ -220,9 +220,9 @@ export declare class Tag extends Message<Tag> {
      */
     tagId: number;
     /**
-     * @generated from field: avn.connect.v1.Translatable name = 2;
+     * @generated from field: string name = 2;
      */
-    name?: Translatable;
+    name: string;
     /**
      * @generated from field: int32 tag_group_id = 3;
      */
@@ -253,9 +253,9 @@ export declare class TagGroup extends Message<TagGroup> {
      */
     tagGroupId: number;
     /**
-     * @generated from field: avn.connect.v1.Translatable name = 2;
+     * @generated from field: string name = 2;
      */
-    name?: Translatable;
+    name: string;
     /**
      * @generated from field: string language_id = 3;
      */

@@ -1,5 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import { FieldOptions, Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
 /**
  * @generated from enum avn.connect.v1.TranslationFormat
@@ -20,7 +20,11 @@ export declare enum TranslationFormat {
     /**
      * @generated from enum value: TRANSLATION_FORMAT_HTML = 3;
      */
-    HTML = 3
+    HTML = 3,
+    /**
+     * @generated from enum value: TRANSLATION_FORMAT_XLIFF = 4;
+     */
+    XLIFF = 4
 }
 /**
  * @generated from enum avn.connect.v1.TranslationFlag
@@ -31,41 +35,17 @@ export declare enum TranslationFlag {
      */
     UNKNOWN = 0,
     /**
-     * Is translation text a base64 AVNFS path? (not yet implemented)
+     * Is translation `text` field an AVNFS path?
      *
      * @generated from enum value: TRANSLATION_FLAG_IS_AVNFS = 1;
      */
     IS_AVNFS = 1,
     /**
-     * Source was blank
+     * Should translation include metadata info for translators?
      *
-     * @generated from enum value: TRANSLATION_FLAG_BLANK_SOURCE = 20;
+     * @generated from enum value: TRANSLATION_FLAG_INCLUDE_METADATA = 2;
      */
-    BLANK_SOURCE = 20,
-    /**
-     * No translation was needed
-     *
-     * @generated from enum value: TRANSLATION_FLAG_SAME_LANGUAGE = 21;
-     */
-    SAME_LANGUAGE = 21,
-    /**
-     * Partial translation using dialect rules
-     *
-     * @generated from enum value: TRANSLATION_FLAG_DIALECT = 22;
-     */
-    DIALECT = 22,
-    /**
-     * The source has no language ID
-     *
-     * @generated from enum value: TRANSLATION_FLAG_NEUTRAL_SOURCE = 23;
-     */
-    NEUTRAL_SOURCE = 23,
-    /**
-     * Original source was requested
-     *
-     * @generated from enum value: TRANSLATION_FLAG_ORIGINAL_SOURCE = 24;
-     */
-    ORIGINAL_SOURCE = 24,
+    INCLUDE_METADATA = 2,
     /**
      * Translation failed
      *
@@ -86,7 +66,7 @@ export declare enum TranslationFlag {
  */
 export declare class TranslationSpec extends Message<TranslationSpec> {
     /**
-     * Note: A blank language_id signifies that the source should be treated as language neutral and not translated
+     * Note: A blank language_id signifies that the language is expected to come from the source or, if the source doesn't support this, it should not be translated
      *
      * @generated from field: string language_id = 1;
      */
@@ -95,6 +75,12 @@ export declare class TranslationSpec extends Message<TranslationSpec> {
      * @generated from field: avn.connect.v1.TranslationFormat format = 2;
      */
     format: TranslationFormat;
+    /**
+     * Additional flags
+     *
+     * @generated from field: repeated avn.connect.v1.TranslationFlag translation_flags = 3;
+     */
+    translationFlags: TranslationFlag[];
     constructor(data?: PartialMessage<TranslationSpec>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.TranslationSpec";
@@ -105,31 +91,21 @@ export declare class TranslationSpec extends Message<TranslationSpec> {
     static equals(a: TranslationSpec | PlainMessage<TranslationSpec> | undefined, b: TranslationSpec | PlainMessage<TranslationSpec> | undefined): boolean;
 }
 /**
- * Translatable text field
- *
- * @generated from message avn.connect.v1.Translatable
+ * @generated from message avn.connect.v1.TranslationResponse
  */
-export declare class Translatable extends Message<Translatable> {
+export declare class TranslationResponse extends Message<TranslationResponse> {
     /**
-     * Translated text
-     *
      * @generated from field: string text = 1;
      */
     text: string;
-    /**
-     * Additional context
-     *
-     * @generated from field: repeated avn.connect.v1.TranslationFlag translation_flags = 2;
-     */
-    translationFlags: TranslationFlag[];
-    constructor(data?: PartialMessage<Translatable>);
+    constructor(data?: PartialMessage<TranslationResponse>);
     static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.Translatable";
+    static readonly typeName = "avn.connect.v1.TranslationResponse";
     static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Translatable;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Translatable;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Translatable;
-    static equals(a: Translatable | PlainMessage<Translatable> | undefined, b: Translatable | PlainMessage<Translatable> | undefined): boolean;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranslationResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranslationResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationResponse;
+    static equals(a: TranslationResponse | PlainMessage<TranslationResponse> | undefined, b: TranslationResponse | PlainMessage<TranslationResponse> | undefined): boolean;
 }
 /**
  * Translation request
@@ -261,3 +237,7 @@ export declare class TranslationLookupResponse extends Message<TranslationLookup
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranslationLookupResponse;
     static equals(a: TranslationLookupResponse | PlainMessage<TranslationLookupResponse> | undefined, b: TranslationLookupResponse | PlainMessage<TranslationLookupResponse> | undefined): boolean;
 }
+/**
+ * @generated from extension: optional bool translatable = 1000;
+ */
+export declare const translatable: import("@bufbuild/protobuf").Extension<FieldOptions, boolean>;

@@ -1,7 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Translatable, TranslationSpec } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
+import { TranslationSpec } from "./translations_pb.js";
 import { TranscodeImageSpec } from "./media_pb.js";
 import { TagFilter } from "./tags_pb.js";
 /**
@@ -182,9 +182,9 @@ export declare class EntityInfo extends Message<EntityInfo> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translatable name = 2;
+     * @generated from field: string name = 2;
      */
-    name?: Translatable;
+    name: string;
     /**
      * @generated from field: google.protobuf.Timestamp updated = 3;
      */

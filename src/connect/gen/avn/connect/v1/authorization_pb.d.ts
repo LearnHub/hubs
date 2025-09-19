@@ -70,6 +70,12 @@ export declare class Authorization extends Message<Authorization> {
      * @generated from field: optional string device_jwt = 5;
      */
     deviceJwt?: string;
+    /**
+     * Hall passes can grant content access
+     *
+     * @generated from field: optional string pass_id = 6;
+     */
+    passId?: string;
     constructor(data?: PartialMessage<Authorization>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.Authorization";

@@ -152,8 +152,8 @@ export async function changeHub(nextState, addToHistory = true, waypoint = "") {
   await AVN.enterRoom(hub.hub_id, NAF.clientId)
 
   // AVN: Moved so activity property is updated (translated name)
-  const roomName = AVN.roomActivity?.name?.text 
-    ? Document.parseHTMLUnsafe(AVN.roomActivity?.name?.text).body.innerText
+  const roomName = AVN.roomActivity?.name
+    ? Document.parseHTMLUnsafe(AVN.roomActivity?.name).body.innerText
     : AVN.roomInfo?.name;
   document.title = roomName;
   if(nextState.icon) {

@@ -406,7 +406,7 @@ AFRAME.registerComponent("media-loader", {
               contentType = (result.meta && result.meta.expected_content_type) || contentType;
             }
             const tags = result.meta && result.meta.tags;
-            isAvatar = tags && tags.includes(PB.AvnTags.Avatar);
+            isAvatar = tags && tags.includes(Connect.PB.TagId.AVATAR);
           } else {
             console.warn(`Unexpected URL to resolve '${src}'`)
           }

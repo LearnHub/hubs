@@ -49,14 +49,14 @@ export function AvnMediaTile({ entry, onClick, ...rest }) {
     <BaseTile
       wide={true}
       tall={false}
-      name={entry.name.text}
+      name={entry.name}
       className={entry.available ? "" : styles.notAvailable}
       //TODO item metadata such as tags
       description={<></>}
       {...rest}
     >
       <a className={styles.thumbnailLink} href={entry.url} rel="noreferrer noopener" onClick={onClick}>
-        <img src={entry.previewUrl || entry.iconUrl} alt={entry.name.text} loading="lazy" crossOrigin="anonymous"/>
+        <img src={entry.previewUrl || entry.iconUrl} alt={entry.name} loading="lazy" crossOrigin="anonymous"/>
       </a>
     </BaseTile>
   );

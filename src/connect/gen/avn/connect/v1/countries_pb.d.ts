@@ -1,7 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
 import { Authorization } from "./authorization_pb.js";
-import { Translatable, TranslationSpec } from "./translations_pb.js";
+import { TranslationSpec } from "./translations_pb.js";
 /**
  * @generated from message avn.connect.v1.GetCountryRequest
  */
@@ -86,9 +86,9 @@ export declare class Country extends Message<Country> {
     /**
      * Name translated into request language
      *
-     * @generated from field: avn.connect.v1.Translatable name = 3;
+     * @generated from field: string name = 3;
      */
-    name?: Translatable;
+    name: string;
     /**
      * Name in the default language of the country
      *

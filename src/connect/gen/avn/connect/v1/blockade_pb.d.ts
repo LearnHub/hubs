@@ -1,7 +1,7 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { Translatable, TranslationSpec } from "./translations_pb.js";
 import { Authorization } from "./authorization_pb.js";
+import { TranslationSpec } from "./translations_pb.js";
 import { OperationState } from "./operations_pb.js";
 import { EntityInfo } from "./entities_pb.js";
 /**
@@ -13,9 +13,9 @@ export declare class BlockadeSkyboxStyleFamily extends Message<BlockadeSkyboxSty
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translatable name = 2;
+     * @generated from field: string name = 2;
      */
-    name?: Translatable;
+    name: string;
     /**
      * @generated from field: repeated avn.connect.v1.BlockadeSkyboxStyle styles = 3;
      */
@@ -38,13 +38,13 @@ export declare class BlockadeSkyboxStyle extends Message<BlockadeSkyboxStyle> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translatable name = 2;
+     * @generated from field: string name = 2;
      */
-    name?: Translatable;
+    name: string;
     /**
-     * @generated from field: optional avn.connect.v1.Translatable description = 3;
+     * @generated from field: optional string description = 3;
      */
-    description?: Translatable;
+    description?: string;
     /**
      * @generated from field: int32 max_prompt_size = 4;
      */

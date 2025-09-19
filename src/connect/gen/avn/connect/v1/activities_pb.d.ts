@@ -1,6 +1,5 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Translatable } from "./translations_pb.js";
 import { AndroidPackage } from "./packages_pb.js";
 import { Authorization } from "./authorization_pb.js";
 /**
@@ -58,9 +57,9 @@ export declare class Activity extends Message<Activity> {
      */
     entityId: number;
     /**
-     * @generated from field: avn.connect.v1.Translatable name = 2;
+     * @generated from field: string name = 2;
      */
-    name?: Translatable;
+    name: string;
     /**
      * @generated from field: string icon_url = 3;
      */
@@ -74,21 +73,21 @@ export declare class Activity extends Message<Activity> {
      */
     updated?: Timestamp;
     /**
-     * @generated from field: optional avn.connect.v1.Translatable summary = 22;
+     * @generated from field: string summary = 22;
      */
-    summary?: Translatable;
+    summary: string;
     /**
-     * @generated from field: optional avn.connect.v1.Translatable description = 6;
+     * @generated from field: string description = 6;
      */
-    description?: Translatable;
+    description: string;
     /**
-     * @generated from field: optional avn.connect.v1.Translatable instructions = 7;
+     * @generated from field: string instructions = 7;
      */
-    instructions?: Translatable;
+    instructions: string;
     /**
-     * @generated from field: optional avn.connect.v1.Translatable keywords = 21;
+     * @generated from field: string keywords = 21;
      */
-    keywords?: Translatable;
+    keywords: string;
     /**
      * @generated from field: string language_id = 8;
      */

@@ -909,8 +909,8 @@ class UIRoot extends Component {
     if(showRoomFull) {
       console.log(`Room is full: entryDisallowed = ${this.props.entryDisallowed}, entered = ${this.state.entered}`)
     }
-    const roomName = this.props.avnRoomActivity?.name?.text 
-      ? Document.parseHTMLUnsafe(this.props.avnRoomActivity?.name?.text).body.innerText
+    const roomName = this.props.avnRoomActivity?.name
+      ? Document.parseHTMLUnsafe(this.props.avnRoomActivity?.name).body.innerText
       : this.props.hub.name;
     // TODO: What does onEnteringCanceled do?
     return (
