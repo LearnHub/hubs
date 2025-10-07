@@ -1,4 +1,4 @@
-import { CheckMediaCompatibilityRequest, CheckMediaCompatibilityResponse, GetImageMetadataResponse, GetMediaDeviceSpecsRequest, GetMediaDeviceSpecsResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, GetVideoMetadataResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
+import { CheckMediaCompatibilityRequest, CheckMediaCompatibilityResponse, GetImageMetadataResponse, GetMediaDeviceSpecsRequest, GetMediaDeviceSpecsResponse, GetMediaSpectrumRequest, GetMediaSpectrumResponse, GetMediaTypeExtensionMapRequest, GetMediaTypeExtensionMapResponse, GetMetadataRequest, GetPreviewImageRequest, GetPreviewImageResponse, GetVideoMetadataResponse, TranscodeImageRequest, TranscodeImageResponse, TranscodeVideoRequest, TranscodeVideoResponse } from "./media_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service avn.connect.v1.MediaService
@@ -86,6 +86,17 @@ export declare const MediaService: {
             readonly name: "GetMediaDeviceSpecs";
             readonly I: typeof GetMediaDeviceSpecsRequest;
             readonly O: typeof GetMediaDeviceSpecsResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * Analysis
+         *
+         * @generated from rpc avn.connect.v1.MediaService.GetMediaSpectrum
+         */
+        readonly getMediaSpectrum: {
+            readonly name: "GetMediaSpectrum";
+            readonly I: typeof GetMediaSpectrumRequest;
+            readonly O: typeof GetMediaSpectrumResponse;
             readonly kind: MethodKind.Unary;
         };
     };

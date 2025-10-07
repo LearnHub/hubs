@@ -1,5 +1,6 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
+import { TranslationSpec } from "./translations_pb.js";
 /**
  * @generated from enum avn.connect.v1.TextDirection
  */
@@ -29,6 +30,12 @@ export declare class Language extends Message<Language> {
      * @generated from field: string name = 2;
      */
     name: string;
+    /**
+     * Display name (in the target language)
+     *
+     * @generated from field: string text = 6;
+     */
+    text: string;
     /**
      * Name in English
      *
@@ -60,6 +67,12 @@ export declare class Language extends Message<Language> {
  * @generated from message avn.connect.v1.GetLanguagesRequest
  */
 export declare class GetLanguagesRequest extends Message<GetLanguagesRequest> {
+    /**
+     * Required to translate language text field
+     *
+     * @generated from field: avn.connect.v1.TranslationSpec translate = 1;
+     */
+    translate?: TranslationSpec;
     constructor(data?: PartialMessage<GetLanguagesRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "avn.connect.v1.GetLanguagesRequest";

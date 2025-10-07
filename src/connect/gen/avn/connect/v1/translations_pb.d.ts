@@ -24,7 +24,11 @@ export declare enum TranslationFormat {
     /**
      * @generated from enum value: TRANSLATION_FORMAT_XLIFF = 4;
      */
-    XLIFF = 4
+    XLIFF = 4,
+    /**
+     * @generated from enum value: TRANSLATION_FORMAT_TRANSCRIPT = 5;
+     */
+    TRANSCRIPT = 5
 }
 /**
  * @generated from enum avn.connect.v1.TranslationFlag

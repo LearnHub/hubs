@@ -42,23 +42,6 @@ export declare enum MediaStreamType {
     NB = 7
 }
 /**
- * @generated from enum avn.connect.v1.MediaSpeakerGender
- */
-export declare enum MediaSpeakerGender {
-    /**
-     * @generated from enum value: MEDIA_SPEAKER_GENDER_UNSPECIFIED = 0;
-     */
-    UNSPECIFIED = 0,
-    /**
-     * @generated from enum value: MEDIA_SPEAKER_GENDER_MALE = 1;
-     */
-    MALE = 1,
-    /**
-     * @generated from enum value: MEDIA_SPEAKER_GENDER_FEMALE = 2;
-     */
-    FEMALE = 2
-}
-/**
  * @generated from enum avn.connect.v1.MediaCompatibilityArea
  */
 export declare enum MediaCompatibilityArea {
@@ -771,143 +754,6 @@ export declare class TranscodeVideoResult extends Message<TranscodeVideoResult> 
     static equals(a: TranscodeVideoResult | PlainMessage<TranscodeVideoResult> | undefined, b: TranscodeVideoResult | PlainMessage<TranscodeVideoResult> | undefined): boolean;
 }
 /**
- * @generated from message avn.connect.v1.TranscriptionRequest
- */
-export declare class TranscriptionRequest extends Message<TranscriptionRequest> {
-    /**
-     * @generated from field: avn.connect.v1.Authorization auth = 1;
-     */
-    auth?: Authorization;
-    /**
-     * The media file to transcribe
-     *
-     * @generated from field: string media_url = 2;
-     */
-    mediaUrl: string;
-    constructor(data?: PartialMessage<TranscriptionRequest>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.TranscriptionRequest";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranscriptionRequest;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranscriptionRequest;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranscriptionRequest;
-    static equals(a: TranscriptionRequest | PlainMessage<TranscriptionRequest> | undefined, b: TranscriptionRequest | PlainMessage<TranscriptionRequest> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.TranscriptionResponse
- */
-export declare class TranscriptionResponse extends Message<TranscriptionResponse> {
-    /**
-     * Set if the job succeeded and contains an AVNFS URL to a binary MediaTranscript file
-     *
-     * @generated from field: optional string transcription_url = 1;
-     */
-    transcriptionUrl?: string;
-    /**
-     * Populated if there were transcription errors
-     *
-     * @generated from field: repeated string errors = 2;
-     */
-    errors: string[];
-    /**
-     * Populated if there were transcription warnings
-     *
-     * @generated from field: repeated string warnings = 3;
-     */
-    warnings: string[];
-    constructor(data?: PartialMessage<TranscriptionResponse>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.TranscriptionResponse";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TranscriptionResponse;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TranscriptionResponse;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TranscriptionResponse;
-    static equals(a: TranscriptionResponse | PlainMessage<TranscriptionResponse> | undefined, b: TranscriptionResponse | PlainMessage<TranscriptionResponse> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.MediaTranscript
- */
-export declare class MediaTranscript extends Message<MediaTranscript> {
-    /**
-     * All the speakers in the transcription
-     *
-     * @generated from field: repeated avn.connect.v1.MediaSpeaker speakers = 1;
-     */
-    speakers: MediaSpeaker[];
-    /**
-     * All the transcribed audio segments
-     *
-     * @generated from field: repeated avn.connect.v1.MediaAudioSegment audio_segments = 2;
-     */
-    audioSegments: MediaAudioSegment[];
-    constructor(data?: PartialMessage<MediaTranscript>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MediaTranscript";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MediaTranscript;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MediaTranscript;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MediaTranscript;
-    static equals(a: MediaTranscript | PlainMessage<MediaTranscript> | undefined, b: MediaTranscript | PlainMessage<MediaTranscript> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.MediaSpeaker
- */
-export declare class MediaSpeaker extends Message<MediaSpeaker> {
-    /**
-     * @generated from field: int32 speaker_id = 1;
-     */
-    speakerId: number;
-    /**
-     * @generated from field: avn.connect.v1.MediaSpeakerGender gender = 2;
-     */
-    gender: MediaSpeakerGender;
-    /**
-     * @generated from field: optional string name = 3;
-     */
-    name?: string;
-    constructor(data?: PartialMessage<MediaSpeaker>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MediaSpeaker";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MediaSpeaker;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MediaSpeaker;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MediaSpeaker;
-    static equals(a: MediaSpeaker | PlainMessage<MediaSpeaker> | undefined, b: MediaSpeaker | PlainMessage<MediaSpeaker> | undefined): boolean;
-}
-/**
- * @generated from message avn.connect.v1.MediaAudioSegment
- */
-export declare class MediaAudioSegment extends Message<MediaAudioSegment> {
-    /**
-     * @generated from field: string text = 1;
-     */
-    text: string;
-    /**
-     * @generated from field: int32 speaker_id = 2;
-     */
-    speakerId: number;
-    /**
-     * @generated from field: string language_id = 3;
-     */
-    languageId: string;
-    /**
-     * @generated from field: float start_time_seconds = 4;
-     */
-    startTimeSeconds: number;
-    /**
-     * @generated from field: float end_time_seconds = 5;
-     */
-    endTimeSeconds: number;
-    constructor(data?: PartialMessage<MediaAudioSegment>);
-    static readonly runtime: typeof proto3;
-    static readonly typeName = "avn.connect.v1.MediaAudioSegment";
-    static readonly fields: FieldList;
-    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MediaAudioSegment;
-    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MediaAudioSegment;
-    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MediaAudioSegment;
-    static equals(a: MediaAudioSegment | PlainMessage<MediaAudioSegment> | undefined, b: MediaAudioSegment | PlainMessage<MediaAudioSegment> | undefined): boolean;
-}
-/**
  * @generated from message avn.connect.v1.MediaTypeExtension
  */
 export declare class MediaTypeExtension extends Message<MediaTypeExtension> {
@@ -1086,4 +932,121 @@ export declare class GetMediaDeviceSpecsResponse extends Message<GetMediaDeviceS
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMediaDeviceSpecsResponse;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMediaDeviceSpecsResponse;
     static equals(a: GetMediaDeviceSpecsResponse | PlainMessage<GetMediaDeviceSpecsResponse> | undefined, b: GetMediaDeviceSpecsResponse | PlainMessage<GetMediaDeviceSpecsResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetMediaSpectrumRequest
+ */
+export declare class GetMediaSpectrumRequest extends Message<GetMediaSpectrumRequest> {
+    /**
+     * @generated from field: avn.connect.v1.Authorization auth = 1;
+     */
+    auth?: Authorization;
+    /**
+     * @generated from field: string media_url = 2;
+     */
+    mediaUrl: string;
+    /**
+     * Units Hz
+     *
+     * @generated from field: float sample_rate = 3;
+     */
+    sampleRate: number;
+    /**
+     * @generated from field: int32 frequency_bin_count = 4;
+     */
+    frequencyBinCount: number;
+    /**
+     * Units Hz
+     *
+     * @generated from field: float frequency_min = 5;
+     */
+    frequencyMin: number;
+    /**
+     * Units Hz
+     *
+     * @generated from field: float frequency_max = 6;
+     */
+    frequencyMax: number;
+    /**
+     * Units dBFS
+     *
+     * @generated from field: float volume_max = 7;
+     */
+    volumeMax: number;
+    constructor(data?: PartialMessage<GetMediaSpectrumRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.GetMediaSpectrumRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMediaSpectrumRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMediaSpectrumRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMediaSpectrumRequest;
+    static equals(a: GetMediaSpectrumRequest | PlainMessage<GetMediaSpectrumRequest> | undefined, b: GetMediaSpectrumRequest | PlainMessage<GetMediaSpectrumRequest> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.GetMediaSpectrumResponse
+ */
+export declare class GetMediaSpectrumResponse extends Message<GetMediaSpectrumResponse> {
+    /**
+     * @generated from field: avn.connect.v1.MediaSpectrum media_spectrum = 1;
+     */
+    mediaSpectrum?: MediaSpectrum;
+    constructor(data?: PartialMessage<GetMediaSpectrumResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.GetMediaSpectrumResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMediaSpectrumResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMediaSpectrumResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMediaSpectrumResponse;
+    static equals(a: GetMediaSpectrumResponse | PlainMessage<GetMediaSpectrumResponse> | undefined, b: GetMediaSpectrumResponse | PlainMessage<GetMediaSpectrumResponse> | undefined): boolean;
+}
+/**
+ * @generated from message avn.connect.v1.MediaSpectrum
+ */
+export declare class MediaSpectrum extends Message<MediaSpectrum> {
+    /**
+     * Units Hz
+     *
+     * @generated from field: float sample_rate = 1;
+     */
+    sampleRate: number;
+    /**
+     * @generated from field: int32 sample_count = 2;
+     */
+    sampleCount: number;
+    /**
+     * @generated from field: int32 frequency_bin_count = 3;
+     */
+    frequencyBinCount: number;
+    /**
+     * Units Hz
+     *
+     * @generated from field: float frequency_min = 4;
+     */
+    frequencyMin: number;
+    /**
+     * Units Hz
+     *
+     * @generated from field: float frequency_max = 5;
+     */
+    frequencyMax: number;
+    /**
+     * Units dBFS
+     *
+     * @generated from field: float volume_max = 6;
+     */
+    volumeMax: number;
+    /**
+     * File of frequency_bin_count x sample_count unsigned bytes representing the volume of the signal for each frequency and time
+     *
+     * @generated from field: string volume_data_url = 10;
+     */
+    volumeDataUrl: string;
+    constructor(data?: PartialMessage<MediaSpectrum>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "avn.connect.v1.MediaSpectrum";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MediaSpectrum;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MediaSpectrum;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MediaSpectrum;
+    static equals(a: MediaSpectrum | PlainMessage<MediaSpectrum> | undefined, b: MediaSpectrum | PlainMessage<MediaSpectrum> | undefined): boolean;
 }

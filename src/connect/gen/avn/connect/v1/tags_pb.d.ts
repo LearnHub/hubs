@@ -185,6 +185,10 @@ export declare enum TagId {
      */
     SIX_DOF = 2777,
     /**
+     * @generated from enum value: TAG_ID_EXPLODABLE = 2796;
+     */
+    EXPLODABLE = 2796,
+    /**
      * Age Ranges
      *
      * @generated from enum value: TAG_ID_AGE_RANGE_UNDER_5 = 17;

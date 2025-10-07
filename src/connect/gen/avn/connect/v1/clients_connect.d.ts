@@ -16,7 +16,7 @@ export declare const ClientService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * Record arbitrary actions that might not be captured in other data flows
+         * Record application telemetry
          *
          * @generated from rpc avn.connect.v1.ClientService.RecordAction
          */
