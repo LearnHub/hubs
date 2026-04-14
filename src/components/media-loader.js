@@ -33,7 +33,7 @@ import { MediaContentBounds } from "../bit-components";
 
 import qsTruthy from "../utils/qs_truthy";
 import { AVN } from "../avn-bridge";
-import * as Connect from "../connect";
+import * as Connect from "connect-client";
 
 let loadingObject;
 

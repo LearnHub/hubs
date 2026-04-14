@@ -1,4 +1,4 @@
-import * as Connect from "./connect"
+import * as Connect from "connect-client"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
 import configs from "./utils/configs"
 
@@ -265,7 +265,7 @@ class AVNBridge {
         return false
     }
 
-    public async getBrowsableChannels(): Promise<Connect.PB.Channel[]> {
+    public async getBrowsableChannels(): Promise<Connect.PB.EntityInfo[]> {
         const result = await this.ConnectServices.Channels.getBrowsableChannels({ 
             auth: this._dimensionAuth,
             translate: { languageId: navigator.language },
@@ -273,7 +273,7 @@ class AVNBridge {
         return result.results
     }
 
-    public async getProfilesForChannel(channelId: number): Promise<Connect.PB.Profile[]> {
+    public async getProfilesForChannel(channelId: number): Promise<Connect.PB.EntityInfo[]> {
         const result = await this.ConnectServices.Channels.getProfiles({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId],
@@ -287,7 +287,7 @@ class AVNBridge {
         return result.results
     }
 
-    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.PB.Activity[]> {
+    public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.PB.EntityInfo[]> {
         const result = await this.ConnectServices.Channels.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId], 
@@ -298,14 +298,14 @@ class AVNBridge {
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
-            iconSpec: Connect.PB.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 256 }),
-            previewSpec: Connect.PB.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 512 }),
+            iconSpec: Connect.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 256 }),
+            previewSpec: Connect.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 512 }),
             translate: { languageId: navigator.language },
         })
         return result.results
     }
 
-    public async getCategoriesForProfile(profileId: number): Promise<Connect.PB.Category[]> {
+    public async getCategoriesForProfile(profileId: number): Promise<Connect.PB.EntityInfo[]> {
         const result = await this.ConnectServices.Profiles.getCategories({ 
             auth: this._dimensionAuth, 
             entityIds: [profileId], 
@@ -319,7 +319,7 @@ class AVNBridge {
         return result.results
     }
 
-    public async getActivitiesForProfile(profileId: number): Promise<Connect.PB.Activity[]> {
+    public async getActivitiesForProfile(profileId: number): Promise<Connect.PB.EntityInfo[]> {
         const result = await this.ConnectServices.Profiles.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [profileId],
@@ -329,14 +329,14 @@ class AVNBridge {
             ],
             orderBy: [ { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC } ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
-            iconSpec: Connect.PB.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 256 }),
-            previewSpec: Connect.PB.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 512 }),
+            iconSpec: Connect.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 256 }),
+            previewSpec: Connect.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 512 }),
             translate: { languageId: navigator.language },
         })
         return result.results
     }
 
-    public async getActivitiesForCategory(categoryId: number): Promise<Connect.PB.Activity[]> {
+    public async getActivitiesForCategory(categoryId: number): Promise<Connect.PB.EntityInfo[]> {
         const result = await this.ConnectServices.Categories.getActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [categoryId],
@@ -348,8 +348,8 @@ class AVNBridge {
                 { property: Connect.PB.EntityProperty.NAME, sortOrder: Connect.PB.SortOrder.ASC },
             ],
             pageSize: 512, // Use MAX_PAGE_SIZE until proper paging is implemented
-            iconSpec: Connect.PB.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 256 }),
-            previewSpec: Connect.PB.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 512 }),
+            iconSpec: Connect.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 256 }),
+            previewSpec: Connect.create(Connect.PB.TranscodeImageSpecSchema, { maxSizePixels: 512 }),
             translate: { languageId: navigator.language },
         })
         return result.results
@@ -366,26 +366,30 @@ class AVNBridge {
     }
 
     public async createNewDimension(passId: string | undefined): Promise<boolean> {
-        const auth = this._accessToken ? Connect.PB.create(Connect.PB.AuthorizationSchema, { userJwt: this._accessToken }) : undefined
+        const auth = this._accessToken ? Connect.create(Connect.PB.AuthorizationSchema, { userJwt: this._accessToken }) : undefined
         const createDimensionResult = await this.ConnectServices.Dimensions.createDimension({
-            client: Connect.PB.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() }),
+            client: Connect.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() }),
             auth,
             preferredDomain: HubsHost,
             referrer: window.location.hostname,
             passId,
         })
         this._dimensionId = createDimensionResult.dimensionId
-        this._dimensionAuth = Connect.PB.create(Connect.PB.AuthorizationSchema, { dimensionId: this._dimensionId })
+        this._dimensionAuth = Connect.create(Connect.PB.AuthorizationSchema, { dimensionId: this._dimensionId })
         return true
     }
 
     public async setDimensionFromRoomId(roomId: string): Promise<boolean> {
         try {
-            const getRoomResult = await this.ConnectServices.Rooms.getRoom({ roomId })
-            this._dimensionId = getRoomResult.roomInfo.dimensionId
-            this._dimensionAuth = Connect.PB.create(Connect.PB.AuthorizationSchema, { dimensionId: this._dimensionId })
-            console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
-            return true
+            const { roomInfo } = await this.ConnectServices.Rooms.getRoom({ roomId })
+            if(roomInfo) {
+                this._dimensionId = roomInfo.dimensionId
+                this._dimensionAuth = Connect.create(Connect.PB.AuthorizationSchema, { dimensionId: this._dimensionId })
+                console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
+                return true
+            } else {
+                console.warn(`AVN: unexpected undefined roomInfo '${roomInfo}'`)
+            }
         } catch {
             console.error(`AVN: failed to match dimension`)
         }
@@ -396,7 +400,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = Connect.PB.create(Connect.PB.AuthorizationSchema, { credentials })
+            const auth = Connect.create(Connect.PB.AuthorizationSchema, { credentials })
             const result = await this.ConnectServices.Users.getOrganizationMembership({ auth, userId })
             return result.memberships
         } else {
@@ -409,7 +413,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = Connect.PB.create(Connect.PB.AuthorizationSchema, { credentials })
+            const auth = Connect.create(Connect.PB.AuthorizationSchema, { credentials })
             return await this.ConnectServices.Organizations.getOrganization({ auth, entityId: organizationId })
         } else {
             throw new Error(`Not authenticated to get organization`)
@@ -444,7 +448,7 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = Connect.PB.create(Connect.PB.AuthorizationSchema, { credentials })
+            const auth = Connect.create(Connect.PB.AuthorizationSchema, { credentials })
             await this.ConnectServices.Organizations.joinOrganization({ auth, joinCode })
         } else {
             throw new Error(`Not authenticated to join organization`)
@@ -460,16 +464,16 @@ class AVNBridge {
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
-            const auth = Connect.PB.create(Connect.PB.AuthorizationSchema, { credentials })
+            const auth = Connect.create(Connect.PB.AuthorizationSchema, { credentials })
             const userLicenses = await this.ConnectServices.Licenses.getUserLicenses({auth})
             for(let userLicense of userLicenses.licenses) {
                 if(userLicense.licenseId && userLicense.expires) {
                     const planCodes = userLicense.planCodes.filter(this.filterOutInternalPlanCodes).sort()
                     if(userLicense.source.case === "organizationId") {
                         const organization = await this.getOrganization(userLicense.source.value)
-                        result.push({licenseId: userLicense.licenseId, organization, expires: userLicense.expires.toDate(), planCodes })
+                        result.push({licenseId: userLicense.licenseId, organization, expires: Connect.timestampDate(userLicense.expires), planCodes })
                     } else if(userLicense.source.case === "userId") {
-                        result.push({licenseId: userLicense.licenseId, expires: userLicense.expires.toDate(), organization: undefined, planCodes })
+                        result.push({licenseId: userLicense.licenseId, expires: Connect.timestampDate(userLicense.expires), organization: undefined, planCodes })
                     }
                 }
             }
@@ -481,12 +485,12 @@ class AVNBridge {
 
 
     // Controls the dimension stream and indicates that a stream is active
-    private _streamAbortController: AbortController | null
+    private _streamAbortController: AbortController | undefined
     // It might not be necessary to hold a reference to the loop promise, but it makes the code clearer
-    private _streamMessageHandlerPromise: Promise<void> | null
+    private _streamMessageHandlerPromise: Promise<void> | undefined
 
     private _dimensionRejoinTimeout = 1000
-    private _lastRejoinTimeout: NodeJS.Timeout
+    private _lastRejoinTimeout: NodeJS.Timeout | undefined
 
     private _closeSceneTimeout: NodeJS.Timeout | undefined
 
@@ -599,7 +603,7 @@ class AVNBridge {
         if (this._streamAbortController) {
             console.log(`Aborting active stream...`)
             this._streamAbortController.abort("STREAM_REPLACEMENT")
-            this._streamAbortController = null
+            this._streamAbortController = undefined
             console.log(`Stream aborted`)
         }
     }
@@ -612,10 +616,10 @@ class AVNBridge {
             }
             await this.abortStreamIfActive()
             const abortController = new AbortController()
-            const auth = this._accessToken ? Connect.PB.create(Connect.PB.AuthorizationSchema, { userJwt: this._accessToken }) : undefined
+            const auth = this._accessToken ? Connect.create(Connect.PB.AuthorizationSchema, { userJwt: this._accessToken }) : undefined
             console.info(`Joining dimension '${this.dimensionId}'...`)
             const dimensionStream = this.ConnectServices.Dimensions.joinDimension({
-                    client: Connect.PB.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() }),
+                    client: Connect.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() }),
                     auth,
                     dimensionId: this.dimensionId,
                 },
@@ -661,7 +665,7 @@ class AVNBridge {
             sessionId
         })
         this._roomInfo = enterRoomResult.roomInfo
-        const activityId = enterRoomResult.roomInfo.activityId
+        const activityId = enterRoomResult?.roomInfo?.activityId
         if(activityId) {
             this._roomActivity = await this.ConnectServices.Activities.getActivity({ 
                 auth: this._dimensionAuth, 
@@ -682,14 +686,13 @@ class AVNBridge {
     // Guiding
 
     public async setLessonFocus(position: THREE.Vector3 | undefined): Promise<boolean> {
-        const newContext = Connect.PB.create(Connect.PB.LessonContextSchema, {
+        const newContext = Connect.create(Connect.PB.LessonContextSchema, {
             focus: {
                 roomId: this._roomInfo?.roomId,
                 assetId: this._roomInfo?.assetId,
                 position,
                 backLock: false,
                 exploreLock: true,
-                roomLock: false,
             }
         })
         console.log("AVN: setting lesson context", newContext)
@@ -913,7 +916,7 @@ class AVNBridge {
     //TODO: Add "data" parameter
     async recordAction(actionId: string, sourceId: string) : Promise<void> {
         try {
-            const client = Connect.PB.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() })
+            const client = Connect.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() })
             await this.ConnectServices.Clients.recordAction({ client, actionId, sourceId, hostId: window.location.hostname })
         } catch (error: unknown) {
             throw new Error(`Error recording action '${actionId}' from '${sourceId}'`)

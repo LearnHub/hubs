@@ -118,7 +118,7 @@ import SeePlansCTA from "./room/components/SeePlansCTA/SeePlansCTA";
 import { SaveConsoleLog } from "../utils/record-log.js";
 import { AVN } from "../avn-bridge";
 import { AvnInformationModal } from "./room/AvnInformationModal";
-import * as Connect from "../connect";
+import * as Connect from "connect-client";
 import { AvnDimensionStatusModal } from "./room/AvnDimensionStatusModal";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");

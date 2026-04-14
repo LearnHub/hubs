@@ -430,6 +430,11 @@ module.exports = async (env, argv) => {
     module: {
       rules: [
         {
+          test: /\.js$/,
+          include: /node_modules\/connect-client/,
+          resolve: { fullySpecified: false },
+        },
+        {
           test: /\.html$/,
           loader: "html-loader",
           options: {
