@@ -50,8 +50,9 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
-# vendor/connect-client.tgz is the private connect-client SDK, pulled in at build time via
-# `npm run update-connect-lib`. It is deliberately NOT committed — this repo is public.
+# ...except the vendored connect-client SDK, committed in-repo on purpose (as the old
+# src/connect/ bundle was) so the build is self-contained. Refresh with `npm run update-connect-lib`.
+!vendor/connect-client.tgz
 
 # Yarn Integrity file
 .yarn-integrity
