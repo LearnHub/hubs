@@ -977,8 +977,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     avnRoomActivity: AVN.roomActivity, 
     avnRoomInfo: AVN.roomInfo, 
     avnDimensionInfo: AVN.dimensionInfo, 
-    avnDimensionConnection: AVN.dimensionConnection, 
-    avnDimensionStatus: AVN.dimensionStatus, 
+    avnDimensionConnection: AVN.dimensionConnection,
+    avnDimensionStatus: AVN.dimensionStatus,
+    avnSessionEnded: AVN.sessionEnded,
     avnAllowBack: AVN.allowBack,
     avnAllowExplore: AVN.allowExplore,
     avnAllowNavigation: AVN.allowNavigation,
@@ -991,6 +992,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   global.addEventListener("avn-dimension-info-changed", () => { remountUI({ avnDimensionInfo: AVN.dimensionInfo }) })
   global.addEventListener("avn-dimension-connection-changed", () => { remountUI({ avnDimensionConnection: AVN.dimensionConnection }) })
   global.addEventListener("avn-dimension-status-changed", () => { remountUI({ avnDimensionStatus: AVN.dimensionStatus }) })
+  global.addEventListener("avn-session-ended", () => { remountUI({ avnSessionEnded: AVN.sessionEnded }) })
 
   entryManager.performConditionalSignIn = performConditionalSignIn;
   entryManager.init();

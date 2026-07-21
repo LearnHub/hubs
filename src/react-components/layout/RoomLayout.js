@@ -24,6 +24,7 @@ export function RoomLayout({
   streaming,
   viewportRef,
   avnDimensionConnection,
+  avnSessionEnded,
   ...rest
 }) {
   return (
@@ -44,11 +45,18 @@ export function RoomLayout({
         <Toolbar
           className={classNames(styles.main, styles.toolbar, toolbarClassName)}
           center={
-            <ToolbarButton 
-              label={<FormattedMessage id="avn-room-layout.connection-message" defaultMessage="Reconnecting..." />}
-              iconContainerClassName={styles.avnButton}              
-              onClick={() => { AVNGlobal.requestRejoin() }}
-              />
+            // A terminally ended session (dimension expired/closed) never comes back, so don't
+            // offer a retry that would just re-hammer a dead dimension — surface it as ended.
+            avnSessionEnded
+            ? <ToolbarButton
+                label={<FormattedMessage id="avn-room-layout.session-ended-message" defaultMessage="Session ended" />}
+                iconContainerClassName={styles.avnButton}
+                />
+            : <ToolbarButton
+                label={<FormattedMessage id="avn-room-layout.connection-message" defaultMessage="Reconnecting..." />}
+                iconContainerClassName={styles.avnButton}
+                onClick={() => { AVNGlobal.requestRejoin() }}
+                />
           }
           right={
             <>
@@ -91,4 +99,5 @@ RoomLayout.propTypes = {
   streaming: PropTypes.bool,
   viewportRef: PropTypes.any,
   avnDimensionConnection: PropTypes.object,
+  avnSessionEnded: PropTypes.bool,
 };

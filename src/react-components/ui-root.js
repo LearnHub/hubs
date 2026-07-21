@@ -196,6 +196,7 @@ class UIRoot extends Component {
     avnDimensionInfo: PropTypes.object,
     avnDimensionConnection: PropTypes.object,
     avnDimensionStatus: PropTypes.object,
+    avnSessionEnded: PropTypes.bool,
     avnAllowBack: PropTypes.bool,
     avnAllowExplore: PropTypes.bool,
     avnAllowNavigation: PropTypes.bool,
@@ -1553,6 +1554,7 @@ class UIRoot extends Component {
                 objectFocused={!!this.props.selectedObject}
                 streaming={streaming}
                 avnDimensionConnection={this.props.avnDimensionConnection}
+                avnSessionEnded={this.props.avnSessionEnded}
                 viewport={
                   <>
                     {dimensionClosedDialog}

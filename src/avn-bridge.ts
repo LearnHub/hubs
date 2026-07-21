@@ -173,6 +173,12 @@ class AVNBridge {
         return this._lastDimensionStatus
     }
 
+    // True once the dimension has terminally ended (never auto-rejoins). Drives the "Session ended" UI.
+    // Mutations trigger event `avn-session-ended`
+    get sessionEnded(): boolean {
+        return this._sessionEnded
+    }
+
     // Mutations trigger event `avn-allow-back-changed`
     get allowBack() {
         // Global permission
@@ -223,6 +229,8 @@ class AVNBridge {
 
     public async authenticate(accessToken: string): Promise<boolean> {
         this._accessToken = accessToken
+        // Capture whether a live stream is being replaced before we abort it
+        const wasStreaming = !!this._streamAbortController
         await this.abortStreamIfActive()
         // If this is a solo dimension it was created anonymously and the user must be the owner (mostly true)
         // so a replacement dimension should be created with the full auth permissions
@@ -233,6 +241,10 @@ class AVNBridge {
             this._dimensionAuth = undefined
             // Give the connections time to unwind gracefully
             setTimeout(this.startNewSession, 1_000, this.passId, this.assetId)
+        } else if (wasStreaming) {
+            // Reconnect the live dimension so the stream adopts the new credentials. The aborted
+            // stream no longer self-rejoins (that reschedule fed the join-flood), so trigger it here.
+            await this.requestRejoin()
         }
         return true
     }
@@ -247,7 +259,13 @@ class AVNBridge {
 
     public async deauthenticate(): Promise<void> {
         this._accessToken = undefined
+        const wasStreaming = !!this._streamAbortController
         await this.abortStreamIfActive()
+        if (wasStreaming) {
+            // Reconnect anonymously so the live stream drops the old credentials. The aborted
+            // stream no longer self-rejoins, so trigger the reconnect explicitly here.
+            await this.requestRejoin()
+        }
     }
 
     public get isAuthenticated(): boolean {
@@ -376,6 +394,9 @@ class AVNBridge {
         })
         this._dimensionId = createDimensionResult.dimensionId
         this._dimensionAuth = Connect.create(Connect.PB.AuthorizationSchema, { dimensionId: this._dimensionId })
+        // Fresh session: clear any prior terminal state and reset the backoff
+        this._sessionEnded = false
+        this._dimensionRejoinTimeout = AVNBridge.RejoinBaseMs
         return true
     }
 
@@ -385,6 +406,9 @@ class AVNBridge {
             if(roomInfo) {
                 this._dimensionId = roomInfo.dimensionId
                 this._dimensionAuth = Connect.create(Connect.PB.AuthorizationSchema, { dimensionId: this._dimensionId })
+                // Fresh session: clear any prior terminal state and reset the backoff
+                this._sessionEnded = false
+                this._dimensionRejoinTimeout = AVNBridge.RejoinBaseMs
                 console.log(`AVN: matched dimension ID '${this._dimensionId}' for room`)
                 return true
             } else {
@@ -489,8 +513,15 @@ class AVNBridge {
     // It might not be necessary to hold a reference to the loop promise, but it makes the code clearer
     private _streamMessageHandlerPromise: Promise<void> | undefined
 
-    private _dimensionRejoinTimeout = 1000
+    // Reconnect backoff (ms): exponential with full jitter, capped, reset on success.
+    private static readonly RejoinBaseMs = 1000
+    private static readonly RejoinMaxMs = 60000
+    // Current backoff ceiling; grows on each transient failure, resets to base on success.
+    private _dimensionRejoinTimeout = AVNBridge.RejoinBaseMs
     private _lastRejoinTimeout: NodeJS.Timeout | undefined
+    // Set once the session terminally ends (dimension gone / closed / forbidden). A terminal
+    // session never auto-rejoins — the dimension will not come back, so retrying just floods the API.
+    private _sessionEnded = false
 
     private _closeSceneTimeout: NodeJS.Timeout | undefined
 
@@ -516,7 +547,8 @@ class AVNBridge {
                     // CLOSE or OPEN is the only expected status after the initial OPEN
                     if (value.status.state === Connect.PB.OperationState.CLOSED) {
                         console.log(`Dimension was closed with reason '${value.status.detail}'`)
-                        // The fake close might be cancelled if the session reopens
+                        // Closure is terminal: stop auto-rejoin and surface "session ended"
+                        this.markSessionEnded(Connect.PB.OperationState.CLOSED)
                         clearInterval(this._closeSceneTimeout)
                         this._closeSceneTimeout = setTimeout(() => {
                             // Fake the hubs closing until the API supports room closure
@@ -525,6 +557,10 @@ class AVNBridge {
                         }, 15000)
                     } else if(value.status.state !== Connect.PB.OperationState.OPEN) {
                         console.warn(`Unexpected dimension state change '${value.status.state}'`)
+                        // A terminal state arriving mid-stream is also final
+                        if (AVNBridge.isTerminalJoinState(value.status.state)) {
+                            this.markSessionEnded(value.status.state)
+                        }
                     }
                 }
                 if(value.connection) {
@@ -566,35 +602,91 @@ class AVNBridge {
         } finally {
             console.debug("AVN: message streaming handler end")
             clearTimeout(this._lastRejoinTimeout)
+            this._lastRejoinTimeout = undefined
             this._learnLessonContext = undefined
             this._dimensionConnection = undefined
             this._dimensionInfo = undefined
             this._lastDimensionStatus = undefined
             global.dispatchEvent(new Event("avn-dimension-info-changed"))
-            global.dispatchEvent(new Event("avn-dimension-connection-changed"))            
+            global.dispatchEvent(new Event("avn-dimension-connection-changed"))
             global.dispatchEvent(new Event("avn-allow-back-changed"))
             global.dispatchEvent(new Event("avn-allow-explore-changed"))
             global.dispatchEvent(new Event("avn-allow-navigation-changed"))
             global.dispatchEvent(new Event("avn-dimension-status-changed"))
-            this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), this._dimensionRejoinTimeout)
+            // Only auto-rejoin on an unexpected (transient) stream end. A deliberate replacement
+            // (new join / auth change / deauth) or a terminal session end must NOT reconnect —
+            // that loop is what floods joinDimension against a dead dimension.
+            const deliberate = abortController.signal.aborted && abortController.signal.reason === "STREAM_REPLACEMENT"
+            if (!deliberate && !this._sessionEnded) {
+                this.scheduleRejoin()
+            }
         }
     }
 
-    public async requestRejoin(): Promise<void> {
+    // NOT_FOUND / EXPIRED / CLOSED / FORBIDDEN mean the dimension will never come back:
+    // stop retrying and surface "session ended" to the user.
+    private static isTerminalJoinState(state: Connect.PB.OperationState): boolean {
+        return state === Connect.PB.OperationState.NOT_FOUND
+            || state === Connect.PB.OperationState.EXPIRED
+            || state === Connect.PB.OperationState.CLOSED
+            || state === Connect.PB.OperationState.FORBIDDEN
+    }
+
+    private markSessionEnded(state: Connect.PB.OperationState): void {
+        if (this._sessionEnded) {
+            return
+        }
+        console.warn(`AVN: dimension session ended terminally (state ${state}); auto-rejoin disabled`)
+        this._sessionEnded = true
         clearTimeout(this._lastRejoinTimeout)
+        this._lastRejoinTimeout = undefined
+        this._dimensionRejoinTimeout = AVNBridge.RejoinBaseMs
+        // The dimension is gone: drop the ID so nothing tries to reuse it
+        this._dimensionId = ""
+        global.dispatchEvent(new Event("avn-session-ended"))
+    }
+
+    // Single owner of reconnect scheduling: exponential backoff with full jitter, capped.
+    private scheduleRejoin(): void {
+        if (this._sessionEnded) {
+            return
+        }
+        clearTimeout(this._lastRejoinTimeout)
+        const ceiling = Math.min(this._dimensionRejoinTimeout, AVNBridge.RejoinMaxMs)
+        // Full jitter breaks the lockstep herd when many clients drop at once
+        const delay = Math.round(Math.random() * ceiling)
+        console.info(`AVN: scheduling dimension rejoin in ${delay}ms (ceiling ${ceiling}ms)`)
+        this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), delay)
+        // Grow the ceiling for next time (capped so it can't overflow setTimeout's 32-bit delay)
+        this._dimensionRejoinTimeout = Math.min(ceiling * 2, AVNBridge.RejoinMaxMs)
+    }
+
+    public async requestRejoin(): Promise<void> {
+        // User-initiated retry: don't fight a terminal session end
+        if (this._sessionEnded) {
+            console.info("AVN: ignoring manual rejoin because the session has ended")
+            return
+        }
+        clearTimeout(this._lastRejoinTimeout)
+        this._dimensionRejoinTimeout = AVNBridge.RejoinBaseMs
         await this.rejoinDimension()
     }
 
     async rejoinDimension(): Promise<void> {
+        if (this._sessionEnded) {
+            return
+        }
         console.log("AVN: rejoining dimension...")
         const result = await this.joinDimension()
         if (result === Connect.PB.OperationState.OPEN) {
-            this._dimensionRejoinTimeout = 1000
+            // Success — reset the backoff ceiling
+            this._dimensionRejoinTimeout = AVNBridge.RejoinBaseMs
+        } else if (AVNBridge.isTerminalJoinState(result)) {
+            // The dimension is gone/closed for good — stop and surface it
+            this.markSessionEnded(result)
         } else {
-            // Try again with an exponential backoff
-            this._dimensionRejoinTimeout *= 2
-            clearTimeout(this._lastRejoinTimeout)
-            this._lastRejoinTimeout = setTimeout(() => this.rejoinDimension(), this._dimensionRejoinTimeout)
+            // Transient failure — back off (with jitter) and retry
+            this.scheduleRejoin()
         }
     }
 
