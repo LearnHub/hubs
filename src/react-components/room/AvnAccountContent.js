@@ -36,16 +36,16 @@ export function AvnAccountContent({
     });
   }
 
-  const [userLicenses, setUserLicenses] = React.useState(undefined);
-  if(userLicenses) {
+  const [userGrants, setUserGrants] = React.useState(undefined);
+  if(userGrants) {
     // Reset if connection was lost
-    if(userLicenses.length &&!avnDimensionConnection) {
-      setUserLicenses([]);
+    if(userGrants.length &&!avnDimensionConnection) {
+      setUserGrants([]);
     }
   } else {
-    setUserLicenses([]);
-    AVNGlobal.getUserLicenses().then(value => {
-      setUserLicenses(value);
+    setUserGrants([]);
+    AVNGlobal.getUserGrants().then(value => {
+      setUserGrants(value);
     });
   }
 
@@ -113,14 +113,14 @@ export function AvnAccountContent({
           label={<FormattedMessage id="avn-account-content.licenses-label" defaultMessage="Licenses" />}
           fullWidth={true}>
         {
-        userLicenses?.length ? (<>
-          {userLicenses.map(userLicense => (
-            <table className={styles.avnLicenseTable} key={userLicense.licenseId}>
+        userGrants?.length ? (<>
+          {userGrants.map(userGrant => (
+            <table className={styles.avnLicenseTable} key={userGrant.grantId}>
               <tbody>
-                <tr><td>License ID</td><td>#{userLicense.licenseId}</td></tr>
-                {userLicense.organization && <tr><td>Organization</td><td>{userLicense.organization.name}</td></tr>}
-                <tr><td>Expires</td><td>{userLicense.expires.toLocaleDateString(undefined, { dateStyle: 'medium' })}</td></tr>
-                {userLicense.planCodes && userLicense.planCodes.length > 0 && <tr><td>Plan Codes</td><td>{userLicense.planCodes.join("\n")}</td></tr>}
+                <tr><td>License ID</td><td>#{userGrant.grantId}</td></tr>
+                {userGrant.organization && <tr><td>Organization</td><td>{userGrant.organization.name}</td></tr>}
+                <tr><td>Expires</td><td>{userGrant.expires.toLocaleDateString(undefined, { dateStyle: 'medium' })}</td></tr>
+                {userGrant.planCodes && userGrant.planCodes.length > 0 && <tr><td>Plan Codes</td><td>{userGrant.planCodes.join("\n")}</td></tr>}
               </tbody>
             </table>))}
             {

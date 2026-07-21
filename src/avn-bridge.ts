@@ -274,7 +274,7 @@ class AVNBridge {
     }
 
     public async getProfilesForChannel(channelId: number): Promise<Connect.PB.EntityInfo[]> {
-        const result = await this.ConnectServices.Channels.getProfiles({ 
+        const result = await this.ConnectServices.Channels.searchProfiles({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId],
             tagFilters: [ 
@@ -288,7 +288,7 @@ class AVNBridge {
     }
 
     public async searchActivitiesForChannel(channelId: number, searchText: string): Promise<Connect.PB.EntityInfo[]> {
-        const result = await this.ConnectServices.Channels.getActivities({ 
+        const result = await this.ConnectServices.Channels.searchActivities({ 
             auth: this._dimensionAuth, 
             entityIds: [channelId], 
             textSearch: searchText ? { text: searchText } : undefined,
@@ -459,21 +459,21 @@ class AVNBridge {
         return true//![""].includes(planCode)
     }
 
-    public async getUserLicenses(): Promise<{licenseId: string, organization: Connect.PB.Organization | undefined, expires: Date, planCodes: string[]}[]> {
-        const result = new Array<{licenseId: string, expires: Date, organization: Connect.PB.Organization | undefined, planCodes: string[]}>()
+    public async getUserGrants(): Promise<{grantId: string, organization: Connect.PB.Organization | undefined, expires: Date, planCodes: string[]}[]> {
+        const result = new Array<{grantId: string, expires: Date, organization: Connect.PB.Organization | undefined, planCodes: string[]}>()
         const credentials = this._dimensionConnection?.credentials
         const userId = this._dimensionConnection?.user?.userId
         if(credentials && userId) {
             const auth = Connect.create(Connect.PB.AuthorizationSchema, { credentials })
-            const userLicenses = await this.ConnectServices.Licenses.getUserLicenses({auth})
-            for(let userLicense of userLicenses.licenses) {
-                if(userLicense.licenseId && userLicense.expires) {
-                    const planCodes = userLicense.planCodes.filter(this.filterOutInternalPlanCodes).sort()
-                    if(userLicense.source.case === "organizationId") {
-                        const organization = await this.getOrganization(userLicense.source.value)
-                        result.push({licenseId: userLicense.licenseId, organization, expires: Connect.timestampDate(userLicense.expires), planCodes })
-                    } else if(userLicense.source.case === "userId") {
-                        result.push({licenseId: userLicense.licenseId, expires: Connect.timestampDate(userLicense.expires), organization: undefined, planCodes })
+            const userGrants = await this.ConnectServices.Grants.getUserGrants({auth})
+            for(let userGrant of userGrants.grants) {
+                if(userGrant.grantId && userGrant.expires) {
+                    const planCodes = userGrant.planCodes.filter(this.filterOutInternalPlanCodes).sort()
+                    if(userGrant.source.case === "organizationId") {
+                        const organization = await this.getOrganization(userGrant.source.value)
+                        result.push({grantId: userGrant.grantId, organization, expires: Connect.timestampDate(userGrant.expires), planCodes })
+                    } else if(userGrant.source.case === "userId") {
+                        result.push({grantId: userGrant.grantId, expires: Connect.timestampDate(userGrant.expires), organization: undefined, planCodes })
                     }
                 }
             }
