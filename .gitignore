@@ -50,6 +50,8 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
+# vendor/connect-client.tgz is the private connect-client SDK, pulled in at build time via
+# `npm run update-connect-lib`. It is deliberately NOT committed — this repo is public.
 
 # Yarn Integrity file
 .yarn-integrity

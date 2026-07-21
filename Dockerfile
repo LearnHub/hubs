@@ -17,6 +17,8 @@ RUN apt update && apt -y install wget && \
 RUN mkdir -p /hubs/admin/ && cd /hubs
 COPY package.json ./
 COPY package-lock.json ./
+# connect-client is vendored in-context (file:vendor/connect-client.tgz); it must be present before npm ci
+COPY vendor ./vendor
 RUN npm ci
 COPY admin/package.json admin/
 COPY admin/package-lock.json admin/
