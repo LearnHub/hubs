@@ -1,6 +1,8 @@
 import * as Connect from "connect-client"
 import { CharacterControllerSystem } from "./systems/character-controller-system"
 import configs from "./utils/configs"
+import { getReticulumFetchUrl } from "./utils/phoenix-utils"
+import { store } from "./utils/store-instance"
 
 const LocalHostname = "hubs.localhost"
 const AlphaHostname = "gb.eduverse.com"
@@ -75,7 +77,8 @@ class AVNBridge {
 
     private _avnfsAltServers: string[] | undefined
 
-    private ConnectServices = new Connect.ConnectServices(GwebHost)
+    // Requests carrying an expiring user JWT get a fresh one first; streams are not covered (see joinDimension)
+    private ConnectServices = new Connect.ConnectServices(GwebHost, { userJwtProvider: () => this.refreshAccessToken() })
 
     constructor() {
         // Async init
@@ -228,6 +231,15 @@ class AVNBridge {
     // Authentication
 
     public async authenticate(accessToken: string): Promise<boolean> {
+        // A token restored from the store is usually stale (they live an hour)
+        if (Connect.jwtNeedsRefresh(accessToken)) {
+            try {
+                accessToken = await this.refreshAccessToken()
+            } catch (error: unknown) {
+                console.warn(`AVN: could not renew access token so connection will be anonymous: ${error instanceof Error ? error.message : error}`)
+                return false
+            }
+        }
         this._accessToken = accessToken
         // Capture whether a live stream is being replaced before we abort it
         const wasStreaming = !!this._streamAbortController
@@ -247,6 +259,85 @@ class AVNBridge {
             await this.requestRejoin()
         }
         return true
+    }
+
+    // Access token renewal. Reticulum holds the OIDC refresh token for this sign-in (`extras.oidc_session`)
+    // and returns a fresh access token; concurrent callers share one request.
+    private _refreshInflight: Promise<string> | undefined
+
+    public refreshAccessToken(): Promise<string> {
+        if (!this._refreshInflight) {
+            this._refreshInflight = this.requestAccessTokenRefresh().finally(() => { this._refreshInflight = undefined })
+        }
+        return this._refreshInflight
+    }
+
+    private async requestAccessTokenRefresh(): Promise<string> {
+        const { token, extras } = store.state.credentials
+        const session = extras?.oidc_session
+        if (!token || !session) {
+            // Signed in before reticulum kept refresh tokens, so this sign-in can never be renewed
+            this.endSignIn()
+            throw new Error("Sign-in cannot be renewed")
+        }
+        const response = await fetch(getReticulumFetchUrl("/api/v1/oidc/refresh"), {
+            method: "POST",
+            headers: { "content-type": "application/json", authorization: `bearer ${token}` },
+            body: JSON.stringify({ session }),
+        })
+        if (response.status === 401) {
+            // Refresh token expired or revoked, or the reticulum credentials are no longer valid
+            this.endSignIn()
+            throw new Error("Sign-in has expired")
+        }
+        if (!response.ok) {
+            throw new Error(`Access token renewal failed (${response.status})`)
+        }
+        const { access_token: accessToken } = await response.json()
+        if (!accessToken) {
+            throw new Error("Access token renewal returned no token")
+        }
+        store.update({ credentials: { extras: { ...store.state.credentials.extras, access_token: accessToken } } })
+        this._accessToken = accessToken
+        console.info("AVN: renewed access token")
+        return accessToken
+    }
+
+    // The current access token, renewed first if it is about to expire
+    private async currentAccessToken(): Promise<string | undefined> {
+        if (this._accessToken && Connect.jwtNeedsRefresh(this._accessToken)) {
+            try {
+                return await this.refreshAccessToken()
+            } catch (error: unknown) {
+                console.warn(`AVN: access token renewal failed: ${error instanceof Error ? error.message : error}`)
+            }
+        }
+        return this._accessToken
+    }
+
+    // The sign-in can't be renewed: forget it, as a sign-out would, so the user can sign in again
+    private endSignIn() {
+        console.warn("AVN: sign-in has ended")
+        this._accessToken = undefined
+        store.update({ credentials: { token: null, email: null, extras: null } })
+        global.dispatchEvent(new Event("avn-signed-out"))
+    }
+
+    // Revokes this sign-in's refresh token in reticulum (best effort, before the credentials are cleared)
+    public async endOidcSession(): Promise<void> {
+        const { token, extras } = store.state.credentials
+        if (!token || !extras?.oidc_session) {
+            return
+        }
+        try {
+            await fetch(getReticulumFetchUrl("/api/v1/oidc/sign_out"), {
+                method: "POST",
+                headers: { "content-type": "application/json", authorization: `bearer ${token}` },
+                body: JSON.stringify({ session: extras.oidc_session }),
+            })
+        } catch (error: unknown) {
+            console.warn("AVN: failed to end OIDC session", error)
+        }
     }
 
     public startNewSession(passId : string | undefined = this.passId, assetId : string | undefined = this.assetId) {
@@ -708,7 +799,9 @@ class AVNBridge {
             }
             await this.abortStreamIfActive()
             const abortController = new AbortController()
-            const auth = this._accessToken ? Connect.Buf.create(Connect.PB.AuthorizationSchema, { userJwt: this._accessToken }) : undefined
+            // The transport interceptor doesn't renew tokens on streams, so do it here
+            const accessToken = await this.currentAccessToken()
+            const auth = accessToken ? Connect.Buf.create(Connect.PB.AuthorizationSchema, { userJwt: accessToken }) : undefined
             console.info(`Joining dimension '${this.dimensionId}'...`)
             const dimensionStream = this.ConnectServices.Dimensions.joinDimension({
                     client: Connect.Buf.create(Connect.PB.ClientCredentialsSchema, { clientId: await this.getClientId() }),

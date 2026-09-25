@@ -5,6 +5,10 @@ export default class AuthChannel {
     this.store = store;
     this.socket = null;
     this._signedIn = !!this.store.state.credentials.token;
+    // AVN: The bridge ends a sign-in whose access token can no longer be renewed
+    window.addEventListener("avn-signed-out", () => {
+      this._signedIn = false;
+    });
   }
 
   setSocket = socket => {
@@ -23,6 +27,8 @@ export default class AuthChannel {
     if (hubChannel) {
       await hubChannel.signOut();
     }
+    // AVN: Revoke the refresh token while the credentials needed to name it still exist
+    await global.AVNGlobal.endOidcSession();
     this.store.update({ credentials: { token: null, email: null, extras: null } });
     await global.AVNGlobal.deauthenticate()
     await this.store.resetToRandomDefaultAvatar();
