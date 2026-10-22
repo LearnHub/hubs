@@ -76,6 +76,17 @@ export class DialogAdapter extends EventEmitter {
 
     this._serverUrl = `wss://${host}:${port}`;
 
+    // AVN: Reticulum with the avncloud provider sends ready-made servers (Cloudflare STUN/TURN), so
+    // no public STUN is added. force_tcp keeps only the TCP and TLS relays
+    if (turn && turn.enabled && turn.ice_servers) {
+      return turn.ice_servers
+        .map(server => ({
+          ...server,
+          urls: [].concat(server.urls).filter(url => !this._forceTcp || /transport=tcp/.test(url))
+        }))
+        .filter(server => server.urls.length > 0);
+    }
+
     if (turn && turn.enabled) {
       turn.transports.forEach(ts => {
         // Try both TURN DTLS and TCP/TLS
